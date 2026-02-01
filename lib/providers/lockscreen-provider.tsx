@@ -60,7 +60,7 @@ function LockScreenLogic({ isLocked, setLocked }: { isLocked: boolean; setLocked
   useEffect(() => {
     if (status === 'authenticated' && idle && !isLocked) {
       lockScreen()
-      toast.warning('Locked due to inactivity!', { position: 'top-center' })
+      toast.warning('Locked due to inactivity!')
     }
   }, [status, idle, isLocked, lockScreen])
 

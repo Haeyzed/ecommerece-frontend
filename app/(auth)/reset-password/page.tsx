@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Spinner } from '@/components/ui/spinner'
-import { LoginForm, ResetPasswordForm } from '@/features/auth'
+import { ResetPasswordForm } from '@/features/auth'
 import Link from 'next/link'
 import { Suspense } from 'react'
 

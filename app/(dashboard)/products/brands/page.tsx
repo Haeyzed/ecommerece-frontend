@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from 'react'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { AuthenticatedLayout } from '@/components/layout/authenticated-layout'
 import { Header } from '@/components/layout/header'
@@ -11,6 +12,7 @@ import { BrandsDialogs } from '@/features/products/brands/components/brands-dial
 import { BrandsPrimaryButtons } from '@/features/products/brands/components/brands-primary-buttons'
 import { BrandsProvider } from '@/features/products/brands/components/brands-provider'
 import { BrandsTable } from '@/features/products/brands/components/brands-table'
+import { DataTableSkeleton } from '@/components/data-table'
 
 export default function Brands() {
   return (
@@ -36,7 +38,12 @@ export default function Brands() {
             <BrandsPrimaryButtons />
           </div>
 
-          <BrandsTable />
+          {/* Wrapper required because BrandsTable reads search params from the URL.
+            This keeps the Header and Title visible while the table data loads.
+          */}
+          <Suspense fallback={<DataTableSkeleton columnCount={4} rowCount={10} />}>
+            <BrandsTable />
+          </Suspense>
         </Main>
 
         <BrandsDialogs />

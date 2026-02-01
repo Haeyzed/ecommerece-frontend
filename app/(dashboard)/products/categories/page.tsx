@@ -1,6 +1,7 @@
 'use client'
 
 import { ConfigDrawer } from '@/components/config-drawer'
+import { DataTableSkeleton } from '@/components/data-table/data-table-skeleton'
 import { AuthenticatedLayout } from '@/components/layout/authenticated-layout'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
@@ -11,6 +12,7 @@ import { CategoriesDialogs } from '@/features/products/categories/components/cat
 import { CategoriesPrimaryButtons } from '@/features/products/categories/components/categories-primary-buttons'
 import { CategoriesProvider } from '@/features/products/categories/components/categories-provider'
 import { CategoriesTable } from '@/features/products/categories/components/categories-table'
+import { Suspense } from 'react'
 
 export default function Categories() {
   return (
@@ -36,7 +38,9 @@ export default function Categories() {
             <CategoriesPrimaryButtons />
           </div>
 
-          <CategoriesTable />
+          <Suspense fallback={<DataTableSkeleton columnCount={4} rowCount={10} />}>
+            <CategoriesTable />
+          </Suspense>
         </Main>
 
         <CategoriesDialogs />

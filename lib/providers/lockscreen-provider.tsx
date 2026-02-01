@@ -1,6 +1,18 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState, useCallback } from 'react'
+/**
+ * LockScreenProvider
+ *
+ * Manages the application's lock screen state.
+ *
+ * Architecture Note:
+ * The logic interacting with `useSearchParams` and `useRouter` is isolated
+ * in `LockScreenLogic` and wrapped in `Suspense`. This prevents build errors
+ * on static pages (like 404) that inherit the RootLayout but cannot
+ * handle search params at build time.
+ */
+
+import { createContext, useContext, useEffect, useState, useCallback, Suspense } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { toast } from 'sonner'
@@ -17,45 +29,32 @@ type LockScreenProviderProps = {
   children: React.ReactNode
 }
 
-export function LockScreenProvider({ children }: LockScreenProviderProps) {
+/**
+ * Internal component to handle side effects (Idle, URL redirects, Shortcuts).
+ * Must be wrapped in Suspense because it uses useSearchParams.
+ */
+function LockScreenLogic({ isLocked, setLocked }: { isLocked: boolean; setLocked: (v: boolean) => void }) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const { status } = useSession()
   
-  // 30 minutes idle timer: useIdle(30 * 60 * 1000)
-  // Currently set to 1 minute for testing as per your code
+  // 1 minute idle timer for testing
   const idle = useIdle(1 * 60 * 1000) 
-  
-  const [isLocked, setIsLockedState] = useState(false)
 
-  // Helper to sync state with LocalStorage
-  const setLocked = useCallback((locked: boolean) => {
-    setIsLockedState(locked)
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('isLocked', locked ? 'true' : 'false')
-    }
-  }, [])
-
-  // Helper function to lock the screen and preserve current URL
   const lockScreen = useCallback(() => {
-    if (pathname === '/lock-screen') return // Already on lock screen
+    if (pathname === '/lock-screen') return
 
+    // Capture current location to return after unlock
     const currentUrl = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`
     const params = new URLSearchParams()
-    params.set('returnUrl', currentUrl)
+    if (currentUrl !== '/dashboard' && currentUrl !== '/') {
+        params.set('returnUrl', currentUrl)
+    }
     
     setLocked(true)
     router.replace(`/lock-screen?${params.toString()}`)
   }, [pathname, searchParams, router, setLocked])
-
-  // Initialize state from LocalStorage on mount
-  useEffect(() => {
-    const storedLock = localStorage.getItem('isLocked') === 'true'
-    if (storedLock) {
-      setIsLockedState(true)
-    }
-  }, [])
 
   // Handle Idle State - ONLY if authenticated
   useEffect(() => {
@@ -65,7 +64,7 @@ export function LockScreenProvider({ children }: LockScreenProviderProps) {
     }
   }, [status, idle, isLocked, lockScreen])
 
-  // Handle Keyboard Shortcut (Cmd+L or Ctrl+L + Shift) - ONLY if authenticated
+  // Handle Keyboard Shortcut
   useEffect(() => {
     if (status !== 'authenticated') return
 
@@ -82,10 +81,8 @@ export function LockScreenProvider({ children }: LockScreenProviderProps) {
   }, [status, lockScreen])
 
   // Security Guard: Redirect if locked and trying to access other pages
-  // Also ensures we don't redirect away if we are not locked
   useEffect(() => {
     if (isLocked && pathname !== '/lock-screen') {
-       // Re-construct the return URL just in case, though usually handled by lockScreen()
        const currentUrl = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`
        const params = new URLSearchParams()
        params.set('returnUrl', currentUrl)
@@ -93,8 +90,35 @@ export function LockScreenProvider({ children }: LockScreenProviderProps) {
     }
   }, [isLocked, pathname, searchParams, router])
 
+  return null
+}
+
+export function LockScreenProvider({ children }: LockScreenProviderProps) {
+  const [isLocked, setIsLockedState] = useState(false)
+
+  const setLocked = useCallback((locked: boolean) => {
+    setIsLockedState(locked)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('isLocked', locked ? 'true' : 'false')
+    }
+  }, [])
+
+  // Initialize from storage
+  useEffect(() => {
+    const storedLock = localStorage.getItem('isLocked') === 'true'
+    if (storedLock) {
+      setIsLockedState(true)
+    }
+  }, [])
+
   return (
     <LockScreenContext.Provider value={{ isLocked, setLocked }}>
+      {/* Wrap logic in Suspense to prevent "useSearchParams() should be wrapped in a suspense boundary"
+        error on static pages like /404 
+      */}
+      <Suspense fallback={null}>
+        <LockScreenLogic isLocked={isLocked} setLocked={setLocked} />
+      </Suspense>
       {children}
     </LockScreenContext.Provider>
   )

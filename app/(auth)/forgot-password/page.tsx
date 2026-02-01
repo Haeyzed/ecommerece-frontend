@@ -1,14 +1,53 @@
 'use client'
 
+import { Suspense } from 'react'
 import { AuthLayout } from '@/components/layout/auth-layout'
-import { Card } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { ForgotPasswordForm } from '@/features/auth'
+import { Spinner } from '@/components/ui/spinner'
 
-export default function ForgotPasswordPage() {
+export default function ForgotasswordPage() {
   return (
     <AuthLayout>
       <Card className='gap-4'>
-        <ForgotPasswordForm />
+        <CardHeader>
+          <CardTitle className='text-lg tracking-tight'>Sign in</CardTitle>
+          <CardDescription>
+            Enter your email and password below to <br />
+            log into your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Suspense fallback={<div className='flex justify-center py-4'><Spinner className='size-6' /></div>}>
+            <ForgotPasswordForm />
+          </Suspense>
+        </CardContent>
+        <CardFooter>
+          <p className='px-8 text-center text-sm text-muted-foreground'>
+            By clicking sign in, you agree to our{' '}
+            <a
+              href='/terms'
+              className='underline underline-offset-4 hover:text-primary'
+            >
+              Terms of Service
+            </a>{' '}
+            and{' '}
+            <a
+              href='/privacy'
+              className='underline underline-offset-4 hover:text-primary'
+            >
+              Privacy Policy
+            </a>
+            .
+          </p>
+        </CardFooter>
       </Card>
     </AuthLayout>
   )

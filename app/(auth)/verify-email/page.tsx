@@ -1,7 +1,7 @@
 'use client'
 
 import { AuthLayout } from '@/components/layout/auth-layout'
-import { VerifyEmailContent } from '@/features/auth/verify-email'
+import { VerifyEmailContent } from '@/features/auth'
 
 export default function VerifyEmailPage() {
   return (

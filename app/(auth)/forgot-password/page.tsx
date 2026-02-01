@@ -2,7 +2,7 @@
 
 import { AuthLayout } from '@/components/layout/auth-layout'
 import { Card } from '@/components/ui/card'
-import { ForgotPasswordForm } from '@/features/auth/forgot-password'
+import { ForgotPasswordForm } from '@/features/auth'
 
 export default function ForgotPasswordPage() {
   return (

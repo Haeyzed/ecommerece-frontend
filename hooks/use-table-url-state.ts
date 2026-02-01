@@ -8,6 +8,9 @@ import type {
   PaginationState,
 } from '@tanstack/react-table'
 
+// Define Updater type locally to ensure compatibility without relying on specific library exports
+type Updater<T> = T | ((old: T) => T)
+
 type UseTableUrlStateParams = {
   pagination?: {
     pageKey?: string
@@ -122,8 +125,8 @@ export function useTableUrlState(
   }, [searchParams, pageKey, pageSizeKey, defaultPage, defaultPageSize])
 
   const onPaginationChange: OnChangeFn<PaginationState> = useCallback(
-    (updater) => {
-      const next = typeof updater === 'function' ? updater(pagination) : updater
+    (updater: Updater<PaginationState>) => {
+      const next = typeof updater === 'function' ? (updater as (old: PaginationState) => PaginationState)(pagination) : updater
       const nextPage = next.pageIndex + 1
       const nextPageSize = next.pageSize
 
@@ -153,10 +156,10 @@ export function useTableUrlState(
   const onGlobalFilterChange: OnChangeFn<string> | undefined =
     globalFilterEnabled
       ? useCallback(
-          (updater) => {
+          (updater: Updater<string>) => {
             const next =
               typeof updater === 'function'
-                ? updater(globalFilter ?? '')
+                ? (updater as (old: string) => string)(globalFilter ?? '')
                 : updater
             const value = trimGlobal ? next.trim() : next
             setGlobalFilter(value)
@@ -176,9 +179,9 @@ export function useTableUrlState(
       : undefined
 
   const onColumnFiltersChange: OnChangeFn<ColumnFiltersState> = useCallback(
-    (updater) => {
+    (updater: Updater<ColumnFiltersState>) => {
       const next =
-        typeof updater === 'function' ? updater(columnFilters) : updater
+        typeof updater === 'function' ? (updater as (old: ColumnFiltersState) => ColumnFiltersState)(columnFilters) : updater
       setColumnFilters(next)
 
       updateSearchParams((params) => {
@@ -243,4 +246,3 @@ export function useTableUrlState(
     ensurePageInRange,
   }
 }
-

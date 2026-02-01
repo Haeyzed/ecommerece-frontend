@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/lib/providers";
 import type { Metadata } from "next";
 import { DM_Sans, Figtree, Geist, Geist_Mono, Inter, JetBrains_Mono, Noto_Sans, Outfit, Public_Sans, Raleway, Roboto } from "next/font/google";
+import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
 
 
@@ -42,6 +43,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
+        <NextTopLoader showSpinner={false} />
         <Providers>{children}</Providers>
         <Toaster position="top-right" />
       </body>

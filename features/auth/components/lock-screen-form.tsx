@@ -15,7 +15,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { LockKeyIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
 
@@ -30,6 +30,7 @@ import { LockScreenFormData, lockScreenSchema } from "../schemas"
 
 export function LockScreenForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { setLocked } = useLockScreen()
   const unlockMutation = useUnlock()
 
@@ -43,7 +44,15 @@ export function LockScreenForm() {
       await unlockMutation.mutateAsync({ password: data.password })
       setLocked(false)
       toast.success("Unlocked successfully")
-      router.replace("/dashboard")
+      
+      // Check for returnUrl in query params
+      const returnUrl = searchParams.get('returnUrl')
+      if (returnUrl) {
+        router.replace(returnUrl)
+      } else {
+        router.replace("/dashboard")
+      }
+      
     } catch (error) {
       if (error instanceof UnauthorizedError) {
         setLocked(false)
@@ -75,7 +84,7 @@ export function LockScreenForm() {
       />
 
       <Button
-        className="mt-2"
+        className="mt-2 w-full"
         type="submit"
         disabled={unlockMutation.isPending}
       >

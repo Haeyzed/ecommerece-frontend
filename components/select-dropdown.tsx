@@ -1,0 +1,68 @@
+'use client'
+
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Loading03Icon } from '@hugeicons/core-free-icons'
+import { cn } from '@/lib/utils'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+
+type SelectDropdownProps = {
+  onValueChange?: (value: string) => void
+  defaultValue: string | undefined
+  placeholder?: string
+  isPending?: boolean
+  items: { label: string; value: string }[] | undefined
+  disabled?: boolean
+  className?: string
+  isControlled?: boolean
+}
+
+export function SelectDropdown({
+  defaultValue,
+  onValueChange,
+  isPending,
+  items,
+  placeholder,
+  disabled,
+  className = '',
+  isControlled = false,
+}: SelectDropdownProps) {
+  const defaultState = isControlled
+    ? { value: defaultValue, onValueChange }
+    : { defaultValue, onValueChange }
+
+  return (
+    <Select {...defaultState}>
+      {/* FormControl removed as requested */}
+      <SelectTrigger disabled={disabled} className={cn(className)}>
+        <SelectValue placeholder={placeholder ?? 'Select'} />
+      </SelectTrigger>
+      <SelectContent>
+        {isPending ? (
+          <SelectItem disabled value='loading' className='h-14'>
+            <div className='flex items-center justify-center gap-2'>
+              <HugeiconsIcon 
+                icon={Loading03Icon} 
+                className='h-5 w-5 animate-spin' 
+                strokeWidth={2}
+              />
+              {'  '}
+              Loading...
+            </div>
+          </SelectItem>
+        ) : (
+          items?.map(({ label, value }) => (
+            <SelectItem key={value} value={value}>
+              {label}
+            </SelectItem>
+          ))
+        )}
+      </SelectContent>
+    </Select>
+  )
+}

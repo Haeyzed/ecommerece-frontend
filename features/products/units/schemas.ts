@@ -1,74 +1,40 @@
 /**
- * =====================================================
- * Unit Zod Schema
- * -----------------------------------------------------
- * Client-side validation schema for Unit forms.
+ * Unit Schemas
  *
- * Source of truth:
- * - Inferred from Laravel `UnitRequest` validation rules
- * - Used with React Hook Form via `zodResolver`
+ * Zod validation schemas for Unit-related forms and input data.
+ * Defines structure for standard units and sub-units with conversion logic.
  *
- * Responsibilities:
- * - Enforce required fields and value constraints
- * - Provide user-friendly validation messages
- * - Ensure type-safety via schema inference
- * =====================================================
+ * @module features/units/schemas
  */
 
 import { z } from "zod";
 
 /**
- * Unit form validation schema.
+ * unitSchema
  *
- * Field rules:
- * - `code`: Required, max 255 characters
- * - `name`: Required, max 255 characters
- * - `base_unit`: Optional nullable integer (parent unit for conversion)
- * - `operator`: Optional enum "*" | "/" | "+" | "-" for conversion
- * - `operation_value`: Optional number >= 0 for conversion
- * - `is_active`: Optional nullable boolean flag
+ * Zod schema for validating unit creation and update forms.
+ *
+ * Rules:
+ * - `code`: Required string, 1-255 characters (e.g., "kg").
+ * - `name`: Required string, 1-255 characters (e.g., "Kilogram").
+ * - `base_unit`: Optional integer ID for the parent unit (if this is a sub-unit).
+ * - `operator`: Optional arithmetic operator (*, /, +, -) for conversion.
+ * - `operation_value`: Optional non-negative number for conversion.
+ * - `is_active`: Optional boolean.
  */
 export const unitSchema = z.object({
-  /**
-   * Short code for the unit (e.g. "kg", "L", "pcs").
-   */
   code: z.string().min(1, "Unit code is required").max(255),
-
-  /**
-   * Display name of the unit.
-   */
   name: z.string().min(1, "Unit name is required").max(255),
-
-  /**
-   * Base unit ID for conversion (e.g. sub-units).
-   * Nullable for base units.
-   */
   base_unit: z.number().int().nullable().optional(),
-
-  /**
-   * Arithmetic operator for conversion (*, /, +, -).
-   */
   operator: z.enum(["*", "/", "+", "-"]).nullable().optional(),
-
-  /**
-   * Numeric value used with operator for conversion.
-   * Must be >= 0.
-   */
   operation_value: z.number().min(0).nullable().optional(),
-
-  /**
-   * Whether the unit is currently active.
-   * Nullable to match backend defaults.
-   */
   is_active: z.boolean().nullable().optional(),
 });
 
 /**
- * Inferred TypeScript type for Unit form data.
+ * UnitFormData
  *
- * Use this type:
- * - In form components
- * - In mutation hooks
- * - For payload validation consistency
+ * TypeScript type inferred from the `unitSchema`.
+ * Represents the shape of the data used in Unit forms.
  */
 export type UnitFormData = z.infer<typeof unitSchema>;

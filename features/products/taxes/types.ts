@@ -1,67 +1,37 @@
 /**
- * =====================================================
  * Tax Types
- * -----------------------------------------------------
- * TypeScript interfaces for Tax entities.
  *
- * Source of truth:
- * - Inferred from Laravel `TaxResource` / `TaxRequest`
+ * Type definitions for Tax entities and related data structures.
+ * Aligns with the backend API resource structure.
  *
- * Responsibilities:
- * - Define backend data contract for taxes
- * - Provide type safety for forms, API responses, and mutations
- * - Align frontend types with Laravel resource output
- * =====================================================
+ * @module features/taxes/types
  */
 
 /**
- * Represents a Tax entity returned from the API.
+ * Tax
  *
- * Used in:
- * - API responses
- * - TanStack Query hooks
- * - Frontend display and tables
+ * Represents the full Tax entity returned by the API.
+ * Used in data tables and detail views.
  */
 export interface Tax {
-  /** Unique identifier of the tax */
   id: number;
-
-  /** Display name of the tax. Example: "VAT", "Sales Tax" */
   name: string;
-
-  /** Tax rate as a percentage. Example: 7.5, 20 */
   rate: number;
-
-  /** Indicates if the tax is currently active */
   is_active: boolean;
-
-  /** Optional WooCommerce tax identifier for external mapping */
   woocommerce_tax_id: number | null;
-
-  /** Timestamp of creation in ISO 8601 format */
   created_at: string | null;
-
-  /** Timestamp of last update in ISO 8601 format */
   updated_at: string | null;
 }
 
 /**
- * Represents Tax data submitted via a form.
+ * TaxFormData
  *
- * Used in:
- * - Create / Update mutations
- * - React Hook Form validation
+ * Interface for data submitted when creating or updating a tax.
+ * Defines the raw payload structure expected by mutation functions.
  */
 export interface TaxFormData {
-  /** Display name of the tax */
   name: string;
-
-  /** Tax rate as a percentage */
   rate: number;
-
-  /** Optional flag indicating active status */
   is_active?: boolean | null;
-
-  /** Optional WooCommerce tax identifier */
   woocommerce_tax_id?: number | null;
 }

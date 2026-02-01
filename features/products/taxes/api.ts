@@ -1,21 +1,13 @@
 "use client";
 
 /**
- * =====================================================
  * Taxes API Hooks
- * -----------------------------------------------------
- * Client-side hooks for managing Taxes using:
- * - TanStack Query (server-state management)
- * - NextAuth-aware API client
- * - Laravel-compatible API responses
- * - Sonner for user feedback (toasts)
  *
- * Responsibilities:
- * - Fetch tax lists and single tax records
- * - Create, update, and delete taxes
- * - Handle validation and API errors
- * - Keep query cache in sync via invalidation
- * =====================================================
+ * Client-side hooks for managing Tax entities using TanStack Query.
+ * Integrates with the application's authenticated API client to handle
+ * CRUD operations, validation, and cache management.
+ *
+ * @module features/taxes/api
  */
 
 import { useApiClient } from "@/lib/api/api-client-client";
@@ -25,51 +17,45 @@ import { toast } from "sonner";
 import type { Tax, TaxFormData } from "./types";
 
 /**
- * Tax query key factory.
- *
- * Used to generate consistent, type-safe cache keys
- * for TanStack Query.
+ * Tax query keys.
+ * Centralized key factory to ensure consistency in caching and invalidation.
  */
 export const taxKeys = {
-  /** Root key for all tax-related queries */
+  /** Root key for all tax-related queries. */
   all: ["taxes"] as const,
 
-  /** Base key for tax list queries */
+  /** Base key for tax list queries. */
   lists: () => [...taxKeys.all, "list"] as const,
 
   /**
-   * Tax list key with optional filters
-   *
-   * @param filters - Pagination, search, and status filters
+   * Generates a specific list key with filters.
+   * @param {Record<string, unknown>} [filters] - Search, pagination, and status filters.
    */
   list: (filters?: Record<string, unknown>) =>
     [...taxKeys.lists(), filters] as const,
 
-  /** Base key for single tax queries */
+  /** Base key for single tax detail queries. */
   details: () => [...taxKeys.all, "detail"] as const,
 
   /**
-   * Single tax query key
-   *
-   * @param id - Tax ID
+   * Generates a specific key for a single tax record.
+   * @param {number} id - The unique identifier of the tax.
    */
   detail: (id: number) => [...taxKeys.details(), id] as const,
 };
 
 /**
- * Fetch paginated list of taxes.
+ * useTaxes
  *
- * Supported query params:
- * - page
- * - per_page
- * - search
- * - is_active
+ * Fetches a paginated list of taxes from the API.
+ * Automatically pauses execution until the user session is fully authenticated.
  *
- * Automatically waits for session hydration
- * before executing the request.
- *
- * @param params - Pagination and filter options
- * @returns TanStack Query result with extra `isSessionLoading` flag
+ * @param {Object} [params] - Filtering and pagination parameters.
+ * @param {number} [params.page] - Current page number.
+ * @param {number} [params.per_page] - Number of items per page.
+ * @param {string} [params.search] - Search query string.
+ * @param {boolean} [params.is_active] - Filter by active status.
+ * @returns {Object} Query result including `isSessionLoading` status.
  */
 export function useTaxes(params?: {
   page?: number;
@@ -90,20 +76,18 @@ export function useTaxes(params?: {
 
   return {
     ...query,
-    /** Indicates whether NextAuth session is still loading */
+    /** Indicates whether NextAuth session is still loading. */
     isSessionLoading: sessionStatus === "loading",
   };
 }
 
 /**
- * Fetch a single tax by ID.
+ * useTax
  *
- * Automatically disabled when:
- * - ID is falsy
- * - Session is still loading
+ * Fetches details for a single tax record by ID.
  *
- * @param id - Tax ID
- * @returns TanStack Query result with `Tax | null`
+ * @param {number} id - The unique identifier of the tax to fetch.
+ * @returns {Object} Query result containing the Tax object or null.
  */
 export function useTax(id: number) {
   const { api, sessionStatus } = useApiClient();
@@ -119,19 +103,18 @@ export function useTax(id: number) {
 
   return {
     ...query,
-    /** Indicates whether NextAuth session is still loading */
+    /** Indicates whether NextAuth session is still loading. */
     isSessionLoading: sessionStatus === "loading",
   };
 }
 
 /**
- * Create a new tax.
+ * useCreateTax
  *
- * Side effects:
- * - Invalidates tax list queries
- * - Displays success or error toast
+ * Mutation hook to create a new tax record.
+ * Handles API submission, validation errors, and cache invalidation.
  *
- * @returns TanStack mutation object
+ * @returns {UseMutationResult} TanStack Mutation result.
  */
 export function useCreateTax() {
   const { api } = useApiClient();
@@ -168,12 +151,12 @@ export function useCreateTax() {
 }
 
 /**
- * Update an existing tax.
+ * useUpdateTax
  *
- * - Builds a partial payload dynamically
- * - Invalidates both list and detail queries
+ * Mutation hook to update an existing tax record.
+ * Supports partial updates by only sending defined fields in the payload.
  *
- * @returns TanStack mutation object
+ * @returns {UseMutationResult} TanStack Mutation result.
  */
 export function useUpdateTax() {
   const { api } = useApiClient();
@@ -222,13 +205,11 @@ export function useUpdateTax() {
 }
 
 /**
- * Delete a tax by ID.
+ * useDeleteTax
  *
- * Side effects:
- * - Invalidates tax list cache
- * - Displays toast feedback
+ * Mutation hook to permanently delete a tax record.
  *
- * @returns TanStack mutation object
+ * @returns {UseMutationResult} TanStack Mutation result.
  */
 export function useDeleteTax() {
   const { api } = useApiClient();

@@ -1,86 +1,46 @@
 /**
- * =====================================================
  * Unit Types
- * -----------------------------------------------------
- * TypeScript interfaces for Unit entities.
  *
- * Source of truth:
- * - Inferred from Laravel `UnitResource` / `UnitRequest`
+ * Type definitions for Unit entities and related data structures.
+ * Aligns with the backend API resource structure, including recursive relationships.
  *
- * Responsibilities:
- * - Define backend data contract for units
- * - Provide type safety for forms, API responses, and mutations
- * - Align frontend types with Laravel resource output
- * =====================================================
+ * @module features/units/types
  */
 
 /**
- * Represents a Unit entity returned from the API.
+ * Unit
  *
- * Used in:
- * - API responses
- * - TanStack Query hooks
- * - Frontend display and tables
+ * Represents the full Unit entity returned by the API.
+ * Includes conversion logic fields if the unit is a sub-unit.
  */
 export interface Unit {
-  /** Unique identifier of the unit */
   id: number;
-
-  /** Short code (e.g. "kg", "L", "pcs") */
   code: string;
-
-  /** Display name of the unit */
   name: string;
-
-  /** Base unit ID for conversion. Null for base units */
   base_unit: number | null;
-
-  /** Base unit relation when expanded (id, code, name) */
   base_unit_relation?: {
     id: number;
     code: string;
     name: string;
   } | null;
-
-  /** Arithmetic operator for conversion (*, /, +, -) */
   operator: string | null;
-
-  /** Numeric value for conversion */
   operation_value: number | null;
-
-  /** Indicates if the unit is currently active */
   is_active: boolean;
-
-  /** Timestamp of creation in ISO 8601 format */
   created_at: string | null;
-
-  /** Timestamp of last update in ISO 8601 format */
   updated_at: string | null;
 }
 
 /**
- * Represents Unit data submitted via a form.
+ * UnitFormData
  *
- * Used in:
- * - Create / Update mutations
- * - React Hook Form validation
+ * Interface for data submitted when creating or updating a unit.
+ * Defines the raw payload structure expected by mutation functions.
  */
 export interface UnitFormData {
-  /** Short code for the unit */
   code: string;
-
-  /** Display name of the unit */
   name: string;
-
-  /** Base unit ID for conversion */
   base_unit?: number | null;
-
-  /** Arithmetic operator for conversion */
   operator?: string | null;
-
-  /** Numeric value for conversion */
   operation_value?: number | null;
-
-  /** Optional flag indicating active status */
   is_active?: boolean | null;
 }

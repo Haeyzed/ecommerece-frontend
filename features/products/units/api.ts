@@ -1,79 +1,64 @@
 "use client";
 
 /**
- * =====================================================
  * Units API Hooks
- * -----------------------------------------------------
- * Client-side hooks for managing Units using:
- * - TanStack Query (server-state management)
- * - NextAuth-aware API client
- * - Laravel-compatible API responses
- * - Sonner for user feedback (toasts)
  *
- * Responsibilities:
- * - Fetch unit lists, single units, and base units
- * - Create, update, and delete units
- * - Handle validation and API errors
- * - Keep query cache in sync via invalidation
- * =====================================================
+ * Client-side hooks for managing Unit entities using TanStack Query.
+ * Handles fetching lists, hierarchical base units, CRUD operations,
+ * and cache invalidation strategies.
+ *
+ * @module features/units/api
  */
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApiClient } from "@/lib/api/api-client-client";
-import type { Unit, UnitFormData } from "./types";
-import type { PaginationMeta } from "@/lib/api/api-types";
 import { ValidationError } from "@/lib/api/api-errors";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import type { Unit, UnitFormData } from "./types";
 
 /**
- * Unit query key factory.
- *
- * Used to generate consistent, type-safe cache keys
- * for TanStack Query.
+ * Unit query keys.
+ * Centralized key factory for type-safe cache management.
  */
 export const unitKeys = {
-  /** Root key for all unit-related queries */
+  /** Root key for all unit-related queries. */
   all: ["units"] as const,
 
-  /** Base key for unit list queries */
+  /** Base key for unit list queries. */
   lists: () => [...unitKeys.all, "list"] as const,
 
   /**
-   * Unit list key with optional filters
-   *
-   * @param filters - Pagination, search, and status filters
+   * Generates a specific list key with filters.
+   * @param {Record<string, unknown>} [filters] - Search, pagination, and status filters.
    */
   list: (filters?: Record<string, unknown>) =>
     [...unitKeys.lists(), filters] as const,
 
-  /** Base key for single unit queries */
+  /** Base key for single unit detail queries. */
   details: () => [...unitKeys.all, "detail"] as const,
 
   /**
-   * Single unit query key
-   *
-   * @param id - Unit ID
+   * Generates a specific key for a single unit record.
+   * @param {number} id - The unique identifier of the unit.
    */
   detail: (id: number) => [...unitKeys.details(), id] as const,
 
-  /** Key for base-units list (e.g. dropdown / sub-unit form) */
+  /** Key for fetching base units (used in dropdowns for sub-units). */
   baseUnits: () => [...unitKeys.all, "base-units"] as const,
 };
 
 /**
- * Fetch paginated list of units.
+ * useUnits
  *
- * Supported query params:
- * - page
- * - per_page
- * - search
- * - is_active
+ * Fetches a paginated list of units from the API.
+ * 
  *
- * Automatically waits for session hydration
- * before executing the request.
- *
- * @param params - Pagination and filter options
- * @returns TanStack Query result with extra `isSessionLoading` flag
+ * @param {Object} [params] - Filtering and pagination parameters.
+ * @param {number} [params.page] - Current page number.
+ * @param {number} [params.per_page] - Number of items per page.
+ * @param {string} [params.search] - Search query string.
+ * @param {boolean} [params.is_active] - Filter by active status.
+ * @returns {Object} Query result including `isSessionLoading` status.
  */
 export function useUnits(params?: {
   page?: number;
@@ -92,19 +77,18 @@ export function useUnits(params?: {
   });
   return {
     ...query,
-    /** Indicates whether NextAuth session is still loading */
+    /** Indicates whether NextAuth session is still loading. */
     isSessionLoading: sessionStatus === "loading",
   };
 }
 
 /**
- * Fetch base units only (for dropdown / sub-unit form).
+ * useBaseUnits
  *
- * GET /units/base-units
+ * Fetches a list of base units (units that are not sub-units of others).
+ * Primarily used to populate parent unit dropdowns in forms.
  *
- * Automatically disabled when session is still loading.
- *
- * @returns TanStack Query result with unit list
+ * @returns {UseQueryResult<Unit[]>} Query result containing the list of base units.
  */
 export function useBaseUnits() {
   const { api, sessionStatus } = useApiClient();
@@ -119,14 +103,12 @@ export function useBaseUnits() {
 }
 
 /**
- * Fetch a single unit by ID.
+ * useUnit
  *
- * Automatically disabled when:
- * - ID is falsy
- * - Session is still loading
+ * Fetches details for a single unit record by ID.
  *
- * @param id - Unit ID
- * @returns TanStack Query result with `Unit | null`
+ * @param {number} id - The unique identifier of the unit to fetch.
+ * @returns {Object} Query result containing the Unit object or null.
  */
 export function useUnit(id: number) {
   const { api, sessionStatus } = useApiClient();
@@ -140,19 +122,18 @@ export function useUnit(id: number) {
   });
   return {
     ...query,
-    /** Indicates whether NextAuth session is still loading */
+    /** Indicates whether NextAuth session is still loading. */
     isSessionLoading: sessionStatus === "loading",
   };
 }
 
 /**
- * Create a new unit.
+ * useCreateUnit
  *
- * Side effects:
- * - Invalidates unit list and base-units queries
- * - Displays success or error toast
+ * Mutation hook to create a new unit record.
+ * Handles payload construction, validation errors, and invalidates relevant caches.
  *
- * @returns TanStack mutation object
+ * @returns {UseMutationResult} TanStack Mutation result.
  */
 export function useCreateUnit() {
   const { api } = useApiClient();
@@ -167,7 +148,8 @@ export function useCreateUnit() {
       };
       if (data.base_unit != null) payload.base_unit = data.base_unit;
       if (data.operator != null) payload.operator = data.operator;
-      if (data.operation_value != null) payload.operation_value = data.operation_value;
+      if (data.operation_value != null)
+        payload.operation_value = data.operation_value;
 
       const response = await api.post<Unit>("/units", payload);
       if (!response.success || !response.data) {
@@ -184,23 +166,41 @@ export function useCreateUnit() {
       toast.success("Unit created successfully");
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to create unit");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to create unit"
+      );
     },
   });
 }
 
+/**
+ * useUpdateUnit
+ *
+ * Mutation hook to update an existing unit record.
+ * Supports partial updates and ensures base unit relationships are handled correctly.
+ *
+ * @returns {UseMutationResult} TanStack Mutation result.
+ */
 export function useUpdateUnit() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<UnitFormData> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number;
+      data: Partial<UnitFormData>;
+    }) => {
       const payload: Record<string, unknown> = {};
       if (data.code !== undefined) payload.code = data.code;
       if (data.name !== undefined) payload.name = data.name;
-      if (data.base_unit !== undefined) payload.base_unit = data.base_unit ?? null;
+      if (data.base_unit !== undefined)
+        payload.base_unit = data.base_unit ?? null;
       if (data.operator !== undefined) payload.operator = data.operator ?? null;
-      if (data.operation_value !== undefined) payload.operation_value = data.operation_value ?? null;
+      if (data.operation_value !== undefined)
+        payload.operation_value = data.operation_value ?? null;
       if (data.is_active !== undefined) payload.is_active = data.is_active;
 
       const response = await api.patch<Unit>(`/units/${id}`, payload);
@@ -214,24 +214,26 @@ export function useUpdateUnit() {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: unitKeys.detail(variables.id) });
+      queryClient.invalidateQueries({
+        queryKey: unitKeys.detail(variables.id),
+      });
       queryClient.invalidateQueries({ queryKey: unitKeys.baseUnits() });
       toast.success("Unit updated successfully");
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to update unit");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update unit"
+      );
     },
   });
 }
 
 /**
- * Delete a unit by ID.
+ * useDeleteUnit
  *
- * Side effects:
- * - Invalidates unit list and base-units cache
- * - Displays toast feedback
+ * Mutation hook to permanently delete a unit record.
  *
- * @returns TanStack mutation object
+ * @returns {UseMutationResult} TanStack Mutation result.
  */
 export function useDeleteUnit() {
   const { api } = useApiClient();
@@ -249,7 +251,9 @@ export function useDeleteUnit() {
       toast.success("Unit deleted successfully");
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to delete unit");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to delete unit"
+      );
     },
   });
 }

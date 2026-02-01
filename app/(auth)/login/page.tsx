@@ -25,10 +25,6 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {/* LoginForm uses useSearchParams() internally (via useLogin hook).
-            It must be wrapped in Suspense to allow Next.js to pre-render 
-            this page statically while the search params are determined on the client.
-          */}
           <Suspense fallback={<div className='flex justify-center py-4'><Spinner className='size-6' /></div>}>
             <LoginForm />
           </Suspense>

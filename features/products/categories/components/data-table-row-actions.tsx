@@ -16,7 +16,8 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { 
   Delete02Icon, 
   MoreHorizontalIcon, 
-  PencilEdit02Icon 
+  PencilEdit02Icon,
+  ViewIcon,
 } from '@hugeicons/core-free-icons'
 import { type Row } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
@@ -50,6 +51,18 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end' className='w-[160px]'>
+          <DropdownMenuItem
+            onClick={() => {
+              setCurrentRow(row.original)
+              setOpen('view')
+            }}
+          >
+            View
+            <DropdownMenuShortcut>
+              <HugeiconsIcon icon={ViewIcon} strokeWidth={2} size={16} />
+            </DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => {
               setCurrentRow(row.original)

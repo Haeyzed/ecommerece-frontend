@@ -9,7 +9,7 @@
 
 import {
   CheckmarkCircle02Icon,
-  MultiplicationSignIcon,
+  CancelCircleIcon,
 } from '@hugeicons/core-free-icons'
 
 /**
@@ -24,7 +24,7 @@ export const activeStatuses = [
   {
     value: 'inactive',
     label: 'Inactive',
-    icon: MultiplicationSignIcon,
+    icon: CancelCircleIcon,
   },
 ] as const
 

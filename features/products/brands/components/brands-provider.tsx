@@ -15,7 +15,7 @@ import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type Brand } from '../types'
 
-type BrandsDialogType = 'import' | 'add' | 'edit' | 'delete'
+type BrandsDialogType = 'import' | 'add' | 'edit' | 'delete' | 'view'
 
 type BrandsContextType = {
   open: BrandsDialogType | null

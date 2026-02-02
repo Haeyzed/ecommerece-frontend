@@ -15,7 +15,7 @@ import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type Category } from '../types'
 
-type CategoriesDialogType = 'import' | 'add' | 'edit' | 'delete'
+type CategoriesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'view'
 
 type CategoriesContextType = {
   open: CategoriesDialogType | null

@@ -339,9 +339,9 @@ function BrandForm({ form, onSubmit, id, className, isEdit, currentRow }: BrandF
                         <Image
                           src={existingImageUrl}
                           alt={currentRow?.name || 'Brand image'}
-                          className='object-cover'
-                          fill
-                          sizes="64px"
+                          width={64}
+                          height={64}
+                          className='h-full w-full object-cover'
                           unoptimized
                         />
                       </ImageZoom>

@@ -425,9 +425,9 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
                         <Image
                           src={existingImageUrl}
                           alt={currentRow?.name || 'Category image'}
-                          className='object-cover'
-                          fill
-                          sizes="64px"
+                          width={64}
+                          height={64}
+                          className='h-full w-full object-cover'
                           unoptimized
                         />
                       </ImageZoom>
@@ -508,9 +508,9 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
                         <Image
                           src={existingIconUrl}
                           alt={currentRow?.name || 'Category icon'}
-                          className='object-cover'
-                          fill
-                          sizes="64px"
+                          width={64}
+                          height={64}
+                          className='h-full w-full object-cover'
                           unoptimized
                         />
                       </ImageZoom>

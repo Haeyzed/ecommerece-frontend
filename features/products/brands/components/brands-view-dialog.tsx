@@ -122,9 +122,9 @@ function BrandView({ className, currentRow, statusIcon, statusLabel }: BrandView
               <Image
                 src={currentRow.image_url}
                 alt={currentRow.name}
-                fill
-                className='object-cover'
-                sizes="(max-width: 768px) 100vw, 500px"
+                width={800}
+                height={400}
+                className='h-full w-full object-cover'
                 unoptimized
               />
             </ImageZoom>

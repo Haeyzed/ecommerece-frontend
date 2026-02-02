@@ -17,7 +17,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import {
   CancelCircleIcon,
   CloudUploadIcon,
-  Edit01Icon
+  Edit01Icon,
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
@@ -75,6 +75,7 @@ import { ImageZoom } from '@/components/ui/image-zoom'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
+import { Spinner } from '@/components/ui/spinner'
 
 type BrandActionDialogProps = {
   currentRow?: Brand
@@ -158,7 +159,14 @@ export function BrandsActionDialog({
 
           <DialogFooter>
             <Button type='submit' form='brand-form' disabled={isLoading}>
-              {isLoading ? 'Saving...' : 'Save changes'}
+              {isLoading ? (
+                <>
+                  <Spinner className="mr-2 size-4" />
+                  Saving...
+                </>
+              ) : (
+                'Save changes'
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -189,7 +197,14 @@ export function BrandsActionDialog({
 
         <DrawerFooter>
           <Button type='submit' form='brand-form' disabled={isLoading}>
-            {isLoading ? 'Saving...' : 'Save changes'}
+            {isLoading ? (
+              <>
+                <Spinner className="mr-2 size-4" />
+                Saving...
+              </>
+            ) : (
+              'Save changes'
+            )}
           </Button>
           <DrawerClose asChild>
             <Button variant='outline'>Cancel</Button>

@@ -196,7 +196,7 @@ export function CategoriesActionDialog({
   }
 
   return (
-    <Drawer open={open} onOpenChange={handleOpenChange}>
+    <Drawer open={open} onOpenChange={handleOpenChange} modal={false}>
       <DrawerContent>
         <DrawerHeader className='text-left'>
           <DrawerTitle>{isEdit ? 'Edit Category' : 'Add New Category'}</DrawerTitle>

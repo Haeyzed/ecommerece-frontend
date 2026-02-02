@@ -12,6 +12,7 @@
 import { BrandsActionDialog } from './brands-action-dialog'
 import { BrandsDeleteDialog } from './brands-delete-dialog'
 import { BrandsImportDialog } from './brands-import-dialog'
+import { BrandsViewDialog } from './brands-view-dialog'
 import { useBrands } from './brands-provider'
 
 export function BrandsDialogs() {
@@ -37,6 +38,18 @@ export function BrandsDialogs() {
             open={open === 'edit'}
             onOpenChange={() => {
               setOpen('edit')
+              setTimeout(() => {
+                setCurrentRow(null)
+              }, 500)
+            }}
+            currentRow={currentRow}
+          />
+          
+          <BrandsViewDialog
+            key={`brand-view-${currentRow.id}`}
+            open={open === 'view'}
+            onOpenChange={() => {
+              setOpen('view')
               setTimeout(() => {
                 setCurrentRow(null)
               }, 500)

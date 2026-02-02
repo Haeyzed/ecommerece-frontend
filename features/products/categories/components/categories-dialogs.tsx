@@ -12,6 +12,7 @@
 import { CategoriesActionDialog } from './categories-action-dialog'
 import { CategoriesDeleteDialog } from './categories-delete-dialog'
 import { CategoriesImportDialog } from './categories-import-dialog'
+import { CategoriesViewDialog } from './categories-view-dialog'
 import { useCategories } from './categories-provider'
 
 export function CategoriesDialogs() {
@@ -37,6 +38,18 @@ export function CategoriesDialogs() {
             open={open === 'edit'}
             onOpenChange={() => {
               setOpen('edit')
+              setTimeout(() => {
+                setCurrentRow(null)
+              }, 500)
+            }}
+            currentRow={currentRow}
+          />
+          
+          <CategoriesViewDialog
+            key={`category-view-${currentRow.id}`}
+            open={open === 'view'}
+            onOpenChange={() => {
+              setOpen('view')
               setTimeout(() => {
                 setCurrentRow(null)
               }, 500)

@@ -8,6 +8,7 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { Spinner } from '@/components/ui/spinner'
 import { CategoriesDialogs } from '@/features/products/categories/components/categories-dialogs'
 import { CategoriesPrimaryButtons } from '@/features/products/categories/components/categories-primary-buttons'
 import { CategoriesProvider } from '@/features/products/categories/components/categories-provider'
@@ -38,7 +39,7 @@ export default function Categories() {
             <CategoriesPrimaryButtons />
           </div>
 
-          <Suspense fallback={<DataTableSkeleton columnCount={4} rowCount={10} />}>
+          <Suspense fallback={<Spinner />}>
             <CategoriesTable />
           </Suspense>
         </Main>

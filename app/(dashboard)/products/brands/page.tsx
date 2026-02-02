@@ -13,6 +13,7 @@ import { BrandsPrimaryButtons } from '@/features/products/brands/components/bran
 import { BrandsProvider } from '@/features/products/brands/components/brands-provider'
 import { BrandsTable } from '@/features/products/brands/components/brands-table'
 import { DataTableSkeleton } from '@/components/data-table'
+import { Spinner } from '@/components/ui/spinner'
 
 export default function Brands() {
   return (
@@ -37,11 +38,7 @@ export default function Brands() {
             </div>
             <BrandsPrimaryButtons />
           </div>
-
-          {/* Wrapper required because BrandsTable reads search params from the URL.
-            This keeps the Header and Title visible while the table data loads.
-          */}
-          <Suspense fallback={<DataTableSkeleton columnCount={4} rowCount={10} />}>
+          <Suspense fallback={<Spinner />}>
             <BrandsTable />
           </Suspense>
         </Main>

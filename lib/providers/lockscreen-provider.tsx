@@ -40,7 +40,7 @@ function LockScreenLogic({ isLocked, setLocked }: { isLocked: boolean; setLocked
   const { status } = useSession()
   
   // 1 minute idle timer for testing
-  const idle = useIdle(1 * 60 * 1000) 
+  const idle = useIdle(5 * 60 * 1000) 
 
   const lockScreen = useCallback(() => {
     if (pathname === '/lock-screen') return

@@ -28,7 +28,7 @@ export function FontSelector({ className }: React.ComponentProps<"div">) {
       <Label htmlFor="font-selector" className="text-sm font-medium text-muted-foreground">
         Font
       </Label>
-      <Select value={font} onValueChange={(value) => setFont(value as typeof font)} modal={false}>
+      <Select value={font} onValueChange={(value) => setFont(value as typeof font)}>
         <SelectTrigger
           id="font-selector"
           className="h-9 w-full bg-secondary text-secondary-foreground border-secondary shadow-none px-3"
@@ -38,8 +38,7 @@ export function FontSelector({ className }: React.ComponentProps<"div">) {
             <span className="truncate">{fontLabels[font] || font}</span>
           </div>
         </SelectTrigger>
-        {/* FIX: Added z-[100] to ensure dropdown appears above the Sheet/Drawer */}
-        <SelectContent align="end" className="max-h-[300px] z-[100]">
+        <SelectContent align="end" className="max-h-[300px]">
           {fonts.map((fontOption) => (
             <SelectItem key={fontOption} value={fontOption} className="cursor-pointer">
               <span className="text-sm">{fontLabels[fontOption] || fontOption}</span>

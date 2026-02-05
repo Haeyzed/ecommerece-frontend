@@ -19,7 +19,7 @@ export function ThemeSelector({ className }: React.ComponentProps<"div">) {
       <Label htmlFor="theme-selector" className="text-sm font-medium text-muted-foreground">
         Theme
       </Label>
-      <Select value={value} onValueChange={setActiveTheme} modal={false}>
+      <Select value={value} onValueChange={setActiveTheme}>
         <SelectTrigger
           id="theme-selector"
           className="h-9 w-full bg-secondary text-secondary-foreground border-secondary shadow-none px-3"
@@ -33,8 +33,7 @@ export function ThemeSelector({ className }: React.ComponentProps<"div">) {
             <span className="truncate capitalize">{value}</span>
           </div>
         </SelectTrigger>
-        {/* FIX: Added z-[100] to ensure dropdown appears above the Sheet/Drawer */}
-        <SelectContent align="end" className="max-h-[300px] z-[100]">
+        <SelectContent align="end" className="max-h-[300px]">
           {THEMES.map((theme) => {
             const themeColor = themeColors[theme.name]
             return (

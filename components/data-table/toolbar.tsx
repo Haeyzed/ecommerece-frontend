@@ -1,6 +1,6 @@
 "use client"
 
-import { MultiplicationSignIcon } from '@hugeicons/core-free-icons'
+import { CancelIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from "@hugeicons/react"
 import { type Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
@@ -78,7 +78,7 @@ export function DataTableToolbar<TData>({
             className='h-8 px-2 lg:px-3'
           >
             Reset
-            <HugeiconsIcon icon={MultiplicationSignIcon} className='ms-2 h-4 w-4' />
+            <HugeiconsIcon icon={CancelIcon} className='ms-2 h-4 w-4' />
           </Button>
         )}
       </div>

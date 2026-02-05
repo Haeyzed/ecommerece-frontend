@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from 'react'
-import { Check, Add01Icon } from '@hugeicons/core-free-icons'
+import { Check, AddCircleIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from "@hugeicons/react"
 import { type Column } from '@tanstack/react-table'
 import { cn } from '@/lib/utils'
@@ -45,7 +45,7 @@ export function DataTableFacetedFilter<TData, TValue>({
     <Popover>
       <PopoverTrigger asChild>
         <Button variant='outline' size='sm' className='h-8 border-dashed'>
-          <HugeiconsIcon icon={Add01Icon} className='size-4' />
+          <HugeiconsIcon icon={AddCircleIcon} className='size-4' />
           {title}
           {selectedValues?.size > 0 && (
             <>

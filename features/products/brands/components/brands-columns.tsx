@@ -112,7 +112,7 @@ export const brandsColumns: ColumnDef<Brand>[] = [
       const { status } = row.original
       const statusBadgeColor = statusTypes.get(status)
       return (
-        <div className='flex space-x-2'>
+        <div className='flex justify-center'>
           <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
             {row.getValue('status')}
           </Badge>

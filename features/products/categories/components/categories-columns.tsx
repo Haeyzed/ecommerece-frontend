@@ -130,7 +130,7 @@ export const categoriesColumns: ColumnDef<Category>[] = [
       const { status } = row.original
       const statusBadgeColor = statusTypes.get(status)
       return (
-        <div className='flex space-x-2'>
+        <div className='flex justify-center'>
           <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
             {row.getValue('status')}
           </Badge>
@@ -150,7 +150,7 @@ export const categoriesColumns: ColumnDef<Category>[] = [
       const { featured_status } = row.original
       const featuredStatusBadgeColor = featuredTypes.get(featured_status)
       return (
-        <div className='flex space-x-2'>
+        <div className='flex justify-center'>
           <Badge variant='outline' className={cn('capitalize', featuredStatusBadgeColor)}>
             {row.getValue('featured_status')}
           </Badge>
@@ -170,7 +170,7 @@ export const categoriesColumns: ColumnDef<Category>[] = [
       const { sync_status } = row.original
       const syncStatusbadgeColor = syncTypes.get(sync_status)
       return (
-        <div className='flex space-x-2'>
+        <div className='flex justify-center'>
           <Badge variant='outline' className={cn('capitalize', syncStatusbadgeColor)}>
             {row.getValue('sync_status')}
           </Badge>

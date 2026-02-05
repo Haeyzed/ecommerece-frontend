@@ -114,7 +114,7 @@ export function CategoriesTable() {
       columnVisibility,
     },
     enableRowSelection: true,
-    manualPagination: true, // Server-side pagination
+    manualPagination: true,
     onPaginationChange,
     onColumnFiltersChange,
     onRowSelectionChange: setRowSelection,
@@ -139,9 +139,15 @@ export function CategoriesTable() {
     )
   }
 
-  // Show empty state if no data (check total from pagination)
   const hasData = data?.meta?.total && data.meta.total > 0
-  if (!isLoading && !hasData) {
+  
+  const isFiltered = 
+    !!apiParams.search || 
+    !!apiParams.status || 
+    !!apiParams.featured_status || 
+    !!apiParams.sync_status
+
+  if (!isLoading && !hasData && !isFiltered) {
     return <CategoriesEmptyState />
   }
 

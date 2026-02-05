@@ -129,7 +129,8 @@ export function BrandsTable() {
   }
 
   const hasData = data?.meta?.total && data.meta.total > 0
-  if (!isLoading && !hasData) {
+  const isFiltered = !!apiParams.search || !!apiParams.status
+  if (!isLoading && !hasData && !isFiltered) {
     return <BrandsEmptyState />
   }
 

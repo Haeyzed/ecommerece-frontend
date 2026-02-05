@@ -4,19 +4,8 @@
  * Type definitions for Tax entities and related data structures.
  * Aligns with the backend API resource structure.
  *
- * @module features/settings/taxes/types
+ * @module features/taxes/types
  */
-
-/**
- * TaxOption
- *
- * A simplified tax object used for selection inputs.
- */
-export interface TaxOption {
-  value: number;
-  label: string;
-  rate: number;
-}
 
 /**
  * Tax
@@ -29,7 +18,6 @@ export interface Tax {
   name: string;
   rate: number;
   is_active: boolean;
-  status: TaxStatus,
   woocommerce_tax_id: number | null;
   created_at: string | null;
   updated_at: string | null;
@@ -47,9 +35,3 @@ export interface TaxFormData {
   is_active?: boolean | null;
   woocommerce_tax_id?: number | null;
 }
-
-/**
- * TaxStatus
- * * distinct union type for tax statuses.
- */
-export type TaxStatus = 'active' | 'inactive';

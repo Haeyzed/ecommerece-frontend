@@ -1,10 +1,10 @@
 /**
- * Tax Schemas
+ * Taxes Schemas
  *
- * Zod validation schemas for Tax-related forms and input data.
- * Ensures data integrity before sending to the API.
+ * Validation schemas and type inference for tax forms.
+ * Uses Zod for client-side validation that mirrors server-side rules.
  *
- * @module features/taxes/schemas
+ * @module features/settings/taxes/schemas
  */
 
 import { z } from "zod";
@@ -12,38 +12,27 @@ import { z } from "zod";
 /**
  * taxSchema
  *
- * Zod schema for validating tax creation and update forms.
+ * Zod validation schema for creating and updating taxes.
  *
- * Rules:
- * - `name`: Required string, 1-255 characters.
- * - `rate`: Required number, 0-100 (percentage).
- * - `is_active`: Optional boolean.
- * - `woocommerce_tax_id`: Optional integer for external mapping.
+ * Validation rules:
+ * - `name`: Required, max 255 chars
+ * - `rate`: Required number, min 0
+ * - `is_active`: Optional boolean
+ * - `woocommerce_tax_id`: Optional number (nullable)
  */
 export const taxSchema = z.object({
-  name: z
-    .string()
-    .min(1, "Tax name is required")
-    .max(255),
-  rate: z
-    .number()
-    .min(0, "Rate must be at least 0")
-    .max(100, "Rate cannot exceed 100"),
-  is_active: z
-    .boolean()
-    .nullable()
-    .optional(),
-  woocommerce_tax_id: z
-    .number()
-    .int()
-    .nullable()
-    .optional(),
+  name: z.string().min(1, "Tax name is required").max(255, "Name is too long"),
+  rate: z.coerce
+    .number({ invalid_type_error: "Rate must be a number" })
+    .min(0, "Rate must be 0 or greater"),
+  is_active: z.boolean().nullable().optional(),
+  woocommerce_tax_id: z.coerce.number().nullable().optional(),
 });
 
 /**
  * TaxFormData
  *
- * TypeScript type inferred from the `taxSchema`.
- * Represents the shape of the data used in Tax forms.
+ * Type definition inferred from the Zod schema.
+ * Used for type-safe form handling.
  */
 export type TaxFormData = z.infer<typeof taxSchema>;

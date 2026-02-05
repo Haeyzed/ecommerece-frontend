@@ -11,9 +11,9 @@ import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { 
-  CloudUploadIcon, 
-  Download01Icon, 
+import {
+  CloudUploadIcon,
+  Download01Icon,
   File02Icon,
   ViewIcon,
   CancelCircleIcon
@@ -72,7 +72,7 @@ export function BrandsImportDialog({
 }: BrandsImportDialogProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)")
   const { mutate: importBrands, isPending } = useBrandsImport()
-  
+
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewData, setPreviewData] = useState<any[]>([])
 
@@ -89,7 +89,7 @@ export function BrandsImportDialog({
     const headers = lines[0].split(',').map(h => h.trim())
     return lines.slice(1).map(line => {
       // Basic split handling - for production consider a robust library like papaparse
-      const values = line.split(',') 
+      const values = line.split(',')
       return headers.reduce((obj, header, i) => {
         obj[header] = values[i]?.trim()
         return obj
@@ -145,10 +145,10 @@ export function BrandsImportDialog({
   const ImportContent = () => (
     <form id='import-form' onSubmit={form.handleSubmit(handlePreview)} className="grid gap-4 py-4">
       <div className="flex justify-end">
-        <Button 
-          type="button" 
-          variant="outline" 
-          size="sm" 
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
           onClick={handleDownloadSample}
           className="text-muted-foreground"
         >
@@ -158,13 +158,25 @@ export function BrandsImportDialog({
       </div>
 
       <FieldGroup>
+        <div className='space-y-2 rounded-md border bg-muted/50 p-3 text-sm'>
+          <div className='font-medium'>Required Fields:</div>
+          <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>name*</code> - Brand name (required)</li>
+          </ul>
+          <div className='font-medium mt-3'>Optional Fields:</div>
+          <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>short_description</code> - Brand description</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>image_url</code> - Image URL</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>page_title</code> - Page title</li>
+          </ul>
+        </div>
         <Controller
           control={form.control}
           name='file'
           render={({ field: { value, onChange, ...fieldProps }, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
               <FieldLabel htmlFor='import-file'>Upload File</FieldLabel>
-              
+
               <FileUpload
                 value={value}
                 onValueChange={onChange}
@@ -176,22 +188,22 @@ export function BrandsImportDialog({
                 }}
               >
                 <FileUploadDropzone className='flex-col items-center justify-center gap-2 border-dashed p-8 text-center'>
-                   <div className="flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-                      <HugeiconsIcon icon={CloudUploadIcon} className='size-5' />
-                   </div>
-                   <div className="text-sm">
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                    <HugeiconsIcon icon={CloudUploadIcon} className='size-5' />
+                  </div>
+                  <div className="text-sm">
                     <span className="font-semibold text-primary">Click to upload</span>
                     {" "}or drag and drop
                     <br />
                     <span className="text-muted-foreground">CSV or Excel (max 5MB)</span>
-                   </div>
-                   <FileUploadTrigger asChild>
-                     <Button variant='link' size='sm' className='sr-only'>
-                       Select file
-                     </Button>
-                   </FileUploadTrigger>
+                  </div>
+                  <FileUploadTrigger asChild>
+                    <Button variant='link' size='sm' className='sr-only'>
+                      Select file
+                    </Button>
+                  </FileUploadTrigger>
                 </FileUploadDropzone>
-                
+
                 <FileUploadList>
                   {value?.map((file, index) => (
                     <FileUploadItem key={index} value={file} className="w-full">
@@ -214,7 +226,7 @@ export function BrandsImportDialog({
                   ))}
                 </FileUploadList>
               </FileUpload>
-              
+
               <FieldDescription>
                 Upload the file containing your brand data.
               </FieldDescription>
@@ -237,7 +249,7 @@ export function BrandsImportDialog({
                 Bulk create brands by uploading a CSV or Excel file.
               </DialogDescription>
             </DialogHeader>
-            
+
             <ImportContent />
 
             <DialogFooter className='gap-y-2'>
@@ -245,7 +257,7 @@ export function BrandsImportDialog({
                 Cancel
               </Button>
               <Button type="submit" form="import-form" disabled={!form.formState.isValid}>
-                Preview Data 
+                Preview Data
                 <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
               </Button>
             </DialogFooter>
@@ -257,10 +269,10 @@ export function BrandsImportDialog({
             <DrawerHeader className="text-left">
               <DrawerTitle>Import Brands</DrawerTitle>
               <DrawerDescription>
-                 Bulk create brands by uploading a CSV or Excel file.
+                Bulk create brands by uploading a CSV or Excel file.
               </DrawerDescription>
             </DrawerHeader>
-            
+
             <div className="no-scrollbar overflow-y-auto px-4">
               <ImportContent />
             </div>
@@ -279,7 +291,7 @@ export function BrandsImportDialog({
       )}
 
       {/* CSV Preview Dialog */}
-      <BrandsCsvPreviewDialog 
+      <BrandsCsvPreviewDialog
         open={previewOpen}
         onOpenChange={setPreviewOpen}
         data={previewData}

@@ -39,3 +39,11 @@ export const syncTypes = new Map<CategorySyncStatus, string>([
   ['enabled', 'bg-indigo-100/30 text-indigo-900 dark:text-indigo-200 border-indigo-200'],
   ['disabled', 'bg-rose-100/30 text-rose-900 dark:text-rose-200 border-rose-200'],
 ]);
+
+export const SAMPLE_CATEGORIES_CSV = `name,parent_category
+Electronics,
+Mobile Phones,Electronics
+Laptops,Electronics
+Clothing,
+Men's Clothing,Clothing
+Women's Clothing,Clothing`

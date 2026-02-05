@@ -30,9 +30,22 @@ export const taxSchema = z.object({
 });
 
 /**
+ * taxImportSchema
+ * * Validation for the file import form.
+ */
+export const taxImportSchema = z.object({
+  file: z
+    .array(z.custom<File>())
+    .min(1, "Please select a file to import")
+    .max(1, "Please select only one file")
+    .refine((files) => files.length > 0, "File is required"),
+})
+
+/**
  * TaxFormData
  *
  * Type definition inferred from the Zod schema.
  * Used for type-safe form handling.
  */
 export type TaxFormData = z.infer<typeof taxSchema>;
+export type TaxImportFormData = z.infer<typeof taxImportSchema>;

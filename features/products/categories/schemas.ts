@@ -4,7 +4,7 @@
  * Validation schemas and type inference for category forms.
  * Uses Zod for client-side validation that mirrors server-side rules.
  *
- * @module features/categories/schemas
+ * @module features/products/categories/schemas
  */
 
 import { z } from "zod";
@@ -13,16 +13,6 @@ import { z } from "zod";
  * categorySchema
  *
  * Zod validation schema for creating and updating categories.
- *
- * Validation rules:
- * - `name`: Required, max 255 chars
- * - `slug`: Optional, max 255 chars
- * - `short_description`: Optional, max 1000 chars
- * - `page_title`: Optional, max 255 chars
- * - `image`, `icon`: Optional file arrays (max 1 file)
- * - `parent_id`: Optional number
- * - `is_active`, `featured`, `is_sync_disable`: Optional booleans
- * - `woocommerce_category_id`: Optional number
  */
 export const categorySchema = z.object({
   name: z.string().min(1, "Category name is required").max(255, "Name is too long"),
@@ -43,9 +33,23 @@ export const categorySchema = z.object({
 });
 
 /**
+ * categoryImportSchema
+ * * Validation for the file import form.
+ */
+export const categoryImportSchema = z.object({
+  file: z
+    .array(z.custom<File>())
+    .min(1, "Please select a file to import")
+    .max(1, "Please select only one file")
+    .refine((files) => files.length > 0, "File is required"),
+})
+
+
+/**
  * CategoryFormData
  *
  * Type definition inferred from the Zod schema.
  * Used for type-safe form handling.
  */
 export type CategoryFormData = z.infer<typeof categorySchema>;
+export type CategoryImportFormData = z.infer<typeof categoryImportSchema>;

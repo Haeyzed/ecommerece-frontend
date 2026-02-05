@@ -82,11 +82,16 @@ export const unitsColumns: ColumnDef<Unit>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Base Unit' />
     ),
-    cell: ({ row }) => (
-      <div className='ps-3 text-muted-foreground'>
-        {row.original.base_unit_relation?.name || row.original.base_unit || '-'}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const baseUnitName = row.original.base_unit_relation?.name
+      const baseUnitId = row.original.base_unit
+      
+      return (
+        <div className='ps-3 text-muted-foreground'>
+          {baseUnitName || baseUnitId || '-'}
+        </div>
+      )
+    },
     meta: { className: 'w-36' },
   },
   {

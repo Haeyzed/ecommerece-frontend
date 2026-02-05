@@ -237,6 +237,8 @@ function UnitForm({
   isEdit, 
   currentRow 
 }: UnitFormProps) {
+  const [openCombobox, setOpenCombobox] = useState(false)
+
   // Filter out the current unit from base units options to avoid self-referencing
   const availableBaseUnits = useMemo(() => {
     return baseUnits.filter(u => !isEdit || u.value !== currentRow?.id)
@@ -245,7 +247,7 @@ function UnitForm({
   const unitItems = useMemo(() => availableBaseUnits.map((unit) => ({
     id: unit.value,
     label: unit.label,
-    // code: unit.code
+    code: unit.code
   })), [availableBaseUnits])
 
   return (
@@ -296,7 +298,7 @@ function UnitForm({
             const selectedUnit = unitItems.find((unit) => unit.id === field.value)
 
             return (
-              <Field data-invalid={!!fieldState.error}>
+              <Field data-invalid={!!fieldState.error} className="flex flex-col">
                 <FieldLabel htmlFor='unit-base-unit'>Base Unit</FieldLabel>
                 <Combobox
                   items={unitItems}
@@ -307,7 +309,10 @@ function UnitForm({
                       form.setValue('operator', null)
                       form.setValue('operation_value', null)
                     }
+                    setOpenCombobox(false)
                   }}
+                  open={openCombobox}
+                  onOpenChange={setOpenCombobox}
                   itemToStringValue={(item) => String(item.id)}
                 >
                   <ComboboxInput
@@ -320,22 +325,22 @@ function UnitForm({
                   <ComboboxContent>
                     <ComboboxEmpty>No base units found.</ComboboxEmpty>
                     <ComboboxList>
-                      {isLoadingBaseUnits ? (
+                      {isLoadingBaseUnits && (
                         <div className="py-6 text-center text-sm text-muted-foreground">
                           <Spinner className="mx-auto mb-2 size-4" />
                           Loading units...
                         </div>
-                      ) : (
-                        (item) => (
-                          <ComboboxItem key={item.id} value={item}>
-                            {item.label}
-                          </ComboboxItem>
-                        )
                       )}
+                      
+                      {!isLoadingBaseUnits && unitItems.map((item) => (
+                        <ComboboxItem key={item.id} value={item}>
+                          {item.label}
+                        </ComboboxItem>
+                      ))}
                     </ComboboxList>
                   </ComboboxContent>
                 </Combobox>
-                <FieldDescription>Leave empty if this is a base unit</FieldDescription>
+                <FieldDescription>Optional: define relation to another unit.</FieldDescription>
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )
@@ -343,59 +348,71 @@ function UnitForm({
         />
 
         {form.watch("base_unit") && (
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Controller
-              control={form.control}
-              name='operator'
-              render={({ field, fieldState }) => (
-                <Field data-invalid={!!fieldState.error}>
-                  <FieldLabel htmlFor='operator'>Operator</FieldLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value || undefined}
-                    value={field.value || undefined}
-                  >
-                    <SelectTrigger id="operator">
-                      <SelectValue placeholder="Select operator" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="*">Multiply (*)</SelectItem>
-                      <SelectItem value="/">Divide (/)</SelectItem>
-                      <SelectItem value="+">Add (+)</SelectItem>
-                      <SelectItem value="-">Subtract (-)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FieldDescription>Operation for conversion.</FieldDescription>
-                  {fieldState.error && <FieldError errors={[fieldState.error]} />}
-                </Field>
-              )}
-            />
+          <>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Controller
+                control={form.control}
+                name='operator'
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={!!fieldState.error}>
+                    <FieldLabel htmlFor='operator'>Operator</FieldLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value || undefined}
+                      value={field.value || undefined}
+                    >
+                      <SelectTrigger id="operator">
+                        <SelectValue placeholder="Select operator" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="*">Multiply (*)</SelectItem>
+                        <SelectItem value="/">Divide (/)</SelectItem>
+                        <SelectItem value="+">Add (+)</SelectItem>
+                        <SelectItem value="-">Subtract (-)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FieldDescription>Conversion operator.</FieldDescription>
+                    {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
 
-            <Controller
-              control={form.control}
-              name='operation_value'
-              render={({ field, fieldState }) => (
-                <Field data-invalid={!!fieldState.error}>
-                  <FieldLabel htmlFor='operation-value'>Operation Value</FieldLabel>
-                  <Input
-                    id='operation-value'
-                    type="number"
-                    step="0.001"
-                    placeholder='e.g. 1000'
-                    autoComplete='off'
-                    {...field}
-                    value={field.value ?? ''}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      field.onChange(val === '' ? null : Number(val))
-                    }}
-                  />
-                  <FieldDescription>Value for the operation.</FieldDescription>
-                  {fieldState.error && <FieldError errors={[fieldState.error]} />}
-                </Field>
-              )}
-            />
-          </div>
+              <Controller
+                control={form.control}
+                name='operation_value'
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={!!fieldState.error}>
+                    <FieldLabel htmlFor='operation-value'>Operation Value</FieldLabel>
+                    <Input
+                      id='operation-value'
+                      type="number"
+                      step="0.001"
+                      placeholder='e.g. 1000'
+                      autoComplete='off'
+                      {...field}
+                      value={field.value ?? ''}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        field.onChange(val === '' ? null : Number(val))
+                      }}
+                    />
+                    <FieldDescription>Conversion value.</FieldDescription>
+                    {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
+            </div>
+
+            <div className="rounded-md border bg-muted/50 p-3 text-sm text-muted-foreground">
+              <strong className="block mb-2 text-foreground">Example conversions:</strong>
+              <div className="grid gap-1">
+                <div>1 Dozen = 1 <strong>*</strong> 12 Piece</div>
+                <div>1 Gram = 1 <strong>/</strong> 1000 Kilogram</div>
+                <div>1 Meter = 1 <strong>*</strong> 100 Centimeter</div>
+                <div>1 Box = 1 <strong>*</strong> 10 Pack</div>
+              </div>
+            </div>
+          </>
         )}
 
         <Controller

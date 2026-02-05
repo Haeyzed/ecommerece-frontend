@@ -42,7 +42,7 @@ export const taxImportSchema = z.object({
 })
 
 /**
- * TaxFormData
+ * UnitFormData
  *
  * Type definition inferred from the Zod schema.
  * Used for type-safe form handling.

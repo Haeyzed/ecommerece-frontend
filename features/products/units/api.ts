@@ -3,112 +3,82 @@
 /**
  * Units API Hooks
  *
- * Client-side hooks for managing Unit entities using TanStack Query.
- * Handles fetching lists, hierarchical base units, CRUD operations,
- * and cache invalidation strategies.
+ * Client-side hooks for managing Units using TanStack Query and a NextAuth-aware API client.
+ * Handles CRUD operations, bulk actions, and file imports with automatic cache invalidation.
  *
- * @module features/units/api
+ * @module features/products/units/api
  */
 
 import { useApiClient } from "@/lib/api/api-client-client";
 import { ValidationError } from "@/lib/api/api-errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { Unit, UnitFormData } from "./types";
+import type { Unit, UnitFormData, UnitOption } from "./types";
 
 /**
- * Unit query keys.
- * Centralized key factory for type-safe cache management.
+ * Unit query key factory.
+ * Generates consistent, type-safe cache keys for TanStack Query.
  */
 export const unitKeys = {
-  /** Root key for all unit-related queries. */
+  /** Root key for all unit-related queries */
   all: ["units"] as const,
 
-  /** Base key for unit list queries. */
+  /** Base key for unit list queries */
   lists: () => [...unitKeys.all, "list"] as const,
 
   /**
-   * Generates a specific list key with filters.
-   * @param {Record<string, unknown>} [filters] - Search, pagination, and status filters.
+   * Unit list key with optional filters
+   * @param {Record<string, unknown>} [filters] - Pagination, search, and status filters
    */
   list: (filters?: Record<string, unknown>) =>
     [...unitKeys.lists(), filters] as const,
 
-  /** Base key for single unit detail queries. */
+  /** Base key for single unit queries */
   details: () => [...unitKeys.all, "detail"] as const,
 
   /**
-   * Generates a specific key for a single unit record.
-   * @param {number} id - The unique identifier of the unit.
+   * Single unit query key
+   * @param {number} id - Unit ID
    */
   detail: (id: number) => [...unitKeys.details(), id] as const,
 
-  /** Key for fetching base units (used in dropdowns for sub-units). */
+  /** Key for base units list (combobox options) */
   baseUnits: () => [...unitKeys.all, "base-units"] as const,
 };
 
 /**
  * useUnits
  *
- * Fetches a paginated list of units from the API.
- * 
- *
- * @param {Object} [params] - Filtering and pagination parameters.
- * @param {number} [params.page] - Current page number.
- * @param {number} [params.per_page] - Number of items per page.
- * @param {string} [params.search] - Search query string.
- * @param {boolean} [params.is_active] - Filter by active status.
- * @returns {Object} Query result including `isSessionLoading` status.
+ * Fetches a paginated list of units with optional filtering.
  */
 export function useUnits(params?: {
   page?: number;
   per_page?: number;
   search?: string;
-  is_active?: boolean;
+  status?: string;
 }) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
     queryKey: unitKeys.list(params),
     queryFn: async () => {
-      const response = await api.get<Unit[]>("/units", { params });
+      const response = await api.get<Unit[]>(
+        "/units",
+        { params }
+      );
       return response;
     },
     enabled: sessionStatus !== "loading",
   });
   return {
     ...query,
-    /** Indicates whether NextAuth session is still loading. */
     isSessionLoading: sessionStatus === "loading",
   };
 }
 
 /**
- * useBaseUnits
- *
- * Fetches a list of base units (units that are not sub-units of others).
- * Primarily used to populate parent unit dropdowns in forms.
- *
- * @returns {UseQueryResult<Unit[]>} Query result containing the list of base units.
- */
-export function useBaseUnits() {
-  const { api, sessionStatus } = useApiClient();
-  return useQuery({
-    queryKey: unitKeys.baseUnits(),
-    queryFn: async () => {
-      const response = await api.get<Unit[]>("/units/base-units");
-      return response;
-    },
-    enabled: sessionStatus !== "loading",
-  });
-}
-
-/**
  * useUnit
  *
- * Fetches details for a single unit record by ID.
- *
- * @param {number} id - The unique identifier of the unit to fetch.
- * @returns {Object} Query result containing the Unit object or null.
+ * Fetches details for a single unit by ID.
  */
 export function useUnit(id: number) {
   const { api, sessionStatus } = useApiClient();
@@ -122,18 +92,31 @@ export function useUnit(id: number) {
   });
   return {
     ...query,
-    /** Indicates whether NextAuth session is still loading. */
     isSessionLoading: sessionStatus === "loading",
   };
 }
 
 /**
+ * useBaseUnits
+ *
+ * Fetches a lightweight list of units suitable for the Base Unit combobox.
+ */
+export function useBaseUnits() {
+  const { api, sessionStatus } = useApiClient();
+  return useQuery({
+    queryKey: unitKeys.baseUnits(),
+    queryFn: async () => {
+      const response = await api.get<UnitOption[]>("/units/base-units");
+      return response.data || [];
+    },
+    enabled: sessionStatus !== "loading",
+  });
+}
+
+/**
  * useCreateUnit
  *
- * Mutation hook to create a new unit record.
- * Handles payload construction, validation errors, and invalidates relevant caches.
- *
- * @returns {UseMutationResult} TanStack Mutation result.
+ * Mutation hook to create a new unit.
  */
 export function useCreateUnit() {
   const { api } = useApiClient();
@@ -141,17 +124,18 @@ export function useCreateUnit() {
 
   return useMutation({
     mutationFn: async (data: UnitFormData) => {
-      const payload: Record<string, unknown> = {
-        code: data.code,
-        name: data.name,
-        is_active: data.is_active ?? true,
-      };
-      if (data.base_unit != null) payload.base_unit = data.base_unit;
-      if (data.operator != null) payload.operator = data.operator;
-      if (data.operation_value != null)
-        payload.operation_value = data.operation_value;
+      const formData = new FormData();
 
-      const response = await api.post<Unit>("/units", payload);
+      formData.append("name", data.name);
+      formData.append("code", data.code);
+      if (data.base_unit !== undefined) {
+        formData.append("base_unit", data.base_unit ? data.base_unit.toString() : "");
+        if (data.operator !== undefined) formData.append("operator", data.operator || "");
+        if (data.operation_value !== undefined) formData.append("operation_value", data.operation_value ? data.operation_value.toString() : "");
+      }
+      if (data.is_active !== undefined) formData.append("is_active", data.is_active ? "1" : "0");
+
+      const response = await api.post<{ data: Unit }>("/units", formData);
       if (!response.success || !response.data) {
         if (response.errors) {
           throw new ValidationError(response.message, response.errors);
@@ -162,13 +146,10 @@ export function useCreateUnit() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: unitKeys.baseUnits() });
       toast.success("Unit created successfully");
     },
     onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to create unit"
-      );
+      toast.error(error instanceof Error ? error.message : "Failed to create unit");
     },
   });
 }
@@ -176,34 +157,27 @@ export function useCreateUnit() {
 /**
  * useUpdateUnit
  *
- * Mutation hook to update an existing unit record.
- * Supports partial updates and ensures base unit relationships are handled correctly.
- *
- * @returns {UseMutationResult} TanStack Mutation result.
+ * Mutation hook to update an existing unit.
  */
 export function useUpdateUnit() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
-      id,
-      data,
-    }: {
-      id: number;
-      data: Partial<UnitFormData>;
-    }) => {
-      const payload: Record<string, unknown> = {};
-      if (data.code !== undefined) payload.code = data.code;
-      if (data.name !== undefined) payload.name = data.name;
-      if (data.base_unit !== undefined)
-        payload.base_unit = data.base_unit ?? null;
-      if (data.operator !== undefined) payload.operator = data.operator ?? null;
-      if (data.operation_value !== undefined)
-        payload.operation_value = data.operation_value ?? null;
-      if (data.is_active !== undefined) payload.is_active = data.is_active;
+    mutationFn: async ({ id, data }: { id: number; data: Partial<UnitFormData> }) => {
+      const formData = new FormData();
+      formData.append("_method", "PUT");
 
-      const response = await api.patch<Unit>(`/units/${id}`, payload);
+      if (data.name) formData.append("name", data.name);
+      if (data.code) formData.append("code", data.code);
+      if (data.base_unit !== undefined) {
+        formData.append("base_unit", data.base_unit ? data.base_unit.toString() : "");
+        if (data.operator !== undefined) formData.append("operator", data.operator || "");
+        if (data.operation_value !== undefined) formData.append("operation_value", data.operation_value ? data.operation_value.toString() : "");
+      }
+      if (data.is_active !== undefined) formData.append("is_active", data.is_active ? "1" : "0");
+
+      const response = await api.post<{ data: Unit }>(`/units/${id}`, formData);
       if (!response.success || !response.data) {
         if (response.errors) {
           throw new ValidationError(response.message, response.errors);
@@ -214,16 +188,11 @@ export function useUpdateUnit() {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
-      queryClient.invalidateQueries({
-        queryKey: unitKeys.detail(variables.id),
-      });
-      queryClient.invalidateQueries({ queryKey: unitKeys.baseUnits() });
+      queryClient.invalidateQueries({ queryKey: unitKeys.detail(variables.id) });
       toast.success("Unit updated successfully");
     },
     onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to update unit"
-      );
+      toast.error(error instanceof Error ? error.message : "Failed to update unit");
     },
   });
 }
@@ -231,9 +200,7 @@ export function useUpdateUnit() {
 /**
  * useDeleteUnit
  *
- * Mutation hook to permanently delete a unit record.
- *
- * @returns {UseMutationResult} TanStack Mutation result.
+ * Mutation hook to delete a single unit by ID.
  */
 export function useDeleteUnit() {
   const { api } = useApiClient();
@@ -242,18 +209,107 @@ export function useDeleteUnit() {
   return useMutation({
     mutationFn: async (id: number) => {
       const response = await api.delete(`/units/${id}`);
+      if (!response.success) {
+        throw new Error(response.message);
+      }
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
+      toast.success("Unit deleted successfully");
+    },
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : "Failed to delete unit");
+    },
+  });
+}
+
+/**
+ * useBulkActivateUnits
+ */
+export function useBulkActivateUnits() {
+  const { api } = useApiClient();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (ids: number[]) => {
+      const response = await api.patch<{ activated_count: number }>(
+        "/units/bulk-activate",
+        { ids }
+      );
+      if (!response.success) throw new Error(response.message);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
+      toast.success("Units activated");
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to activate"),
+  });
+}
+
+/**
+ * useBulkDeactivateUnits
+ */
+export function useBulkDeactivateUnits() {
+  const { api } = useApiClient();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (ids: number[]) => {
+      const response = await api.patch<{ deactivated_count: number }>(
+        "/units/bulk-deactivate",
+        { ids }
+      );
+      if (!response.success) throw new Error(response.message);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
+      toast.success("Units deactivated");
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to deactivate"),
+  });
+}
+
+/**
+ * useBulkDestroyUnits
+ */
+export function useBulkDestroyUnits() {
+  const { api } = useApiClient();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (ids: number[]) => {
+      const response = await api.delete("/units/bulk-destroy", {
+        body: JSON.stringify({ ids }),
+      });
       if (!response.success) throw new Error(response.message);
       return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: unitKeys.baseUnits() });
-      toast.success("Unit deleted successfully");
+      toast.success("Units deleted");
     },
-    onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to delete unit"
-      );
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to delete"),
+  });
+}
+
+/**
+ * useUnitsImport
+ */
+export function useUnitsImport() {
+  const { api } = useApiClient();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (file: File) => {
+      const form = new FormData();
+      form.append("file", file);
+      const response = await api.post("/units/import", form);
+      if (!response.success) throw new Error(response.message);
+      return response;
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
+      toast.success("Units imported");
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Import failed"),
   });
 }

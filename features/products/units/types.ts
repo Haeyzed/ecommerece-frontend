@@ -2,16 +2,33 @@
  * Unit Types
  *
  * Type definitions for Unit entities and related data structures.
- * Aligns with the backend API resource structure, including recursive relationships.
+ * Aligns with the backend API resource structure.
  *
- * @module features/units/types
+ * @module features/products/units/types
  */
+
+/**
+ * UnitOption
+ *
+ * A simplified unit object used for selection inputs.
+ */
+export interface UnitOption {
+  value: number;
+  label: string;
+  code: string;
+}
+
+/**
+ * UnitStatus
+ * * distinct union type for unit statuses.
+ */
+export type UnitStatus = 'active' | 'inactive';
 
 /**
  * Unit
  *
  * Represents the full Unit entity returned by the API.
- * Includes conversion logic fields if the unit is a sub-unit.
+ * Used in data tables and detail views.
  */
 export interface Unit {
   id: number;
@@ -26,6 +43,7 @@ export interface Unit {
   operator: string | null;
   operation_value: number | null;
   is_active: boolean;
+  status: UnitStatus;
   created_at: string | null;
   updated_at: string | null;
 }

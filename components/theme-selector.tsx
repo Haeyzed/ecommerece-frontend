@@ -19,7 +19,7 @@ export function ThemeSelector({ className }: React.ComponentProps<"div">) {
       <Label htmlFor="theme-selector" className="text-sm font-medium text-muted-foreground">
         Theme
       </Label>
-      <Select value={value} onValueChange={setActiveTheme}>
+      <Select value={value} onValueChange={setActiveTheme} modal={false}>
         <SelectTrigger
           id="theme-selector"
           className="h-9 w-full bg-secondary text-secondary-foreground border-secondary shadow-none px-3"

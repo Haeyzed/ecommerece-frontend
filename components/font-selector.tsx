@@ -28,7 +28,7 @@ export function FontSelector({ className }: React.ComponentProps<"div">) {
       <Label htmlFor="font-selector" className="text-sm font-medium text-muted-foreground">
         Font
       </Label>
-      <Select value={font} onValueChange={(value) => setFont(value as typeof font)}>
+      <Select value={font} onValueChange={(value) => setFont(value as typeof font)} modal={false}>
         <SelectTrigger
           id="font-selector"
           className="h-9 w-full bg-secondary text-secondary-foreground border-secondary shadow-none px-3"

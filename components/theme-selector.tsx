@@ -24,14 +24,7 @@ export function ThemeSelector({ className }: React.ComponentProps<"div">) {
           id="theme-selector"
           className="h-9 w-full bg-secondary text-secondary-foreground border-secondary shadow-none px-3"
         >
-          <div className="flex items-center gap-2 truncate">
-            {/* Render the color dot in the trigger */}
-            <div
-              className="size-3 rounded-full border border-black/10 dark:border-white/10 shrink-0"
-              style={{ backgroundColor: activeColor }}
-            />
-            <span className="truncate capitalize">{value}</span>
-          </div>
+          <SelectValue placeholder="Select a theme" />
         </SelectTrigger>
         <SelectContent align="end" className="max-h-[300px]">
           {THEMES.map((theme) => {

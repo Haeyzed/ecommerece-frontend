@@ -35,7 +35,7 @@ export function FontSelector({ className }: React.ComponentProps<"div">) {
         >
           <div className="flex items-center gap-2 truncate">
             <span className="font-medium text-muted-foreground/70">Aa</span>
-            <span className="truncate">{fontLabels[font] || font}</span>
+            <SelectValue placeholder="Select a font" />
           </div>
         </SelectTrigger>
         <SelectContent align="end" className="max-h-[300px]">

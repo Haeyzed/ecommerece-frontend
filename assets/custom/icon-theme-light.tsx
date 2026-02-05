@@ -1,11 +1,17 @@
 import { type SVGProps } from 'react'
+import { cn } from '@/lib/utils'
 
-export function IconThemeLight(props: SVGProps<SVGSVGElement>) {
+export function IconThemeLight({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (
     <svg
       data-name='icon-theme-light'
       xmlns='http://www.w3.org/2000/svg'
       viewBox='0 0 79.86 51.14'
+      className={cn(
+        'overflow-hidden rounded-[6px]',
+        'fill-primary stroke-primary group-data-[state=unchecked]:fill-muted-foreground group-data-[state=unchecked]:stroke-muted-foreground',
+        className
+      )}
       {...props}
     >
       <g fill='#d9d9d9'>
@@ -21,7 +27,8 @@ export function IconThemeLight(props: SVGProps<SVGSVGElement>) {
         d='M18.12 6.39h-5.87c-.6 0-1.09-.45-1.09-1s.49-1 1.09-1h5.87c.6 0 1.09.45 1.09 1s-.49 1-1.09 1zM16.55 9.77h-4.24c-.55 0-1-.45-1-1s.45-1 1-1h4.24c.55 0 1 .45 1 1s-.45 1-1 1zM18.32 17.37H4.59c-.69 0-1.25-.47-1.25-1.05s.56-1.05 1.25-1.05h13.73c.69 0 1.25.47 1.25 1.05s-.56 1.05-1.25 1.05zM15.34 21.26h-11c-.55 0-1-.41-1-.91s.45-.91 1-.91h11c.55 0 1 .41 1 .91s-.45.91-1 .91zM16.46 25.57H4.43c-.6 0-1.09-.44-1.09-.98s.49-.98 1.09-.98h12.03c.6 0 1.09.44 1.09.98s-.49.98-1.09.98z'
         fill='#fff'
       />
-      <g fill='#c0c4c4'>
+      {/* Charts: Removed fill to inherit fill-primary (currentColor) */}
+      <g>
         <rect
           x={33.36}
           y={19.73}
@@ -60,7 +67,9 @@ export function IconThemeLight(props: SVGProps<SVGSVGElement>) {
         />
       </g>
       <circle cx={62.74} cy={16.32} r={8} fill='#fff' />
-      <g fill='#d9d9d9'>
+      
+      {/* Pie Chart: Inherits primary color */}
+      <g>
         <path d='M63.62 15.82L67 10.15c.93.64 1.7 1.48 2.26 2.47.56.98.89 2.08.96 3.21h-6.6z' />
         <path d='M67.14 10.88a6.977 6.977 0 012.52 4.44h-5.17l2.65-4.44m-.31-1.43l-4.1 6.87h8c0-1.39-.36-2.75-1.04-3.95s-1.67-2.21-2.86-2.92z' />
       </g>

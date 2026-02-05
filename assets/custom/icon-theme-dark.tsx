@@ -1,11 +1,17 @@
 import { type SVGProps } from 'react'
+import { cn } from '@/lib/utils'
 
-export function IconThemeDark(props: SVGProps<SVGSVGElement>) {
+export function IconThemeDark({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (
     <svg
       data-name='icon-theme-dark'
       xmlns='http://www.w3.org/2000/svg'
       viewBox='0 0 79.86 51.14'
+      className={cn(
+        'overflow-hidden rounded-[6px]',
+        'fill-primary stroke-primary group-data-[state=unchecked]:fill-muted-foreground group-data-[state=unchecked]:stroke-muted-foreground',
+        className
+      )}
       {...props}
     >
       {/* Sidebar / Main Container Background - mapped to --background (#262626) */}
@@ -29,8 +35,8 @@ export function IconThemeDark(props: SVGProps<SVGSVGElement>) {
         fill='#525252'
       />
       
-      {/* Bar Charts - mapped to Neutral/Primary (#737373) */}
-      <g fill='#737373'>
+      {/* Bar Charts - Removed fill to inherit fill-primary (currentColor) */}
+      <g>
         <rect
           x={33.36}
           y={19.73}
@@ -69,11 +75,10 @@ export function IconThemeDark(props: SVGProps<SVGSVGElement>) {
         />
       </g>
       
-      {/* Pie Chart - mapped to Neutral/Primary (#737373) */}
-      <circle cx={62.74} cy={16.32} r={8} fill='#737373' opacity={0.5} />
+      {/* Pie Chart - Removed fill to inherit fill-primary */}
+      <circle cx={62.74} cy={16.32} r={8} opacity={0.5} />
       <path
         d='M62.74 16.32l4.1-6.87c1.19.71 2.18 1.72 2.86 2.92s1.04 2.57 1.04 3.95h-8z'
-        fill='#737373'
         opacity={0.74}
       />
       

@@ -23,9 +23,8 @@ import { Separator } from '@/components/ui/separator'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { useTheme } from '@/lib/providers/theme-provider'
 import { cn } from '@/lib/utils'
-import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
-import { activeStatuses } from '../constants'
+import { statusTypes } from '../constants'
 import { Brand } from '../types'
 
 type BrandsViewDialogProps = {
@@ -41,8 +40,6 @@ export function BrandsViewDialog({
 }: BrandsViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   if (!currentRow) return null
-  const status = activeStatuses.find((s) => s.value === (currentRow.is_active ? 'active' : 'inactive'))
-  const statusIconData = status?.icon
   const handleOpenChange = (value: boolean) => {
     onOpenChange(value)
   }
@@ -61,8 +58,6 @@ export function BrandsViewDialog({
           <div className='max-h-[70vh] overflow-y-auto py-1 pe-2'>
             <BrandView
               currentRow={currentRow}
-              statusIcon={statusIconData}
-              statusLabel={status?.label}
             />
           </div>
         </DialogContent>
@@ -81,8 +76,6 @@ export function BrandsViewDialog({
         <div className='max-h-[80vh] overflow-y-auto px-4'>
           <BrandView
             currentRow={currentRow}
-            statusIcon={statusIconData}
-            statusLabel={status?.label}
           />
         </div>
 
@@ -99,12 +92,11 @@ export function BrandsViewDialog({
 interface BrandViewProps {
   className?: string
   currentRow: Brand
-  statusIcon?: any 
-  statusLabel?: string
 }
 
-function BrandView({ className, currentRow, statusIcon, statusLabel }: BrandViewProps) {
+function BrandView({ className, currentRow }: BrandViewProps) {
   const { resolvedTheme } = useTheme()
+  const statusBadgeColor = statusTypes.get(currentRow.status)
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -162,17 +154,8 @@ function BrandView({ className, currentRow, statusIcon, statusLabel }: BrandView
 
       <div className='space-y-2'>
         <div className='text-sm font-medium text-muted-foreground'>Status</div>
-        <Badge
-          variant='outline'
-          className={cn(
-            'flex w-fit items-center gap-1.5',
-            currentRow.is_active
-              ? 'bg-teal-100/30 text-teal-900 dark:text-teal-200 border-teal-200'
-              : 'bg-neutral-300/40 border-neutral-300'
-          )}
-        >
-          {statusIcon && <HugeiconsIcon icon={statusIcon} className='size-3' />}
-          {statusLabel}
+        <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
+          {currentRow.status}
         </Badge>
       </div>
 

@@ -11,36 +11,39 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 export function ThemeSelector({ className }: React.ComponentProps<"div">) {
   const { activeTheme, setActiveTheme } = useThemeConfig()
-
   const value = activeTheme || "neutral"
+  const activeColor = themeColors[value]?.color
 
   return (
-    <div className={cn("flex items-center gap-2", className)}>
-      <Label htmlFor="theme-selector" className="sr-only">
-        Color Theme
+    <div className={cn("flex flex-col gap-2", className)}>
+      <Label htmlFor="theme-selector" className="text-sm font-medium text-muted-foreground">
+        Theme
       </Label>
       <Select value={value} onValueChange={setActiveTheme}>
         <SelectTrigger
           id="theme-selector"
-          className="bg-secondary text-secondary-foreground border-secondary justify-start shadow-none w-full flex-1"
+          className="h-9 w-full bg-secondary text-secondary-foreground border-secondary shadow-none px-3"
         >
-          <span className="font-medium">Theme:</span>
-          <SelectValue placeholder="Select a theme" />
+          <div className="flex items-center gap-2 truncate">
+            {/* Render the color dot in the trigger */}
+            <div
+              className="size-3 rounded-full border border-black/10 dark:border-white/10 shrink-0"
+              style={{ backgroundColor: activeColor }}
+            />
+            <span className="truncate capitalize">{value}</span>
+          </div>
         </SelectTrigger>
-        <SelectContent align="end" className="w-[200px]">
+        <SelectContent align="end" className="max-h-[300px]">
           {THEMES.map((theme) => {
             const themeColor = themeColors[theme.name]
-            const isSelected = activeTheme === theme.name
             return (
               <SelectItem key={theme.name} value={theme.name} className="cursor-pointer">
-                <div className="flex items-center gap-2 w-full">
+                <div className="flex items-center gap-2">
                   <div
-                    className="size-4 rounded-full border border-border"
+                    className="size-3 rounded-full border border-black/10 dark:border-white/10 shrink-0"
                     style={{ backgroundColor: themeColor?.color }}
                   />
-                  <div className="flex-1">
-                    <div className="text-sm font-medium">{theme.label}</div>
-                  </div>
+                  <span>{theme.label}</span>
                 </div>
               </SelectItem>
             )

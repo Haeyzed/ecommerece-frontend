@@ -7,83 +7,35 @@
  * @module features/categories/constants
  */
 
-import {
-  CheckmarkCircle02Icon,
-  MultiplicationSignIcon,
-  StarIcon,
-} from '@hugeicons/core-free-icons'
-
-/**
- * Options for the Active/Inactive status filter and display.
- */
-export const activeStatuses = [
-  {
-    value: 'active',
-    label: 'Active',
-    icon: CheckmarkCircle02Icon,
-  },
-  {
-    value: 'inactive',
-    label: 'Inactive',
-    icon: MultiplicationSignIcon,
-  },
-] as const
-
-/**
- * Options for the Featured/Not Featured status filter and display.
- */
-export const featuredStatuses = [
-  {
-    value: 'featured',
-    label: 'Featured',
-    icon: StarIcon,
-  },
-  {
-    value: 'not_featured',
-    label: 'Not Featured',
-    icon: CheckmarkCircle02Icon,
-  },
-] as const
-
-/**
- * Options for the Sync Enabled/Disabled status filter and display.
- */
-export const syncStatuses = [
-  {
-    value: 'enabled',
-    label: 'Sync Enabled',
-    icon: CheckmarkCircle02Icon,
-  },
-  {
-    value: 'disabled',
-    label: 'Sync Disabled',
-    icon: MultiplicationSignIcon,
-  },
-] as const
+import { 
+  type CategoryStatus, 
+  type CategoryFeaturedStatus, 
+  type CategorySyncStatus 
+} from "./types";
 
 /**
  * Style mappings for Active status badges.
  * Keys match the `value` property in `activeStatuses`.
  */
-export const activeStatusMap = new Map([
+export const statusTypes = new Map<CategoryStatus, string>([
   ['active', 'bg-teal-100/30 text-teal-900 dark:text-teal-200 border-teal-200'],
   ['inactive', 'bg-neutral-300/40 border-neutral-300'],
-])
+]);
 
 /**
  * Style mappings for Featured status badges.
- * Keys match the `value` property in `featuredStatuses`.
+ * Featured items get a gold/amber highlight.
  */
-export const featuredStatusMap = new Map([
+export const featuredTypes = new Map<CategoryFeaturedStatus, string>([
   ['featured', 'bg-amber-100/30 text-amber-900 dark:text-amber-200 border-amber-200'],
-  ['not_featured', 'bg-neutral-300/40 border-neutral-300'],
-])
+  ['not featured', 'bg-slate-100/30 text-slate-600 dark:text-slate-400 border-slate-200'],
+]);
 
 /**
  * Style mappings for Sync status badges.
- * Keys match the `value` property in `syncStatuses`.
+ * Sync enabled uses blue/indigo to signify data flow.
  */
-export const syncStatusMap = new Map([
-  ['enabled', 'bg-teal-100/30 text-teal-900 dark:text-teal-200 border-teal-200'],
-  ['disabled', 'bg-neutral-300/40 border-neutral-300'],
-])
+export const syncTypes = new Map<CategorySyncStatus, string>([
+  ['enabled', 'bg-indigo-100/30 text-indigo-900 dark:text-indigo-200 border-indigo-200'],
+  ['disabled', 'bg-rose-100/30 text-rose-900 dark:text-rose-200 border-rose-200'],
+]);

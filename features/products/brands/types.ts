@@ -22,6 +22,7 @@ export interface Brand {
   image: string | null;
   image_url: string | null;
   is_active: boolean;
+  status: BrandStatus;
   created_at: string | null;
   updated_at: string | null;
 }
@@ -41,3 +42,9 @@ export interface BrandFormData {
   image?: File[] | null;
   is_active?: boolean | null;
 }
+
+/**
+ * BrandStatus
+ * * distinct union type for brand statuses.
+ */
+export type BrandStatus = 'active' | 'inactive';

@@ -36,8 +36,11 @@ export interface Category {
   parent_id: number | null;
   parent_name: string | null;
   is_active: boolean;
+  status: CategoryStatus;
   featured: boolean;
+  featured_status: CategoryFeaturedStatus;
   is_sync_disable: boolean;
+  sync_status: CategorySyncStatus;
   woocommerce_category_id: number | null;
   is_root: boolean;
   created_at: string | null;
@@ -65,3 +68,21 @@ export interface CategoryFormData {
   is_sync_disable?: boolean | null;
   woocommerce_category_id?: number | null;
 }
+
+/**
+ * CategoryStatus
+ * Distinct union type for Category statuses.
+ */
+export type CategoryStatus = 'active' | 'inactive';
+
+/**
+ * CategoryFeaturedStatus
+ * Distinct union type for Category featured statuses.
+ */
+export type CategoryFeaturedStatus = 'featured' | 'not featured';
+
+/**
+ * CategorySyncStatus
+ * Distinct union type for Category sync statuses.
+ */
+export type CategorySyncStatus = 'enabled' | 'disabled';

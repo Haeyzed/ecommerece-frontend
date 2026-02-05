@@ -25,8 +25,8 @@ import { useTheme } from '@/lib/providers/theme-provider'
 import { cn } from '@/lib/utils'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
-import { activeStatuses } from '../constants'
 import { type Category } from '../types'
+import { featuredTypes, statusTypes, syncTypes } from '../constants'
 
 type CategoriesViewDialogProps = {
   currentRow?: Category
@@ -40,12 +40,7 @@ export function CategoriesViewDialog({
   onOpenChange,
 }: CategoriesViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
-
   if (!currentRow) return null
-
-  const status = activeStatuses.find((s) => s.value === (currentRow.is_active ? 'active' : 'inactive'))
-  const statusIconData = status?.icon
-
   const handleOpenChange = (value: boolean) => {
     onOpenChange(value)
   }
@@ -64,8 +59,6 @@ export function CategoriesViewDialog({
           <div className='max-h-[70vh] overflow-y-auto py-1 pe-2'>
             <CategoryView
               currentRow={currentRow}
-              statusIcon={statusIconData}
-              statusLabel={status?.label}
             />
           </div>
         </DialogContent>
@@ -84,8 +77,6 @@ export function CategoriesViewDialog({
         <div className='max-h-[80vh] overflow-y-auto px-4'>
           <CategoryView
             currentRow={currentRow}
-            statusIcon={statusIconData}
-            statusLabel={status?.label}
           />
         </div>
 
@@ -102,12 +93,13 @@ export function CategoriesViewDialog({
 interface CategoryViewProps {
   className?: string
   currentRow: Category
-  statusIcon?: any
-  statusLabel?: string
 }
 
-function CategoryView({ className, currentRow, statusIcon, statusLabel }: CategoryViewProps) {
+function CategoryView({ className, currentRow }: CategoryViewProps) {
   const { resolvedTheme } = useTheme()
+  const statusBadgeColor = statusTypes.get(currentRow.status)
+  const featuredStatusBadgeColor = featuredTypes.get(currentRow.featured_status)
+  const syncStatusBadgeColor = syncTypes.get(currentRow.sync_status)
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -207,48 +199,23 @@ function CategoryView({ className, currentRow, statusIcon, statusLabel }: Catego
       <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
         <div className='space-y-2'>
           <div className='text-sm font-medium text-muted-foreground'>Status</div>
-          <Badge
-            variant='outline'
-            className={cn(
-              'flex w-fit items-center gap-1.5',
-              currentRow.is_active
-                ? 'bg-teal-100/30 text-teal-900 dark:text-teal-200 border-teal-200'
-                : 'bg-neutral-300/40 border-neutral-300'
-            )}
-          >
-            {statusIcon && <HugeiconsIcon icon={statusIcon} className='size-3' />}
-            {statusLabel}
-          </Badge>
+          <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
+          {currentRow.status}
+        </Badge>
         </div>
 
         <div className='space-y-2'>
           <div className='text-sm font-medium text-muted-foreground'>Featured</div>
-          <Badge
-            variant='outline'
-            className={cn(
-              'flex w-fit items-center gap-1.5',
-              currentRow.featured
-                ? 'bg-blue-100/30 text-blue-900 dark:text-blue-200 border-blue-200'
-                : 'bg-neutral-300/40 border-neutral-300'
-            )}
-          >
-            {currentRow.featured ? 'Yes' : 'No'}
-          </Badge>
+          <Badge variant='outline' className={cn('capitalize', featuredStatusBadgeColor)}>
+          {currentRow.status}
+        </Badge>
         </div>
 
         <div className='space-y-2'>
           <div className='text-sm font-medium text-muted-foreground'>Sync Disabled</div>
-          <Badge
-            variant='outline'
-            className={cn(
-              'flex w-fit items-center gap-1.5',
-              currentRow.is_sync_disable
-                ? 'bg-orange-100/30 text-orange-900 dark:text-orange-200 border-orange-200'
-                : 'bg-neutral-300/40 border-neutral-300'
-            )}
-          >
-            {currentRow.is_sync_disable ? 'Yes' : 'No'}
-          </Badge>
+          <Badge variant='outline' className={cn('capitalize', syncStatusBadgeColor)}>
+          {currentRow.status}
+        </Badge>
         </div>
       </div>
 

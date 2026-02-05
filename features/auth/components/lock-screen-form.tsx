@@ -24,7 +24,7 @@ import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Spinner } from "@/components/ui/spinner"
 import { useUnlock } from "@/features/auth/api"
-import { UnauthorizedError } from "@/lib/api/api-errors"
+import { UnauthorizedError, ValidationError } from "@/lib/api/api-errors"
 import { useLockScreen } from "@/lib/providers/lockscreen-provider"
 import { LockScreenFormData, lockScreenSchema } from "../schemas"
 
@@ -54,10 +54,20 @@ export function LockScreenForm() {
       }
       
     } catch (error) {
-      if (error instanceof UnauthorizedError) {
+      if (error instanceof ValidationError && error.errors) {
+        // Handle server-side validation errors (e.g., incorrect password)
+        Object.entries(error.errors).forEach(([field, messages]) => {
+          form.setError(field as keyof LockScreenFormData, {
+            type: "server",
+            message: messages[0],
+          });
+        });
+      } else if (error instanceof UnauthorizedError) {
+        // If session is completely dead/invalid, force a full login
         setLocked(false)
         router.push("/login")
       } else {
+        // Fallback for generic errors
         toast.error(error instanceof Error ? error.message : "Unlock failed")
       }
     }

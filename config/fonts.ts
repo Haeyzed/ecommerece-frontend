@@ -18,13 +18,13 @@
  */
 // export const fonts = ['inter', 'manrope', 'system'] as const
 export const fonts = [
-    'outfit',
-    'inter',
-    'noto-sans',
-    'figtree',
-    'roboto',
-    'raleway',
-    'dm-sans',
-    'public-sans',
-    'jetbrains-mono',
-  ] as const
+  'inter',
+  'outfit',
+  'noto-sans',
+  'figtree',
+  'roboto',
+  'raleway',
+  'dm-sans',
+  'public-sans',
+  'jetbrains-mono',
+] as const

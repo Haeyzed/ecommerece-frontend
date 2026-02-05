@@ -53,14 +53,14 @@ export const brandKeys = {
  * @param {number} [params.page] - Page number
  * @param {number} [params.per_page] - Items per page
  * @param {string} [params.search] - Search term
- * @param {boolean} [params.is_active] - Filter by active status
+ * @param {string} [params.status] - Filter by active status
  * @returns {Object} TanStack Query result including `isSessionLoading` flag
  */
 export function useBrands(params?: {
   page?: number;
   per_page?: number;
   search?: string;
-  is_active?: boolean;
+  status?: string;
 }) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({

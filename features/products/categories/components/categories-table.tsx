@@ -12,30 +12,29 @@
 
 import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table'
 import { useTableUrlState } from '@/hooks/use-table-url-state'
 import { cn } from '@/lib/utils'
 import {
-    type SortingState,
-    type VisibilityState,
-    flexRender,
-    getCoreRowModel,
-    getFacetedRowModel,
-    getFacetedUniqueValues,
-    getFilteredRowModel,
-    getSortedRowModel,
-    useReactTable
+  type SortingState,
+  type VisibilityState,
+  flexRender,
+  getCoreRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getSortedRowModel,
+  useReactTable
 } from '@tanstack/react-table'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { useCategories } from '../api'
-import { activeStatuses } from '../constants'
 import { categoriesColumns as columns } from './categories-columns'
 import { CategoriesEmptyState } from './categories-empty-state'
 import { DataTableBulkActions } from './data-table-bulk-actions'
@@ -58,36 +57,38 @@ export function CategoriesTable() {
     globalFilter: { enabled: false },
     columnFilters: [
       { columnId: 'name', searchKey: 'search', type: 'string' },
-      { columnId: 'is_active', searchKey: 'is_active', type: 'array' },
+      { columnId: 'status', searchKey: 'status', type: 'array' },
+      { columnId: 'featured_status', searchKey: 'featured_status', type: 'array' },
+      { columnId: 'sync_status', searchKey: 'sync_status', type: 'array' },
     ],
-  }) 
+  })
 
   // Extract API params from URL and column filters
   const apiParams = useMemo(() => {
     const page = pagination.pageIndex + 1
     const perPage = pagination.pageSize
+    
+    // Extract filter objects
     const nameFilter = columnFilters.find((f) => f.id === 'name')
-    const isActiveFilter = columnFilters.find((f) => f.id === 'is_active')
-    
-    // Map is_active filter: convert 'active'/'inactive' to boolean
-    let isActive: boolean | undefined = undefined
-    if (isActiveFilter?.value && Array.isArray(isActiveFilter.value)) {
-      if (isActiveFilter.value.length === 1) {
-        // If only one status is selected, map it to boolean
-        if (isActiveFilter.value[0] === 'active') {
-          isActive = true
-        } else if (isActiveFilter.value[0] === 'inactive') {
-          isActive = false
-        }
+    const statusFilter = columnFilters.find((f) => f.id === 'status')
+    const featuredStatusFilter = columnFilters.find((f) => f.id === 'featured_status')
+    const syncStatusFilter = columnFilters.find((f) => f.id === 'sync_status')
+
+    // Helper to extract single value from array filter
+    const getFilterValue = (filter: typeof statusFilter) => {
+      if (filter?.value && Array.isArray(filter.value) && filter.value.length === 1) {
+        return filter.value[0]
       }
-      // If both are selected or empty, leave as undefined (show all)
+      return undefined
     }
-    
+
     return {
       page,
       per_page: perPage,
       search: nameFilter?.value as string | undefined,
-      is_active: isActive,
+      status: getFilterValue(statusFilter),
+      featured_status: getFilterValue(featuredStatusFilter),
+      sync_status: getFilterValue(syncStatusFilter),
     }
   }, [pagination, columnFilters])
 
@@ -157,12 +158,28 @@ export function CategoriesTable() {
         searchKey='name'
         filters={[
           {
-            columnId: 'is_active',
+            columnId: 'status',
             title: 'Status',
-            options: activeStatuses.map((status) => ({
-              label: status.label,
-              value: status.value,
-            })),
+            options: [
+              { label: 'Active', value: 'active' },
+              { label: 'Inactive', value: 'inactive' },
+            ],
+          },
+          {
+            columnId: 'featured_status',
+            title: 'Featured',
+            options: [
+              { label: 'Featured', value: 'featured' },
+              { label: 'Not Featured', value: 'not featured' },
+            ],
+          },
+          {
+            columnId: 'sync_status',
+            title: 'Sync',
+            options: [
+              { label: 'Enabled', value: 'enabled' },
+              { label: 'Disabled', value: 'disabled' },
+            ],
           },
         ]}
       />

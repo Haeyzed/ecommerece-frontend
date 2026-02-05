@@ -57,9 +57,9 @@ export const categoryKeys = {
  * @param {number} [params.page] - Page number
  * @param {number} [params.per_page] - Items per page
  * @param {string} [params.search] - Search term
- * @param {boolean} [params.is_active] - Filter by active status
- * @param {boolean} [params.featured] - Filter by featured status
- * @param {boolean} [params.is_sync_disable] - Filter by sync status
+ * @param {string} [params.status] - Filter by active status
+ * @param {string} [params.featured_status] - Filter by featured status
+ * @param {string} [params.sync_status] - Filter by sync status
  * @param {number|null} [params.parent_id] - Filter by parent category
  * @returns {Object} TanStack Query result including `isSessionLoading` flag
  */
@@ -67,9 +67,9 @@ export function useCategories(params?: {
   page?: number;
   per_page?: number;
   search?: string;
-  is_active?: boolean;
-  featured?: boolean;
-  is_sync_disable?: boolean;
+  status?: string;
+  featured_status?: string;
+  sync_status?: string;
   parent_id?: number | null;
 }) {
   const { api, sessionStatus } = useApiClient();

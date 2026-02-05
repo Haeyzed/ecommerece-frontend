@@ -4,10 +4,7 @@
  * BrandsTable
  *
  * The main table component for displaying brands.
- * Handles server-side pagination, sorting, filtering, and data fetching
- * via the URL state hook and TanStack Table.
- *
- * @component
+ * Handles server-side pagination, sorting, filtering, and data fetching.
  */
 
 import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
@@ -36,7 +33,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { useBrands } from '../api'
 import {
-  activeStatuses,
   BrandsEmptyState,
   DataTableBulkActions,
   brandsColumns as columns
@@ -60,7 +56,7 @@ export function BrandsTable() {
     globalFilter: { enabled: false },
     columnFilters: [
       { columnId: 'name', searchKey: 'search', type: 'string' },
-      { columnId: 'is_active', searchKey: 'is_active', type: 'array' },
+      { columnId: 'status', searchKey: 'status', type: 'array' },
     ],
   })
 
@@ -69,34 +65,26 @@ export function BrandsTable() {
     const page = pagination.pageIndex + 1
     const perPage = pagination.pageSize
     const nameFilter = columnFilters.find((f) => f.id === 'name')
-    const isActiveFilter = columnFilters.find((f) => f.id === 'is_active')
-
-    // Map is_active filter: convert 'active'/'inactive' to boolean
-    let isActive: boolean | undefined = undefined
-    if (isActiveFilter?.value && Array.isArray(isActiveFilter.value)) {
-      if (isActiveFilter.value.length === 1) {
-        // If only one status is selected, map it to boolean
-        if (isActiveFilter.value[0] === 'active') {
-          isActive = true
-        } else if (isActiveFilter.value[0] === 'inactive') {
-          isActive = false
-        }
+    const statusFilter = columnFilters.find((f) => f.id === 'status')
+    let statusValue: string | undefined = undefined
+    if (statusFilter?.value && Array.isArray(statusFilter.value)) {
+      if (statusFilter.value.length === 1) {
+        statusValue = statusFilter.value[0]
       }
-      // If both are selected or empty, leave as undefined (show all)
     }
 
     return {
       page,
       per_page: perPage,
       search: nameFilter?.value as string | undefined,
-      is_active: isActive,
+      status: statusValue, 
     }
   }, [pagination, columnFilters])
 
   // Fetch data from API
   const { data, isLoading, error } = useBrands(apiParams)
 
-  // Calculate pagination info from API response
+  // Calculate pagination info
   const pageCount = useMemo(() => {
     if (!data?.meta) return 0
     return Math.ceil((data.meta.total || 0) / (data.meta.per_page || 10))
@@ -115,7 +103,7 @@ export function BrandsTable() {
       columnVisibility,
     },
     enableRowSelection: true,
-    manualPagination: true, // Server-side pagination
+    manualPagination: true,
     onPaginationChange,
     onColumnFiltersChange,
     onRowSelectionChange: setRowSelection,
@@ -140,7 +128,6 @@ export function BrandsTable() {
     )
   }
 
-  // Show empty state if no data (check total from pagination)
   const hasData = data?.meta?.total && data.meta.total > 0
   if (!isLoading && !hasData) {
     return <BrandsEmptyState />
@@ -159,12 +146,12 @@ export function BrandsTable() {
         searchKey='name'
         filters={[
           {
-            columnId: 'is_active',
+            columnId: 'status',
             title: 'Status',
-            options: activeStatuses.map((status) => ({
-              label: status.label,
-              value: status.value,
-            })),
+            options: [
+              { label: 'Active', value: 'active' },
+              { label: 'Inactive', value: 'inactive' },
+            ],
           },
         ]}
       />

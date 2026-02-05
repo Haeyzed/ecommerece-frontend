@@ -15,7 +15,7 @@ import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
-import { activeStatusMap, activeStatuses } from '../constants'
+import { statusTypes } from '../constants'
 import { type Brand } from '../types'
 import { DataTableRowActions } from './data-table-row-actions'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -104,32 +104,23 @@ export const brandsColumns: ColumnDef<Brand>[] = [
     meta: { className: 'w-48' },
   },
   {
-    accessorKey: 'is_active',
+    accessorKey: 'status',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Status' />
     ),
     cell: ({ row }) => {
-      const status = row.original.is_active ? 'active' : 'inactive'
-      const statusConfig = activeStatuses.find((s) => s.value === status)
-      const statusClass = activeStatusMap.get(status) || ''
-
+      const { status } = row.original
+      const statusBadgeColor = statusTypes.get(status)
       return (
-        <Badge
-          variant='outline'
-          className={cn('gap-1.5 border', statusClass)}
-        >
-          {statusConfig && (
-            <HugeiconsIcon
-              icon={statusConfig.icon}
-              className='size-3.5'
-            />
-          )}
-          {statusConfig?.label}
-        </Badge>
+        <div className='flex space-x-2'>
+          <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
+            {row.getValue('status')}
+          </Badge>
+        </div>
       )
     },
     filterFn: (row, id, value) => {
-      return value.includes(row.original.is_active ? 'active' : 'inactive')
+      return value.includes(row.getValue(id))
     },
   },
   {

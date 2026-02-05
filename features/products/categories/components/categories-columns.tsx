@@ -16,7 +16,7 @@ import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
-import { activeStatusMap, activeStatuses, featuredStatuses, featuredStatusMap, syncStatuses, syncStatusMap } from '../constants'
+import { statusTypes, featuredTypes, syncTypes } from '../constants'
 import { type Category } from '../types'
 import { DataTableRowActions } from './data-table-row-actions'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -122,90 +122,63 @@ export const categoriesColumns: ColumnDef<Category>[] = [
     meta: { className: 'w-36' },
   },
   {
-    accessorKey: 'is_active',
+    accessorKey: 'status',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Status' />
     ),
     cell: ({ row }) => {
-      const status = row.original.is_active ? 'active' : 'inactive'
-      const statusConfig = activeStatuses.find((s) => s.value === status)
-      const statusClass = activeStatusMap.get(status) || ''
-
+      const { status } = row.original
+      const statusBadgeColor = statusTypes.get(status)
       return (
-        <Badge
-          variant='outline'
-          className={cn('gap-1.5 border', statusClass)}
-        >
-          {statusConfig && (
-            <HugeiconsIcon
-              icon={statusConfig.icon}
-              className='size-3.5'
-            />
-          )}
-          {statusConfig?.label}
-        </Badge>
+        <div className='flex space-x-2'>
+          <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
+            {row.getValue('status')}
+          </Badge>
+        </div>
       )
     },
     filterFn: (row, id, value) => {
-      return value.includes(row.original.is_active ? 'active' : 'inactive')
+      return value.includes(row.getValue(id))
     },
   },
   {
-    accessorKey: 'featured',
+    accessorKey: 'featured_status',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Featured' />
+      <DataTableColumnHeader column={column} title='Featured Status' />
     ),
     cell: ({ row }) => {
-      const featured = row.original.featured ? 'featured' : 'not_featured'
-      const statusConfig = featuredStatuses.find((s) => s.value === featured)
-      const statusClass = featuredStatusMap.get(featured) || ''
-
+      const { featured_status } = row.original
+      const featuredStatusBadgeColor = featuredTypes.get(featured_status)
       return (
-        <Badge
-          variant='outline'
-          className={cn('gap-1.5 border', statusClass)}
-        >
-          {statusConfig && (
-            <HugeiconsIcon
-              icon={statusConfig.icon}
-              className='size-3.5'
-            />
-          )}
-          {statusConfig?.label}
-        </Badge>
+        <div className='flex space-x-2'>
+          <Badge variant='outline' className={cn('capitalize', featuredStatusBadgeColor)}>
+            {row.getValue('featured_status')}
+          </Badge>
+        </div>
       )
     },
     filterFn: (row, id, value) => {
-      return value.includes(row.original.featured ? 'featured' : 'not_featured')
+      return value.includes(row.getValue(id))
     },
   },
   {
-    accessorKey: 'is_sync_disable',
+    accessorKey: 'sync_status',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Sync Status' />
     ),
     cell: ({ row }) => {
-      const syncStatus = row.original.is_sync_disable ? 'disabled' : 'enabled'
-      const statusConfig = syncStatuses.find((s) => s.value === syncStatus)
-      const statusClass = syncStatusMap.get(syncStatus) || ''
-
+      const { sync_status } = row.original
+      const syncStatusbadgeColor = syncTypes.get(sync_status)
       return (
-        <Badge
-          variant='outline'
-          className={cn('gap-1.5 border', statusClass)}
-        >
-          {statusConfig && (
-            <HugeiconsIcon
-              icon={statusConfig.icon}
-              className='size-3.5'
-            />
-          )}
-          {statusConfig?.label}
-        </Badge>
+        <div className='flex space-x-2'>
+          <Badge variant='outline' className={cn('capitalize', syncStatusbadgeColor)}>
+            {row.getValue('sync_status')}
+          </Badge>
+        </div>
       )
     },
     filterFn: (row, id, value) => {
-      return value.includes(row.original.is_sync_disable ? 'disabled' : 'enabled')
+      return value.includes(row.getValue(id))
     },
   },
   {

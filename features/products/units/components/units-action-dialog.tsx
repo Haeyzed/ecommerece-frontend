@@ -134,7 +134,7 @@ export function UnitsActionDialog({
 
   if (isDesktop) {
     return (
-      <Dialog open={open} onOpenChange={handleOpenChange}>
+      <Dialog open={open} onOpenChange={handleOpenChange} modal={false}>
         <DialogContent className='sm:max-w-lg'>
           <DialogHeader className='text-start'>
             <DialogTitle>{isEdit ? 'Edit Unit' : 'Add New Unit'}</DialogTitle>
@@ -329,12 +329,6 @@ function UnitForm({
                         (item) => (
                           <ComboboxItem key={item.id} value={item}>
                             {item.label}
-                            {field.value === item.id && (
-                              <HugeiconsIcon
-                                icon={CheckmarkCircle02Icon}
-                                className="ml-auto h-4 w-4 opacity-100"
-                              />
-                            )}
                           </ComboboxItem>
                         )
                       )}

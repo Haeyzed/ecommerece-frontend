@@ -1,6 +1,8 @@
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/lib/providers";
+import { themeColors } from "@/lib/theme-colors";
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { DM_Sans, Figtree, Geist, Geist_Mono, Inter, JetBrains_Mono, Noto_Sans, Outfit, Public_Sans, Raleway, Roboto } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
@@ -32,18 +34,23 @@ export const metadata: Metadata = {
   description: "Production-ready Next.js application",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // 1. Get the active theme from cookies (defaults to 'neutral' if not found)
+  const cookieStore = await cookies();
+  const themeName = cookieStore.get("active-theme")?.value || "neutral";
+  const activeColor = themeColors[themeName]?.color || themeColors["neutral"].color;
+
   return (
     <html lang="en" className={`${outfit.variable} ${inter.variable} ${notoSans.variable} ${figtree.variable} ${roboto.variable} ${raleway.variable} ${dmSans.variable} ${publicSans.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <NextTopLoader showSpinner={false} />
+        <NextTopLoader color={activeColor} showSpinner={false} />
         <Providers>{children}</Providers>
         <Toaster position="top-right" />
       </body>

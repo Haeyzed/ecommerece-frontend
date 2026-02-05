@@ -33,7 +33,8 @@ export function ThemeSelector({ className }: React.ComponentProps<"div">) {
             <span className="truncate capitalize">{value}</span>
           </div>
         </SelectTrigger>
-        <SelectContent align="end" className="max-h-[300px]">
+        {/* FIX: Added z-[100] to ensure dropdown appears above the Sheet/Drawer */}
+        <SelectContent align="end" className="max-h-[300px] z-[100]">
           {THEMES.map((theme) => {
             const themeColor = themeColors[theme.name]
             return (

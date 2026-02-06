@@ -73,7 +73,8 @@ export function TaxesActionDialog({
   const { mutate: updateTax, isPending: isUpdating } = useUpdateTax()
   const isLoading = isCreating || isUpdating
 
-  const form = useForm<TaxFormData>({
+  // Removed <TaxFormData> generic to fix the TS coercion error
+  const form = useForm({
     resolver: zodResolver(taxSchema),
     defaultValues: isEdit
       ? {

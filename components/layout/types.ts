@@ -16,6 +16,7 @@ type BaseNavItem = {
   title: string
   badge?: string
   icon?: ElementType
+  permissions?: string[]
 }
 
 type NavLink = BaseNavItem & {

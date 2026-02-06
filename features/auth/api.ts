@@ -258,6 +258,10 @@ export function useLogout() {
         {},
         { skipAuth: false }
       );
+
+      if (!response.success) {
+        throw new Error(response.message || "Logout failed");
+      }
       await signOut({ redirect: false });
     },
     onSuccess: () => {

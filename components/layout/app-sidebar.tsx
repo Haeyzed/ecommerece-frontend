@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Sidebar,
   SidebarContent,
@@ -16,6 +18,7 @@ import { TeamSwitcher } from './team-switcher'
 export function AppSidebar() {
   const { collapsible, variant } = useLayout()
   const { data: session } = useAuthSession()
+  
   const user = session && session.user
     ? {
         name: session.user.name || 'User',
@@ -27,6 +30,7 @@ export function AppSidebar() {
         email: 'No email',
         avatar: '/avatars/shadcn.png',
       }
+
   return (
     <Sidebar collapsible={collapsible} variant={variant}>
       <SidebarHeader>

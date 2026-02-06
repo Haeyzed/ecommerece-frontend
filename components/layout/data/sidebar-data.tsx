@@ -66,7 +66,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
     //   plan: 'Startup',
     // },
   ],
-  
+
   navGroups: [
     {
       title: "General",
@@ -83,10 +83,12 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Categories",
               url: "/products/categories",
+              permissions: ["categories-index"],
             },
             {
               title: "Brands",
               url: "/products/brands",
+              permissions: ["brands-index"],
             },
             {
               title: "Units",

@@ -23,6 +23,7 @@ import {
   ValidationError,
   NotFoundError,
   ServerError,
+  ForbiddenError,
 } from "./api-errors";
 
 /**
@@ -181,6 +182,9 @@ class ApiClient {
           }
         }
         throw new UnauthorizedError(message);
+
+      case 403:
+        throw new ForbiddenError(message);
 
       case 404:
         throw new NotFoundError(message);

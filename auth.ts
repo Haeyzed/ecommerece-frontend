@@ -7,6 +7,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import type { AuthResponse, AuthUser } from './features/auth/types';
 import { api } from "@/lib/api/api-client";
+import "next-auth/jwt";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
@@ -40,6 +41,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               email: response.data.user.email,
               token: response.data.token,
               avatar_url: userData.avatar_url ?? null,
+              user_permissions: userData.user_permissions || [],
             };
           }
 
@@ -56,6 +58,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.token = user.token;
         token.id = user.id;
+        token.user_permissions = user.user_permissions;
       }
       return token;
     },
@@ -63,6 +66,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user) {
         session.user.id = token.id as string;
         session.user.token = token.token as string;
+        session.user.user_permissions = (token.user_permissions as string[]) || [];
       }
       return session;
     },
@@ -80,6 +84,7 @@ declare module "next-auth" {
   interface User {
     token?: string;
     avatar_url?: string | null;
+    user_permissions?: string[];
   }
 
   interface Session {
@@ -89,7 +94,14 @@ declare module "next-auth" {
       email: string;
       avatar_url?: string | null;
       token?: string;
+      user_permissions: string[];
     };
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    user_permissions?: string[];
   }
 }
 

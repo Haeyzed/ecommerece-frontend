@@ -1,0 +1,8 @@
+export { LandingHeader } from './landing-header'
+export { Hero } from './hero'
+export { TrustHighlights } from './trust-highlights'
+export { FeaturedCategories } from './featured-categories'
+export { FeaturedProducts } from './featured-products'
+export { PromoCTA } from './promo-cta'
+export { Newsletter } from './newsletter'
+export { LandingFooter } from './landing-footer'

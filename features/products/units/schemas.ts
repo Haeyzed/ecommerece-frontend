@@ -25,9 +25,9 @@ import { z } from "zod";
 export const unitSchema = z.object({
   name: z.string().min(1, "Unit name is required").max(255, "Name is too long"),
   code: z.string().min(1, "Unit code is required").max(50, "Code is too long"),
-  base_unit: z.coerce.number().nullable().optional(),
+  base_unit: z.number().nullable().optional(),
   operator: z.string().nullable().optional(),
-  operation_value: z.coerce.number().nullable().optional(),
+  operation_value: z.number().nullable().optional(),
   is_active: z.boolean().nullable().optional(),
 });
 

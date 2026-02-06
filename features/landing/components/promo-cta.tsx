@@ -28,15 +28,14 @@ export function PromoCTA() {
           <div className='flex flex-col gap-3 sm:flex-row'>
             <Button
               size='lg'
-              variant='secondary'
-              className='gap-2'
+              className='bg-primary-foreground text-primary hover:bg-primary-foreground/90 gap-2'
             >
               Shop the Sale
             </Button>
             <Button
               size='lg'
               variant='outline'
-              className='border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10'
+              className='border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10'
             >
               See Terms
             </Button>

@@ -59,7 +59,7 @@ export function Newsletter() {
 
           {/* Success message */}
           {subscribed && (
-            <p className='mt-4 text-center text-sm text-green-600'>
+            <p className='mt-4 text-center text-sm text-primary'>
               ✓ Thank you for subscribing! Check your email for special offers.
             </p>
           )}

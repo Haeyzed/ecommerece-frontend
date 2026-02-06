@@ -93,6 +93,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Units",
               url: "/products/units",
+              permissions: ["units-index"],
             },
             {
               title: "Products",
@@ -613,6 +614,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Tax",
               url: "/settings/tax",
+              permissions: ["taxes-index"],
             },
             {
               title: "User Profile",

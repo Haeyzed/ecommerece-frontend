@@ -19,6 +19,7 @@ import {
   DrawerTitle,
 } from '@/components/ui/drawer'
 import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
 
 type ConfirmDialogProps = {
   open: boolean
@@ -71,7 +72,14 @@ export function ConfirmDialog(props: ConfirmDialogProps) {
               onClick={handleConfirm}
               disabled={disabled || isLoading}
             >
-              {confirmText ?? 'Continue'}
+              {isLoading ? (
+                <>
+                  <Spinner className="mr-2 size-4" />
+                  Loading...
+                </>
+              ) : (
+                <>{confirmText ?? 'Continue'}</>
+              )}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

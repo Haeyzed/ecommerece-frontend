@@ -1,51 +1,20 @@
-'use client'
+import { auth } from "@/auth"
+import { ForbiddenError } from "@/features/errors/forbidden";
+import { CategoriesClient } from "@/features/products/categories";
+import { hasPermission } from "@/lib/utils/permissions"
 
-import { ConfigDrawer } from '@/components/config-drawer'
-import { DataTableSkeleton } from '@/components/data-table/data-table-skeleton'
-import { AuthenticatedLayout } from '@/components/layout/authenticated-layout'
-import { Header } from '@/components/layout/header'
-import { Main } from '@/components/layout/main'
-import { ProfileDropdown } from '@/components/profile-dropdown'
-import { Search } from '@/components/search'
-import { ThemeSwitch } from '@/components/theme-switch'
-import { Spinner } from '@/components/ui/spinner'
-import { CategoriesDialogs } from '@/features/products/categories/components/categories-dialogs'
-import { CategoriesPrimaryButtons } from '@/features/products/categories/components/categories-primary-buttons'
-import { CategoriesProvider } from '@/features/products/categories/components/categories-provider'
-import { CategoriesTable } from '@/features/products/categories/components/categories-table'
-import { Suspense } from 'react'
+export const metadata = {
+  title: "Categories Management",
+}
 
-export default function Categories() {
-  return (
-    <AuthenticatedLayout>
-      <CategoriesProvider>
-        <Header fixed>
-          <Search />
-          <div className='ms-auto flex items-center space-x-4'>
-            <ThemeSwitch />
-            <ConfigDrawer />
-            <ProfileDropdown />
-          </div>
-        </Header>
-
-        <Main className='flex flex-1 flex-col gap-4 sm:gap-6'>
-          <div className='flex flex-wrap items-end justify-between gap-2'>
-            <div>
-              <h2 className='text-2xl font-bold tracking-tight'>Category List</h2>
-              <p className='text-muted-foreground'>
-                Manage your categories and their visibility here.
-              </p>
-            </div>
-            <CategoriesPrimaryButtons />
-          </div>
-
-          <Suspense fallback={<Spinner />}>
-            <CategoriesTable />
-          </Suspense>
-        </Main>
-
-        <CategoriesDialogs />
-      </CategoriesProvider>
-    </AuthenticatedLayout>
-  )
+export default async function CategoriesPage() {
+  const session = await auth()
+  const userPermissions = session?.user?.user_permissions || []
+  const canView = hasPermission(userPermissions, "categories-index")
+  if (!canView) {
+    return (
+      <ForbiddenError />
+    )
+  }
+  return <CategoriesClient />
 }

@@ -22,11 +22,11 @@ import { z } from "zod";
  */
 export const taxSchema = z.object({
   name: z.string().min(1, "Tax name is required").max(255, "Name is too long"),
-  rate: z.coerce
+  rate: z
     .number({ invalid_type_error: "Rate must be a number" })
     .min(0, "Rate must be 0 or greater"),
   is_active: z.boolean().nullable().optional(),
-  woocommerce_tax_id: z.coerce.number().nullable().optional(),
+  woocommerce_tax_id: z.number().nullable().optional(),
 });
 
 /**
@@ -42,7 +42,7 @@ export const taxImportSchema = z.object({
 })
 
 /**
- * UnitFormData
+ * TaxFormData
  *
  * Type definition inferred from the Zod schema.
  * Used for type-safe form handling.

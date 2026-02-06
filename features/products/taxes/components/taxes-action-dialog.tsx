@@ -73,8 +73,7 @@ export function TaxesActionDialog({
   const { mutate: updateTax, isPending: isUpdating } = useUpdateTax()
   const isLoading = isCreating || isUpdating
 
-  // Removed <TaxFormData> generic to fix the TS coercion error
-  const form = useForm({
+  const form = useForm<TaxFormData>({
     resolver: zodResolver(taxSchema),
     defaultValues: isEdit
       ? {
@@ -233,6 +232,10 @@ function TaxForm({ form, onSubmit, id, className }: TaxFormProps) {
                 placeholder='0.00'
                 autoComplete='off'
                 {...field}
+                onChange={(e) => {
+                  // Manually handle number conversion
+                  field.onChange(e.target.value === '' ? 0 : Number(e.target.value))
+                }}
               />
               <FieldDescription>
                 The tax percentage rate.
@@ -255,6 +258,11 @@ function TaxForm({ form, onSubmit, id, className }: TaxFormProps) {
                 autoComplete='off'
                 {...field}
                 value={field.value ?? ''}
+                onChange={(e) => {
+                  // Convert to number or null if empty
+                  const val = e.target.value
+                  field.onChange(val === '' ? null : Number(val))
+                }}
               />
               <FieldDescription>
                 Optional ID for syncing with WooCommerce.

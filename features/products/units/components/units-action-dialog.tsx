@@ -97,9 +97,9 @@ export function UnitsActionDialog({
       ? {
         name: currentRow.name,
         code: currentRow.code,
-        base_unit: currentRow.base_unit,
-        operator: currentRow.operator as "*" | "/" | "+" | "-" | null | undefined,
-        operation_value: currentRow.operation_value,
+        base_unit: currentRow.base_unit || null,
+        operator: currentRow.operator || null,
+        operation_value: currentRow.operation_value || null,
         is_active: currentRow.is_active,
       }
       : {
@@ -335,12 +335,6 @@ function UnitForm({
                       {!isLoadingBaseUnits && unitItems.map((item) => (
                         <ComboboxItem key={item.id} value={item}>
                           {item.label}
-                          {field.value === item.id && (
-                            <HugeiconsIcon
-                              icon={CheckmarkCircle02Icon}
-                              className="ml-auto h-4 w-4 opacity-100"
-                            />
-                          )}
                         </ComboboxItem>
                       ))}
                     </ComboboxList>

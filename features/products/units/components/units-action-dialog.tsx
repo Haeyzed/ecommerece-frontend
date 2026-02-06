@@ -250,6 +250,17 @@ function UnitForm({
     code: unit.code
   })), [availableBaseUnits])
 
+  const name = form.watch('name')
+  const baseUnitId = form.watch('base_unit')
+  const operator = form.watch('operator')
+  const operationValue = form.watch('operation_value')
+
+  // Find the selected base unit object for the preview label
+  const selectedBaseUnitForPreview = useMemo(() => 
+    unitItems.find(u => u.id === baseUnitId),
+    [unitItems, baseUnitId]
+  )
+
   return (
     <form
       id={id}
@@ -319,6 +330,7 @@ function UnitForm({
                     id='unit-base-unit'
                     placeholder='Select base unit (optional)'
                     autoComplete='off'
+                    showClear
                     value={selectedUnit ? selectedUnit.label : ''}
                     data-invalid={!!fieldState.error}
                   />
@@ -401,9 +413,17 @@ function UnitForm({
                   </Field>
                 )}
               />
-            </div>
+            </div><div className="rounded-md border bg-muted/50 p-3 text-sm text-muted-foreground">
+              {/* Dynamic Preview Section */}
+              {name && operator && operationValue && selectedBaseUnitForPreview && (
+                <div className="mb-3 border-b border-border/50 pb-3 text-foreground">
+                  <div className="font-semibold mb-1">Preview:</div>
+                  <div className="font-mono bg-background px-2 py-1 rounded border inline-block">
+                    1 {name} = 1 <span className="text-primary font-bold">{operator}</span> {operationValue} {selectedBaseUnitForPreview.label}
+                  </div>
+                </div>
+              )}
 
-            <div className="rounded-md border bg-muted/50 p-3 text-sm text-muted-foreground">
               <strong className="block mb-2 text-foreground">Example conversions:</strong>
               <div className="grid gap-1">
                 <div>1 Dozen = 1 <strong>*</strong> 12 Piece</div>

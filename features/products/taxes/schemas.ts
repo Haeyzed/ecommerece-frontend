@@ -4,7 +4,7 @@
  * Validation schemas and type inference for tax forms.
  * Uses Zod for client-side validation that mirrors server-side rules.
  *
- * @module features/settings/taxes/schemas
+ * @module features/products/taxes/schemas
  */
 
 import { z } from "zod";
@@ -22,11 +22,9 @@ import { z } from "zod";
  */
 export const taxSchema = z.object({
   name: z.string().min(1, "Tax name is required").max(255, "Name is too long"),
-  rate: z
-    .number({ invalid_type_error: "Rate must be a number" })
-    .min(0, "Rate must be 0 or greater"),
+  rate: z.number().min(0, "Rate must be 0 or greater"),
   is_active: z.boolean().nullable().optional(),
-  woocommerce_tax_id: z.number().nullable().optional(),
+  woocommerce_tax_id: z.number().int().nullable().optional(),
 });
 
 /**

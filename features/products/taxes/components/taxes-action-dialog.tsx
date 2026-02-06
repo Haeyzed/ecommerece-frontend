@@ -233,7 +233,6 @@ function TaxForm({ form, onSubmit, id, className }: TaxFormProps) {
                 autoComplete='off'
                 {...field}
                 onChange={(e) => {
-                  // Manually handle number conversion
                   field.onChange(e.target.value === '' ? 0 : Number(e.target.value))
                 }}
               />
@@ -258,11 +257,7 @@ function TaxForm({ form, onSubmit, id, className }: TaxFormProps) {
                 autoComplete='off'
                 {...field}
                 value={field.value ?? ''}
-                onChange={(e) => {
-                  // Convert to number or null if empty
-                  const val = e.target.value
-                  field.onChange(val === '' ? null : Number(val))
-                }}
+                onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
               />
               <FieldDescription>
                 Optional ID for syncing with WooCommerce.

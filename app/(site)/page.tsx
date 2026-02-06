@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import {
   LandingHeader,
   Hero,
@@ -8,6 +9,12 @@ import {
   Newsletter,
   LandingFooter,
 } from '@/features/landing/components'
+
+export const metadata: Metadata = {
+  title: 'EcomStore - Premium Products at Unbeatable Prices',
+  description:
+    'Shop from our curated collection of high-quality products. Fast shipping, secure checkout, and 24/7 customer support.',
+}
 
 export default function Page() {
   return (

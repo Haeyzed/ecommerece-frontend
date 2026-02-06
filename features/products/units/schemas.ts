@@ -41,7 +41,7 @@ export const unitImportSchema = z.object({
     .min(1, "Please select a file to import")
     .max(1, "Please select only one file")
     .refine((files) => files.length > 0, "File is required"),
-})
+});
 
 /**
  * UnitFormData

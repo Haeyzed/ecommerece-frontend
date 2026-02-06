@@ -4,8 +4,8 @@ import { useEffect, useCallback } from 'react'
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   Checkmark,
-  Moon01Icon,
-  Sun01Icon,
+  Moon02Icon,
+  Sun02Icon,
 } from "@hugeicons/core-free-icons"
 import { cn } from '@/lib/utils'
 import { useTheme } from '@/lib/providers/theme-provider'
@@ -54,8 +54,8 @@ export function ThemeSwitch() {
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button variant='ghost' size='icon' className='relative scale-95 rounded-full'>
-          <HugeiconsIcon icon={Sun01Icon} className='size-[1.2rem] scale-100 rotate-0 transition-all duration-300 dark:scale-0 dark:-rotate-90 dark:opacity-0' />
-          <HugeiconsIcon icon={Moon01Icon} className='absolute inset-0 m-auto size-[1.2rem] scale-0 rotate-90 opacity-0 transition-all duration-300 dark:scale-100 dark:rotate-0 dark:opacity-100' />
+          <HugeiconsIcon icon={Sun02Icon} className='size-[1.2rem] scale-100 rotate-0 transition-all duration-300 dark:scale-0 dark:-rotate-90 dark:opacity-0' />
+          <HugeiconsIcon icon={Moon02Icon} className='absolute inset-0 m-auto size-[1.2rem] scale-0 rotate-90 opacity-0 transition-all duration-300 dark:scale-100 dark:rotate-0 dark:opacity-100' />
           <span className='sr-only'>Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>

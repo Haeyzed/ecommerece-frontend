@@ -98,7 +98,7 @@ export function UnitsActionDialog({
         name: currentRow.name,
         code: currentRow.code,
         base_unit: currentRow.base_unit,
-        operator: currentRow.operator as "*" | "/" | "+" | "-" | null | undefined,
+        operator: currentRow.operator,
         operation_value: currentRow.operation_value,
         is_active: currentRow.is_active,
       }

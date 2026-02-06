@@ -34,6 +34,7 @@ import {
 } from '../api'
 import { type Category } from '../types'
 import { CategoriesMultiDeleteDialog } from './categories-multi-delete-dialog'
+import { useAuthSession } from '@/features/auth/api' // Import session hook
 
 type DataTableBulkActionsProps<TData> = {
   table: Table<TData>
@@ -48,6 +49,11 @@ export function DataTableBulkActions<TData>({
 
   const { mutate: activateCategories } = useBulkActivateCategories()
   const { mutate: deactivateCategories } = useBulkDeactivateCategories()
+  const { data: session } = useAuthSession()
+  const userPermissions = session?.user?.user_permissions || []
+  const canUpdate = userPermissions.includes('categories-update')
+  const canDelete = userPermissions.includes('categories-delete')
+  if (!canUpdate && !canDelete) return null
 
   const handleBulkStatusChange = (status: 'active' | 'inactive') => {
     if (status === 'active') {
@@ -64,69 +70,77 @@ export function DataTableBulkActions<TData>({
   return (
     <>
       <BulkActionsToolbar table={table} entityName='category'>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant='outline'
-              size='icon'
-              onClick={() => handleBulkStatusChange('active')}
-              className='size-8'
-              aria-label='Activate selected categories'
-              title='Activate selected categories'
-            >
-              <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
-              <span className='sr-only'>Activate selected categories</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Activate selected categories</p>
-          </TooltipContent>
-        </Tooltip>
+        {canUpdate && (
+          <>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant='outline'
+                  size='icon'
+                  onClick={() => handleBulkStatusChange('active')}
+                  className='size-8'
+                  aria-label='Activate selected categories'
+                  title='Activate selected categories'
+                >
+                  <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
+                  <span className='sr-only'>Activate selected categories</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Activate selected categories</p>
+              </TooltipContent>
+            </Tooltip>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant='outline'
-              size='icon'
-              onClick={() => handleBulkStatusChange('inactive')}
-              className='size-8'
-              aria-label='Deactivate selected categories'
-              title='Deactivate selected categories'
-            >
-              <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
-              <span className='sr-only'>Deactivate selected categories</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Deactivate selected categories</p>
-          </TooltipContent>
-        </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant='outline'
+                  size='icon'
+                  onClick={() => handleBulkStatusChange('inactive')}
+                  className='size-8'
+                  aria-label='Deactivate selected categories'
+                  title='Deactivate selected categories'
+                >
+                  <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
+                  <span className='sr-only'>Deactivate selected categories</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Deactivate selected categories</p>
+              </TooltipContent>
+            </Tooltip>
+          </>
+        )}
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant='destructive'
-              size='icon'
-              onClick={() => setShowDeleteConfirm(true)}
-              className='size-8'
-              aria-label='Delete selected categories'
-              title='Delete selected categories'
-            >
-              <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} />
-              <span className='sr-only'>Delete selected categories</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Delete selected categories</p>
-          </TooltipContent>
-        </Tooltip>
+        {canDelete && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant='destructive'
+                size='icon'
+                onClick={() => setShowDeleteConfirm(true)}
+                className='size-8'
+                aria-label='Delete selected categories'
+                title='Delete selected categories'
+              >
+                <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} />
+                <span className='sr-only'>Delete selected categories</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Delete selected categories</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
       </BulkActionsToolbar>
 
-      <CategoriesMultiDeleteDialog
-        table={table}
-        open={showDeleteConfirm}
-        onOpenChange={setShowDeleteConfirm}
-      />
+      {canDelete && (
+        <CategoriesMultiDeleteDialog
+          table={table}
+          open={showDeleteConfirm}
+          onOpenChange={setShowDeleteConfirm}
+        />
+      )}
     </>
   )
 }

@@ -24,6 +24,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { type Category } from '../types'
+import { useAuthSession } from '@/features/auth/api' // Import session hook
 
 type CategoriesMultiDeleteDialogProps<TData> = {
   open: boolean
@@ -43,6 +44,10 @@ export function CategoriesMultiDeleteDialog<TData>({
   const selectedIds = selectedRows.map(row => (row.original as Category).id)
   
   const { mutate: bulkDestroy, isPending } = useBulkDestroyCategories()
+  const { data: session } = useAuthSession()
+  const userPermissions = session?.user?.user_permissions || []
+  const canDelete = userPermissions.includes('categories-delete')
+  if (!canDelete) return null
 
   const handleDelete = () => {
     if (value.trim() !== CONFIRM_WORD) {

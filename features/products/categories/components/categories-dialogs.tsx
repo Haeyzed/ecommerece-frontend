@@ -4,7 +4,8 @@
  * CategoriesDialogs
  *
  * A orchestrator component that manages the rendering of various dialogs
- * (Add, Edit, Delete, Import) based on the current state from the CategoriesProvider.
+ * (Add, Edit, Delete, Import) based on the current state from the CategoriesProvider
+ * and the User's Permissions.
  *
  * @component
  */
@@ -14,60 +15,83 @@ import { CategoriesDeleteDialog } from './categories-delete-dialog'
 import { CategoriesImportDialog } from './categories-import-dialog'
 import { CategoriesViewDialog } from './categories-view-dialog'
 import { useCategories } from './categories-provider'
+import { useAuthSession } from '@/features/auth/api'
 
 export function CategoriesDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useCategories()
+  const { data: session } = useAuthSession()
+  
+  // Get permissions safely
+  const userPermissions = session?.user?.user_permissions || []
+
+  // Define permission checks based on your ACL
+  const canCreate = userPermissions.includes('categories-create')
+  const canImport = userPermissions.includes('categories-import')
+  const canUpdate = userPermissions.includes('categories-update')
+  const canDelete = userPermissions.includes('categories-delete')
+  const canView = userPermissions.includes('categories-index')
+
   return (
     <>
-      <CategoriesActionDialog
-        key='category-add'
-        open={open === 'add'}
-        onOpenChange={() => setOpen('add')}
-      />
+      {canCreate && (
+        <CategoriesActionDialog
+          key='category-add'
+          open={open === 'add'}
+          onOpenChange={() => setOpen('add')}
+        />
+      )}
 
-      <CategoriesImportDialog
-        key='category-import'
-        open={open === 'import'}
-        onOpenChange={() => setOpen('import')}
-      />
+      {canImport && (
+        <CategoriesImportDialog
+          key='category-import'
+          open={open === 'import'}
+          onOpenChange={() => setOpen('import')}
+        />
+      )}
 
       {currentRow && (
         <>
-          <CategoriesActionDialog
-            key={`category-edit-${currentRow.id}`}
-            open={open === 'edit'}
-            onOpenChange={() => {
-              setOpen('edit')
-              setTimeout(() => {
-                setCurrentRow(null)
-              }, 500)
-            }}
-            currentRow={currentRow}
-          />
+          {canUpdate && (
+            <CategoriesActionDialog
+              key={`category-edit-${currentRow.id}`}
+              open={open === 'edit'}
+              onOpenChange={() => {
+                setOpen('edit')
+                setTimeout(() => {
+                  setCurrentRow(null)
+                }, 500)
+              }}
+              currentRow={currentRow}
+            />
+          )}
           
-          <CategoriesViewDialog
-            key={`category-view-${currentRow.id}`}
-            open={open === 'view'}
-            onOpenChange={() => {
-              setOpen('view')
-              setTimeout(() => {
-                setCurrentRow(null)
-              }, 500)
-            }}
-            currentRow={currentRow}
-          />
+          {canView && (
+            <CategoriesViewDialog
+              key={`category-view-${currentRow.id}`}
+              open={open === 'view'}
+              onOpenChange={() => {
+                setOpen('view')
+                setTimeout(() => {
+                  setCurrentRow(null)
+                }, 500)
+              }}
+              currentRow={currentRow}
+            />
+          )}
 
-          <CategoriesDeleteDialog
-            key={`category-delete-${currentRow.id}`}
-            open={open === 'delete'}
-            onOpenChange={() => {
-              setOpen('delete')
-              setTimeout(() => {
-                setCurrentRow(null)
-              }, 500)
-            }}
-            currentRow={currentRow}
-          />
+          {canDelete && (
+            <CategoriesDeleteDialog
+              key={`category-delete-${currentRow.id}`}
+              open={open === 'delete'}
+              onOpenChange={() => {
+                setOpen('delete')
+                setTimeout(() => {
+                  setCurrentRow(null)
+                }, 500)
+              }}
+              currentRow={currentRow}
+            />
+          )}
         </>
       )}
     </>

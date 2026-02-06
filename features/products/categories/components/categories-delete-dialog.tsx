@@ -23,6 +23,7 @@ import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { useDeleteCategory } from '../api'
 import { type Category } from '../types'
+import { useAuthSession } from '@/features/auth/api' // Import session hook
 
 type CategoriesDeleteDialogProps = {
   open: boolean
@@ -37,6 +38,10 @@ export function CategoriesDeleteDialog({
 }: CategoriesDeleteDialogProps) {
   const [value, setValue] = useState('')
   const { mutate: deleteCategory, isPending } = useDeleteCategory()
+  const { data: session } = useAuthSession()
+  const userPermissions = session?.user?.user_permissions || []
+  const canDelete = userPermissions.includes('categories-delete')
+  if (!canDelete) return null
 
   const handleDelete = () => {
     if (value.trim() !== currentRow.name) return

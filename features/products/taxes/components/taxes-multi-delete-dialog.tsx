@@ -25,6 +25,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { type Tax } from '../types'
+import { useAuthSession } from '@/features/auth/api' // Import session hook
 
 type TaxesMultiDeleteDialogProps<TData> = {
   open: boolean
@@ -42,8 +43,11 @@ export function TaxesMultiDeleteDialog<TData>({
   const [value, setValue] = useState('')
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map(row => (row.original as Tax).id)
-  
   const { mutate: bulkDestroy, isPending } = useBulkDestroyTaxes()
+  const { data: session } = useAuthSession()
+  const userPermissions = session?.user?.user_permissions || []
+  const canDelete = userPermissions.includes('taxes-delete')
+  if (!canDelete) return null
 
   const handleDelete = () => {
     if (value.trim() !== CONFIRM_WORD) {

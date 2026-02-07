@@ -4,7 +4,7 @@
  * TaxesDialogs
  *
  * Orchestrator component that renders the appropriate dialog (Add, Edit, Delete, Import)
- * based on the current state from the TaxesProvider.
+ * based on the current state from the TaxesProvider and User Permissions.
  *
  * @component
  */
@@ -14,70 +14,89 @@ import { TaxesDeleteDialog } from './taxes-delete-dialog'
 import { TaxesImportDialog } from './taxes-import-dialog'
 import { TaxesViewDialog } from './taxes-view-dialog'
 import { useTaxes } from './taxes-provider'
+import { useAuthSession } from '@/features/auth/api'
 
 export function TaxesDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useTaxes()
+  const { data: session } = useAuthSession()
+  const userPermissions = session?.user?.user_permissions || []
+  const canCreate = userPermissions.includes('taxes-create')
+  const canImport = userPermissions.includes('taxes-import')
+  const canUpdate = userPermissions.includes('taxes-update')
+  const canDelete = userPermissions.includes('taxes-delete')
+  const canView = userPermissions.includes('taxes-index')
+
   return (
     <>
-      <TaxesActionDialog
-        key='tax-add'
-        open={open === 'add'}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) setOpen(null)
-        }}
-      />
+      {canCreate && (
+        <TaxesActionDialog
+          key='tax-add'
+          open={open === 'add'}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) setOpen(null)
+          }}
+        />
+      )}
 
-      <TaxesImportDialog
-        key='tax-import'
-        open={open === 'import'}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) setOpen(null)
-        }}
-      />
+      {canImport && (
+        <TaxesImportDialog
+          key='tax-import'
+          open={open === 'import'}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) setOpen(null)
+          }}
+        />
+      )}
 
       {currentRow && (
         <>
-          <TaxesActionDialog
-            key={`tax-edit-${currentRow.id}`}
-            open={open === 'edit'}
-            onOpenChange={(isOpen) => {
-              if (!isOpen) {
-                setOpen(null)
-                setTimeout(() => {
-                  setCurrentRow(null)
-                }, 500)
-              }
-            }}
-            currentRow={currentRow}
-          />
+          {canUpdate && (
+            <TaxesActionDialog
+              key={`tax-edit-${currentRow.id}`}
+              open={open === 'edit'}
+              onOpenChange={(isOpen) => {
+                if (!isOpen) {
+                  setOpen(null)
+                  setTimeout(() => {
+                    setCurrentRow(null)
+                  }, 500)
+                }
+              }}
+              currentRow={currentRow}
+            />
+          )}
           
-          <TaxesViewDialog
-            key={`tax-view-${currentRow.id}`}
-            open={open === 'view'}
-            onOpenChange={(isOpen) => {
-              if (!isOpen) {
-                setOpen(null)
-                setTimeout(() => {
-                  setCurrentRow(null)
-                }, 500)
-              }
-            }}
-            currentRow={currentRow}
-          />
+          {canView && (
+            <TaxesViewDialog
+              key={`tax-view-${currentRow.id}`}
+              open={open === 'view'}
+              onOpenChange={(isOpen) => {
+                if (!isOpen) {
+                  setOpen(null)
+                  setTimeout(() => {
+                    setCurrentRow(null)
+                  }, 500)
+                }
+              }}
+              currentRow={currentRow}
+            />
+          )}
 
-          <TaxesDeleteDialog
-            key={`tax-delete-${currentRow.id}`}
-            open={open === 'delete'}
-            onOpenChange={(isOpen) => {
-              if (!isOpen) {
-                setOpen(null)
-                setTimeout(() => {
-                  setCurrentRow(null)
-                }, 500)
-              }
-            }}
-            currentRow={currentRow}
-          />
+          {canDelete && (
+            <TaxesDeleteDialog
+              key={`tax-delete-${currentRow.id}`}
+              open={open === 'delete'}
+              onOpenChange={(isOpen) => {
+                if (!isOpen) {
+                  setOpen(null)
+                  setTimeout(() => {
+                    setCurrentRow(null)
+                  }, 500)
+                }
+              }}
+              currentRow={currentRow}
+            />
+          )}
         </>
       )}
     </>

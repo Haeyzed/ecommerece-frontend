@@ -22,6 +22,7 @@ import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { useDeleteTax } from '../api'
 import { type Tax } from '../types'
+import { useAuthSession } from '@/features/auth/api' 
 
 type TaxDeleteDialogProps = {
   open: boolean
@@ -36,6 +37,10 @@ export function TaxesDeleteDialog({
 }: TaxDeleteDialogProps) {
   const [value, setValue] = useState('')
   const { mutate: deleteTax, isPending } = useDeleteTax()
+  const { data: session } = useAuthSession()
+  const userPermissions = session?.user?.user_permissions || []
+  const canDelete = userPermissions.includes('taxes-delete')
+  if (!canDelete) return null
 
   const handleDelete = () => {
     if (value.trim() !== currentRow.name) return

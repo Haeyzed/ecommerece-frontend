@@ -34,7 +34,8 @@ import {
 } from '../api'
 import { type Category } from '../types'
 import { CategoriesMultiDeleteDialog } from './categories-multi-delete-dialog'
-import { useAuthSession } from '@/features/auth/api' // Import session hook
+import { useAuthSession } from '@/features/auth/api'
+import { Spinner } from '@/components/ui/spinner'
 
 type DataTableBulkActionsProps<TData> = {
   table: Table<TData>
@@ -47,13 +48,18 @@ export function DataTableBulkActions<TData>({
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map((row) => (row.original as Category).id)
 
-  const { mutate: activateCategories } = useBulkActivateCategories()
-  const { mutate: deactivateCategories } = useBulkDeactivateCategories()
+  const { mutate: activateCategories, isPending: isActivating } = useBulkActivateCategories()
+  const { mutate: deactivateCategories, isPending: isDeactivating } = useBulkDeactivateCategories()
+  
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
+
   const canUpdate = userPermissions.includes('categories-update')
   const canDelete = userPermissions.includes('categories-delete')
+
   if (!canUpdate && !canDelete) return null
+
+  const isBusy = isActivating || isDeactivating
 
   const handleBulkStatusChange = (status: 'active' | 'inactive') => {
     if (status === 'active') {
@@ -78,11 +84,16 @@ export function DataTableBulkActions<TData>({
                   variant='outline'
                   size='icon'
                   onClick={() => handleBulkStatusChange('active')}
+                  disabled={isBusy}
                   className='size-8'
                   aria-label='Activate selected categories'
                   title='Activate selected categories'
                 >
-                  <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
+                  {isActivating ? (
+                    <Spinner className='size-4' />
+                  ) : (
+                    <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
+                  )}
                   <span className='sr-only'>Activate selected categories</span>
                 </Button>
               </TooltipTrigger>
@@ -97,11 +108,16 @@ export function DataTableBulkActions<TData>({
                   variant='outline'
                   size='icon'
                   onClick={() => handleBulkStatusChange('inactive')}
+                  disabled={isBusy}
                   className='size-8'
                   aria-label='Deactivate selected categories'
                   title='Deactivate selected categories'
                 >
-                  <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
+                  {isDeactivating ? (
+                    <Spinner className='size-4' />
+                  ) : (
+                    <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
+                  )}
                   <span className='sr-only'>Deactivate selected categories</span>
                 </Button>
               </TooltipTrigger>
@@ -119,6 +135,7 @@ export function DataTableBulkActions<TData>({
                 variant='destructive'
                 size='icon'
                 onClick={() => setShowDeleteConfirm(true)}
+                disabled={isBusy}
                 className='size-8'
                 aria-label='Delete selected categories'
                 title='Delete selected categories'

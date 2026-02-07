@@ -33,7 +33,8 @@ import {
 } from '../api'
 import { type Brand } from '../types'
 import { BrandsMultiDeleteDialog } from './brands-multi-delete-dialog'
-import { useAuthSession } from '@/features/auth/api' // Import session hook
+import { useAuthSession } from '@/features/auth/api'
+import { Spinner } from '@/components/ui/spinner'
 
 type DataTableBulkActionsProps<TData> = {
   table: Table<TData>
@@ -46,8 +47,8 @@ export function DataTableBulkActions<TData>({
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map((row) => (row.original as Brand).id)
 
-  const { mutate: activateBrands } = useBulkActivateBrands()
-  const { mutate: deactivateBrands } = useBulkDeactivateBrands()
+  const { mutate: activateBrands, isPending: isActivating } = useBulkActivateBrands()
+  const { mutate: deactivateBrands, isPending: isDeactivating } = useBulkDeactivateBrands()
   
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
@@ -57,6 +58,8 @@ export function DataTableBulkActions<TData>({
 
   // If user has no permissions for bulk actions, don't render the toolbar
   if (!canUpdate && !canDelete) return null
+
+  const isBusy = isActivating || isDeactivating
 
   const handleBulkStatusChange = (status: 'active' | 'inactive') => {
     if (status === 'active') {
@@ -81,11 +84,16 @@ export function DataTableBulkActions<TData>({
                   variant='outline'
                   size='icon'
                   onClick={() => handleBulkStatusChange('active')}
+                  disabled={isBusy}
                   className='size-8'
                   aria-label='Activate selected brands'
                   title='Activate selected brands'
                 >
-                  <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
+                  {isActivating ? (
+                    <Spinner className='size-4' />
+                  ) : (
+                    <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
+                  )}
                   <span className='sr-only'>Activate selected brands</span>
                 </Button>
               </TooltipTrigger>
@@ -100,11 +108,16 @@ export function DataTableBulkActions<TData>({
                   variant='outline'
                   size='icon'
                   onClick={() => handleBulkStatusChange('inactive')}
+                  disabled={isBusy}
                   className='size-8'
                   aria-label='Deactivate selected brands'
                   title='Deactivate selected brands'
                 >
-                  <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
+                  {isDeactivating ? (
+                    <Spinner className='size-4' />
+                  ) : (
+                    <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
+                  )}
                   <span className='sr-only'>Deactivate selected brands</span>
                 </Button>
               </TooltipTrigger>
@@ -122,6 +135,7 @@ export function DataTableBulkActions<TData>({
                 variant='destructive'
                 size='icon'
                 onClick={() => setShowDeleteConfirm(true)}
+                disabled={isBusy}
                 className='size-8'
                 aria-label='Delete selected brands'
                 title='Delete selected brands'

@@ -9,7 +9,7 @@
  * @component
  * @template TData - The type of data in the table
  * @param {Object} props - The component props
- * @param {Table<TData>} props.table - The TanStack table instance
+ * @param {Table<TData>} props.table - The TanStack table instance containing selection state
  */
 
 import { useState } from 'react'
@@ -33,6 +33,8 @@ import {
 } from '../api'
 import { type Unit } from '../types'
 import { UnitsMultiDeleteDialog } from './units-multi-delete-dialog'
+import { useAuthSession } from '@/features/auth/api'
+import { Spinner } from '@/components/ui/spinner'
 
 type DataTableBulkActionsProps<TData> = {
   table: Table<TData>
@@ -45,8 +47,18 @@ export function DataTableBulkActions<TData>({
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map((row) => (row.original as Unit).id)
 
-  const { mutate: activateUnits } = useBulkActivateUnits()
-  const { mutate: deactivateUnits } = useBulkDeactivateUnits()
+  const { mutate: activateUnits, isPending: isActivating } = useBulkActivateUnits()
+  const { mutate: deactivateUnits, isPending: isDeactivating } = useBulkDeactivateUnits()
+
+  const { data: session } = useAuthSession()
+  const userPermissions = session?.user?.user_permissions || []
+
+  // 'unit' permission covers all unit operations based on ACL
+  const hasPermission = userPermissions.includes('unit')
+
+  if (!hasPermission) return null
+
+  const isBusy = isActivating || isDeactivating
 
   const handleBulkStatusChange = (status: 'active' | 'inactive') => {
     if (status === 'active') {
@@ -69,11 +81,16 @@ export function DataTableBulkActions<TData>({
               variant='outline'
               size='icon'
               onClick={() => handleBulkStatusChange('active')}
+              disabled={isBusy}
               className='size-8'
               aria-label='Activate selected units'
               title='Activate selected units'
             >
-              <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
+              {isActivating ? (
+                <Spinner className='size-4' />
+              ) : (
+                <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
+              )}
               <span className='sr-only'>Activate selected units</span>
             </Button>
           </TooltipTrigger>
@@ -88,11 +105,16 @@ export function DataTableBulkActions<TData>({
               variant='outline'
               size='icon'
               onClick={() => handleBulkStatusChange('inactive')}
+              disabled={isBusy}
               className='size-8'
               aria-label='Deactivate selected units'
               title='Deactivate selected units'
             >
-              <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
+              {isDeactivating ? (
+                <Spinner className='size-4' />
+              ) : (
+                <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
+              )}
               <span className='sr-only'>Deactivate selected units</span>
             </Button>
           </TooltipTrigger>
@@ -107,6 +129,7 @@ export function DataTableBulkActions<TData>({
               variant='destructive'
               size='icon'
               onClick={() => setShowDeleteConfirm(true)}
+              disabled={isBusy}
               className='size-8'
               aria-label='Delete selected units'
               title='Delete selected units'

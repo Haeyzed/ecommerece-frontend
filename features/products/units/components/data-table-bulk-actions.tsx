@@ -46,18 +46,12 @@ export function DataTableBulkActions<TData>({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map((row) => (row.original as Unit).id)
-
   const { mutate: activateUnits, isPending: isActivating } = useBulkActivateUnits()
   const { mutate: deactivateUnits, isPending: isDeactivating } = useBulkDeactivateUnits()
-
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-
-  // 'unit' permission covers all unit operations based on ACL
   const hasPermission = userPermissions.includes('unit')
-
   if (!hasPermission) return null
-
   const isBusy = isActivating || isDeactivating
 
   const handleBulkStatusChange = (status: 'active' | 'inactive') => {

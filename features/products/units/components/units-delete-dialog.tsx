@@ -22,6 +22,7 @@ import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { useDeleteUnit } from '../api'
 import { type Unit } from '../types'
+import { useAuthSession } from '@/features/auth/api' // Import session hook
 
 type UnitDeleteDialogProps = {
   open: boolean
@@ -36,6 +37,10 @@ export function UnitsDeleteDialog({
 }: UnitDeleteDialogProps) {
   const [value, setValue] = useState('')
   const { mutate: deleteUnit, isPending } = useDeleteUnit()
+  const { data: session } = useAuthSession()
+  const userPermissions = session?.user?.user_permissions || []
+  const canDelete = userPermissions.includes('units-delete')
+  if (!canDelete) return null
 
   const handleDelete = () => {
     if (value.trim() !== currentRow.name) return

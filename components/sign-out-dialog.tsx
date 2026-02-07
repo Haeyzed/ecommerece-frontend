@@ -9,10 +9,10 @@ interface SignOutDialogProps {
 }
 
 export function SignOutDialog({ open, onOpenChange }: SignOutDialogProps) {
-  const logoutMutation = useLogout()
+  const { mutate: logout, isPending } = useLogout()
 
   const handleSignOut = () => {
-    logoutMutation.mutate()
+    logout()
   }
 
   return (
@@ -24,7 +24,7 @@ export function SignOutDialog({ open, onOpenChange }: SignOutDialogProps) {
       confirmText='Sign out'
       destructive
       handleConfirm={handleSignOut}
-      isLoading={logoutMutation.isPending} 
+      isLoading={isPending}
       className='sm:max-w-sm'
     />
   )

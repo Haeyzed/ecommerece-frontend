@@ -6,8 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { CloudUploadIcon, Download01Icon, File02Icon, ViewIcon, CancelCircleIcon } from '@hugeicons/core-free-icons'
 
-import { useWarehousesImport } from '@/features/settings/warehouse/api'
-import { warehouseImportSchema, type WarehouseImportFormData } from '@/features/settings/warehouse/schemas'
+import { useWarehousesImport } from '@/features/settings/warehouses/api'
+import { warehouseImportSchema, type WarehouseImportFormData } from '@/features/settings/warehouses/schemas'
 import { SAMPLE_WAREHOUSES_CSV } from '../constants'
 import { WarehousesCsvPreviewDialog } from './warehouses-csv-preview-dialog'
 

@@ -17,7 +17,7 @@ import {
 } from '@tanstack/react-table'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { useWarehouses } from '@/features/settings/warehouse/api'
+import { useWarehouses } from '@/features/settings/warehouses/api'
 import { WarehousesEmptyState } from './warehouses-empty-state'
 import { DataTableBulkActions } from './data-table-bulk-actions'
 import { warehousesColumns as columns } from './warehouses-columns'

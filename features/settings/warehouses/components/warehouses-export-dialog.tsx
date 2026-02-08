@@ -5,8 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Upload01Icon } from '@hugeicons/core-free-icons'
 
-import { useWarehousesExport } from '@/features/settings/warehouse/api'
-import { warehouseExportSchema, type WarehouseExportFormData } from '@/features/settings/warehouse/schemas'
+import { useWarehousesExport } from '@/features/settings/warehouses/api'
+import { warehouseExportSchema, type WarehouseExportFormData } from '@/features/settings/warehouses/schemas'
 
 import { Button } from '@/components/ui/button'
 import {

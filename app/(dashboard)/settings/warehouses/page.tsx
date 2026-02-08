@@ -1,6 +1,6 @@
 import { auth } from '@/auth'
 import { ForbiddenError } from '@/features/errors/forbidden'
-import { WarehousesClient } from '@/features/settings/warehouse'
+import { WarehousesClient } from '@/features/settings/warehouses'
 import { hasPermission } from '@/lib/utils/permissions'
 
 export const metadata = {

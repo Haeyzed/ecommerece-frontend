@@ -19,8 +19,8 @@ import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-ta
 import {
   useBulkActivateWarehouses,
   useBulkDeactivateWarehouses,
-} from '@/features/settings/warehouse/api'
-import { type Warehouse } from '@/features/settings/warehouse/types'
+} from '@/features/settings/warehouses/api'
+import { type Warehouse } from '@/features/settings/warehouses/types'
 import { WarehousesExportDialog } from './warehouses-export-dialog'
 import { WarehousesMultiDeleteDialog } from './warehouses-multi-delete-dialog'
 import { useAuthSession } from '@/features/auth/api'

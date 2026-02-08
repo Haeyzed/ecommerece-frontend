@@ -6,8 +6,8 @@ import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 import {
   useCreateWarehouse,
   useUpdateWarehouse,
-} from '@/features/settings/warehouse/api'
-import { warehouseSchema, type WarehouseFormData } from '@/features/settings/warehouse/schemas'
+} from '@/features/settings/warehouses/api'
+import { warehouseSchema, type WarehouseFormData } from '@/features/settings/warehouses/schemas'
 import { type Warehouse } from '../types'
 
 import { useMediaQuery } from '@/hooks/use-media-query'

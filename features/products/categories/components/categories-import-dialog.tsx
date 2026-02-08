@@ -23,7 +23,7 @@ import {
 
 import { useCategoriesImport } from '@/features/products/categories/api'
 import { categoryImportSchema, type CategoryImportFormData } from '@/features/products/categories/schemas'
-import { downloadSampleAsXlsx } from '@/lib/download-sample-xlsx'
+import { downloadSampleAsCsv } from '@/lib/download-sample-csv'
 import { SAMPLE_CATEGORIES_CSV } from '../constants'
 import { CategoriesCsvPreviewDialog } from './categories-csv-preview-dialog'
 
@@ -127,7 +127,7 @@ export function CategoriesImportDialog({
   }
 
   const handleDownloadSample = () => {
-    downloadSampleAsXlsx(SAMPLE_CATEGORIES_CSV, 'categories_sample.xlsx')
+    downloadSampleAsCsv(SAMPLE_CATEGORIES_CSV, 'categories_sample.csv')
   }
 
   const handleOpenChange = (value: boolean) => {
@@ -149,7 +149,7 @@ export function CategoriesImportDialog({
           className="text-muted-foreground"
         >
           <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
-          Download Sample
+          Download Sample CSV
         </Button>
       </div>
 

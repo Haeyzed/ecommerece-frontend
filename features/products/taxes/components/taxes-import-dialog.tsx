@@ -23,7 +23,7 @@ import {
 
 import { useTaxesImport } from '@/features/products/taxes/api'
 import { taxImportSchema, type TaxImportFormData } from '@/features/products/taxes/schemas'
-import { downloadSampleAsXlsx } from '@/lib/download-sample-xlsx'
+import { downloadSampleAsCsv } from '@/lib/download-sample-csv'
 import { SAMPLE_TAXES_CSV } from '../constants'
 import { TaxesCsvPreviewDialog } from './taxes-csv-preview-dialog'
 
@@ -127,7 +127,7 @@ export function TaxesImportDialog({
   }
 
   const handleDownloadSample = () => {
-    downloadSampleAsXlsx(SAMPLE_TAXES_CSV, 'taxes_sample.xlsx')
+    downloadSampleAsCsv(SAMPLE_TAXES_CSV, 'taxes_sample.csv')
   }
 
   const handleOpenChange = (value: boolean) => {
@@ -149,7 +149,7 @@ export function TaxesImportDialog({
           className="text-muted-foreground"
         >
           <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
-          Download Sample
+          Download Sample CSV
         </Button>
       </div>
 

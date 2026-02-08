@@ -66,7 +66,7 @@ export function DataTableBulkActions<TData>({
   const userPermissions = session?.user?.user_permissions || []
   const canUpdate = userPermissions.includes('categories-update')
   const canDelete = userPermissions.includes('categories-delete')
-  
+
   if (!canUpdate && !canDelete) return null
 
   const isBusy =
@@ -79,8 +79,8 @@ export function DataTableBulkActions<TData>({
 
   const handleBulkStatusChange = (status: 'active' | 'inactive') => {
     if (status === 'active') {
-      activateCategories(selectedIds, { 
-        onSuccess: () => table.resetRowSelection() 
+      activateCategories(selectedIds, {
+        onSuccess: () => table.resetRowSelection()
       })
     } else {
       deactivateCategories(selectedIds, { onSuccess: () => table.resetRowSelection() })
@@ -89,24 +89,24 @@ export function DataTableBulkActions<TData>({
 
   const handleBulkFeaturedChange = (enable: boolean) => {
     if (enable) {
-      enableFeatured(selectedIds, { 
-        onSuccess: () => table.resetRowSelection() 
+      enableFeatured(selectedIds, {
+        onSuccess: () => table.resetRowSelection()
       })
     } else {
-      disableFeatured(selectedIds, { 
-        onSuccess: () => table.resetRowSelection() 
+      disableFeatured(selectedIds, {
+        onSuccess: () => table.resetRowSelection()
       })
     }
   }
 
   const handleBulkSyncChange = (enable: boolean) => {
     if (enable) {
-      enableSync(selectedIds, { 
-        onSuccess: () => table.resetRowSelection() 
+      enableSync(selectedIds, {
+        onSuccess: () => table.resetRowSelection()
       })
     } else {
-      disableSync(selectedIds, { 
-        onSuccess: () => table.resetRowSelection() 
+      disableSync(selectedIds, {
+        onSuccess: () => table.resetRowSelection()
       })
     }
   }
@@ -118,114 +118,105 @@ export function DataTableBulkActions<TData>({
           <div className='flex items-center gap-1 p-1'>
             {canUpdate && (
               <>
-                {/* Status Actions */}
-                <div className="flex items-center gap-1">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant='outline'
-                        size='icon'
-                        onClick={() => handleBulkStatusChange('active')}
-                        disabled={isBusy}
-                        className='size-8'
-                        aria-label='Activate selected'
-                      >
-                        {isActivating ? <Spinner className='size-4' /> : <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Activate selected categories</p></TooltipContent>
-                  </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant='outline'
+                      size='icon'
+                      onClick={() => handleBulkStatusChange('active')}
+                      disabled={isBusy}
+                      className='size-8'
+                      aria-label='Activate selected'
+                    >
+                      {isActivating ? <Spinner className='size-4' /> : <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent><p>Activate selected categories</p></TooltipContent>
+                </Tooltip>
 
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant='outline'
-                        size='icon'
-                        onClick={() => handleBulkStatusChange('inactive')}
-                        disabled={isBusy}
-                        className='size-8'
-                        aria-label='Deactivate selected'
-                      >
-                        {isDeactivating ? <Spinner className='size-4' /> : <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Deactivate selected categories</p></TooltipContent>
-                  </Tooltip>
-                </div>
-                
-                <Separator orientation="vertical" className="h-6 mx-1" />
-
-                {/* Featured Actions */}
-                <div className="flex items-center gap-1">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant='outline'
-                        size='icon'
-                        onClick={() => handleBulkFeaturedChange(true)}
-                        disabled={isBusy}
-                        className='size-8'
-                        aria-label='Mark as featured'
-                      >
-                        {isEnablingFeatured ? <Spinner className='size-4' /> : <HugeiconsIcon icon={StarIcon} strokeWidth={2} />}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Mark selected as featured</p></TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant='outline'
-                        size='icon'
-                        onClick={() => handleBulkFeaturedChange(false)}
-                        disabled={isBusy}
-                        className='size-8'
-                        aria-label='Remove featured status'
-                      >
-                        {isDisablingFeatured ? <Spinner className='size-4' /> : <HugeiconsIcon icon={StarOffIcon} strokeWidth={2} />}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Remove featured status</p></TooltipContent>
-                  </Tooltip>
-                </div>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant='outline'
+                      size='icon'
+                      onClick={() => handleBulkStatusChange('inactive')}
+                      disabled={isBusy}
+                      className='size-8'
+                      aria-label='Deactivate selected'
+                    >
+                      {isDeactivating ? <Spinner className='size-4' /> : <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent><p>Deactivate selected categories</p></TooltipContent>
+                </Tooltip>
 
                 <Separator orientation="vertical" className="h-6 mx-1" />
 
-                {/* Sync Actions */}
-                <div className="flex items-center gap-1">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant='outline'
-                        size='icon'
-                        onClick={() => handleBulkSyncChange(true)}
-                        disabled={isBusy}
-                        className='size-8'
-                        aria-label='Enable sync'
-                      >
-                        {isEnablingSync ? <Spinner className='size-4' /> : <HugeiconsIcon icon={DatabaseSyncIcon} strokeWidth={2} />}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Enable sync for selected</p></TooltipContent>
-                  </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant='outline'
+                      size='icon'
+                      onClick={() => handleBulkFeaturedChange(true)}
+                      disabled={isBusy}
+                      className='size-8'
+                      aria-label='Mark as featured'
+                    >
+                      {isEnablingFeatured ? <Spinner className='size-4' /> : <HugeiconsIcon icon={StarIcon} strokeWidth={2} />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent><p>Mark selected as featured</p></TooltipContent>
+                </Tooltip>
 
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant='outline'
-                        size='icon'
-                        onClick={() => handleBulkSyncChange(false)}
-                        disabled={isBusy}
-                        className='size-8'
-                        aria-label='Disable sync'
-                      >
-                        {isDisablingSync ? <Spinner className='size-4' /> : <HugeiconsIcon icon={DatabaseSyncIcon} strokeWidth={2} />}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Disable sync for selected</p></TooltipContent>
-                  </Tooltip>
-                </div>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant='outline'
+                      size='icon'
+                      onClick={() => handleBulkFeaturedChange(false)}
+                      disabled={isBusy}
+                      className='size-8'
+                      aria-label='Remove featured status'
+                    >
+                      {isDisablingFeatured ? <Spinner className='size-4' /> : <HugeiconsIcon icon={StarOffIcon} strokeWidth={2} />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent><p>Remove featured status</p></TooltipContent>
+                </Tooltip>
+
+                <Separator orientation="vertical" className="h-6 mx-1" />
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant='outline'
+                      size='icon'
+                      onClick={() => handleBulkSyncChange(true)}
+                      disabled={isBusy}
+                      className='size-8'
+                      aria-label='Enable sync'
+                    >
+                      {isEnablingSync ? <Spinner className='size-4' /> : <HugeiconsIcon icon={DatabaseSyncIcon} strokeWidth={2} />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent><p>Enable sync for selected</p></TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant='outline'
+                      size='icon'
+                      onClick={() => handleBulkSyncChange(false)}
+                      disabled={isBusy}
+                      className='size-8'
+                      aria-label='Disable sync'
+                    >
+                      {isDisablingSync ? <Spinner className='size-4' /> : <HugeiconsIcon icon={DatabaseSyncIcon} strokeWidth={2} />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent><p>Disable sync for selected</p></TooltipContent>
+                </Tooltip>
               </>
             )}
 

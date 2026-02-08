@@ -23,6 +23,7 @@ import {
 
 import { useUnitsImport } from '@/features/products/units/api'
 import { unitImportSchema, type UnitImportFormData } from '@/features/products/units/schemas'
+import { downloadSampleAsXlsx } from '@/lib/download-sample-xlsx'
 import { SAMPLE_UNITS_CSV } from '../constants'
 import { UnitsCsvPreviewDialog } from './units-csv-preview-dialog'
 
@@ -126,13 +127,7 @@ export function UnitsImportDialog({
   }
 
   const handleDownloadSample = () => {
-    const blob = new Blob([SAMPLE_UNITS_CSV], { type: 'text/csv' })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'units_sample.csv'
-    a.click()
-    window.URL.revokeObjectURL(url)
+    downloadSampleAsXlsx(SAMPLE_UNITS_CSV, 'units_sample.xlsx')
   }
 
   const handleOpenChange = (value: boolean) => {
@@ -154,7 +149,7 @@ export function UnitsImportDialog({
           className="text-muted-foreground"
         >
           <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
-          Download Sample CSV
+          Download Sample
         </Button>
       </div>
 

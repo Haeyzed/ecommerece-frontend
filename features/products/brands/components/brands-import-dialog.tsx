@@ -21,6 +21,7 @@ import {
 
 import { useBrandsImport } from '@/features/products/brands/api'
 import { brandImportSchema, type BrandImportFormData } from '@/features/products/brands/schemas'
+import { downloadSampleAsXlsx } from '@/lib/download-sample-xlsx'
 import { SAMPLE_BRANDS_CSV } from '../constants'
 import { BrandsCsvPreviewDialog } from './brands-csv-preview-dialog'
 
@@ -125,13 +126,7 @@ export function BrandsImportDialog({
   }
 
   const handleDownloadSample = () => {
-    const blob = new Blob([SAMPLE_BRANDS_CSV], { type: 'text/csv' })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'brands_sample.csv'
-    a.click()
-    window.URL.revokeObjectURL(url)
+    downloadSampleAsXlsx(SAMPLE_BRANDS_CSV, 'brands_sample.xlsx')
   }
 
   const handleOpenChange = (value: boolean) => {
@@ -153,7 +148,7 @@ export function BrandsImportDialog({
           className="text-muted-foreground"
         >
           <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
-          Download Sample CSV
+          Download Sample
         </Button>
       </div>
 

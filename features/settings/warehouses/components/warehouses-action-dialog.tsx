@@ -41,6 +41,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { Spinner } from '@/components/ui/spinner'
+import { PhoneInput } from "@/components/ui/phone-input";
 
 type WarehousesActionDialogProps = {
   currentRow?: Warehouse
@@ -199,7 +200,7 @@ function WarehouseForm({ form, onSubmit, id, className }: WarehouseFormProps) {
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
               <FieldLabel htmlFor='warehouse-phone'>Phone</FieldLabel>
-              <Input id='warehouse-phone' placeholder='+1234567890' autoComplete='off' {...field} value={field.value ?? ''} />
+              <PhoneInput id='warehouse-phone' placeholder='+1234567890' autoComplete='off' {...field} value={field.value ?? ''} />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

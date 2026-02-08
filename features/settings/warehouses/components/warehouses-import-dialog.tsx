@@ -8,6 +8,7 @@ import { CloudUploadIcon, Download01Icon, File02Icon, ViewIcon, CancelCircleIcon
 
 import { useWarehousesImport } from '@/features/settings/warehouses/api'
 import { warehouseImportSchema, type WarehouseImportFormData } from '@/features/settings/warehouses/schemas'
+import { downloadSampleAsXlsx } from '@/lib/download-sample-xlsx'
 import { SAMPLE_WAREHOUSES_CSV } from '../constants'
 import { WarehousesCsvPreviewDialog } from './warehouses-csv-preview-dialog'
 
@@ -73,13 +74,7 @@ export function WarehousesImportDialog({ open, onOpenChange }: WarehousesImportD
   }
 
   const handleDownloadSample = () => {
-    const blob = new Blob([SAMPLE_WAREHOUSES_CSV], { type: 'text/csv' })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'warehouses_sample.csv'
-    a.click()
-    window.URL.revokeObjectURL(url)
+    downloadSampleAsXlsx(SAMPLE_WAREHOUSES_CSV, 'warehouses_sample.xlsx')
   }
 
   const handleOpenChange = (value: boolean) => {
@@ -95,7 +90,7 @@ export function WarehousesImportDialog({ open, onOpenChange }: WarehousesImportD
       <div className='flex justify-end'>
         <Button type='button' variant='outline' size='sm' onClick={handleDownloadSample} className='text-muted-foreground'>
           <HugeiconsIcon icon={Download01Icon} className='mr-2 size-4' />
-          Download Sample CSV
+          Download Sample
         </Button>
       </div>
       <FieldGroup>

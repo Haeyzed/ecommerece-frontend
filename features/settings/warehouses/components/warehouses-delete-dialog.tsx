@@ -1,70 +1,99 @@
-"use client"
+'use client'
 
-import { AlertTriangle } from '@hugeicons/core-free-icons'
+/**
+ * WarehousesDeleteDialog
+ *
+ * A confirmation dialog for deleting a single warehouse.
+ * Requires the user to type the warehouse name to confirm the destructive action.
+ *
+ * @component
+ * @param {Object} props - The component props
+ * @param {boolean} props.open - Controls visibility
+ * @param {function} props.onOpenChange - Callback for visibility changes
+ * @param {Warehouse} props.currentRow - The warehouse selected for deletion
+ */
+
+import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import { useDeleteWarehouse } from '../api'
-import { type Warehouse } from '../types'
+import { Alert02Icon } from '@hugeicons/core-free-icons'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { ConfirmDialog } from '@/components/confirm-dialog'
+import { useDeleteWarehouse } from '@/features/settings/warehouses/api'
+import { type Warehouse } from '@/features/settings/warehouses/types'
 
 type WarehousesDeleteDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  warehouse: Warehouse | null
+  currentRow: Warehouse
 }
 
 export function WarehousesDeleteDialog({
   open,
   onOpenChange,
-  warehouse: currentRow,
+  currentRow,
 }: WarehousesDeleteDialogProps) {
+  const [value, setValue] = useState('')
   const { mutate: deleteWarehouse, isPending } = useDeleteWarehouse()
 
   const handleDelete = () => {
-    if (!currentRow) return
+    if (value.trim() !== currentRow.name) return
 
     deleteWarehouse(currentRow.id, {
-      onSuccess: () => onOpenChange(false),
+      onSuccess: () => {
+        onOpenChange(false)
+        setValue('')
+      },
     })
   }
 
-  if (!currentRow) return null
-
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle className='flex items-center gap-2'>
-            <HugeiconsIcon
-              icon={AlertTriangle}
-              className='size-5 text-destructive'
+    <ConfirmDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      handleConfirm={handleDelete}
+      disabled={value.trim() !== currentRow.name || isPending}
+      title={
+        <span className='text-destructive'>
+          <HugeiconsIcon
+            icon={Alert02Icon}
+            className='me-1 inline-block stroke-destructive'
+            size={18}
+            strokeWidth={2}
+          />{' '}
+          Delete Warehouse
+        </span>
+      }
+      desc={
+        <div className='space-y-4'>
+          <p className='mb-2'>
+            Are you sure you want to delete{' '}
+            <span className='font-bold'>{currentRow.name}</span>?
+            <br />
+            This action will permanently remove the warehouse from the system.
+            This cannot be undone.
+          </p>
+
+          <Label className='my-2'>
+            Warehouse Name:
+            <Input
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              placeholder='Enter warehouse name to confirm deletion.'
             />
-            Are you sure?
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            You are about to deactivate the warehouse &quot;{currentRow.name}&quot;. This
-            action cannot be undone.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={handleDelete}
-            disabled={isPending}
-            className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
-          >
-            {isPending ? 'Deleting...' : 'Delete'}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          </Label>
+
+          <Alert variant='destructive'>
+            <AlertTitle>Warning!</AlertTitle>
+            <AlertDescription>
+              Please be careful, this operation can not be rolled back.
+            </AlertDescription>
+          </Alert>
+        </div>
+      }
+      confirmText='Delete'
+      destructive
+    />
   )
 }

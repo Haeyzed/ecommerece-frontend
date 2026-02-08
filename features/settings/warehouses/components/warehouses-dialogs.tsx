@@ -43,9 +43,7 @@ export function WarehousesDialogs() {
         <WarehousesExportDialog
           key='warehouse-export'
           open={open === 'export'}
-          onOpenChange={(isOpen) => {
-            if (!isOpen) setOpen(null)
-          }}
+          onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}
         />
       )}

@@ -590,6 +590,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Warehouse",
               url: "/settings/warehouse",
+              permissions: ["warehouses-index"],
             },
             {
               title: "Tables",

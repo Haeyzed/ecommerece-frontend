@@ -7,13 +7,10 @@
  */
 
 import { z } from "zod";
-import { isValidPhoneNumber } from "react-phone-number-input";
 
 export const warehouseSchema = z.object({
   name: z.string().min(1, "Warehouse name is required").max(255, "Name is too long"),
-  phone: z
-    .string()
-    .refine(isValidPhoneNumber, { message: "Invalid phone number" }).optional().nullable(),
+  phone: z.string().max(255).optional().nullable(),
   email: z.union([z.string().email("Invalid email").max(255), z.literal("")]).optional(),
   address: z.string().max(255).optional().nullable(),
   is_active: z.boolean().nullable().optional(),

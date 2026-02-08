@@ -313,3 +313,52 @@ export function useUnitsImport() {
     onError: (e) => toast.error(e instanceof Error ? e.message : "Import failed"),
   });
 }
+
+export type UnitExportParams = {
+  ids?: number[];
+  format: "excel" | "pdf";
+  method: "download" | "email";
+  columns: string[];
+  user_id?: number;
+};
+
+/**
+ * useUnitsExport
+ *
+ * Mutation hook to export units to Excel or PDF.
+ * Supports download or email delivery.
+ */
+export function useUnitsExport() {
+  const { api } = useApiClient();
+
+  return useMutation({
+    mutationFn: async (params: UnitExportParams) => {
+      if (params.method === "download") {
+        const blob = await api.postBlob("/units/export", params);
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        const fileName = `units-export-${Date.now()}.${params.format === "pdf" ? "pdf" : "xlsx"}`;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        return { message: "Export downloaded successfully" };
+      }
+
+      const response = await api.post("/units/export", params);
+      if (!response.success) throw new Error(response.message);
+      return response;
+    },
+    onSuccess: (_, variables) => {
+      if (variables.method === "email") {
+        toast.success("Export sent via email successfully");
+      } else {
+        toast.success("Export downloaded successfully");
+      }
+    },
+    onError: (e) =>
+      toast.error(e instanceof Error ? e.message : "Export failed"),
+  });
+}

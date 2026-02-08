@@ -12,6 +12,7 @@
 
 import { CategoriesActionDialog } from './categories-action-dialog'
 import { CategoriesDeleteDialog } from './categories-delete-dialog'
+import { CategoriesExportDialog } from './categories-export-dialog'
 import { CategoriesImportDialog } from './categories-import-dialog'
 import { CategoriesViewDialog } from './categories-view-dialog'
 import { useCategories } from './categories-provider'
@@ -27,6 +28,7 @@ export function CategoriesDialogs() {
   // Define permission checks based on your ACL
   const canCreate = userPermissions.includes('categories-create')
   const canImport = userPermissions.includes('categories-import')
+  const canExport = userPermissions.includes('categories-export')
   const canUpdate = userPermissions.includes('categories-update')
   const canDelete = userPermissions.includes('categories-delete')
   const canView = userPermissions.includes('categories-index')
@@ -46,6 +48,15 @@ export function CategoriesDialogs() {
           key='category-import'
           open={open === 'import'}
           onOpenChange={() => setOpen('import')}
+        />
+      )}
+
+      {canExport && (
+        <CategoriesExportDialog
+          key='category-export'
+          open={open === 'export'}
+          onOpenChange={(state) => setOpen(state ? 'export' : null)}
+          ids={[]}
         />
       )}
 

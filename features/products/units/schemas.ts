@@ -44,6 +44,29 @@ export const unitImportSchema = z.object({
 });
 
 /**
+ * unitExportSchema
+ *
+ * Validation for the export form.
+ * When method is 'email', user_id is required.
+ */
+export const unitExportSchema = z
+  .object({
+    format: z.enum(["excel", "pdf"]),
+    method: z.enum(["download", "email"]),
+    columns: z.array(z.string()).min(1, "Please select at least one column"),
+    user_id: z.number().optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.method === "email") {
+        return data.user_id !== undefined;
+      }
+      return true;
+    },
+    { message: "Please select a user to send the email to", path: ["user_id"] }
+  );
+
+/**
  * UnitFormData
  *
  * Type definition inferred from the Zod schema.
@@ -51,3 +74,4 @@ export const unitImportSchema = z.object({
  */
 export type UnitFormData = z.infer<typeof unitSchema>;
 export type UnitImportFormData = z.infer<typeof unitImportSchema>;
+export type UnitExportFormData = z.infer<typeof unitExportSchema>;

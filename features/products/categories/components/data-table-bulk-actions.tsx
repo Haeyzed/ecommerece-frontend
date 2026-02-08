@@ -22,6 +22,7 @@ import {
   StarIcon,
   StarOffIcon,
   DatabaseSyncIcon,
+  Upload01Icon,
 } from '@hugeicons/core-free-icons'
 import { type Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
@@ -40,6 +41,7 @@ import {
   useBulkDisableSyncCategories
 } from '../api'
 import { type Category } from '../types'
+import { CategoriesExportDialog } from './categories-export-dialog'
 import { CategoriesMultiDeleteDialog } from './categories-multi-delete-dialog'
 import { useAuthSession } from '@/features/auth/api'
 import { Spinner } from '@/components/ui/spinner'
@@ -54,6 +56,7 @@ export function DataTableBulkActions<TData>({
   table,
 }: DataTableBulkActionsProps<TData>) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [showExportDialog, setShowExportDialog] = useState(false)
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map((row) => (row.original as Category).id)
   const { mutate: activateCategories, isPending: isActivating } = useBulkActivateCategories()
@@ -66,8 +69,9 @@ export function DataTableBulkActions<TData>({
   const userPermissions = session?.user?.user_permissions || []
   const canUpdate = userPermissions.includes('categories-update')
   const canDelete = userPermissions.includes('categories-delete')
+  const canExport = userPermissions.includes('categories-export')
 
-  if (!canUpdate && !canDelete) return null
+  if (!canUpdate && !canDelete && !canExport) return null
 
   const isBusy =
     isActivating ||
@@ -220,10 +224,31 @@ export function DataTableBulkActions<TData>({
               </>
             )}
 
+            {canExport && (
+              <>
+                {(canUpdate || canDelete) && <Separator orientation="vertical" className="h-6 mx-1" />}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant='outline'
+                      size='icon'
+                      onClick={() => setShowExportDialog(true)}
+                      disabled={isBusy}
+                      className='size-8'
+                      aria-label='Export selected'
+                    >
+                      <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent><p>Export selected categories</p></TooltipContent>
+                </Tooltip>
+              </>
+            )}
+
             {/* Delete Action */}
             {canDelete && (
               <>
-                {canUpdate && <Separator orientation="vertical" className="h-6 mx-1" />}
+                {(canUpdate || canExport) && <Separator orientation="vertical" className="h-6 mx-1" />}
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
@@ -251,6 +276,14 @@ export function DataTableBulkActions<TData>({
           table={table}
           open={showDeleteConfirm}
           onOpenChange={setShowDeleteConfirm}
+        />
+      )}
+
+      {canExport && (
+        <CategoriesExportDialog
+          open={showExportDialog}
+          onOpenChange={setShowExportDialog}
+          ids={selectedIds}
         />
       )}
     </>

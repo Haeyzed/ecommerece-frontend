@@ -12,22 +12,20 @@
 import { HugeiconsIcon } from '@hugeicons/react'
 import { FileImportIcon, PlusSignIcon, Upload01Icon } from '@hugeicons/core-free-icons'
 import { Button } from '@/components/ui/button'
+import { useMediaQuery } from '@/hooks/use-media-query'
 import { useBrands } from './brands-provider'
 import { useAuthSession } from '@/features/auth/api' // Import the session hook
 
 export function BrandsPrimaryButtons() {
   const { setOpen } = useBrands()
   const { data: session } = useAuthSession()
+  const isMobile = useMediaQuery('(max-width: 767px)')
   
-  // Get permissions safely from the session (default to empty array if loading/undefined)
   const userPermissions = session?.user?.user_permissions || []
-
-  // Define the checks
   const canImport = userPermissions.includes('brands-import')
   const canExport = userPermissions.includes('brands-export')
   const canCreate = userPermissions.includes('brands-create')
 
-  // If the user has neither permission, hide the entire container
   if (!canImport && !canExport && !canCreate) return null
 
   return (
@@ -35,25 +33,36 @@ export function BrandsPrimaryButtons() {
       {canExport && (
         <Button
           variant='outline'
-          className='space-x-1'
+          size={isMobile ? 'icon' : 'default'}
+          className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('export')}
+          aria-label='Export Brands'
         >
-          <span>Export Brands</span> <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} size={18} />
+          <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} size={18} />
+          {!isMobile && <span>Export Brands</span>}
         </Button>
       )}
       {canImport && (
         <Button
           variant='outline'
-          className='space-x-1'
+          size={isMobile ? 'icon' : 'default'}
+          className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('import')}
+          aria-label='Import Brands'
         >
-          <span>Import Brands</span> <HugeiconsIcon icon={FileImportIcon} strokeWidth={2} size={18} />
+          <HugeiconsIcon icon={FileImportIcon} strokeWidth={2} size={18} />
+          {!isMobile && <span>Import Brands</span>}
         </Button>
       )}
-      
       {canCreate && (
-        <Button className='space-x-1' onClick={() => setOpen('add')}>
-          <span>Add Brand</span> <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} size={18} />
+        <Button
+          size={isMobile ? 'icon' : 'default'}
+          className={!isMobile ? 'space-x-1' : ''}
+          onClick={() => setOpen('add')}
+          aria-label='Add Brand'
+        >
+          <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} size={18} />
+          {!isMobile && <span>Add Brand</span>}
         </Button>
       )}
     </div>

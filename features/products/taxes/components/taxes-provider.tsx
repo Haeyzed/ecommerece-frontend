@@ -15,7 +15,7 @@ import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type Tax } from '../types'
 
-type TaxesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'view'
+type TaxesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
 
 type TaxesContextType = {
   open: TaxesDialogType | null
@@ -31,9 +31,9 @@ export function TaxesProvider({ children }: { children: React.ReactNode }) {
   const [currentRow, setCurrentRow] = useState<Tax | null>(null)
 
   return (
-    <TaxesContext value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <TaxesContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
       {children}
-    </TaxesContext>
+    </TaxesContext.Provider>
   )
 }
 

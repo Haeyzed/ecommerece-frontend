@@ -15,7 +15,7 @@ import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type Category } from '../types'
 
-type CategoriesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'view'
+type CategoriesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
 
 type CategoriesContextType = {
   open: CategoriesDialogType | null
@@ -31,9 +31,9 @@ export function CategoriesProvider({ children }: { children: React.ReactNode }) 
   const [currentRow, setCurrentRow] = useState<Category | null>(null)
 
   return (
-    <CategoriesContext value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <CategoriesContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
       {children}
-    </CategoriesContext>
+    </CategoriesContext.Provider>
   )
 }
 

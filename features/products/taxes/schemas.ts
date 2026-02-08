@@ -37,7 +37,30 @@ export const taxImportSchema = z.object({
     .min(1, "Please select a file to import")
     .max(1, "Please select only one file")
     .refine((files) => files.length > 0, "File is required"),
-})
+});
+
+/**
+ * taxExportSchema
+ *
+ * Validation for the export form.
+ * When method is 'email', user_id is required.
+ */
+export const taxExportSchema = z
+  .object({
+    format: z.enum(["excel", "pdf"]),
+    method: z.enum(["download", "email"]),
+    columns: z.array(z.string()).min(1, "Please select at least one column"),
+    user_id: z.number().optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.method === "email") {
+        return data.user_id !== undefined;
+      }
+      return true;
+    },
+    { message: "Please select a user to send the email to", path: ["user_id"] }
+  );
 
 /**
  * TaxFormData
@@ -47,3 +70,4 @@ export const taxImportSchema = z.object({
  */
 export type TaxFormData = z.infer<typeof taxSchema>;
 export type TaxImportFormData = z.infer<typeof taxImportSchema>;
+export type TaxExportFormData = z.infer<typeof taxExportSchema>;

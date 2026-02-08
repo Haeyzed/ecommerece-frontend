@@ -17,7 +17,8 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { 
   CheckmarkCircle02Icon, 
   Delete02Icon, 
-  UnavailableIcon 
+  UnavailableIcon,
+  Upload01Icon,
 } from '@hugeicons/core-free-icons'
 import { type Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
@@ -32,6 +33,7 @@ import {
   useBulkDeactivateTaxes 
 } from '../api'
 import { type Tax } from '../types'
+import { TaxesExportDialog } from './taxes-export-dialog'
 import { TaxesMultiDeleteDialog } from './taxes-multi-delete-dialog'
 import { useAuthSession } from '@/features/auth/api'
 import { Spinner } from '@/components/ui/spinner'
@@ -44,6 +46,7 @@ export function DataTableBulkActions<TData>({
   table,
 }: DataTableBulkActionsProps<TData>) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [showExportDialog, setShowExportDialog] = useState(false)
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map((row) => (row.original as Tax).id)
 
@@ -55,8 +58,9 @@ export function DataTableBulkActions<TData>({
 
   const canUpdate = userPermissions.includes('taxes-update')
   const canDelete = userPermissions.includes('taxes-delete')
+  const canExport = userPermissions.includes('taxes-export')
 
-  if (!canUpdate && !canDelete) return null
+  if (!canUpdate && !canDelete && !canExport) return null
 
   const isBusy = isActivating || isDeactivating
 
@@ -127,6 +131,28 @@ export function DataTableBulkActions<TData>({
           </>
         )}
 
+        {canExport && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant='outline'
+                size='icon'
+                onClick={() => setShowExportDialog(true)}
+                disabled={isBusy}
+                className='size-8'
+                aria-label='Export selected taxes'
+                title='Export selected taxes'
+              >
+                <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} />
+                <span className='sr-only'>Export selected taxes</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Export selected taxes</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
+
         {canDelete && (
           <Tooltip>
             <TooltipTrigger asChild>
@@ -155,6 +181,14 @@ export function DataTableBulkActions<TData>({
           table={table}
           open={showDeleteConfirm}
           onOpenChange={setShowDeleteConfirm}
+        />
+      )}
+
+      {canExport && (
+        <TaxesExportDialog
+          open={showExportDialog}
+          onOpenChange={setShowExportDialog}
+          ids={selectedIds}
         />
       )}
     </>

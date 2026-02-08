@@ -15,7 +15,7 @@ import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type Unit } from '../types'
 
-type UnitsDialogType = 'import' | 'add' | 'edit' | 'delete' | 'view'
+type UnitsDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
 
 type UnitsContextType = {
   open: UnitsDialogType | null
@@ -31,9 +31,9 @@ export function UnitsProvider({ children }: { children: React.ReactNode }) {
   const [currentRow, setCurrentRow] = useState<Unit | null>(null)
 
   return (
-    <UnitsContext value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <UnitsContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
       {children}
-    </UnitsContext>
+    </UnitsContext.Provider>
   )
 }
 

@@ -11,6 +11,7 @@
 
 import { TaxesActionDialog } from './taxes-action-dialog'
 import { TaxesDeleteDialog } from './taxes-delete-dialog'
+import { TaxesExportDialog } from './taxes-export-dialog'
 import { TaxesImportDialog } from './taxes-import-dialog'
 import { TaxesViewDialog } from './taxes-view-dialog'
 import { useTaxes } from './taxes-provider'
@@ -22,6 +23,7 @@ export function TaxesDialogs() {
   const userPermissions = session?.user?.user_permissions || []
   const canCreate = userPermissions.includes('taxes-create')
   const canImport = userPermissions.includes('taxes-import')
+  const canExport = userPermissions.includes('taxes-export')
   const canUpdate = userPermissions.includes('taxes-update')
   const canDelete = userPermissions.includes('taxes-delete')
   const canView = userPermissions.includes('taxes-index')
@@ -45,6 +47,15 @@ export function TaxesDialogs() {
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
           }}
+        />
+      )}
+
+      {canExport && (
+        <TaxesExportDialog
+          key='tax-export'
+          open={open === 'export'}
+          onOpenChange={(state) => setOpen(state ? 'export' : null)}
+          ids={[]}
         />
       )}
 

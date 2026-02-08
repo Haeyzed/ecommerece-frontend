@@ -14,10 +14,10 @@
 
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { 
-  CheckmarkCircle02Icon, 
-  Delete02Icon, 
-  UnavailableIcon 
+import {
+  CheckmarkCircle02Icon,
+  Delete02Icon,
+  UnavailableIcon
 } from '@hugeicons/core-free-icons'
 import { type Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
@@ -27,9 +27,9 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
-import { 
-  useBulkActivateUnits, 
-  useBulkDeactivateUnits 
+import {
+  useBulkActivateUnits,
+  useBulkDeactivateUnits
 } from '../api'
 import { type Unit } from '../types'
 import { UnitsMultiDeleteDialog } from './units-multi-delete-dialog'
@@ -50,8 +50,9 @@ export function DataTableBulkActions<TData>({
   const { mutate: deactivateUnits, isPending: isDeactivating } = useBulkDeactivateUnits()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const hasPermission = userPermissions.includes('unit')
-  if (!hasPermission) return null
+  const canUpdate = userPermissions.includes('units-update')
+  const canDelete = userPermissions.includes('units-delete')
+  if (!canUpdate && !canDelete) return null
   const isBusy = isActivating || isDeactivating
 
   const handleBulkStatusChange = (status: 'active' | 'inactive') => {
@@ -69,80 +70,88 @@ export function DataTableBulkActions<TData>({
   return (
     <>
       <BulkActionsToolbar table={table} entityName='unit'>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant='outline'
-              size='icon'
-              onClick={() => handleBulkStatusChange('active')}
-              disabled={isBusy}
-              className='size-8'
-              aria-label='Activate selected units'
-              title='Activate selected units'
-            >
-              {isActivating ? (
-                <Spinner className='size-4' />
-              ) : (
-                <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
-              )}
-              <span className='sr-only'>Activate selected units</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Activate selected units</p>
-          </TooltipContent>
-        </Tooltip>
+        {canUpdate && (
+          <>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant='outline'
+                  size='icon'
+                  onClick={() => handleBulkStatusChange('active')}
+                  disabled={isBusy}
+                  className='size-8'
+                  aria-label='Activate selected units'
+                  title='Activate selected units'
+                >
+                  {isActivating ? (
+                    <Spinner className='size-4' />
+                  ) : (
+                    <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
+                  )}
+                  <span className='sr-only'>Activate selected units</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Activate selected units</p>
+              </TooltipContent>
+            </Tooltip>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant='outline'
-              size='icon'
-              onClick={() => handleBulkStatusChange('inactive')}
-              disabled={isBusy}
-              className='size-8'
-              aria-label='Deactivate selected units'
-              title='Deactivate selected units'
-            >
-              {isDeactivating ? (
-                <Spinner className='size-4' />
-              ) : (
-                <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
-              )}
-              <span className='sr-only'>Deactivate selected units</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Deactivate selected units</p>
-          </TooltipContent>
-        </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant='outline'
+                  size='icon'
+                  onClick={() => handleBulkStatusChange('inactive')}
+                  disabled={isBusy}
+                  className='size-8'
+                  aria-label='Deactivate selected units'
+                  title='Deactivate selected units'
+                >
+                  {isDeactivating ? (
+                    <Spinner className='size-4' />
+                  ) : (
+                    <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
+                  )}
+                  <span className='sr-only'>Deactivate selected units</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Deactivate selected units</p>
+              </TooltipContent>
+            </Tooltip>
+          </>
+        )}
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant='destructive'
-              size='icon'
-              onClick={() => setShowDeleteConfirm(true)}
-              disabled={isBusy}
-              className='size-8'
-              aria-label='Delete selected units'
-              title='Delete selected units'
-            >
-              <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} />
-              <span className='sr-only'>Delete selected units</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Delete selected units</p>
-          </TooltipContent>
-        </Tooltip>
+        {canDelete && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant='destructive'
+                size='icon'
+                onClick={() => setShowDeleteConfirm(true)}
+                disabled={isBusy}
+                className='size-8'
+                aria-label='Delete selected units'
+                title='Delete selected units'
+              >
+                <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} />
+                <span className='sr-only'>Delete selected units</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Delete selected units</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
       </BulkActionsToolbar>
 
-      <UnitsMultiDeleteDialog
-        table={table}
-        open={showDeleteConfirm}
-        onOpenChange={setShowDeleteConfirm}
-      />
+      {canDelete && (
+        <UnitsMultiDeleteDialog
+          table={table}
+          open={showDeleteConfirm}
+          onOpenChange={setShowDeleteConfirm}
+        />
+      )}
     </>
   )
 }

@@ -46,19 +46,13 @@ export function DataTableBulkActions<TData>({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map((row) => (row.original as Brand).id)
-
   const { mutate: activateBrands, isPending: isActivating } = useBulkActivateBrands()
   const { mutate: deactivateBrands, isPending: isDeactivating } = useBulkDeactivateBrands()
-  
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-
   const canUpdate = userPermissions.includes('brands-update')
   const canDelete = userPermissions.includes('brands-delete')
-
-  // If user has no permissions for bulk actions, don't render the toolbar
   if (!canUpdate && !canDelete) return null
-
   const isBusy = isActivating || isDeactivating
 
   const handleBulkStatusChange = (status: 'active' | 'inactive') => {

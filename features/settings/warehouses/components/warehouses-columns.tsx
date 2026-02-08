@@ -98,6 +98,30 @@ export const warehousesColumns: ColumnDef<Warehouse>[] = [
     meta: { className: 'w-48' },
   },
   {
+    accessorKey: 'number_of_products',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Products' />
+    ),
+    cell: ({ row }) => (
+      <span className='tabular-nums'>
+        {row.original.number_of_products ?? '-'}
+      </span>
+    ),
+    meta: { className: 'w-24 text-end' },
+  },
+  {
+    accessorKey: 'stock_quantity',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Stock Qty' />
+    ),
+    cell: ({ row }) => (
+      <span className='tabular-nums'>
+        {row.original.stock_quantity ?? '-'}
+      </span>
+    ),
+    meta: { className: 'w-24 text-end' },
+  },
+  {
     accessorKey: 'status',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Status' />

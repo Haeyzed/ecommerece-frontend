@@ -125,6 +125,21 @@ function WarehouseView({ className, currentRow }: WarehouseViewProps) {
         </div>
       )}
 
+      <div className='grid grid-cols-2 gap-4'>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>Number of Products</div>
+          <div className='text-sm tabular-nums'>
+            {currentRow.number_of_products ?? '-'}
+          </div>
+        </div>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>Stock Quantity</div>
+          <div className='text-sm tabular-nums'>
+            {currentRow.stock_quantity ?? '-'}
+          </div>
+        </div>
+      </div>
+
       <div className='space-y-2'>
         <div className='text-sm font-medium text-muted-foreground'>Status</div>
         <Badge

@@ -19,6 +19,8 @@ export interface Warehouse {
   phone: string | null;
   email: string | null;
   address: string | null;
+  number_of_products?: number;
+  stock_quantity?: number;
   is_active: boolean;
   created_at: string | null;
   updated_at: string | null;

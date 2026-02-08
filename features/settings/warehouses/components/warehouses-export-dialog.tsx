@@ -53,6 +53,8 @@ const AVAILABLE_COLUMNS = [
   { value: 'phone', label: 'Phone' },
   { value: 'email', label: 'Email' },
   { value: 'address', label: 'Address' },
+  { value: 'number_of_products', label: 'Number of Products' },
+  { value: 'stock_quantity', label: 'Stock Quantity' },
   { value: 'is_active', label: 'Is Active' },
   { value: 'created_at', label: 'Created At' },
   { value: 'updated_at', label: 'Updated At' },

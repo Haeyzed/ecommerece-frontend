@@ -10,7 +10,7 @@
  */
 
 import { HugeiconsIcon } from '@hugeicons/react'
-import { FileImportIcon, PlusSignIcon } from '@hugeicons/core-free-icons'
+import { FileImportIcon, PlusSignIcon, Upload01Icon } from '@hugeicons/core-free-icons'
 import { Button } from '@/components/ui/button'
 import { useBrands } from './brands-provider'
 import { useAuthSession } from '@/features/auth/api' // Import the session hook
@@ -24,13 +24,23 @@ export function BrandsPrimaryButtons() {
 
   // Define the checks
   const canImport = userPermissions.includes('brands-import')
+  const canExport = userPermissions.includes('brands-export')
   const canCreate = userPermissions.includes('brands-create')
 
   // If the user has neither permission, hide the entire container
-  if (!canImport && !canCreate) return null
+  if (!canImport && !canExport && !canCreate) return null
 
   return (
     <div className='flex gap-2'>
+      {canExport && (
+        <Button
+          variant='outline'
+          className='space-x-1'
+          onClick={() => setOpen('export')}
+        >
+          <span>Export Brands</span> <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} size={18} />
+        </Button>
+      )}
       {canImport && (
         <Button
           variant='outline'

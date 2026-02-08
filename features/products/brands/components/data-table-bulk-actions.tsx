@@ -17,7 +17,8 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { 
   CheckmarkCircle02Icon, 
   Delete02Icon, 
-  UnavailableIcon 
+  UnavailableIcon,
+  Upload01Icon
 } from '@hugeicons/core-free-icons'
 import { type Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
@@ -32,6 +33,7 @@ import {
   useBulkDeactivateBrands 
 } from '../api'
 import { type Brand } from '../types'
+import { BrandsExportDialog } from './brands-export-dialog'
 import { BrandsMultiDeleteDialog } from './brands-multi-delete-dialog'
 import { useAuthSession } from '@/features/auth/api'
 import { Spinner } from '@/components/ui/spinner'
@@ -44,6 +46,7 @@ export function DataTableBulkActions<TData>({
   table,
 }: DataTableBulkActionsProps<TData>) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [showExportDialog, setShowExportDialog] = useState(false)
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map((row) => (row.original as Brand).id)
   const { mutate: activateBrands, isPending: isActivating } = useBulkActivateBrands()
@@ -52,7 +55,8 @@ export function DataTableBulkActions<TData>({
   const userPermissions = session?.user?.user_permissions || []
   const canUpdate = userPermissions.includes('brands-update')
   const canDelete = userPermissions.includes('brands-delete')
-  if (!canUpdate && !canDelete) return null
+  const canExport = userPermissions.includes('brands-export')
+  if (!canUpdate && !canDelete && !canExport) return null
   const isBusy = isActivating || isDeactivating
 
   const handleBulkStatusChange = (status: 'active' | 'inactive') => {
@@ -122,6 +126,28 @@ export function DataTableBulkActions<TData>({
           </>
         )}
 
+        {canExport && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant='outline'
+                size='icon'
+                onClick={() => setShowExportDialog(true)}
+                disabled={isBusy}
+                className='size-8'
+                aria-label='Export selected brands'
+                title='Export selected brands'
+              >
+                <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} />
+                <span className='sr-only'>Export selected brands</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Export selected brands</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
+
         {canDelete && (
           <Tooltip>
             <TooltipTrigger asChild>
@@ -150,6 +176,14 @@ export function DataTableBulkActions<TData>({
           table={table}
           open={showDeleteConfirm}
           onOpenChange={setShowDeleteConfirm}
+        />
+      )}
+
+      {canExport && (
+        <BrandsExportDialog
+          open={showExportDialog}
+          onOpenChange={setShowExportDialog}
+          ids={selectedIds}
         />
       )}
     </>

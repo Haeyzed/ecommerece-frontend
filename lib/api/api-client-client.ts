@@ -93,6 +93,16 @@ export interface UseApiClientReturn {
       url: string,
       options?: ApiClientOptions
     ) => Promise<NormalizedApiResponse<T>>;
+
+    /**
+     * Performs a POST request and returns the response as a Blob.
+     * Used for file downloads (e.g., export to Excel/PDF).
+     */
+    postBlob: (
+      url: string,
+      body?: unknown,
+      options?: ApiClientOptions
+    ) => Promise<Blob>;
   };
 
   /**
@@ -224,6 +234,27 @@ export function useApiClient(): UseApiClientReturn {
           ...getHeaders(),
           ...options?.headers,
         },
+        skipAuth: true,
+      });
+    },
+
+    /**
+     * Performs a POST request and returns the response as a Blob.
+     * Used for file downloads (e.g., export to Excel/PDF).
+     */
+    postBlob: async (
+      url: string,
+      body?: unknown,
+      options?: ApiClientOptions
+    ): Promise<Blob> => {
+      const headers =
+        body instanceof FormData
+          ? getHeaders()
+          : { ...getHeaders(), ...options?.headers };
+
+      return api.postBlob(url, body, {
+        ...options,
+        headers,
         skipAuth: true,
       });
     },

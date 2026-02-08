@@ -11,6 +11,7 @@
 
 import { BrandsActionDialog } from './brands-action-dialog'
 import { BrandsDeleteDialog } from './brands-delete-dialog'
+import { BrandsExportDialog } from './brands-export-dialog'
 import { BrandsImportDialog } from './brands-import-dialog'
 import { BrandsViewDialog } from './brands-view-dialog'
 import { useBrands } from './brands-provider'
@@ -24,6 +25,7 @@ export function BrandsDialogs() {
 
   const canCreate = userPermissions.includes('brands-create')
   const canImport = userPermissions.includes('brands-import')
+  const canExport = userPermissions.includes('brands-export')
   const canUpdate = userPermissions.includes('brands-update')
   const canDelete = userPermissions.includes('brands-delete')
   const canView = userPermissions.includes('brands-index')
@@ -43,6 +45,15 @@ export function BrandsDialogs() {
           key='brand-import'
           open={open === 'import'}
           onOpenChange={() => setOpen('import')}
+        />
+      )}
+
+      {canExport && (
+        <BrandsExportDialog
+          key='brand-export'
+          open={open === 'export'}
+          onOpenChange={(state) => setOpen(state ? 'export' : null)}
+          ids={[]}
         />
       )}
 

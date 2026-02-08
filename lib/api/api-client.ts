@@ -24,6 +24,7 @@ import {
   NotFoundError,
   ServerError,
   ForbiddenError,
+  ConflictError,
 } from "./api-errors";
 
 /**
@@ -188,6 +189,9 @@ class ApiClient {
 
       case 404:
         throw new NotFoundError(message);
+
+      case 409:
+        throw new ConflictError(message);
 
       case 422:
         throw new ValidationError(message, errors || {});
@@ -370,6 +374,55 @@ class ApiClient {
       ...options,
       method: "DELETE",
     });
+  }
+
+  /**
+   * Performs a POST request and returns the response as a Blob.
+   * Used for file downloads (e.g., export to Excel/PDF).
+   *
+   * @param url - Endpoint URL.
+   * @param body - Request payload (JSON object).
+   * @param options - Request options.
+   * @returns {Promise<Blob>} The response body as a Blob.
+   */
+  async postBlob(
+    url: string,
+    body?: unknown,
+    options?: ApiClientOptions
+  ): Promise<Blob> {
+    const fullURL = this.buildURL(url);
+    const isFormData = body instanceof FormData;
+
+    const requestHeaders: Record<string, string> = {
+      Accept: "*/*",
+      ...(options?.headers as Record<string, string>),
+    };
+
+    if (!isFormData && body) {
+      requestHeaders["Content-Type"] = "application/json";
+    }
+
+    let authToken: string | null = null;
+    if (!options?.skipAuth) {
+      authToken = await this.getAuthToken();
+    }
+    if (authToken) {
+      requestHeaders.Authorization = `Bearer ${authToken}`;
+    }
+
+    const response = await fetch(fullURL, {
+      ...options,
+      method: "POST",
+      headers: requestHeaders,
+      body:
+        body instanceof FormData ? body : body ? JSON.stringify(body) : undefined,
+    });
+
+    if (!response.ok) {
+      await this.handleError(response);
+    }
+
+    return response.blob();
   }
 }
 

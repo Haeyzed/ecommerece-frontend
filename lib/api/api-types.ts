@@ -27,7 +27,7 @@ export interface PaginationMeta {
  * @template T - The type of the `data` payload.
  */
 export interface ApiResponse<T = unknown> {
-  status: boolean;
+  success: boolean;
   message: string;
   data: T | null;
   meta?: PaginationMeta;
@@ -36,7 +36,7 @@ export interface ApiResponse<T = unknown> {
 
 /**
  * A normalized response structure used internally by the frontend application.
- * Maps the backend's `status` boolean to a more conventional `success` property.
+ * Maps the backend's `success` boolean to a more conventional `success` property.
  *
  * @template T - The type of the `data` payload.
  */

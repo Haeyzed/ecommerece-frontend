@@ -140,7 +140,7 @@ class ApiClient {
     response: ApiResponse<T>
   ): NormalizedApiResponse<T> {
     return {
-      success: response.status,
+      success: response.success,
       message: response.message,
       data: response.data,
       meta: response.meta,

@@ -12,8 +12,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Upload01Icon } from '@hugeicons/core-free-icons'
 
-import { useTaxesExport } from '@/features/products/taxes/api'
-import { taxExportSchema, type TaxExportFormData } from '@/features/products/taxes/schemas'
+import { useTaxesExport } from '@/features/settings/taxes/api'
+import { taxExportSchema, type TaxExportFormData } from '@/features/settings/taxes/schemas'
 
 import { Button } from '@/components/ui/button'
 import {

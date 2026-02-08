@@ -21,8 +21,8 @@ import {
   CancelCircleIcon
 } from '@hugeicons/core-free-icons'
 
-import { useTaxesImport } from '@/features/products/taxes/api'
-import { taxImportSchema, type TaxImportFormData } from '@/features/products/taxes/schemas'
+import { useTaxesImport } from '@/features/settings/taxes/api'
+import { taxImportSchema, type TaxImportFormData } from '@/features/settings/taxes/schemas'
 import { downloadSampleAsCsv } from '@/lib/download-sample-csv'
 import { SAMPLE_TAXES_CSV } from '../constants'
 import { TaxesCsvPreviewDialog } from './taxes-csv-preview-dialog'

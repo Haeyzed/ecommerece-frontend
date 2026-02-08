@@ -36,7 +36,7 @@ import {
   TaxesEmptyState,
   DataTableBulkActions,
   taxesColumns as columns
-} from '@/features/products/taxes'
+} from '@/features/settings/taxes'
 
 export function TaxesTable() {
   // Local UI-only states

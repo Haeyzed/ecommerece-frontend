@@ -1,6 +1,6 @@
 import { auth } from "@/auth"
 import { ForbiddenError } from "@/features/errors/forbidden";
-import { TaxesClient } from "@/features/products/taxes";
+import { TaxesClient } from "@/features/settings/taxes";
 import { hasPermission } from "@/lib/utils/permissions"
 
 export const metadata = {

@@ -588,7 +588,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
               url: "/settings/send-notification",
             },
             {
-              title: "Warehouse",
+              title: "Warehouses",
               url: "/settings/warehouses",
               permissions: ["warehouses-index"],
             },
@@ -601,20 +601,12 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
               url: "/settings/customer-group",
             },
             {
-              title: "Brand",
-              url: "/settings/brand",
-            },
-            {
-              title: "Unit",
-              url: "/settings/unit",
-            },
-            {
               title: "Currency",
               url: "/settings/currency",
             },
             {
-              title: "Tax",
-              url: "/settings/tax",
+              title: "Taxes",
+              url: "/settings/taxes",
               permissions: ["taxes-index"],
             },
             {

@@ -20,8 +20,8 @@ import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 import {
   useCreateTax,
   useUpdateTax
-} from '@/features/products/taxes/api'
-import { taxSchema, type TaxFormData } from '@/features/products/taxes/schemas'
+} from '@/features/settings/taxes/api'
+import { taxSchema, type TaxFormData } from '@/features/settings/taxes/schemas'
 import { type Tax } from '../types'
 
 import { useMediaQuery } from '@/hooks/use-media-query'

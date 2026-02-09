@@ -1,8 +1,10 @@
 'use client'
 
 import { type ColumnDef } from '@tanstack/react-table'
+import { cn } from '@/lib/utils'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { Badge } from '@/components/ui/badge'
+import { DataTableRowActions } from './data-table-row-actions'
 import {
   Popover,
   PopoverContent,
@@ -166,5 +168,12 @@ export const auditColumns: ColumnDef<Audit>[] = [
       </span>
     ),
     meta: { className: 'w-36' },
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => <DataTableRowActions row={row} />,
+    meta: {
+      className: cn('max-md:sticky end-0 z-10 rounded-tr-[inherit]'),
+    },
   },
 ]

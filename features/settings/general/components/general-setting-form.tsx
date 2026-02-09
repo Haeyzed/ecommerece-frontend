@@ -1,7 +1,14 @@
 'use client'
 
-import { CancelCircleIcon, CloudUploadIcon } from '@hugeicons/core-free-icons'
+import {
+  CancelCircleIcon,
+  CloudUploadIcon,
+  CodeIcon,
+  CopyIcon,
+  RefreshIcon,
+} from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
+import { toast } from 'sonner'
 import Image from 'next/image'
 import { Controller, type UseFormReturn } from 'react-hook-form'
 import { useTheme } from '@/lib/providers/theme-provider'
@@ -28,9 +35,12 @@ import {
 import { ImageZoom } from '@/components/ui/image-zoom'
 import {
   InputGroup,
-  InputGroupInput,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupText,
   InputGroupTextarea,
 } from '@/components/ui/input-group'
+import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import {
   Select,
@@ -95,9 +105,7 @@ export function GeneralSettingForm({
                   <FieldLabel htmlFor="site_title">
                     System Title <span className="text-destructive">*</span>
                   </FieldLabel>
-                  <InputGroup>
-                    <InputGroupInput id="site_title" placeholder="System title" {...field} />
-                  </InputGroup>
+                  <Input id="site_title" placeholder="System title" {...field} />
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -318,9 +326,7 @@ export function GeneralSettingForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="company_name">Company Name</FieldLabel>
-                  <InputGroup>
-                    <InputGroupInput id="company_name" placeholder="Company name" {...field} value={field.value ?? ''} />
-                  </InputGroup>
+                  <Input id="company_name" placeholder="Company name" {...field} value={field.value ?? ''} />
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -332,9 +338,7 @@ export function GeneralSettingForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="vat_registration_number">VAT Registration Number</FieldLabel>
-                  <InputGroup>
-                    <InputGroupInput id="vat_registration_number" placeholder="VAT number" {...field} value={field.value ?? ''} />
-                  </InputGroup>
+                  <Input id="vat_registration_number" placeholder="VAT number" {...field} value={field.value ?? ''} />
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -346,9 +350,7 @@ export function GeneralSettingForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="timezone">Time Zone</FieldLabel>
-                  <InputGroup>
-                    <InputGroupInput id="timezone" placeholder="e.g. UTC" {...field} value={field.value ?? ''} />
-                  </InputGroup>
+                  <Input id="timezone" placeholder="e.g. UTC" {...field} value={field.value ?? ''} />
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -360,9 +362,7 @@ export function GeneralSettingForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="currency">Currency</FieldLabel>
-                  <InputGroup>
-                    <InputGroupInput id="currency" placeholder="Currency code or ID" {...field} value={field.value ?? ''} />
-                  </InputGroup>
+                  <Input id="currency" placeholder="Currency code or ID" {...field} value={field.value ?? ''} />
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -403,17 +403,15 @@ export function GeneralSettingForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="decimal">Digits after decimal point</FieldLabel>
-                  <InputGroup>
-                    <InputGroupInput
-                      id="decimal"
-                      type="number"
-                      min={0}
-                      max={6}
-                      {...field}
-                      value={field.value ?? ''}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.onChange(e.target.value ? Number(e.target.value) : null)}
-                    />
-                  </InputGroup>
+                  <Input
+                    id="decimal"
+                    type="number"
+                    min={0}
+                    max={6}
+                    {...field}
+                    value={field.value ?? ''}
+                    onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                  />
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -621,16 +619,14 @@ export function GeneralSettingForm({
                   <FieldDescription>
                     Show alerts for products expiring within this many days
                   </FieldDescription>
-                  <InputGroup>
-                    <InputGroupInput
-                      id="expiry_alert_days"
-                      type="number"
-                      min={0}
-                      {...field}
-                      value={field.value ?? ''}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.onChange(e.target.value ? Number(e.target.value) : null)}
-                    />
-                  </InputGroup>
+                  <Input
+                    id="expiry_alert_days"
+                    type="number"
+                    min={0}
+                    {...field}
+                    value={field.value ?? ''}
+                    onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                  />
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -642,9 +638,7 @@ export function GeneralSettingForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="developed_by">Developed By</FieldLabel>
-                  <InputGroup>
-                    <InputGroupInput id="developed_by" placeholder="Developer name" {...field} value={field.value ?? ''} />
-                  </InputGroup>
+                  <Input id="developed_by" placeholder="Developer name" {...field} value={field.value ?? ''} />
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -679,17 +673,15 @@ export function GeneralSettingForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="default_margin_value">Default profit margin value</FieldLabel>
-                  <InputGroup>
-                    <InputGroupInput
-                      id="default_margin_value"
-                      type="number"
-                      min={0}
-                      step="any"
-                      {...field}
-                      value={field.value ?? ''}
-                      onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
-                    />
-                  </InputGroup>
+                  <Input
+                    id="default_margin_value"
+                    type="number"
+                    min={0}
+                    step="any"
+                    {...field}
+                    value={field.value ?? ''}
+                    onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                  />
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -751,14 +743,12 @@ export function GeneralSettingForm({
                   <FieldDescription>
                     Comma-separated IPs allowed when maintenance mode is on. Leave empty to disable.
                   </FieldDescription>
-                  <InputGroup>
-                    <InputGroupInput
-                      id="maintenance_allowed_ips"
-                      placeholder="127.0.0.1, 192.168.1.1"
-                      {...field}
-                      value={field.value ?? ''}
-                    />
-                  </InputGroup>
+                  <Input
+                    id="maintenance_allowed_ips"
+                    placeholder="127.0.0.1, 192.168.1.1"
+                    {...field}
+                    value={field.value ?? ''}
+                  />
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -780,14 +770,44 @@ export function GeneralSettingForm({
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="font_css">Font CSS</FieldLabel>
                   <InputGroup className="h-auto">
+                    <InputGroupAddon align="block-start" className="border-b">
+                      <InputGroupText className="font-mono font-medium">
+                        <HugeiconsIcon icon={CodeIcon} strokeWidth={2} />
+                        font.css
+                      </InputGroupText>
+                      <InputGroupButton
+                        size="icon-xs"
+                        className="ml-auto"
+                        type="button"
+                        onClick={() => field.onChange('')}
+                      >
+                        <HugeiconsIcon icon={RefreshIcon} strokeWidth={2} />
+                      </InputGroupButton>
+                      <InputGroupButton
+                        size="icon-xs"
+                        variant="ghost"
+                        type="button"
+                        onClick={() => {
+                          const v = field.value ?? ''
+                          void navigator.clipboard.writeText(v).then(() => toast.success('Copied to clipboard'))
+                        }}
+                      >
+                        <HugeiconsIcon icon={CopyIcon} strokeWidth={2} />
+                        <span className="sr-only">Copy</span>
+                      </InputGroupButton>
+                    </InputGroupAddon>
                     <InputGroupTextarea
                       id="font_css"
                       rows={4}
-                      className="min-h-[100px] resize-none font-mono text-sm"
-                      placeholder="Custom font CSS"
+                      className="min-h-[300px] resize-none py-3 font-mono text-sm"
+                      placeholder="/* Custom font CSS */"
                       {...field}
                       value={field.value ?? ''}
                     />
+                    <InputGroupAddon align="block-end" className="border-t">
+                      <InputGroupText>Line 1, Column 1</InputGroupText>
+                      <InputGroupText className="ml-auto">CSS</InputGroupText>
+                    </InputGroupAddon>
                   </InputGroup>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
@@ -801,14 +821,44 @@ export function GeneralSettingForm({
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="auth_css">Auth pages CSS (login, registration, etc.)</FieldLabel>
                   <InputGroup className="h-auto">
+                    <InputGroupAddon align="block-start" className="border-b">
+                      <InputGroupText className="font-mono font-medium">
+                        <HugeiconsIcon icon={CodeIcon} strokeWidth={2} />
+                        auth.css
+                      </InputGroupText>
+                      <InputGroupButton
+                        size="icon-xs"
+                        className="ml-auto"
+                        type="button"
+                        onClick={() => field.onChange('')}
+                      >
+                        <HugeiconsIcon icon={RefreshIcon} strokeWidth={2} />
+                      </InputGroupButton>
+                      <InputGroupButton
+                        size="icon-xs"
+                        variant="ghost"
+                        type="button"
+                        onClick={() => {
+                          const v = field.value ?? ''
+                          void navigator.clipboard.writeText(v).then(() => toast.success('Copied to clipboard'))
+                        }}
+                      >
+                        <HugeiconsIcon icon={CopyIcon} strokeWidth={2} />
+                        <span className="sr-only">Copy</span>
+                      </InputGroupButton>
+                    </InputGroupAddon>
                     <InputGroupTextarea
                       id="auth_css"
                       rows={4}
-                      className="min-h-[100px] resize-none font-mono text-sm"
-                      placeholder="CSS for auth pages"
+                      className="min-h-[300px] resize-none py-3 font-mono text-sm"
+                      placeholder="/* CSS for auth pages */"
                       {...field}
                       value={field.value ?? ''}
                     />
+                    <InputGroupAddon align="block-end" className="border-t">
+                      <InputGroupText>Line 1, Column 1</InputGroupText>
+                      <InputGroupText className="ml-auto">CSS</InputGroupText>
+                    </InputGroupAddon>
                   </InputGroup>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
@@ -822,14 +872,44 @@ export function GeneralSettingForm({
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="pos_css">POS page CSS</FieldLabel>
                   <InputGroup className="h-auto">
+                    <InputGroupAddon align="block-start" className="border-b">
+                      <InputGroupText className="font-mono font-medium">
+                        <HugeiconsIcon icon={CodeIcon} strokeWidth={2} />
+                        pos.css
+                      </InputGroupText>
+                      <InputGroupButton
+                        size="icon-xs"
+                        className="ml-auto"
+                        type="button"
+                        onClick={() => field.onChange('')}
+                      >
+                        <HugeiconsIcon icon={RefreshIcon} strokeWidth={2} />
+                      </InputGroupButton>
+                      <InputGroupButton
+                        size="icon-xs"
+                        variant="ghost"
+                        type="button"
+                        onClick={() => {
+                          const v = field.value ?? ''
+                          void navigator.clipboard.writeText(v).then(() => toast.success('Copied to clipboard'))
+                        }}
+                      >
+                        <HugeiconsIcon icon={CopyIcon} strokeWidth={2} />
+                        <span className="sr-only">Copy</span>
+                      </InputGroupButton>
+                    </InputGroupAddon>
                     <InputGroupTextarea
                       id="pos_css"
                       rows={4}
-                      className="min-h-[100px] resize-none font-mono text-sm"
-                      placeholder="CSS for POS page"
+                      className="min-h-[300px] resize-none py-3 font-mono text-sm"
+                      placeholder="/* CSS for POS page */"
                       {...field}
                       value={field.value ?? ''}
                     />
+                    <InputGroupAddon align="block-end" className="border-t">
+                      <InputGroupText>Line 1, Column 1</InputGroupText>
+                      <InputGroupText className="ml-auto">CSS</InputGroupText>
+                    </InputGroupAddon>
                   </InputGroup>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
@@ -843,14 +923,44 @@ export function GeneralSettingForm({
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="custom_css">Custom CSS (other pages)</FieldLabel>
                   <InputGroup className="h-auto">
+                    <InputGroupAddon align="block-start" className="border-b">
+                      <InputGroupText className="font-mono font-medium">
+                        <HugeiconsIcon icon={CodeIcon} strokeWidth={2} />
+                        custom.css
+                      </InputGroupText>
+                      <InputGroupButton
+                        size="icon-xs"
+                        className="ml-auto"
+                        type="button"
+                        onClick={() => field.onChange('')}
+                      >
+                        <HugeiconsIcon icon={RefreshIcon} strokeWidth={2} />
+                      </InputGroupButton>
+                      <InputGroupButton
+                        size="icon-xs"
+                        variant="ghost"
+                        type="button"
+                        onClick={() => {
+                          const v = field.value ?? ''
+                          void navigator.clipboard.writeText(v).then(() => toast.success('Copied to clipboard'))
+                        }}
+                      >
+                        <HugeiconsIcon icon={CopyIcon} strokeWidth={2} />
+                        <span className="sr-only">Copy</span>
+                      </InputGroupButton>
+                    </InputGroupAddon>
                     <InputGroupTextarea
                       id="custom_css"
                       rows={4}
-                      className="min-h-[100px] resize-none font-mono text-sm"
-                      placeholder="Custom CSS"
+                      className="min-h-[300px] resize-none py-3 font-mono text-sm"
+                      placeholder="/* Custom CSS */"
                       {...field}
                       value={field.value ?? ''}
                     />
+                    <InputGroupAddon align="block-end" className="border-t">
+                      <InputGroupText>Line 1, Column 1</InputGroupText>
+                      <InputGroupText className="ml-auto">CSS</InputGroupText>
+                    </InputGroupAddon>
                   </InputGroup>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>

@@ -25,9 +25,9 @@ export function ActivityLogClient() {
 
       <Main className='flex flex-1 flex-col gap-4 sm:gap-6'>
         <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Activity Log</h2>
+          <h2 className='text-2xl font-bold tracking-tight'>Audit Log</h2>
           <p className='text-muted-foreground'>
-            View user activity logs and audit trail.
+            View audit trail from Laravel Auditing. Full event, model, and value change history.
           </p>
         </div>
         <Suspense fallback={<Spinner />}>

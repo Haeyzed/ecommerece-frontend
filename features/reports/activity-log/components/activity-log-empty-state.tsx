@@ -8,8 +8,8 @@ export function ActivityLogEmptyState() {
 
   return (
     <DataTableEmptyState
-      title='No activity logs'
-      description='No activity logs match your current filters. Try adjusting your search or clear filters to see all logs.'
+      title='No audits'
+      description='No audit records match your current filters. Try adjusting your search or clear filters to see all audits.'
       primaryAction={{
         label: 'Clear filters',
         onClick: () => router.push('/reports/activity-log'),

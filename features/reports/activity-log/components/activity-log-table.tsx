@@ -28,9 +28,9 @@ import {
 } from '@tanstack/react-table'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { useActivityLogs } from '@/features/reports/activity-log/api'
+import { useAudits } from '@/features/reports/activity-log/api'
 import { ActivityLogEmptyState } from './activity-log-empty-state'
-import { activityLogColumns as columns } from './activity-log-columns'
+import { auditColumns as columns } from './activity-log-columns'
 
 export function ActivityLogTable() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
@@ -40,13 +40,13 @@ export function ActivityLogTable() {
     useTableUrlState({
       pagination: { defaultPage: 1, defaultPageSize: 10 },
       globalFilter: { enabled: false },
-      columnFilters: [{ columnId: 'action', searchKey: 'search', type: 'string' }],
+      columnFilters: [{ columnId: 'auditable_type', searchKey: 'search', type: 'string' }],
     })
 
   const apiParams = useMemo(() => {
     const page = pagination.pageIndex + 1
     const perPage = pagination.pageSize
-    const searchFilter = columnFilters.find((f) => f.id === 'action')
+    const searchFilter = columnFilters.find((f) => f.id === 'auditable_type')
     return {
       page,
       per_page: perPage,
@@ -54,7 +54,7 @@ export function ActivityLogTable() {
     }
   }, [pagination, columnFilters])
 
-  const { data, isLoading, error } = useActivityLogs(apiParams)
+  const { data, isLoading, error } = useAudits(apiParams)
 
   const pageCount = useMemo(() => {
     if (!data?.meta) return 0
@@ -98,8 +98,8 @@ export function ActivityLogTable() {
     >
       <DataTableToolbar
         table={table}
-        searchPlaceholder='Filter activity logs...'
-        searchKey='action'
+        searchPlaceholder='Filter audits...'
+        searchKey='auditable_type'
       />
       <div className='overflow-hidden rounded-md border'>
         <Table>

@@ -1,36 +1,44 @@
 'use client'
 
 /**
- * Activity Log API Hooks
+ * Audit Log API Hooks
  *
- * Client-side hooks for fetching activity logs using TanStack Query.
- * Read-only: no create, update, or delete operations.
+ * Client-side hooks for fetching audits from Laravel Auditing.
+ * Returns full Audit structure per standard.
  *
  * @module features/reports/activity-log/api
  */
 
 import { useApiClient } from '@/lib/api/api-client-client'
 import { useQuery } from '@tanstack/react-query'
-import type { ActivityLog } from './types'
+import type { Audit } from './types'
 
-export const activityLogKeys = {
-  all: ['activity-logs'] as const,
-  lists: () => [...activityLogKeys.all, 'list'] as const,
+export const auditKeys = {
+  all: ['audits'] as const,
+  lists: () => [...auditKeys.all, 'list'] as const,
   list: (filters?: Record<string, unknown>) =>
-    [...activityLogKeys.lists(), filters] as const,
+    [...auditKeys.lists(), filters] as const,
 }
 
-export function useActivityLogs(params?: {
+export interface UseAuditsParams {
   page?: number
   per_page?: number
   search?: string
-}) {
+  event?: 'created' | 'updated' | 'deleted' | 'restored'
+  auditable_type?: string
+}
+
+export function useAudits(params?: UseAuditsParams) {
   const { api, sessionStatus } = useApiClient()
+  const queryParams = (params ?? {}) as Record<
+    string,
+    string | number | boolean | null | undefined
+  >
   const query = useQuery({
-    queryKey: activityLogKeys.list(params),
+    queryKey: auditKeys.list(queryParams as Record<string, unknown>),
     queryFn: async () => {
-      const response = await api.get<ActivityLog[]>('/activity-logs', {
-        params,
+      const response = await api.get<Audit[]>('/activity-logs', {
+        params: queryParams,
       })
       return response
     },

@@ -349,7 +349,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
           icon: ReportsIcon,
           items: [
             {
-              title: "Activity Log",
+              title: "Audit Log",
               url: "/reports/activity-log",
               permissions: ["activity-log-index"],
             },

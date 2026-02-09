@@ -252,14 +252,6 @@ export const auditColumns: ColumnDef<Audit>[] = [
     meta: { className: 'w-36' },
   },
   {
-    accessorKey: 'old_values',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Changes" />
-    ),
-    cell: ({ row }) => <ValuesDiff audit={row.original} />,
-    meta: { className: 'min-w-24' },
-  },
-  {
     accessorKey: 'ip_address',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="IP" />

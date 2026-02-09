@@ -22,19 +22,11 @@ import { Separator } from '@/components/ui/separator'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { cn } from '@/lib/utils'
 import type { Audit } from '../types'
+import { formatAuditValues } from '../utils/format-audit-values'
 
 function getAuditableTypeLabel(auditableType: string): string {
   const parts = auditableType.split('\\')
   return parts[parts.length - 1] ?? auditableType
-}
-
-function formatValues(values: Record<string, unknown> | null): string {
-  if (!values || typeof values !== 'object') return '-'
-  try {
-    return JSON.stringify(values, null, 2)
-  } catch {
-    return String(values)
-  }
 }
 
 type ActivityLogViewDialogProps = {
@@ -190,24 +182,42 @@ function AuditView({ className, currentRow }: AuditViewProps) {
             </div>
 
             {hasOld && (
-              <div className='space-y-2'>
+              <div className='space-y-1.5'>
                 <p className='text-xs font-semibold text-destructive'>
                   Old values
                 </p>
-                <pre className='whitespace-pre-wrap break-all rounded border bg-muted/30 p-3 font-mono text-xs'>
-                  {formatValues(currentRow.old_values)}
-                </pre>
+                <div className='space-y-1 rounded border bg-muted/30 p-3 text-sm'>
+                  {formatAuditValues(currentRow.old_values).map(
+                    ({ label, value }) => (
+                      <div key={label} className='flex gap-2'>
+                        <span className='shrink-0 font-medium text-muted-foreground'>
+                          {label}:
+                        </span>
+                        <span className='break-all'>{value}</span>
+                      </div>
+                    )
+                  )}
+                </div>
               </div>
             )}
 
             {hasNew && (
-              <div className='space-y-2'>
+              <div className='space-y-1.5'>
                 <p className='text-xs font-semibold text-green-600 dark:text-green-400'>
                   New values
                 </p>
-                <pre className='whitespace-pre-wrap break-all rounded border bg-muted/30 p-3 font-mono text-xs'>
-                  {formatValues(currentRow.new_values)}
-                </pre>
+                <div className='space-y-1 rounded border bg-muted/30 p-3 text-sm'>
+                  {formatAuditValues(currentRow.new_values).map(
+                    ({ label, value }) => (
+                      <div key={label} className='flex gap-2'>
+                        <span className='shrink-0 font-medium text-muted-foreground'>
+                          {label}:
+                        </span>
+                        <span className='break-all'>{value}</span>
+                      </div>
+                    )
+                  )}
+                </div>
               </div>
             )}
           </div>

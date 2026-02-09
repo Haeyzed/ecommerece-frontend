@@ -14,24 +14,20 @@ import { LongText } from '@/components/long-text'
 import type { Audit } from '../types'
 import { ChevronRight } from 'lucide-react'
 
+import { formatAuditValues } from '../utils/format-audit-values'
+
 function getAuditableTypeLabel(auditableType: string): string {
   const parts = auditableType.split('\\')
   return parts[parts.length - 1] ?? auditableType
-}
-
-function formatValues(values: Record<string, unknown> | null): string {
-  if (!values || typeof values !== 'object') return '-'
-  try {
-    return JSON.stringify(values, null, 2)
-  } catch {
-    return String(values)
-  }
 }
 
 function ValuesDiff({ audit }: { audit: Audit }) {
   const hasOld = audit.old_values && Object.keys(audit.old_values).length > 0
   const hasNew = audit.new_values && Object.keys(audit.new_values).length > 0
   if (!hasOld && !hasNew) return <span className="text-muted-foreground">-</span>
+
+  const oldEntries = formatAuditValues(audit.old_values)
+  const newEntries = formatAuditValues(audit.new_values)
 
   return (
     <Popover>
@@ -47,23 +43,37 @@ function ValuesDiff({ audit }: { audit: Audit }) {
         </button>
       </PopoverTrigger>
       <PopoverContent className="max-h-80 w-auto max-w-2xl overflow-auto">
-        <div className="space-y-2 font-mono text-xs">
+        <div className="space-y-4 text-sm">
           {hasOld && (
-            <div>
-              <p className="mb-1 font-semibold text-destructive">Old values</p>
-              <pre className="whitespace-pre-wrap break-all rounded border bg-muted/30 p-2">
-                {formatValues(audit.old_values)}
-              </pre>
+            <div className="space-y-1.5">
+              <p className="font-semibold text-destructive">Old values</p>
+              <div className="space-y-1 rounded border bg-muted/30 p-3">
+                {oldEntries.map(({ label, value }) => (
+                  <div key={label} className="flex gap-2">
+                    <span className="font-medium text-muted-foreground shrink-0">
+                      {label}:
+                    </span>
+                    <span className="break-all">{value}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
           {hasNew && (
-            <div>
-              <p className="mb-1 font-semibold text-green-600 dark:text-green-400">
+            <div className="space-y-1.5">
+              <p className="font-semibold text-green-600 dark:text-green-400">
                 New values
               </p>
-              <pre className="whitespace-pre-wrap break-all rounded border bg-muted/30 p-2">
-                {formatValues(audit.new_values)}
-              </pre>
+              <div className="space-y-1 rounded border bg-muted/30 p-3">
+                {newEntries.map(({ label, value }) => (
+                  <div key={label} className="flex gap-2">
+                    <span className="font-medium text-muted-foreground shrink-0">
+                      {label}:
+                    </span>
+                    <span className="break-all">{value}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>

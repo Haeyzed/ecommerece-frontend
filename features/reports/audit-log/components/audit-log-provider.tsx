@@ -11,7 +11,7 @@ import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import type { Audit } from '../types'
 
-type AuditLogDialogType = 'view'
+type AuditLogDialogType = 'view' | 'export'
 
 type AuditLogContextType = {
   open: AuditLogDialogType | null

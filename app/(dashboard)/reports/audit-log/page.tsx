@@ -10,7 +10,7 @@ export const metadata = {
 export default async function AuditLogPage() {
   const session = await auth()
   const userPermissions = session?.user?.user_permissions ?? []
-  const canView = hasPermission(userPermissions, 'activity-log-index')
+  const canView = hasPermission(userPermissions, 'audit-logs-index')
   if (!canView) {
     return <ForbiddenError />
   }

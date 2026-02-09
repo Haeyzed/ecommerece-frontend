@@ -351,7 +351,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Audit Logs",
               url: "/reports/audit-log",
-              permissions: ["activity-log-index"],
+              permissions: ["audit-logs-index"],
             },
             {
               title: "Summary Report",

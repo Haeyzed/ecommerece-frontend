@@ -30,7 +30,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const { data: session } = useAuthSession()
 
   const userPermissions = session?.user?.user_permissions ?? []
-  const canView = userPermissions.includes('activity-log-index')
+  const canView = userPermissions.includes('audit-logs-index')
 
   if (!canView) return null
 

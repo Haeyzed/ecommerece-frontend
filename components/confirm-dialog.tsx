@@ -105,7 +105,14 @@ export function ConfirmDialog(props: ConfirmDialogProps) {
             onClick={handleConfirm}
             disabled={disabled || isLoading}
           >
-            {confirmText ?? 'Continue'}
+            {isLoading ? (
+                <>
+                  <Spinner className="mr-2 size-4" />
+                  Loading...
+                </>
+              ) : (
+                <>{confirmText ?? 'Continue'}</>
+              )}
           </Button>
           <DrawerClose asChild>
             <Button variant='outline' disabled={isLoading}>

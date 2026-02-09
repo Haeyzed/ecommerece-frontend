@@ -1,5 +1,6 @@
 'use client'
 
+import { Fragment } from 'react'
 import {
   DataTablePagination,
   DataTableSkeleton,
@@ -15,10 +16,12 @@ import {
 import { useTableUrlState } from '@/hooks/use-table-url-state'
 import { cn } from '@/lib/utils'
 import {
+  type ExpandedState,
   type SortingState,
   type VisibilityState,
   flexRender,
   getCoreRowModel,
+  getExpandedRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
@@ -28,13 +31,19 @@ import {
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { useAudits } from '@/features/reports/audit-log/api'
+import type { Audit } from '@/features/reports/audit-log/types'
 import { AuditLogEmptyState } from './audit-log-empty-state'
 import { AuditLogToolbar } from './audit-log-toolbar'
-import { auditColumns as columns } from './audit-log-columns'
+import { DataTableBulkActions } from './data-table-bulk-actions'
+import { auditColumns as columns, AuditLogExpandedContent } from './audit-log-columns'
 
 export function AuditLogTable() {
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    date_from: false,
+    date_to: false,
+  })
   const [sorting, setSorting] = useState<SortingState>([])
+  const [expanded, setExpanded] = useState<ExpandedState>({})
 
   const { columnFilters, onColumnFiltersChange, pagination, onPaginationChange, ensurePageInRange } =
     useTableUrlState({
@@ -45,6 +54,8 @@ export function AuditLogTable() {
         { columnId: 'event', searchKey: 'event', type: 'array' },
         { columnId: 'ip_address', searchKey: 'ip_address', type: 'string' },
         { columnId: 'user', searchKey: 'user', type: 'string' },
+        { columnId: 'date_from', searchKey: 'date_from', type: 'string' },
+        { columnId: 'date_to', searchKey: 'date_to', type: 'string' },
       ],
     })
 
@@ -55,6 +66,8 @@ export function AuditLogTable() {
     const eventFilter = columnFilters.find((f) => f.id === 'event')
     const ipFilter = columnFilters.find((f) => f.id === 'ip_address')
     const userFilter = columnFilters.find((f) => f.id === 'user')
+    const dateFromFilter = columnFilters.find((f) => f.id === 'date_from')
+    const dateToFilter = columnFilters.find((f) => f.id === 'date_to')
     const eventValue = eventFilter?.value && Array.isArray(eventFilter.value)
       ? (eventFilter.value.length === 1 ? eventFilter.value[0] : undefined)
       : undefined
@@ -65,6 +78,8 @@ export function AuditLogTable() {
       event: eventValue as 'created' | 'updated' | 'deleted' | 'restored' | undefined,
       ip_address: ipFilter?.value as string | undefined,
       user: userFilter?.value as string | undefined,
+      date_from: dateFromFilter?.value as string | undefined,
+      date_to: dateToFilter?.value as string | undefined,
     }
   }, [pagination, columnFilters])
 
@@ -75,17 +90,23 @@ export function AuditLogTable() {
     return Math.ceil((data.meta.total || 0) / (data.meta.per_page || 10))
   }, [data?.meta])
 
+  const [rowSelection, setRowSelection] = useState({})
+
   const table = useReactTable({
     data: data?.data ?? [],
     columns,
     pageCount,
-    state: { sorting, pagination, columnFilters, columnVisibility },
-    enableRowSelection: false,
+    state: { sorting, pagination, rowSelection, columnFilters, columnVisibility, expanded },
+    enableRowSelection: true,
     manualPagination: true,
     onPaginationChange,
     onColumnFiltersChange,
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
+    onExpandedChange: setExpanded,
+    onRowSelectionChange: setRowSelection,
+    getRowCanExpand: () => true,
+    getExpandedRowModel: getExpandedRowModel(),
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -104,7 +125,9 @@ export function AuditLogTable() {
     !!apiParams.auditable_type ||
     !!apiParams.event ||
     !!apiParams.ip_address ||
-    !!apiParams.user
+    !!apiParams.user ||
+    !!apiParams.date_from ||
+    !!apiParams.date_to
   if (!isLoading && !hasData && !isFiltered) return <AuditLogEmptyState />
 
   return (
@@ -145,26 +168,37 @@ export function AuditLogTable() {
             <DataTableSkeleton columnCount={columns.length} />
           ) : (
             <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && 'selected'}
-                    className="group/row"
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className={cn(
-                          'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
-                          (cell.column.columnDef.meta as { className?: string })?.className,
-                          (cell.column.columnDef.meta as { tdClassName?: string })?.tdClassName
-                        )}
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
+              {table.getExpandedRowModel().rows?.length ? (
+                table.getExpandedRowModel().rows.map((row) => (
+                  <Fragment key={row.id}>
+                    <TableRow
+                      data-state={row.getIsSelected() && 'selected'}
+                      className="group/row"
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          className={cn(
+                            'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
+                            (cell.column.columnDef.meta as { className?: string })?.className,
+                            (cell.column.columnDef.meta as { tdClassName?: string })?.tdClassName
+                          )}
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                    {row.getIsExpanded() && (
+                      <TableRow className="bg-muted/30 hover:bg-muted/30">
+                        <TableCell
+                          colSpan={columns.length}
+                          className="p-4"
+                        >
+                          <AuditLogExpandedContent audit={row.original as Audit} />
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </Fragment>
                 ))
               ) : (
                 <TableRow>
@@ -178,6 +212,7 @@ export function AuditLogTable() {
         </Table>
       </div>
       <DataTablePagination table={table} className="mt-auto" />
+      <DataTableBulkActions table={table} />
     </div>
   )
 }

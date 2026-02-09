@@ -2,8 +2,9 @@
 
 import { type ColumnDef } from '@tanstack/react-table'
 import { cn } from '@/lib/utils'
-import { DataTableColumnHeader } from '@/components/data-table'
+import { DataTableColumnHeader, DataTableExpandButton } from '@/components/data-table'
 import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableRowActions } from './data-table-row-actions'
 import {
   Popover,
@@ -15,6 +16,47 @@ import type { Audit } from '../types'
 import { ChevronRight } from 'lucide-react'
 
 import { formatAuditValues } from '../utils/format-audit-values'
+
+/** Rendered inside the expandable row; shows old/new values. */
+export function AuditLogExpandedContent({ audit }: { audit: Audit }) {
+  const hasOld = audit.old_values && Object.keys(audit.old_values).length > 0
+  const hasNew = audit.new_values && Object.keys(audit.new_values).length > 0
+  if (!hasOld && !hasNew) return <span className="text-muted-foreground">No changes</span>
+
+  const oldEntries = formatAuditValues(audit.old_values)
+  const newEntries = formatAuditValues(audit.new_values)
+
+  return (
+    <div className="space-y-4 text-sm">
+      {hasOld && (
+        <div className="space-y-1.5">
+          <p className="font-semibold text-destructive">Old values</p>
+          <div className="space-y-1 rounded border bg-muted/30 p-3">
+            {oldEntries.map(({ label, value }) => (
+              <div key={label} className="flex gap-2">
+                <span className="font-medium text-muted-foreground shrink-0">{label}:</span>
+                <span className="break-all">{value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {hasNew && (
+        <div className="space-y-1.5">
+          <p className="font-semibold text-green-600 dark:text-green-400">New values</p>
+          <div className="space-y-1 rounded border bg-muted/30 p-3">
+            {newEntries.map(({ label, value }) => (
+              <div key={label} className="flex gap-2">
+                <span className="font-medium text-muted-foreground shrink-0">{label}:</span>
+                <span className="break-all">{value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
 
 function getAuditableTypeLabel(auditableType: string): string {
   const parts = auditableType.split('\\')
@@ -83,6 +125,55 @@ function ValuesDiff({ audit }: { audit: Audit }) {
 }
 
 export const auditColumns: ColumnDef<Audit>[] = [
+  {
+    id: 'date_from',
+    header: () => null,
+    cell: () => null,
+    enableHiding: true,
+    enableSorting: false,
+  },
+  {
+    id: 'date_to',
+    header: () => null,
+    cell: () => null,
+    enableHiding: true,
+    enableSorting: false,
+  },
+  {
+    id: 'expand',
+    header: () => null,
+    cell: ({ row }) => (
+      <DataTableExpandButton row={row} canExpand={row.getCanExpand()} />
+    ),
+    meta: { className: cn('w-10 max-md:sticky start-0 z-10 rounded-tl-[inherit]') },
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+        className="translate-y-[2px]"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+        className="translate-y-[2px]"
+      />
+    ),
+    meta: { className: cn('max-md:sticky start-10 z-10') },
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: 'created_at',
     header: ({ column }) => (

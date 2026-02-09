@@ -1,9 +1,12 @@
 'use client'
 
+import { useMemo } from 'react'
 import { CancelIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { type Table } from '@tanstack/react-table'
 import { useQuery } from '@tanstack/react-query'
+import { type DateRange } from 'react-day-picker'
+import { format, parseISO } from 'date-fns'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -14,6 +17,7 @@ import {
   ComboboxItem,
   ComboboxList,
 } from '@/components/ui/combobox'
+import { DateRangePicker } from '@/components/ui/date-picker'
 import { DataTableFacetedFilter } from '@/components/data-table'
 import { DataTableTableViewOptions } from '@/components/data-table'
 import { useAuditableModels } from '@/features/reports/audit-log/api'
@@ -44,10 +48,30 @@ export function AuditLogToolbar<TData>({ table }: AuditLogToolbarProps<TData>) {
   const users = usersResponse?.data ?? []
 
   const isFiltered =
-    table.getState().columnFilters.length > 0 || table.getState().globalFilter
+    table.getState().columnFilters.some(
+      (f) => f.value !== undefined && f.value !== ''
+    ) || table.getState().globalFilter
 
   const modelFilter = (table.getColumn('auditable_type')?.getFilterValue() as string) ?? ''
   const userFilter = (table.getColumn('user')?.getFilterValue() as string) ?? ''
+  const dateFromRaw = (table.getColumn('date_from')?.getFilterValue() as string) ?? ''
+  const dateToRaw = (table.getColumn('date_to')?.getFilterValue() as string) ?? ''
+
+  const dateRange = useMemo((): DateRange | undefined => {
+    const from = dateFromRaw ? parseISO(dateFromRaw) : undefined
+    const to = dateToRaw ? parseISO(dateToRaw) : undefined
+    if (!from && !to) return undefined
+    return { from: from ?? undefined, to: to ?? undefined }
+  }, [dateFromRaw, dateToRaw])
+
+  const handleDateRangeChange = (range: DateRange | undefined) => {
+    table.getColumn('date_from')?.setFilterValue(
+      range?.from ? format(range.from, 'yyyy-MM-dd') : ''
+    )
+    table.getColumn('date_to')?.setFilterValue(
+      range?.to ? format(range.to, 'yyyy-MM-dd') : ''
+    )
+  }
 
   const userOptions = users.map((u) => ({ value: u.name, label: u.name }))
 
@@ -78,6 +102,13 @@ export function AuditLogToolbar<TData>({ table }: AuditLogToolbarProps<TData>) {
             </ComboboxList>
           </ComboboxContent>
         </Combobox>
+
+        <DateRangePicker
+          value={dateRange}
+          onChange={handleDateRangeChange}
+          placeholder="Date range"
+          className="h-8 w-[200px] lg:w-[240px]"
+        />
 
         <Input
           placeholder="IP address"

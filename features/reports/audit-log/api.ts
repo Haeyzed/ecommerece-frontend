@@ -29,6 +29,8 @@ export interface UseAuditsParams {
   auditable_type?: string
   ip_address?: string
   user?: string
+  date_from?: string
+  date_to?: string
 }
 
 export interface AuditableModelOption {

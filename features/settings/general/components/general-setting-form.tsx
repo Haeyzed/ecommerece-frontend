@@ -1,7 +1,11 @@
 'use client'
 
-import { Controller, type UseFormReturn } from 'react-hook-form'
+import { CancelCircleIcon, CloudUploadIcon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
+import { Controller, type UseFormReturn } from 'react-hook-form'
+import { useTheme } from '@/lib/providers/theme-provider'
+import { cn } from '@/lib/utils'
 import {
   Field,
   FieldDescription,
@@ -9,20 +13,8 @@ import {
   FieldGroup,
   FieldLabel,
 } from '@/components/ui/field'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
-import { Spinner } from '@/components/ui/spinner'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import {
   FileUpload,
   FileUploadDropzone,
@@ -33,6 +25,22 @@ import {
   FileUploadList,
   FileUploadTrigger,
 } from '@/components/ui/file-upload'
+import { ImageZoom } from '@/components/ui/image-zoom'
+import {
+  InputGroup,
+  InputGroupInput,
+  InputGroupTextarea,
+} from '@/components/ui/input-group'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Spinner } from '@/components/ui/spinner'
+import { Switch } from '@/components/ui/switch'
 import type { GeneralSettingFormData } from '../schemas'
 import type { GeneralSetting } from '../types'
 
@@ -69,6 +77,8 @@ export function GeneralSettingForm({
   isPending = false,
   setting,
 }: GeneralSettingFormProps) {
+  const { resolvedTheme } = useTheme()
+
   return (
     <form id={id} onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       <Card>
@@ -85,7 +95,9 @@ export function GeneralSettingForm({
                   <FieldLabel htmlFor="site_title">
                     System Title <span className="text-destructive">*</span>
                   </FieldLabel>
-                  <Input id="site_title" placeholder="System title" {...field} />
+                  <InputGroup>
+                    <InputGroupInput id="site_title" placeholder="System title" {...field} />
+                  </InputGroup>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -94,97 +106,163 @@ export function GeneralSettingForm({
             <Controller
               control={form.control}
               name="site_logo"
-              render={({ field, fieldState }) => (
-                <Field data-invalid={!!fieldState.error}>
-                  <FieldLabel>System Logo</FieldLabel>
-                  <FieldDescription>jpg, jpeg, png, gif (max 5MB)</FieldDescription>
-                  {setting?.site_logo_url && (
-                    <div className="mb-2 flex items-center gap-2">
-                      <div className="relative h-12 w-24 overflow-hidden rounded border bg-muted">
-                        <Image
-                          src={setting.site_logo_url}
-                          alt="Current logo"
-                          fill
-                          className="object-contain"
-                          unoptimized
-                        />
+              render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
+                const existingImageUrl = setting?.site_logo_url ?? null
+                const hasNewImage = value instanceof File || (Array.isArray(value) && value.length > 0)
+                return (
+                  <Field data-invalid={!!fieldState.error}>
+                    <FieldLabel>System Logo</FieldLabel>
+                    {existingImageUrl && !hasNewImage && (
+                      <div className="mb-3 flex items-center gap-3 rounded-md border p-3">
+                        <div className="relative h-12 w-24 overflow-hidden rounded-md bg-muted">
+                          <ImageZoom
+                            backdropClassName={cn(
+                              resolvedTheme === 'dark'
+                                ? '[&_[data-rmiz-modal-overlay="visible"]]:bg-white/80'
+                                : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80'
+                            )}
+                          >
+                            <Image
+                              src={existingImageUrl}
+                              alt="Current logo"
+                              width={96}
+                              height={48}
+                              className="h-full w-full object-contain"
+                              unoptimized
+                            />
+                          </ImageZoom>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">Current Logo</p>
+                          <p className="text-xs text-muted-foreground">
+                            Upload a new image to replace this one
+                          </p>
+                        </div>
                       </div>
-                      <span className="text-muted-foreground text-sm">Current logo</span>
-                    </div>
-                  )}
-                  <FileUpload
-                    value={field.value ?? []}
-                    onValueChange={field.onChange}
-                    maxFiles={1}
-                    accept="image/jpeg,image/png,image/gif"
-                  >
-                    <FileUploadDropzone />
-                    <FileUploadList>
-                      {(field.value ?? []).map((file, index) => (
-                        <FileUploadItem key={index} value={file}>
-                          <FileUploadItemPreview />
-                          <FileUploadItemMetadata />
-                          <FileUploadItemDelete />
-                        </FileUploadItem>
-                      ))}
-                    </FileUploadList>
-                    <FileUploadTrigger asChild>
-                      <Button type="button" variant="outline" size="sm">
-                        Choose file
-                      </Button>
-                    </FileUploadTrigger>
-                  </FileUpload>
-                  {fieldState.error && <FieldError errors={[fieldState.error]} />}
-                </Field>
-              )}
+                    )}
+                    <FileUpload
+                      value={value as File[] | undefined}
+                      onValueChange={onChange}
+                      accept="image/*"
+                      maxFiles={1}
+                      maxSize={5 * 1024 * 1024}
+                      onFileReject={(_, message) => {
+                        form.setError('site_logo', { message })
+                      }}
+                    >
+                      <FileUploadDropzone className="flex-row flex-wrap border-dotted text-center">
+                        <HugeiconsIcon icon={CloudUploadIcon} className="size-4" />
+                        Drag and drop or
+                        <FileUploadTrigger asChild>
+                          <Button variant="link" size="sm" className="p-0">
+                            choose file
+                          </Button>
+                        </FileUploadTrigger>
+                        to upload
+                      </FileUploadDropzone>
+                      <FileUploadList>
+                        {value?.map((file, index) => (
+                          <FileUploadItem key={index} value={file}>
+                            <FileUploadItemPreview />
+                            <FileUploadItemMetadata />
+                            <FileUploadItemDelete asChild>
+                              <Button variant="ghost" size="icon" className="size-7">
+                                <HugeiconsIcon icon={CancelCircleIcon} className="size-4" />
+                                <span className="sr-only">Delete</span>
+                              </Button>
+                            </FileUploadItemDelete>
+                          </FileUploadItem>
+                        ))}
+                      </FileUploadList>
+                    </FileUpload>
+                    <FieldDescription>
+                      JPEG, PNG, JPG, GIF, or WebP. Max 5MB.
+                    </FieldDescription>
+                    {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )
+              }}
             />
 
             <Controller
               control={form.control}
               name="favicon"
-              render={({ field, fieldState }) => (
-                <Field data-invalid={!!fieldState.error}>
-                  <FieldLabel>Favicon</FieldLabel>
-                  <FieldDescription>jpg, jpeg, png, gif (max 5MB)</FieldDescription>
-                  {setting?.favicon_url && (
-                    <div className="mb-2 flex items-center gap-2">
-                      <div className="relative size-8 overflow-hidden rounded border bg-muted">
-                        <Image
-                          src={setting.favicon_url}
-                          alt="Current favicon"
-                          fill
-                          className="object-contain"
-                          unoptimized
-                        />
+              render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
+                const existingImageUrl = setting?.favicon_url ?? null
+                const hasNewImage = value instanceof File || (Array.isArray(value) && value.length > 0)
+                return (
+                  <Field data-invalid={!!fieldState.error}>
+                    <FieldLabel>Favicon</FieldLabel>
+                    {existingImageUrl && !hasNewImage && (
+                      <div className="mb-3 flex items-center gap-3 rounded-md border p-3">
+                        <div className="relative size-8 overflow-hidden rounded-md bg-muted">
+                          <ImageZoom
+                            backdropClassName={cn(
+                              resolvedTheme === 'dark'
+                                ? '[&_[data-rmiz-modal-overlay="visible"]]:bg-white/80'
+                                : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80'
+                            )}
+                          >
+                            <Image
+                              src={existingImageUrl}
+                              alt="Current favicon"
+                              width={32}
+                              height={32}
+                              className="size-full object-contain"
+                              unoptimized
+                            />
+                          </ImageZoom>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">Current Favicon</p>
+                          <p className="text-xs text-muted-foreground">
+                            Upload a new image to replace this one
+                          </p>
+                        </div>
                       </div>
-                      <span className="text-muted-foreground text-sm">Current favicon</span>
-                    </div>
-                  )}
-                  <FileUpload
-                    value={field.value ?? []}
-                    onValueChange={field.onChange}
-                    maxFiles={1}
-                    accept="image/jpeg,image/png,image/gif"
-                  >
-                    <FileUploadDropzone />
-                    <FileUploadList>
-                      {(field.value ?? []).map((file, index) => (
-                        <FileUploadItem key={index} value={file}>
-                          <FileUploadItemPreview />
-                          <FileUploadItemMetadata />
-                          <FileUploadItemDelete />
-                        </FileUploadItem>
-                      ))}
-                    </FileUploadList>
-                    <FileUploadTrigger asChild>
-                      <Button type="button" variant="outline" size="sm">
-                        Choose file
-                      </Button>
-                    </FileUploadTrigger>
-                  </FileUpload>
-                  {fieldState.error && <FieldError errors={[fieldState.error]} />}
-                </Field>
-              )}
+                    )}
+                    <FileUpload
+                      value={value as File[] | undefined}
+                      onValueChange={onChange}
+                      accept="image/*"
+                      maxFiles={1}
+                      maxSize={5 * 1024 * 1024}
+                      onFileReject={(_, message) => {
+                        form.setError('favicon', { message })
+                      }}
+                    >
+                      <FileUploadDropzone className="flex-row flex-wrap border-dotted text-center">
+                        <HugeiconsIcon icon={CloudUploadIcon} className="size-4" />
+                        Drag and drop or
+                        <FileUploadTrigger asChild>
+                          <Button variant="link" size="sm" className="p-0">
+                            choose file
+                          </Button>
+                        </FileUploadTrigger>
+                        to upload
+                      </FileUploadDropzone>
+                      <FileUploadList>
+                        {value?.map((file, index) => (
+                          <FileUploadItem key={index} value={file}>
+                            <FileUploadItemPreview />
+                            <FileUploadItemMetadata />
+                            <FileUploadItemDelete asChild>
+                              <Button variant="ghost" size="icon" className="size-7">
+                                <HugeiconsIcon icon={CancelCircleIcon} className="size-4" />
+                                <span className="sr-only">Delete</span>
+                              </Button>
+                            </FileUploadItemDelete>
+                          </FileUploadItem>
+                        ))}
+                      </FileUploadList>
+                    </FileUpload>
+                    <FieldDescription>
+                      JPEG, PNG, JPG, GIF, or WebP. Max 5MB.
+                    </FieldDescription>
+                    {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )
+              }}
             />
 
             <Controller
@@ -240,7 +318,9 @@ export function GeneralSettingForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="company_name">Company Name</FieldLabel>
-                  <Input id="company_name" placeholder="Company name" {...field} value={field.value ?? ''} />
+                  <InputGroup>
+                    <InputGroupInput id="company_name" placeholder="Company name" {...field} value={field.value ?? ''} />
+                  </InputGroup>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -252,7 +332,9 @@ export function GeneralSettingForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="vat_registration_number">VAT Registration Number</FieldLabel>
-                  <Input id="vat_registration_number" placeholder="VAT number" {...field} value={field.value ?? ''} />
+                  <InputGroup>
+                    <InputGroupInput id="vat_registration_number" placeholder="VAT number" {...field} value={field.value ?? ''} />
+                  </InputGroup>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -264,7 +346,9 @@ export function GeneralSettingForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="timezone">Time Zone</FieldLabel>
-                  <Input id="timezone" placeholder="e.g. UTC" {...field} value={field.value ?? ''} />
+                  <InputGroup>
+                    <InputGroupInput id="timezone" placeholder="e.g. UTC" {...field} value={field.value ?? ''} />
+                  </InputGroup>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -276,7 +360,9 @@ export function GeneralSettingForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="currency">Currency</FieldLabel>
-                  <Input id="currency" placeholder="Currency code or ID" {...field} value={field.value ?? ''} />
+                  <InputGroup>
+                    <InputGroupInput id="currency" placeholder="Currency code or ID" {...field} value={field.value ?? ''} />
+                  </InputGroup>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -317,15 +403,17 @@ export function GeneralSettingForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="decimal">Digits after decimal point</FieldLabel>
-                  <Input
-                    id="decimal"
-                    type="number"
-                    min={0}
-                    max={6}
-                    {...field}
-                    value={field.value ?? ''}
-                    onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
-                  />
+                  <InputGroup>
+                    <InputGroupInput
+                      id="decimal"
+                      type="number"
+                      min={0}
+                      max={6}
+                      {...field}
+                      value={field.value ?? ''}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                    />
+                  </InputGroup>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -533,14 +621,16 @@ export function GeneralSettingForm({
                   <FieldDescription>
                     Show alerts for products expiring within this many days
                   </FieldDescription>
-                  <Input
-                    id="expiry_alert_days"
-                    type="number"
-                    min={0}
-                    {...field}
-                    value={field.value ?? ''}
-                    onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
-                  />
+                  <InputGroup>
+                    <InputGroupInput
+                      id="expiry_alert_days"
+                      type="number"
+                      min={0}
+                      {...field}
+                      value={field.value ?? ''}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                    />
+                  </InputGroup>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -552,7 +642,9 @@ export function GeneralSettingForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="developed_by">Developed By</FieldLabel>
-                  <Input id="developed_by" placeholder="Developer name" {...field} value={field.value ?? ''} />
+                  <InputGroup>
+                    <InputGroupInput id="developed_by" placeholder="Developer name" {...field} value={field.value ?? ''} />
+                  </InputGroup>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -587,15 +679,17 @@ export function GeneralSettingForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="default_margin_value">Default profit margin value</FieldLabel>
-                  <Input
-                    id="default_margin_value"
-                    type="number"
-                    min={0}
-                    step="any"
-                    {...field}
-                    value={field.value ?? ''}
-                    onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
-                  />
+                  <InputGroup>
+                    <InputGroupInput
+                      id="default_margin_value"
+                      type="number"
+                      min={0}
+                      step="any"
+                      {...field}
+                      value={field.value ?? ''}
+                      onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                    />
+                  </InputGroup>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -657,12 +751,14 @@ export function GeneralSettingForm({
                   <FieldDescription>
                     Comma-separated IPs allowed when maintenance mode is on. Leave empty to disable.
                   </FieldDescription>
-                  <Input
-                    id="maintenance_allowed_ips"
-                    placeholder="127.0.0.1, 192.168.1.1"
-                    {...field}
-                    value={field.value ?? ''}
-                  />
+                  <InputGroup>
+                    <InputGroupInput
+                      id="maintenance_allowed_ips"
+                      placeholder="127.0.0.1, 192.168.1.1"
+                      {...field}
+                      value={field.value ?? ''}
+                    />
+                  </InputGroup>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -683,14 +779,16 @@ export function GeneralSettingForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="font_css">Font CSS</FieldLabel>
-                  <Textarea
-                    id="font_css"
-                    rows={4}
-                    className="resize-none font-mono text-sm"
-                    placeholder="Custom font CSS"
-                    {...field}
-                    value={field.value ?? ''}
-                  />
+                  <InputGroup className="h-auto">
+                    <InputGroupTextarea
+                      id="font_css"
+                      rows={4}
+                      className="min-h-[100px] resize-none font-mono text-sm"
+                      placeholder="Custom font CSS"
+                      {...field}
+                      value={field.value ?? ''}
+                    />
+                  </InputGroup>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -702,14 +800,16 @@ export function GeneralSettingForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="auth_css">Auth pages CSS (login, registration, etc.)</FieldLabel>
-                  <Textarea
-                    id="auth_css"
-                    rows={4}
-                    className="resize-none font-mono text-sm"
-                    placeholder="CSS for auth pages"
-                    {...field}
-                    value={field.value ?? ''}
-                  />
+                  <InputGroup className="h-auto">
+                    <InputGroupTextarea
+                      id="auth_css"
+                      rows={4}
+                      className="min-h-[100px] resize-none font-mono text-sm"
+                      placeholder="CSS for auth pages"
+                      {...field}
+                      value={field.value ?? ''}
+                    />
+                  </InputGroup>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -721,14 +821,16 @@ export function GeneralSettingForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="pos_css">POS page CSS</FieldLabel>
-                  <Textarea
-                    id="pos_css"
-                    rows={4}
-                    className="resize-none font-mono text-sm"
-                    placeholder="CSS for POS page"
-                    {...field}
-                    value={field.value ?? ''}
-                  />
+                  <InputGroup className="h-auto">
+                    <InputGroupTextarea
+                      id="pos_css"
+                      rows={4}
+                      className="min-h-[100px] resize-none font-mono text-sm"
+                      placeholder="CSS for POS page"
+                      {...field}
+                      value={field.value ?? ''}
+                    />
+                  </InputGroup>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -740,14 +842,16 @@ export function GeneralSettingForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel htmlFor="custom_css">Custom CSS (other pages)</FieldLabel>
-                  <Textarea
-                    id="custom_css"
-                    rows={4}
-                    className="resize-none font-mono text-sm"
-                    placeholder="Custom CSS"
-                    {...field}
-                    value={field.value ?? ''}
-                  />
+                  <InputGroup className="h-auto">
+                    <InputGroupTextarea
+                      id="custom_css"
+                      rows={4}
+                      className="min-h-[100px] resize-none font-mono text-sm"
+                      placeholder="Custom CSS"
+                      {...field}
+                      value={field.value ?? ''}
+                    />
+                  </InputGroup>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}

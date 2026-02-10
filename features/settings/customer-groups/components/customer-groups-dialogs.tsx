@@ -1,6 +1,6 @@
 'use client'
 
-import { useCustomerGroupsContext } from './customer-groups-provider'
+import { useCustomerGroups } from './customer-groups-provider'
 import { useAuthSession } from '@/features/auth/api'
 import { CustomerGroupsActionDialog } from './customer-groups-action-dialog'
 import { CustomerGroupsDeleteDialog } from './customer-groups-delete-dialog'
@@ -8,9 +8,9 @@ import { CustomerGroupsViewDialog } from './customer-groups-view-dialog'
 import { CustomerGroupsImportDialog } from './customer-groups-import-dialog'
 
 export function CustomerGroupsDialogs() {
-  const { open, setOpen, currentRow, setCurrentRow } = useCustomerGroupsContext()
+  const { open, setOpen, currentRow, setCurrentRow } = useCustomerGroups()
   const { data: session } = useAuthSession()
-  const userPermissions = session?.user?.user_permissions || []
+  const userPermissions = session?.user?.user_permissions ?? []
   const canCreate = userPermissions.includes('customer-groups-create')
   const canUpdate = userPermissions.includes('customer-groups-update')
   const canDelete = userPermissions.includes('customer-groups-delete')
@@ -21,46 +21,53 @@ export function CustomerGroupsDialogs() {
     <>
       {canCreate && (
         <CustomerGroupsActionDialog
+          key='customer-group-add'
           open={open === 'add'}
-          onOpenChange={(state) => setOpen(state ? 'add' : null)}
+          onOpenChange={() => setOpen('add')}
         />
       )}
+
       {canImport && (
         <CustomerGroupsImportDialog
+          key='customer-group-import'
           open={open === 'import'}
-          onOpenChange={(state) => setOpen(state ? 'import' : null)}
+          onOpenChange={() => setOpen('import')}
         />
       )}
+
       {currentRow && (
         <>
           {canUpdate && (
             <CustomerGroupsActionDialog
+              key={`customer-group-edit-${currentRow.id}`}
               open={open === 'edit'}
-              onOpenChange={(state) => {
-                setOpen(state ? 'edit' : null)
-                if (!state) setTimeout(() => setCurrentRow(null), 300)
+              onOpenChange={() => {
+                setOpen('edit')
+                setTimeout(() => setCurrentRow(null), 500)
               }}
               currentRow={currentRow}
             />
           )}
+
           {canView && (
             <CustomerGroupsViewDialog
-              currentRow={currentRow}
+              key={`customer-group-view-${currentRow.id}`}
               open={open === 'view'}
-              onOpenChange={(state) => {
-                setOpen(state ? 'view' : null)
-                if (!state) setTimeout(() => setCurrentRow(null), 300)
+              onOpenChange={() => {
+                setOpen('view')
+                setTimeout(() => setCurrentRow(null), 500)
               }}
+              currentRow={currentRow}
             />
           )}
+
           {canDelete && (
             <CustomerGroupsDeleteDialog
+              key={`customer-group-delete-${currentRow.id}`}
               open={open === 'delete'}
-              onOpenChange={(state) => {
-                if (!state) {
-                  setOpen(null)
-                  setTimeout(() => setCurrentRow(null), 300)
-                } else setOpen('delete')
+              onOpenChange={() => {
+                setOpen('delete')
+                setTimeout(() => setCurrentRow(null), 500)
               }}
               currentRow={currentRow}
             />

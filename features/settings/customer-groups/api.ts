@@ -54,14 +54,14 @@ export const customerGroupKeys = {
  * @param {number} [params.page] - Page number
  * @param {number} [params.per_page] - Items per page
  * @param {string} [params.search] - Search term
- * @param {boolean} [params.is_active] - Filter by active status
+ * @param {string} [params.status] - Filter by status: 'active' or 'inactive'
  * @returns {Object} TanStack Query result including `isSessionLoading` flag
  */
 export function useCustomerGroups(params?: {
   page?: number;
   per_page?: number;
   search?: string;
-  is_active?: boolean;
+  status?: string;
 }) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
@@ -254,6 +254,62 @@ export function useBulkDestroyCustomerGroups() {
       toast.error(
         e instanceof Error ? e.message : "Failed to delete customer groups"
       ),
+  });
+}
+
+/**
+ * useBulkActivateCustomerGroups
+ *
+ * Mutation hook to bulk activate multiple customer groups.
+ *
+ * @returns {Object} TanStack Mutation result
+ */
+export function useBulkActivateCustomerGroups() {
+  const { api } = useApiClient();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (ids: number[]) => {
+      const response = await api.patch<{ activated_count: number }>(
+        "/customer-groups/bulk-activate",
+        { ids }
+      );
+      if (!response.success) throw new Error(response.message);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: customerGroupKeys.lists() });
+      toast.success("Customer groups activated");
+    },
+    onError: (e) =>
+      toast.error(e instanceof Error ? e.message : "Failed to activate"),
+  });
+}
+
+/**
+ * useBulkDeactivateCustomerGroups
+ *
+ * Mutation hook to bulk deactivate multiple customer groups.
+ *
+ * @returns {Object} TanStack Mutation result
+ */
+export function useBulkDeactivateCustomerGroups() {
+  const { api } = useApiClient();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (ids: number[]) => {
+      const response = await api.patch<{ deactivated_count: number }>(
+        "/customer-groups/bulk-deactivate",
+        { ids }
+      );
+      if (!response.success) throw new Error(response.message);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: customerGroupKeys.lists() });
+      toast.success("Customer groups deactivated");
+    },
+    onError: (e) =>
+      toast.error(e instanceof Error ? e.message : "Failed to deactivate"),
   });
 }
 

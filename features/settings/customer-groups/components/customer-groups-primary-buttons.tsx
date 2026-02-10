@@ -4,29 +4,32 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { FileImportIcon, PlusSignIcon } from '@hugeicons/core-free-icons'
 import { Button } from '@/components/ui/button'
 import { useMediaQuery } from '@/hooks/use-media-query'
-import { useCustomerGroupsContext } from './customer-groups-provider'
+import { useCustomerGroups } from './customer-groups-provider'
 import { useAuthSession } from '@/features/auth/api'
 
 export function CustomerGroupsPrimaryButtons() {
-  const { setOpen } = useCustomerGroupsContext()
+  const { setOpen } = useCustomerGroups()
   const { data: session } = useAuthSession()
   const isMobile = useMediaQuery('(max-width: 767px)')
+
   const userPermissions = session?.user?.user_permissions || []
   const canImport = userPermissions.includes('customer-groups-import')
   const canCreate = userPermissions.includes('customer-groups-create')
+
   if (!canImport && !canCreate) return null
+
   return (
-    <div className="flex gap-2">
+    <div className='flex gap-2'>
       {canImport && (
         <Button
-          variant="outline"
+          variant='outline'
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('import')}
-          aria-label="Import Customer Groups"
+          aria-label='Import Customer Groups'
         >
           <HugeiconsIcon icon={FileImportIcon} strokeWidth={2} size={18} />
-          {!isMobile && <span>Import</span>}
+          {!isMobile && <span>Import Customer Groups</span>}
         </Button>
       )}
       {canCreate && (
@@ -34,7 +37,7 @@ export function CustomerGroupsPrimaryButtons() {
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('add')}
-          aria-label="Add Customer Group"
+          aria-label='Add Customer Group'
         >
           <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} size={18} />
           {!isMobile && <span>Add Customer Group</span>}

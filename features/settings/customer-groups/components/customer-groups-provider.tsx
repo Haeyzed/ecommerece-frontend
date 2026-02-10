@@ -8,7 +8,7 @@ type CustomerGroupsDialogType = 'import' | 'add' | 'edit' | 'delete' | 'view' | 
 
 type CustomerGroupsContextType = {
   open: CustomerGroupsDialogType | null
-  setOpen: (value: CustomerGroupsDialogType | null) => void
+  setOpen: (str: CustomerGroupsDialogType | null) => void
   currentRow: CustomerGroup | null
   setCurrentRow: React.Dispatch<React.SetStateAction<CustomerGroup | null>>
 }
@@ -26,10 +26,10 @@ export function CustomerGroupsProvider({ children }: { children: React.ReactNode
   )
 }
 
-export function useCustomerGroupsContext() {
+export const useCustomerGroups = () => {
   const ctx = React.useContext(CustomerGroupsContext)
   if (!ctx) {
-    throw new Error('useCustomerGroupsContext must be used within CustomerGroupsProvider')
+    throw new Error('useCustomerGroups has to be used within <CustomerGroupsProvider>')
   }
   return ctx
 }

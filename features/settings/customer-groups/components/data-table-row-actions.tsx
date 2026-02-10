@@ -12,32 +12,46 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import type { CustomerGroup } from '../types'
-import { useCustomerGroupsContext } from './customer-groups-provider'
+import { type CustomerGroup } from '../types'
+import { useCustomerGroups } from './customer-groups-provider'
 import { useAuthSession } from '@/features/auth/api'
 
-type DataTableRowActionsProps = { row: Row<CustomerGroup> }
+type DataTableRowActionsProps = {
+  row: Row<CustomerGroup>
+}
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
-  const { setOpen, setCurrentRow } = useCustomerGroupsContext()
+  const { setOpen, setCurrentRow } = useCustomerGroups()
   const { data: session } = useAuthSession()
+
   const userPermissions = session?.user?.user_permissions || []
+
   const canView = userPermissions.includes('customer-groups-index')
   const canUpdate = userPermissions.includes('customer-groups-update')
   const canDelete = userPermissions.includes('customer-groups-delete')
+
   if (!canView && !canUpdate && !canDelete) return null
+
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="flex h-8 w-8 p-0 data-[state=open]:bg-muted">
-          <HugeiconsIcon icon={MoreHorizontalIcon} strokeWidth={2} className="h-4 w-4" />
-          <span className="sr-only">Open menu</span>
+        <Button
+          variant='ghost'
+          className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
+        >
+          <HugeiconsIcon icon={MoreHorizontalIcon} strokeWidth={2} className='h-4 w-4' />
+          <span className='sr-only'>Open menu</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[160px]">
+      <DropdownMenuContent align='end' className='w-[160px]'>
         {canView && (
           <>
-            <DropdownMenuItem onClick={() => { setCurrentRow(row.original); setOpen('view') }}>
+            <DropdownMenuItem
+              onClick={() => {
+                setCurrentRow(row.original)
+                setOpen('view')
+              }}
+            >
               View
               <DropdownMenuShortcut>
                 <HugeiconsIcon icon={ViewIcon} strokeWidth={2} size={16} />
@@ -46,9 +60,15 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
             {(canUpdate || canDelete) && <DropdownMenuSeparator />}
           </>
         )}
+
         {canUpdate && (
           <>
-            <DropdownMenuItem onClick={() => { setCurrentRow(row.original); setOpen('edit') }}>
+            <DropdownMenuItem
+              onClick={() => {
+                setCurrentRow(row.original)
+                setOpen('edit')
+              }}
+            >
               Edit
               <DropdownMenuShortcut>
                 <HugeiconsIcon icon={PencilEdit02Icon} strokeWidth={2} size={16} />
@@ -57,8 +77,15 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
             {canDelete && <DropdownMenuSeparator />}
           </>
         )}
+
         {canDelete && (
-          <DropdownMenuItem onClick={() => { setCurrentRow(row.original); setOpen('delete') }} className="text-destructive focus:text-destructive">
+          <DropdownMenuItem
+            onClick={() => {
+              setCurrentRow(row.original)
+              setOpen('delete')
+            }}
+            className='text-destructive focus:text-destructive'
+          >
             Delete
             <DropdownMenuShortcut>
               <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} size={16} />

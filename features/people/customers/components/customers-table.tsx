@@ -78,17 +78,8 @@ export function CustomersTable() {
     return 0
   }, [data?.meta, data?.data])
 
-  const tableData = useMemo(() => {
-    const d = data?.data
-    if (Array.isArray(d)) return d
-    if (d && typeof d === 'object' && 'data' in d && Array.isArray((d as { data: unknown[] }).data)) {
-      return (d as { data: unknown[] }).data
-    }
-    return []
-  }, [data?.data])
-
   const table = useReactTable({
-    data: tableData,
+    data: data?.data ?? [],
     columns,
     pageCount,
     state: {

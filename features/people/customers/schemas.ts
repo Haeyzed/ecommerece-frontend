@@ -61,13 +61,6 @@ export const customerSchema = z
     }
   })
 
-/** Use for create: requires password when user is true */
-export const customerCreateSchema = customerSchema.superRefine((data, ctx) => {
-  if (data.user && !data.password?.trim()) {
-    ctx.addIssue({ code: 'custom', message: 'Password is required when creating login', path: ['password'] })
-  }
-})
-
 export type CustomerFormData = z.infer<typeof customerSchema>
 
 export const customerImportSchema = z.object({

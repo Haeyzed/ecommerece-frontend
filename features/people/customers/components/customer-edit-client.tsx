@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import type { Resolver } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
@@ -30,7 +31,7 @@ export function CustomerEditClient({ id }: CustomerEditClientProps) {
   const { mutate: updateCustomer, isPending } = useUpdateCustomer()
 
   const form = useForm<CustomerFormData>({
-    resolver: zodResolver(customerSchema),
+    resolver: zodResolver(customerSchema) as Resolver<CustomerFormData>,
     defaultValues: {
       customer_group_id: null,
       name: '',

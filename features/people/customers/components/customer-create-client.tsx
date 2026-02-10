@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import type { Resolver } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ConfigDrawer } from '@/components/config-drawer'
@@ -12,7 +13,7 @@ import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { Spinner } from '@/components/ui/spinner'
 import { useCreateCustomer, useCustomerGroupsActive } from '../api'
-import { customerCreateSchema, type CustomerFormData } from '../schemas'
+import { customerSchema, type CustomerFormData } from '../schemas'
 import { CustomerForm } from './customer-form'
 
 const defaultValues: CustomerFormData = {
@@ -47,11 +48,15 @@ export function CustomerCreateClient() {
   const { mutate: createCustomer, isPending } = useCreateCustomer()
 
   const form = useForm<CustomerFormData>({
-    resolver: zodResolver(customerCreateSchema),
+    resolver: zodResolver(customerSchema) as Resolver<CustomerFormData>,
     defaultValues,
   })
 
   const onSubmit = (data: CustomerFormData) => {
+    if (data.user && !data.password?.trim()) {
+      form.setError('password', { message: 'Password is required when creating login' })
+      return
+    }
     const payload = { ...data }
     if (!payload.email) payload.email = null
     if (!payload.password) payload.password = null

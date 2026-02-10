@@ -645,6 +645,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Payment Gateways",
               url: "/settings/payment-gateways",
+              permissions: ["payment_gateway_setting"],
             },
             {
               title: "POS Settings",

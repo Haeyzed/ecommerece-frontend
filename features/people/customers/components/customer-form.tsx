@@ -20,7 +20,7 @@ import {
   ComboboxItem,
   ComboboxList,
 } from '@/components/ui/combobox'
-import PhoneInput from '@/components/ui/phone-input'
+import { PhoneInput } from '@/components/ui/phone-input'
 
 type CustomerFormProps = {
   form: UseFormReturn<CustomerFormData>

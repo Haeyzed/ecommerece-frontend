@@ -1,6 +1,5 @@
 export * from './api'
 export * from './schemas'
-export * from './types'
 export * from './constants'
 export { customersColumns } from './components/customers-columns'
 export { CustomersClient } from './components/customers-client'

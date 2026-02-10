@@ -1,0 +1,24 @@
+/**
+ * Customer group schemas
+ *
+ * Zod validation for customer group forms. Mirrors backend CustomerGroupRequest.
+ */
+
+import { z } from 'zod'
+
+export const customerGroupSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(255, 'Name is too long'),
+  percentage: z.coerce.number().min(0, 'Must be 0 or more').max(100, 'Must be 100 or less').nullable().optional(),
+  is_active: z.boolean().nullable().optional(),
+})
+
+export type CustomerGroupFormData = z.infer<typeof customerGroupSchema>
+
+export const customerGroupImportSchema = z.object({
+  file: z
+    .array(z.custom<File>())
+    .min(1, 'Please select a file to import')
+    .max(1, 'Please select only one file'),
+})
+
+export type CustomerGroupImportFormData = z.infer<typeof customerGroupImportSchema>

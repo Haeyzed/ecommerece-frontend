@@ -1,0 +1,159 @@
+'use client'
+
+import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useTableUrlState } from '@/hooks/use-table-url-state'
+import { cn } from '@/lib/utils'
+import {
+  type SortingState,
+  type VisibilityState,
+  flexRender,
+  getCoreRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table'
+import { useEffect, useMemo, useState } from 'react'
+import { toast } from 'sonner'
+import { useCustomerGroups } from '../api'
+import { customerGroupsColumns as columns } from './customer-groups-columns'
+import { CustomerGroupsEmptyState } from './customer-groups-empty-state'
+import { DataTableBulkActions } from './data-table-bulk-actions'
+
+export function CustomerGroupsTable() {
+  const [rowSelection, setRowSelection] = useState({})
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [sorting, setSorting] = useState<SortingState>([])
+
+  const { columnFilters, onColumnFiltersChange, pagination, onPaginationChange, ensurePageInRange } =
+    useTableUrlState({
+      pagination: { defaultPage: 1, defaultPageSize: 10 },
+      globalFilter: { enabled: false },
+      columnFilters: [
+        { columnId: 'name', searchKey: 'search', type: 'string' },
+        { columnId: 'status', searchKey: 'status', type: 'array' },
+      ],
+    })
+
+  const apiParams = useMemo(() => {
+    const page = pagination.pageIndex + 1
+    const perPage = pagination.pageSize
+    const nameFilter = columnFilters.find((f) => f.id === 'name')
+    const statusFilter = columnFilters.find((f) => f.id === 'status')
+    let isActive: boolean | undefined
+    if (statusFilter?.value && Array.isArray(statusFilter.value) && statusFilter.value.length === 1) {
+      isActive = statusFilter.value[0] === 'active'
+    }
+    return { page, per_page: perPage, search: nameFilter?.value as string | undefined, is_active: isActive }
+  }, [pagination, columnFilters])
+
+  const { data, isLoading, error } = useCustomerGroups(apiParams)
+
+  const pageCount = useMemo(() => {
+    if (!data?.meta) return 0
+    return Math.ceil((data.meta.total || 0) / (data.meta.per_page || 10))
+  }, [data?.meta])
+
+  const table = useReactTable({
+    data: data?.data ?? [],
+    columns,
+    pageCount,
+    state: { sorting, pagination, rowSelection, columnFilters, columnVisibility },
+    enableRowSelection: true,
+    manualPagination: true,
+    onPaginationChange,
+    onColumnFiltersChange,
+    onRowSelectionChange: setRowSelection,
+    onSortingChange: setSorting,
+    onColumnVisibilityChange: setColumnVisibility,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+  })
+
+  useEffect(() => {
+    if (pageCount > 0) ensurePageInRange(pageCount)
+  }, [pageCount, ensurePageInRange])
+
+  if (error) {
+    toast.error(error.message)
+    return null
+  }
+
+  const hasData = data?.meta?.total && data.meta.total > 0
+  const isFiltered = !!apiParams.search || apiParams.is_active !== undefined
+  if (!isLoading && !hasData && !isFiltered) return <CustomerGroupsEmptyState />
+
+  return (
+    <div className={cn('max-sm:has-[div[role="toolbar"]]:mb-16', 'flex flex-1 flex-col gap-4')}>
+      <DataTableToolbar
+        table={table}
+        searchPlaceholder="Filter customer groups..."
+        searchKey="name"
+        filters={[
+          { columnId: 'status', title: 'Status', options: [
+            { label: 'Active', value: 'active' },
+            { label: 'Inactive', value: 'inactive' },
+          ]},
+        ]}
+      />
+      <div className="overflow-hidden rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id} className="group/row">
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    className={cn(
+                      'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
+                      (header.column.columnDef.meta as { className?: string })?.className,
+                      (header.column.columnDef.meta as { thClassName?: string })?.thClassName
+                    )}
+                  >
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          {isLoading ? (
+            <DataTableSkeleton columnCount={columns.length} />
+          ) : (
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'} className="group/row">
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cn(
+                          'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
+                          (cell.column.columnDef.meta as { className?: string })?.className,
+                          (cell.column.columnDef.meta as { tdClassName?: string })?.tdClassName
+                        )}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={columns.length} className="h-24 text-center">No results.</TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          )}
+        </Table>
+      </div>
+      <DataTablePagination table={table} className="mt-auto" />
+      <DataTableBulkActions table={table} />
+    </div>
+  )
+}

@@ -600,6 +600,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Customer Group",
               url: "/settings/customer-group",
+              permissions: ["customer-groups-index"],
             },
             {
               title: "Currency",

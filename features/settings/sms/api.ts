@@ -24,10 +24,10 @@ export function useSmsProviders() {
   const query = useQuery({
     queryKey: smsSettingKeys.list(),
     queryFn: async () => {
-      const response = await api.get<SmsProvider[] | { data?: SmsProvider[] }>('/settings/sms')
-      const data = response.data
-      if (Array.isArray(data)) return data
-      const list = (data as { data?: SmsProvider[] })?.data
+      const response = await api.get<unknown>('/settings/sms')
+      const raw = response.data
+      if (Array.isArray(raw)) return raw as SmsProvider[]
+      const list = (raw as { data?: SmsProvider[] } | null)?.data
       return Array.isArray(list) ? list : []
     },
     enabled: sessionStatus !== 'loading',

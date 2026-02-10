@@ -55,9 +55,14 @@ export function SmsSettingForm({
     onSelectProvider(id)
     const provider = id ? providers.find((p) => p.id === id) : null
     if (provider) {
+      const details = provider.details ?? {}
+      const detailsStrings: Record<string, string> = {}
+      for (const [k, v] of Object.entries(details)) {
+        detailsStrings[k] = typeof v === 'string' ? v : ''
+      }
       form.reset({
-        details: { ...provider.details },
-        active: provider.active,
+        details: detailsStrings,
+        active: !!provider.active,
       })
     } else {
       form.reset({ details: {}, active: false })
@@ -68,10 +73,11 @@ export function SmsSettingForm({
     if (!selectedProvider) return
     const detailsClean: Record<string, string> = {}
     const fields = SMS_GATEWAY_FIELDS[selectedProvider.name]
+    const MASKED = '********'
     if (fields) {
       for (const { key } of fields) {
         const v = data.details?.[key]
-        if (v != null && v !== '') detailsClean[key] = v
+        if (v != null && v !== '' && v !== MASKED) detailsClean[key] = v
       }
     }
     onSubmit(selectedProvider.id, { details: detailsClean, active: data.active })
@@ -93,19 +99,25 @@ export function SmsSettingForm({
             <Field>
               <FieldLabel>Gateway</FieldLabel>
               <Select
-                value={selectedProvider ? String(selectedProvider.id) : ''}
+                value={selectedProvider ? String(selectedProvider.id) : undefined}
                 onValueChange={handleSelect}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select SMS gateway" />
                 </SelectTrigger>
                 <SelectContent>
-                  {providers.map((p) => (
-                    <SelectItem key={p.id} value={String(p.id)}>
-                      {p.name}
-                      {p.active ? ' (Default)' : ''}
-                    </SelectItem>
-                  ))}
+                  {providers.length === 0 ? (
+                    <div className="py-4 text-center text-muted-foreground text-sm">
+                      No SMS gateways configured
+                    </div>
+                  ) : (
+                    providers.map((p) => (
+                      <SelectItem key={p.id} value={String(p.id)}>
+                        {p.name}
+                        {p.active ? ' (Default)' : ''}
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
             </Field>

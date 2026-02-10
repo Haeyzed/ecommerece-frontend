@@ -15,11 +15,13 @@ import type { SmsSettingUpdateData } from '@/features/settings/sms/schemas'
 import { SmsSettingForm } from './sms-setting-form'
 
 export function SmsSettingClient() {
-  const { data: providers = [], isLoading, isSessionLoading, error, isError } = useSmsProviders()
+  const { data: providersData, isLoading, isSessionLoading, error, isError } = useSmsProviders()
+  const providers = Array.isArray(providersData) ? providersData : []
   const { mutate: updateProvider, isPending } = useUpdateSmsProvider()
   const [selectedId, setSelectedId] = useState<number | null>(null)
 
-  const selectedProvider = selectedId ? providers.find((p) => p.id === selectedId) ?? null : null
+  const selectedProvider =
+    selectedId != null ? providers.find((p) => p.id === selectedId) ?? null : null
 
   useEffect(() => {
     if (isError && error) {

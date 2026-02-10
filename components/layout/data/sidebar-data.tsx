@@ -639,6 +639,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "SMS Setting",
               url: "/settings/sms",
+              permissions: ["sms_setting"],
             },
             {
               title: "Payment Gateways",

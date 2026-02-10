@@ -41,11 +41,11 @@ export function useUpdateRewardPointSetting() {
     mutationFn: async (data: RewardPointSettingFormData) => {
       const body: Record<string, unknown> = {
         is_active: data.is_active ?? false,
+        type: data.type ?? null,
       }
       if (data.per_point_amount != null) body.per_point_amount = data.per_point_amount
       if (data.minimum_amount != null) body.minimum_amount = data.minimum_amount
       if (data.duration != null) body.duration = data.duration
-      if (data.type != null) body.type = data.type
       if (data.redeem_amount_per_unit_rp != null) body.redeem_amount_per_unit_rp = data.redeem_amount_per_unit_rp
       if (data.min_order_total_for_redeem != null) body.min_order_total_for_redeem = data.min_order_total_for_redeem
       if (data.min_redeem_point != null) body.min_redeem_point = data.min_redeem_point

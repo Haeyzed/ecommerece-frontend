@@ -138,8 +138,8 @@ export function RewardPointSettingForm({
                   <FieldLabel htmlFor="type">Duration type</FieldLabel>
                   <FieldDescription>Whether the expiry duration is in days, months, or years.</FieldDescription>
                   <Select
-                    value={field.value ?? ''}
-                    onValueChange={(v) => field.onChange(v || null)}
+                    value={field.value ?? undefined}
+                    onValueChange={(v) => field.onChange(v === '' ? null : v)}
                   >
                     <SelectTrigger id="type">
                       <SelectValue placeholder="Select type" />

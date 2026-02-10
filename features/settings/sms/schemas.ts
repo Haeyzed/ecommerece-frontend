@@ -9,7 +9,7 @@
 import { z } from 'zod'
 
 export const smsSettingUpdateSchema = z.object({
-  details: z.record(z.string(), z.string().nullable()).optional(),
+  details: z.record(z.string(), z.string()).optional(),
   active: z.boolean().optional(),
 })
 

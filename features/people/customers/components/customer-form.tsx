@@ -20,6 +20,7 @@ import {
   ComboboxItem,
   ComboboxList,
 } from '@/components/ui/combobox'
+import {PhoneInupt} from '@/components/ui/phone-input'
 
 type CustomerFormProps = {
   form: UseFormReturn<CustomerFormData>
@@ -132,7 +133,7 @@ export function CustomerForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel>Phone</FieldLabel>
-                  <Input {...field} value={field.value ?? ''} placeholder="Phone number" />
+                  <PhoneInput {...field} value={field.value ?? ''} placeholder="Phone number" />
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -143,7 +144,7 @@ export function CustomerForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel>WhatsApp number</FieldLabel>
-                  <Input {...field} value={field.value ?? ''} placeholder="WhatsApp" />
+                  <PhoneInput {...field} value={field.value ?? ''} placeholder="WhatsApp" />
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}

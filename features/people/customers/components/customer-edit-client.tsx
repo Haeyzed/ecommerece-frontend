@@ -33,7 +33,6 @@ export function CustomerEditClient({ id }: CustomerEditClientProps) {
   const form = useForm<CustomerFormData>({
     resolver: zodResolver(customerSchema) as Resolver<CustomerFormData>,
     defaultValues: {
-      customer_group_id: null,
       name: '',
       company_name: null,
       email: null,
@@ -62,7 +61,7 @@ export function CustomerEditClient({ id }: CustomerEditClientProps) {
   useEffect(() => {
     if (!customer) return
     form.reset({
-      customer_group_id: customer.customer_group_id ?? null,
+      customer_group_id: customer.customer_group_id ?? undefined,
       name: customer.name ?? '',
       company_name: customer.company_name ?? null,
       email: customer.email ?? null,

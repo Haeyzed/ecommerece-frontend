@@ -6,7 +6,6 @@ import type { Customer } from '../types'
 import {
   Field,
   FieldError,
-  FieldGroup,
   FieldLabel,
 } from '@/components/ui/field'
 import { Button } from '@/components/ui/button'
@@ -14,12 +13,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from '@/components/ui/combobox'
 
 type CustomerFormProps = {
   form: UseFormReturn<CustomerFormData>
@@ -41,6 +41,7 @@ export function CustomerForm({
 }: CustomerFormProps) {
   const both = form.watch('both')
   const user = form.watch('user')
+  const groupOptions = customerGroups.map((g) => ({ value: g.id, label: g.name }))
 
   return (
     <form id={id} onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -48,29 +49,41 @@ export function CustomerForm({
         <CardHeader>
           <CardTitle>Basic information</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <FieldGroup>
+        <CardContent>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <Controller
               control={form.control}
               name="customer_group_id"
               render={({ field, fieldState }) => (
-                <Field data-invalid={!!fieldState.error}>
-                  <FieldLabel>Customer group</FieldLabel>
-                  <Select
-                    value={field.value != null ? String(field.value) : ''}
-                    onValueChange={(v) => field.onChange(v ? Number(v) : null)}
+                <Field data-invalid={!!fieldState.error} className="flex flex-col">
+                  <FieldLabel>Customer group *</FieldLabel>
+                  <Combobox
+                    items={groupOptions}
+                    itemToStringLabel={(item) => item.label}
+                    value={groupOptions.find((p) => p.value === field.value) ?? null}
+                    onValueChange={(item) => {
+                      field.onChange(item?.value ?? undefined)
+                    }}
+                    isItemEqualToValue={(a, b) => a?.value === b?.value}
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select group" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {customerGroups.map((g) => (
-                        <SelectItem key={g.id} value={String(g.id)}>
-                          {g.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    <ComboboxInput
+                      id="customer-group-id"
+                      name="customer-group-id"
+                      placeholder="Select customer group..."
+                      required
+                      showClear
+                    />
+                    <ComboboxContent>
+                      <ComboboxEmpty>No customer group found.</ComboboxEmpty>
+                      <ComboboxList>
+                        {(item) => (
+                          <ComboboxItem key={item.value} value={item}>
+                            {item.label}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -146,7 +159,7 @@ export function CustomerForm({
                 </Field>
               )}
             />
-          </FieldGroup>
+          </div>
         </CardContent>
       </Card>
 
@@ -154,8 +167,8 @@ export function CustomerForm({
         <CardHeader>
           <CardTitle>Address</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <FieldGroup>
+        <CardContent>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <Controller
               control={form.control}
               name="address"
@@ -211,7 +224,7 @@ export function CustomerForm({
                 </Field>
               )}
             />
-          </FieldGroup>
+          </div>
         </CardContent>
       </Card>
 
@@ -219,8 +232,8 @@ export function CustomerForm({
         <CardHeader>
           <CardTitle>Financial</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <FieldGroup>
+        <CardContent>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <Controller
               control={form.control}
               name="opening_balance"
@@ -314,7 +327,7 @@ export function CustomerForm({
                 </Field>
               )}
             />
-          </FieldGroup>
+          </div>
         </CardContent>
       </Card>
 
@@ -322,8 +335,8 @@ export function CustomerForm({
         <CardHeader>
           <CardTitle>Optional</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <FieldGroup>
+        <CardContent>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <Controller
               control={form.control}
               name="both"
@@ -385,7 +398,7 @@ export function CustomerForm({
                 />
               </>
             )}
-          </FieldGroup>
+          </div>
         </CardContent>
       </Card>
 

@@ -16,8 +16,7 @@ import { useCreateCustomer, useCustomerGroupsActive } from '../api'
 import { customerSchema, type CustomerFormData } from '../schemas'
 import { CustomerForm } from './customer-form'
 
-const defaultValues: CustomerFormData = {
-  customer_group_id: null,
+const defaultValues: Partial<CustomerFormData> = {
   name: '',
   company_name: null,
   email: null,
@@ -49,7 +48,7 @@ export function CustomerCreateClient() {
 
   const form = useForm<CustomerFormData>({
     resolver: zodResolver(customerSchema) as Resolver<CustomerFormData>,
-    defaultValues,
+    defaultValues: defaultValues as CustomerFormData,
   })
 
   const onSubmit = (data: CustomerFormData) => {

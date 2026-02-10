@@ -340,3 +340,46 @@ export function useCustomerGroupsImport() {
       toast.error(e instanceof Error ? e.message : "Import failed"),
   });
 }
+
+export type CustomerGroupExportParams = {
+  ids?: number[];
+  format: "excel" | "pdf";
+  method: "download" | "email";
+  columns: string[];
+  user_id?: number;
+};
+
+export function useCustomerGroupsExport() {
+  const { api } = useApiClient();
+
+  return useMutation({
+    mutationFn: async (params: CustomerGroupExportParams) => {
+      if (params.method === "download") {
+        const blob = await api.postBlob("/customer-groups/export", params);
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        const fileName = `customer-groups-export-${Date.now()}.${params.format === "pdf" ? "pdf" : "xlsx"}`;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        return { message: "Export downloaded successfully" };
+      }
+
+      const response = await api.post("/customer-groups/export", params);
+      if (!response.success) throw new Error(response.message);
+      return response;
+    },
+    onSuccess: (_, variables) => {
+      if (variables.method === "email") {
+        toast.success("Export sent via email successfully");
+      } else {
+        toast.success("Export downloaded successfully");
+      }
+    },
+    onError: (e) =>
+      toast.error(e instanceof Error ? e.message : "Export failed"),
+  });
+}

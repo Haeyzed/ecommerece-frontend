@@ -12,7 +12,7 @@ const optionalStringLong = z.string().max(500).nullable().optional()
 
 export const customerSchema = z
   .object({
-    customer_group_id: z.number().int().positive().nullable().optional(),
+    customer_group_id: z.number().int().positive('Customer group is required'),
     name: z.string().min(1, 'Name is required').max(255, 'Name is too long'),
     company_name: optionalString,
     email: z.string().email('Invalid email').max(255).nullable().optional().or(z.literal('')),

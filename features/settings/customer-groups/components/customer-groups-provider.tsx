@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import type { CustomerGroup } from '../types'
 
-type CustomerGroupsDialogType = 'import' | 'add' | 'edit' | 'delete' | 'view' | 'multi-delete'
+type CustomerGroupsDialogType = 'import' | 'export' | 'add' | 'edit' | 'delete' | 'view' | 'multi-delete'
 
 type CustomerGroupsContextType = {
   open: CustomerGroupsDialogType | null

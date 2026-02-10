@@ -635,6 +635,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Reward Point Setting",
               url: "/settings/reward-point",
+              permissions: ["reward_point_setting"],
             },
             {
               title: "SMS Setting",

@@ -87,3 +87,12 @@ export const customerExportSchema = z
 
 export type CustomerImportFormData = z.infer<typeof customerImportSchema>
 export type CustomerExportFormData = z.infer<typeof customerExportSchema>
+
+export const addDepositSchema = z.object({
+  amount: z
+    .number({ required_error: 'Amount is required' })
+    .min(0.01, 'Amount must be at least 0.01'),
+  note: z.string().max(500).optional().nullable(),
+})
+
+export type AddDepositFormData = z.infer<typeof addDepositSchema>

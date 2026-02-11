@@ -69,7 +69,7 @@ export function CustomersDialogs() {
               setTimeout(() => setCurrentRow(null), 300)
             }
           }}
-          customer={currentRow}
+          currentRow={currentRow}
         />
       )}
     </>

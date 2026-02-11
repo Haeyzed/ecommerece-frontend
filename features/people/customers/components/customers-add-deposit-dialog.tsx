@@ -1,8 +1,16 @@
 'use client'
 
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
+import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
+
+import { useAddCustomerDeposit } from '../api'
+import { addDepositSchema, type AddDepositFormData } from '../schemas'
+import type { Customer } from '../types'
+
+import { useMediaQuery } from '@/hooks/use-media-query'
+import { cn } from '@/lib/utils'
+
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -26,29 +34,20 @@ import {
   FieldGroup,
   FieldLabel,
 } from '@/components/ui/field'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useMediaQuery } from '@/hooks/use-media-query'
-import { useAddCustomerDeposit } from '../api'
-import type { Customer } from '../types'
-
-const addDepositSchema = z.object({
-  amount: z.number().min(0.01, 'Amount must be at least 0.01'),
-  note: z.string().max(500).optional().nullable(),
-})
-
-type AddDepositFormData = z.infer<typeof addDepositSchema>
+import { Spinner } from '@/components/ui/spinner'
+import { Textarea } from '@/components/ui/textarea'
 
 type CustomersAddDepositDialogProps = {
+  customer: Customer
   open: boolean
   onOpenChange: (open: boolean) => void
-  customer: Customer
 }
 
 export function CustomersAddDepositDialog({
+  customer,
   open,
   onOpenChange,
-  customer,
 }: CustomersAddDepositDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: addDeposit, isPending } = useAddCustomerDeposit(customer.id)
@@ -58,7 +57,7 @@ export function CustomersAddDepositDialog({
     defaultValues: { amount: 0, note: '' },
   })
 
-  const handleSubmit = form.handleSubmit((values) => {
+  const onSubmit = (values: AddDepositFormData) => {
     addDeposit(
       { amount: values.amount, note: values.note || null },
       {
@@ -68,70 +67,44 @@ export function CustomersAddDepositDialog({
         },
       }
     )
-  })
+  }
 
   const handleOpenChange = (value: boolean) => {
     if (!value) form.reset({ amount: 0, note: '' })
     onOpenChange(value)
   }
 
-  const content = (
-    <form id="add-deposit-form" onSubmit={handleSubmit}>
-      <FieldGroup>
-        <Field>
-          <FieldLabel>Amount</FieldLabel>
-          <Input
-            type="number"
-            step="0.01"
-            min={0.01}
-            {...form.register('amount')}
-            data-invalid={!!form.formState.errors.amount}
-          />
-          {form.formState.errors.amount && (
-            <FieldError errors={[form.formState.errors.amount]} />
-          )}
-        </Field>
-        <Field>
-          <FieldLabel>Note (optional)</FieldLabel>
-          <Input
-            {...form.register('note')}
-            placeholder="Note"
-            data-invalid={!!form.formState.errors.note}
-          />
-          {form.formState.errors.note && (
-            <FieldError errors={[form.formState.errors.note]} />
-          )}
-        </Field>
-      </FieldGroup>
-    </form>
-  )
-
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader className="text-start">
             <DialogTitle>Add Deposit</DialogTitle>
             <DialogDescription>
               Add a deposit for {customer.name}. This will increase the
-              customer&apos;s deposited balance.
+              customer&apos;s deposited balance. Click save when you&apos;re
+              done.
             </DialogDescription>
           </DialogHeader>
-          {content}
-          <DialogFooter className="gap-y-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleOpenChange(false)}
-            >
-              Cancel
-            </Button>
+
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
+            <AddDepositForm form={form} onSubmit={onSubmit} id="add-deposit-form" />
+          </div>
+
+          <DialogFooter>
             <Button
               type="submit"
               form="add-deposit-form"
               disabled={isPending}
             >
-              {isPending ? 'Adding…' : 'Add Deposit'}
+              {isPending ? (
+                <>
+                  <Spinner className="mr-2 size-4" />
+                  Adding…
+                </>
+              ) : (
+                'Add Deposit'
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -145,25 +118,98 @@ export function CustomersAddDepositDialog({
         <DrawerHeader className="text-left">
           <DrawerTitle>Add Deposit</DrawerTitle>
           <DrawerDescription>
-            Add a deposit for {customer.name}.
+            Add a deposit for {customer.name}. Click save when you&apos;re done.
           </DrawerDescription>
         </DrawerHeader>
-        {content}
-        <DrawerFooter className="gap-y-2">
+
+        <div className="no-scrollbar overflow-y-auto px-4">
+          <AddDepositForm form={form} onSubmit={onSubmit} id="add-deposit-form" />
+        </div>
+
+        <DrawerFooter>
           <Button
             type="submit"
             form="add-deposit-form"
             disabled={isPending}
           >
-            {isPending ? 'Adding…' : 'Add Deposit'}
+            {isPending ? (
+              <>
+                <Spinner className="mr-2 size-4" />
+                Adding…
+              </>
+            ) : (
+              'Add Deposit'
+            )}
           </Button>
           <DrawerClose asChild>
-            <Button type="button" variant="outline">
-              Cancel
-            </Button>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
+  )
+}
+
+interface AddDepositFormProps {
+  form: UseFormReturn<AddDepositFormData>
+  onSubmit: (data: AddDepositFormData) => void
+  id: string
+  className?: string
+}
+
+function AddDepositForm({ form, onSubmit, id, className }: AddDepositFormProps) {
+  return (
+    <form
+      id={id}
+      onSubmit={form.handleSubmit(onSubmit)}
+      className={cn('space-y-4', className)}
+    >
+      <FieldGroup>
+        <Controller
+          control={form.control}
+          name="amount"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={!!fieldState.error}>
+              <FieldLabel htmlFor="deposit-amount">
+                Amount <span className="text-destructive">*</span>
+              </FieldLabel>
+              <Input
+                id="deposit-amount"
+                type="number"
+                step="0.01"
+                min={0.01}
+                placeholder="0.00"
+                autoComplete="off"
+                {...field}
+                onChange={(e) => field.onChange(e.target.valueAsNumber || 0)}
+              />
+              {fieldState.error && (
+                <FieldError errors={[fieldState.error]} />
+              )}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="note"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={!!fieldState.error}>
+              <FieldLabel htmlFor="deposit-note">Note (optional)</FieldLabel>
+              <Textarea
+                id="deposit-note"
+                placeholder="Note"
+                autoComplete="off"
+                {...field}
+                value={field.value ?? ''}
+              />
+              {fieldState.error && (
+                <FieldError errors={[fieldState.error]} />
+              )}
+            </Field>
+          )}
+        />
+      </FieldGroup>
+    </form>
   )
 }

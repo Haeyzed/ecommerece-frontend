@@ -37,8 +37,9 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const canView = userPermissions.includes('customers-index')
   const canUpdate = userPermissions.includes('customers-update')
   const canDelete = userPermissions.includes('customers-delete')
+  const canDueReport = userPermissions.includes('due-report')
 
-  if (!canView && !canUpdate && !canDelete) return null
+  if (!canView && !canUpdate && !canDelete && !canDueReport) return null
 
   const id = row.original.id
   const customer = row.original
@@ -104,12 +105,16 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
                 </DropdownMenuShortcut>
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem disabled title="Coming soon">
-              Due Report
-              <DropdownMenuShortcut>
-                <HugeiconsIcon icon={FileDown} strokeWidth={2} size={16} />
-              </DropdownMenuShortcut>
-            </DropdownMenuItem>
+            {canDueReport && (
+              <DropdownMenuItem asChild>
+                <Link href={`/reports/customer-due?customer_id=${id}`}>
+                  Due Report
+                  <DropdownMenuShortcut>
+                    <HugeiconsIcon icon={FileDown} strokeWidth={2} size={16} />
+                  </DropdownMenuShortcut>
+                </Link>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem onClick={openAddDeposit}>
               Add Deposit
               <DropdownMenuShortcut>

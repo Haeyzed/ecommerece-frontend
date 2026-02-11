@@ -126,7 +126,7 @@ export function CustomersExportDialog({
           name="format"
           render={({ field, fieldState }) => (
             <Field>
-              <FieldLabel>Format</FieldLabel>
+              <FieldLabel>Export Format</FieldLabel>
               <RadioGroup
                 value={field.value}
                 onValueChange={field.onChange}
@@ -135,7 +135,7 @@ export function CustomersExportDialog({
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="excel" id="format-excel" />
                   <label htmlFor="format-excel" className="cursor-pointer text-sm font-medium">
-                    Excel
+                    Excel (XLSX)
                   </label>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -155,7 +155,7 @@ export function CustomersExportDialog({
           name="method"
           render={({ field, fieldState }) => (
             <Field>
-              <FieldLabel>Method</FieldLabel>
+              <FieldLabel>Export Method</FieldLabel>
               <RadioGroup
                 value={field.value}
                 onValueChange={(value) => {
@@ -173,7 +173,7 @@ export function CustomersExportDialog({
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="email" id="method-email" />
                   <label htmlFor="method-email" className="cursor-pointer text-sm font-medium">
-                    Email
+                    Send via Email
                   </label>
                 </div>
               </RadioGroup>
@@ -188,14 +188,14 @@ export function CustomersExportDialog({
             name="user_id"
             render={({ field, fieldState }) => (
               <Field>
-                <FieldLabel>User</FieldLabel>
+                <FieldLabel>Select User</FieldLabel>
                 <Select
                   value={field.value ? String(field.value) : ''}
                   onValueChange={(v) => field.onChange(v ? Number(v) : undefined)}
                   disabled={isLoadingUsers}
                 >
                   <SelectTrigger data-invalid={!!fieldState.error}>
-                    <SelectValue placeholder="Select user" />
+                    <SelectValue placeholder="Select user to send email to" />
                   </SelectTrigger>
                   <SelectContent>
                     {users.map((u) => (
@@ -208,6 +208,9 @@ export function CustomersExportDialog({
                     ))}
                   </SelectContent>
                 </Select>
+                <FieldDescription>
+                  Select a user to receive the export file via email
+                </FieldDescription>
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -220,13 +223,13 @@ export function CustomersExportDialog({
           render={({ field, fieldState }) => (
             <Field>
               <div className="flex items-center justify-between">
-                <FieldLabel>Columns</FieldLabel>
+                <FieldLabel>Select Columns</FieldLabel>
                 <div className="flex gap-2">
                   <Button type="button" variant="ghost" size="sm" onClick={handleSelectAllColumns}>
-                    All
+                    Select All
                   </Button>
                   <Button type="button" variant="ghost" size="sm" onClick={handleDeselectAllColumns}>
-                    None
+                    Deselect All
                   </Button>
                 </div>
               </div>
@@ -251,6 +254,7 @@ export function CustomersExportDialog({
                   </div>
                 ))}
               </div>
+              <FieldDescription>Select the columns to include in the export</FieldDescription>
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -260,7 +264,9 @@ export function CustomersExportDialog({
   )
 
   const description =
-    ids.length > 0 ? `${ids.length} customer(s) selected.` : 'Export all or use table selection.'
+    ids.length > 0
+      ? `Select export format, method, and columns. ${ids.length} customer(s) selected.`
+      : 'Select export format, method, and columns.'
 
   if (isDesktop) {
     return (
@@ -271,7 +277,7 @@ export function CustomersExportDialog({
             <DialogDescription>{description}</DialogDescription>
           </DialogHeader>
           {content}
-          <DialogFooter>
+          <DialogFooter className="gap-y-2">
             <Button variant="outline" onClick={() => handleOpenChange(false)}>
               Cancel
             </Button>

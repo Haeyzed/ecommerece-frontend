@@ -107,12 +107,49 @@ export const customersColumns: ColumnDef<Customer>[] = [
     meta: { className: 'w-28' },
   },
   {
+    accessorKey: 'discount_plans',
+    id: 'discount_plan',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Discount plan" />
+    ),
+    cell: ({ row }) => (
+      <LongText className="max-w-28">
+        {Array.isArray(row.original.discount_plans) && row.original.discount_plans.length > 0
+          ? row.original.discount_plans.join(', ')
+          : '-'}
+      </LongText>
+    ),
+    meta: { className: 'w-28' },
+  },
+  {
+    accessorKey: 'points',
+    id: 'reward_points',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Reward points" />
+    ),
+    cell: ({ row }) => (
+      <span>{Number(row.original.points ?? 0)}</span>
+    ),
+    meta: { className: 'w-24' },
+  },
+  {
     accessorKey: 'deposited_balance',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Balance" />
+      <DataTableColumnHeader column={column} title="Deposited balance" />
     ),
     cell: ({ row }) => {
       const v = row.original.deposited_balance ?? row.original.deposit ?? 0
+      return <span>{Number(v).toFixed(2)}</span>
+    },
+    meta: { className: 'w-28' },
+  },
+  {
+    accessorKey: 'total_due',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Total due" />
+    ),
+    cell: ({ row }) => {
+      const v = row.original.total_due ?? 0
       return <span>{Number(v).toFixed(2)}</span>
     },
     meta: { className: 'w-24' },

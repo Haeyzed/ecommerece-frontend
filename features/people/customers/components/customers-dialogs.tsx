@@ -2,9 +2,11 @@
 
 import { useCustomersContext } from './customers-provider'
 import { useAuthSession } from '@/features/auth/api'
+import { CustomersAddDepositDialog } from './customers-add-deposit-dialog'
 import { CustomersDeleteDialog } from './customers-delete-dialog'
 import { CustomersExportDialog } from './customers-export-dialog'
 import { CustomersImportDialog } from './customers-import-dialog'
+import { CustomersViewDepositDialog } from './customers-view-deposit-dialog'
 
 export function CustomersDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useCustomersContext()
@@ -42,6 +44,32 @@ export function CustomersDialogs() {
             }
           }}
           currentRow={currentRow}
+        />
+      )}
+
+      {currentRow && open === 'add-deposit' && (
+        <CustomersAddDepositDialog
+          open={true}
+          onOpenChange={(state) => {
+            if (!state) {
+              setOpen(null)
+              setTimeout(() => setCurrentRow(null), 300)
+            }
+          }}
+          customer={currentRow}
+        />
+      )}
+
+      {currentRow && open === 'view-deposit' && (
+        <CustomersViewDepositDialog
+          open={true}
+          onOpenChange={(state) => {
+            if (!state) {
+              setOpen(null)
+              setTimeout(() => setCurrentRow(null), 300)
+            }
+          }}
+          customer={currentRow}
         />
       )}
     </>

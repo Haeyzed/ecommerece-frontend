@@ -1,11 +1,23 @@
 'use client'
 
+import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { CloudUploadIcon, File02Icon, CancelCircleIcon } from '@hugeicons/core-free-icons'
+import {
+  CloudUploadIcon,
+  Download01Icon,
+  File02Icon,
+  ViewIcon,
+  CancelCircleIcon,
+} from '@hugeicons/core-free-icons'
+
 import { useCustomersImport } from '../api'
 import { customerImportSchema, type CustomerImportFormData } from '../schemas'
+import { downloadSampleAsCsv } from '@/lib/download-sample-csv'
+import { SAMPLE_CUSTOMERS_CSV } from '../constants'
+import { CustomersCsvPreviewDialog } from './customers-csv-preview-dialog'
+
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -54,22 +66,45 @@ export function CustomersImportDialog({
 }: CustomersImportDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: importCustomers, isPending } = useCustomersImport()
+  const [previewOpen, setPreviewOpen] = useState(false)
+  const [previewData, setPreviewData] = useState<Record<string, string>[]>([])
 
   const form = useForm<CustomerImportFormData>({
     resolver: zodResolver(customerImportSchema),
     defaultValues: { file: [] },
   })
 
-  const handleOpenChange = (value: boolean) => {
-    if (!value) form.reset()
-    onOpenChange(value)
+  const parseCSV = (text: string) => {
+    const lines = text.split('\n').filter((l) => l.trim() !== '')
+    const headers = lines[0].split(',').map((h) => h.trim())
+    return lines.slice(1).map((line) => {
+      const values = line.split(',')
+      return headers.reduce((obj, h, i) => {
+        obj[h] = values[i]?.trim() ?? ''
+        return obj
+      }, {} as Record<string, string>)
+    })
   }
 
-  const onSubmit = (data: CustomerImportFormData) => {
+  const handlePreview = (data: CustomerImportFormData) => {
     const file = data.file[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const text = (e.target?.result as string) ?? ''
+        setPreviewData(parseCSV(text))
+        setPreviewOpen(true)
+      }
+      reader.readAsText(file)
+    }
+  }
+
+  const handleConfirmImport = () => {
+    const file = form.getValues().file[0]
     if (file) {
       importCustomers(file, {
         onSuccess: () => {
+          setPreviewOpen(false)
           handleOpenChange(false)
           form.reset()
         },
@@ -77,19 +112,43 @@ export function CustomersImportDialog({
     }
   }
 
-  const content = (
+  const handleDownloadSample = () => {
+    downloadSampleAsCsv(SAMPLE_CUSTOMERS_CSV, 'customers_sample.csv')
+  }
+
+  const handleOpenChange = (value: boolean) => {
+    if (!value) {
+      form.reset()
+      setPreviewOpen(false)
+    }
+    onOpenChange(value)
+  }
+
+  const ImportContent = () => (
     <form
       id="customers-import-form"
-      onSubmit={form.handleSubmit(onSubmit)}
+      onSubmit={form.handleSubmit(handlePreview)}
       className="grid gap-4 py-4"
     >
-      <div className="space-y-2 rounded-md border bg-muted/50 p-3 text-sm">
-        <div className="font-medium">Required: name</div>
-        <div className="text-muted-foreground">
-          Optional: company_name, email, phone_number, wa_number, address, city, state, postal_code, country, opening_balance, credit_limit, etc.
-        </div>
+      <div className="flex justify-end">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={handleDownloadSample}
+          className="text-muted-foreground"
+        >
+          <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
+          Download Sample CSV
+        </Button>
       </div>
       <FieldGroup>
+        <div className="space-y-2 rounded-md border bg-muted/50 p-3 text-sm">
+          <div className="font-medium">Required: customer_group_id, name, phone_number</div>
+          <div className="text-muted-foreground">
+            Optional: company_name, email, address, city, state, postal_code, country, deposit
+          </div>
+        </div>
         <Controller
           control={form.control}
           name="file"
@@ -102,11 +161,9 @@ export function CustomersImportDialog({
                 accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                 maxFiles={1}
                 maxSize={5 * 1024 * 1024}
-                onFileReject={(_, message) => {
-                  form.setError('file', { message })
-                }}
+                onFileReject={(_, msg) => form.setError('file', { message: msg })}
               >
-                <FileUploadDropzone className="flex flex-col items-center justify-center gap-2 border-dashed p-8 text-center">
+                <FileUploadDropzone className="flex-col items-center justify-center gap-2 border-dashed p-8 text-center">
                   <div className="flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
                     <HugeiconsIcon icon={CloudUploadIcon} className="size-5" />
                   </div>
@@ -122,8 +179,8 @@ export function CustomersImportDialog({
                   </FileUploadTrigger>
                 </FileUploadDropzone>
                 <FileUploadList>
-                  {value?.map((file, index) => (
-                    <FileUploadItem key={index} value={file} className="w-full">
+                  {value?.map((file, i) => (
+                    <FileUploadItem key={i} value={file} className="w-full">
                       <div className="flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary">
                         <HugeiconsIcon icon={File02Icon} className="size-4" />
                       </div>
@@ -143,7 +200,7 @@ export function CustomersImportDialog({
                   ))}
                 </FileUploadList>
               </FileUpload>
-              <FieldDescription>Upload CSV or Excel with customer data.</FieldDescription>
+              <FieldDescription>Upload the file containing your customer data.</FieldDescription>
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -152,57 +209,60 @@ export function CustomersImportDialog({
     </form>
   )
 
-  if (isDesktop) {
-    return (
-      <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader className="text-start">
-            <DialogTitle>Import Customers</DialogTitle>
-            <DialogDescription>
-              Bulk create customers by uploading a CSV or Excel file.
-            </DialogDescription>
-          </DialogHeader>
-          {content}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => handleOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              form="customers-import-form"
-              disabled={!form.formState.isValid || isPending}
-            >
-              {isPending ? 'Importing...' : 'Import'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    )
-  }
-
   return (
-    <Drawer open={open} onOpenChange={handleOpenChange}>
-      <DrawerContent>
-        <DrawerHeader className="text-left">
-          <DrawerTitle>Import Customers</DrawerTitle>
-          <DrawerDescription>
-            Bulk create customers by uploading a CSV or Excel file.
-          </DrawerDescription>
-        </DrawerHeader>
-        <div className="no-scrollbar overflow-y-auto px-4">{content}</div>
-        <DrawerFooter>
-          <Button
-            type="submit"
-            form="customers-import-form"
-            disabled={!form.formState.isValid || isPending}
-          >
-            {isPending ? 'Importing...' : 'Import'}
-          </Button>
-          <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+    <>
+      {isDesktop ? (
+        <Dialog open={open} onOpenChange={handleOpenChange}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader className="text-start">
+              <DialogTitle>Import Customers</DialogTitle>
+              <DialogDescription>
+                Bulk create customers by uploading a CSV or Excel file.
+              </DialogDescription>
+            </DialogHeader>
+            <ImportContent />
+            <DialogFooter className="gap-y-2">
+              <Button variant="outline" onClick={() => handleOpenChange(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" form="customers-import-form" disabled={!form.formState.isValid}>
+                Preview Data
+                <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <Drawer open={open} onOpenChange={handleOpenChange}>
+          <DrawerContent>
+            <DrawerHeader className="text-left">
+              <DrawerTitle>Import Customers</DrawerTitle>
+              <DrawerDescription>
+                Bulk create customers by uploading a CSV or Excel file.
+              </DrawerDescription>
+            </DrawerHeader>
+            <div className="no-scrollbar overflow-y-auto px-4">
+              <ImportContent />
+            </div>
+            <DrawerFooter>
+              <Button type="submit" form="customers-import-form" disabled={!form.formState.isValid}>
+                Preview Data
+                <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
+              </Button>
+              <DrawerClose asChild>
+                <Button variant="outline">Cancel</Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      )}
+      <CustomersCsvPreviewDialog
+        open={previewOpen}
+        onOpenChange={setPreviewOpen}
+        data={previewData}
+        onConfirm={handleConfirmImport}
+        isPending={isPending}
+      />
+    </>
   )
 }

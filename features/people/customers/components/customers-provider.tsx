@@ -4,7 +4,14 @@ import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import type { Customer } from '../types'
 
-type CustomersDialogType = 'import' | 'delete' | 'export' | 'view' | 'multi-delete'
+type CustomersDialogType =
+  | 'import'
+  | 'delete'
+  | 'export'
+  | 'view'
+  | 'multi-delete'
+  | 'add-deposit'
+  | 'view-deposit'
 
 type CustomersContextType = {
   open: CustomersDialogType | null

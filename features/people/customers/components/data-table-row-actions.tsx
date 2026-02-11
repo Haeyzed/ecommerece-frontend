@@ -4,9 +4,12 @@ import Link from 'next/link'
 import { HugeiconsIcon } from '@hugeicons/react'
 import {
   Delete02Icon,
+  DollarCircleIcon,
+  FileDownIcon,
   MoreHorizontalIcon,
   PencilEdit02Icon,
   ViewIcon,
+  Wallet01Icon,
 } from '@hugeicons/core-free-icons'
 import type { Row } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
@@ -38,6 +41,16 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   if (!canView && !canUpdate && !canDelete) return null
 
   const id = row.original.id
+  const customer = row.original
+
+  const openAddDeposit = () => {
+    setCurrentRow(customer)
+    setOpen('add-deposit')
+  }
+  const openViewDeposit = () => {
+    setCurrentRow(customer)
+    setOpen('view-deposit')
+  }
 
   return (
     <DropdownMenu modal={false}>
@@ -54,7 +67,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           <span className="sr-only">Open menu</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[160px]">
+      <DropdownMenuContent align="end" className="w-[180px]">
         {canView && (
           <>
             <DropdownMenuItem asChild>
@@ -65,6 +78,14 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
                 </DropdownMenuShortcut>
               </Link>
             </DropdownMenuItem>
+            {canView && (
+              <DropdownMenuItem onClick={openViewDeposit}>
+                View Deposit
+                <DropdownMenuShortcut>
+                  <HugeiconsIcon icon={Wallet01Icon} strokeWidth={2} size={16} />
+                </DropdownMenuShortcut>
+              </DropdownMenuItem>
+            )}
             {(canUpdate || canDelete) && <DropdownMenuSeparator />}
           </>
         )}
@@ -82,6 +103,22 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
                   />
                 </DropdownMenuShortcut>
               </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem disabled title="Coming soon">
+              Due Report
+              <DropdownMenuShortcut>
+                <HugeiconsIcon icon={FileDownIcon} strokeWidth={2} size={16} />
+              </DropdownMenuShortcut>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={openAddDeposit}>
+              Add Deposit
+              <DropdownMenuShortcut>
+                <HugeiconsIcon
+                  icon={DollarCircleIcon}
+                  strokeWidth={2}
+                  size={16}
+                />
+              </DropdownMenuShortcut>
             </DropdownMenuItem>
             {canDelete && <DropdownMenuSeparator />}
           </>

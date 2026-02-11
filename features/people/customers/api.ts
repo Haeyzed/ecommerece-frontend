@@ -11,7 +11,7 @@ import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import type { Customer, CustomerFormData } from './types'
+import type { Customer, CustomerDeposit, CustomerFormData } from './types'
 
 export const customerKeys = {
   all: ['customers'] as const,
@@ -20,6 +20,8 @@ export const customerKeys = {
     [...customerKeys.lists(), filters] as const,
   details: () => [...customerKeys.all, 'detail'] as const,
   detail: (id: number) => [...customerKeys.details(), id] as const,
+  deposits: (customerId: number) =>
+    [...customerKeys.detail(customerId), 'deposits'] as const,
 }
 
 export function useCustomers(params?: {
@@ -58,6 +60,50 @@ export function useCustomer(id: number) {
     ...query,
     isSessionLoading: sessionStatus === 'loading',
   }
+}
+
+export function useCustomerDeposits(customerId: number) {
+  const { api, sessionStatus } = useApiClient()
+  return useQuery({
+    queryKey: customerKeys.deposits(customerId),
+    queryFn: async () => {
+      const response = await api.get<CustomerDeposit[]>(
+        `/customers/${customerId}/deposits`
+      )
+      return response.data ?? []
+    },
+    enabled: !!customerId && sessionStatus !== 'loading',
+  })
+}
+
+export function useAddCustomerDeposit(customerId: number) {
+  const { api } = useApiClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (payload: { amount: number; note?: string | null }) => {
+      const response = await api.post<CustomerDeposit>(
+        `/customers/${customerId}/deposits`,
+        payload
+      )
+      if (!response.success || !response.data) {
+        throw new Error(response.message ?? 'Failed to add deposit')
+      }
+      return response.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: customerKeys.deposits(customerId),
+      })
+      queryClient.invalidateQueries({ queryKey: customerKeys.lists() })
+      queryClient.invalidateQueries({
+        queryKey: customerKeys.detail(customerId),
+      })
+      toast.success('Deposit added successfully')
+    },
+    onError: (e) =>
+      toast.error(e instanceof Error ? e.message : 'Failed to add deposit'),
+  })
 }
 
 export function useCustomerGroupsActive() {

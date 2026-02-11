@@ -47,7 +47,7 @@ export function useAudits(params?: UseAuditsParams) {
   const query = useQuery({
     queryKey: auditKeys.list(queryParams as Record<string, unknown>),
     queryFn: async () => {
-      const response = await api.get<Audit[]>('/audit-logs', {
+      const response = await api.get<Audit[]>('/reports/audit-logs', {
         params: queryParams,
       })
       return response
@@ -66,7 +66,7 @@ export function useAuditableModels() {
     queryKey: auditKeys.auditableModels(),
     queryFn: async () => {
       const response = await api.get<AuditableModelOption[]>(
-        '/utility/auditable-models'
+        '/reports/audit-logs/auditable-models'
       )
       return response.data ?? []
     },
@@ -88,7 +88,7 @@ export function useAuditsExport() {
   return useMutation({
     mutationFn: async (params: AuditExportParams) => {
       if (params.method === 'download') {
-        const blob = await api.postBlob('/audit-logs/export', params)
+        const blob = await api.postBlob('/reports/audit-logs/export', params)
         const url = window.URL.createObjectURL(blob)
         const link = document.createElement('a')
         link.href = url
@@ -99,7 +99,7 @@ export function useAuditsExport() {
         window.URL.revokeObjectURL(url)
         return { message: 'Export downloaded successfully' }
       }
-      const response = await api.post('/audit-logs/export', params)
+      const response = await api.post('/reports/audit-logs/export', params)
       if (!response.success) throw new Error(response.message)
       return response
     },

@@ -3,9 +3,5 @@
  */
 
 export { CustomerDueReportClient } from './components/customer-due-report-client'
-export { useCustomerDueReport, customerDueReportKeys } from './api'
-export type {
-  CustomerDueReportRow,
-  CustomerDueReportMeta,
-  CustomerDueReportPayload,
-} from './types'
+export { useCustomerDueReport, useCustomerDueReportExport, customerDueReportKeys } from './api'
+export type { CustomerDueReportRow, CustomerDueReportMeta } from './types'

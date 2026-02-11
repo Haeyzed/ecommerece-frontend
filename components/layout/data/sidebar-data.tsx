@@ -412,6 +412,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Customer Due Report",
               url: "/reports/customer-due",
+              permissions: ["due-report"],
             },
             {
               title: "Supplier Report",

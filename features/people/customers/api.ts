@@ -99,6 +99,7 @@ export function useAddCustomerDeposit(customerId: number) {
       queryClient.invalidateQueries({
         queryKey: customerKeys.detail(customerId),
       })
+      queryClient.refetchQueries({ queryKey: customerKeys.lists() })
       toast.success('Deposit added successfully')
     },
     onError: (e) =>

@@ -5,7 +5,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import {
   Delete02Icon,
   DollarCircleIcon,
-  FileDownIcon,
+  FileDown,
   MoreHorizontalIcon,
   PencilEdit02Icon,
   ViewIcon,
@@ -107,7 +107,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
             <DropdownMenuItem disabled title="Coming soon">
               Due Report
               <DropdownMenuShortcut>
-                <HugeiconsIcon icon={FileDownIcon} strokeWidth={2} size={16} />
+                <HugeiconsIcon icon={FileDown} strokeWidth={2} size={16} />
               </DropdownMenuShortcut>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={openAddDeposit}>

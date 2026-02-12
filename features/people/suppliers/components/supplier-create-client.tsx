@@ -20,7 +20,7 @@ const defaultValues: Partial<SupplierFormData> = {
   name: '',
   company_name: null,
   vat_number: null,
-  email: null,
+  email: '',
   phone_number: null,
   wa_number: null,
   address: null,

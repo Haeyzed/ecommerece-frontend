@@ -18,13 +18,13 @@ import { SupplierForm } from './supplier-form'
 
 const defaultValues: Partial<SupplierFormData> = {
   name: '',
-  company_name: null,
+  company_name: '',
   vat_number: null,
   email: '',
-  phone_number: null,
-  wa_number: null,
-  address: null,
-  city: null,
+  phone_number: '',
+  wa_number: '',
+  address: '',
+  city: '',
   state: null,
   postal_code: null,
   country: null,

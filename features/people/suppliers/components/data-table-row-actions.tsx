@@ -17,22 +17,22 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import type { Biller } from '../schemas'
-import { useBillersContext } from './billers-provider'
+import type { Supplier } from '../schemas'
+import { useSuppliersContext } from './suppliers-provider'
 import { useAuthSession } from '@/features/auth/api'
 
 type DataTableRowActionsProps = {
-  row: Row<Biller>
+  row: Row<Supplier>
 }
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
-  const { setOpen, setCurrentRow } = useBillersContext()
+  const { setOpen, setCurrentRow } = useSuppliersContext()
   const { data: session } = useAuthSession()
 
   const userPermissions = session?.user?.user_permissions || []
-  const canView = userPermissions.includes('billers-index')
-  const canUpdate = userPermissions.includes('billers-update')
-  const canDelete = userPermissions.includes('billers-delete')
+  const canView = userPermissions.includes('suppliers-index')
+  const canUpdate = userPermissions.includes('suppliers-update')
+  const canDelete = userPermissions.includes('suppliers-delete')
 
   if (!canView && !canUpdate && !canDelete) return null
 
@@ -70,7 +70,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
 
         {canUpdate && (
           <DropdownMenuItem asChild>
-            <Link href={`/people/billers/${id}/edit`}>
+            <Link href={`/people/suppliers/${id}/edit`}>
               Edit
               <DropdownMenuShortcut>
                 <HugeiconsIcon

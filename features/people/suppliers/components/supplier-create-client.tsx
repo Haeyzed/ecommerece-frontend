@@ -12,38 +12,42 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { Spinner } from '@/components/ui/spinner'
-import { useCreateBiller } from '../api'
-import { billerSchema, type BillerFormData } from '../schemas'
-import { BillerForm } from './biller-form'
+import { useCreateSupplier } from '../api'
+import { supplierSchema, type SupplierFormData } from '../schemas'
+import { SupplierForm } from './supplier-form'
 
-const defaultValues: Partial<BillerFormData> = {
+const defaultValues: Partial<SupplierFormData> = {
   name: '',
-  company_name: '',
+  company_name: null,
   vat_number: null,
-  email: '',
-  phone_number: '',
-  address: '',
-  city: '',
+  email: null,
+  phone_number: null,
+  wa_number: null,
+  address: null,
+  city: null,
   state: null,
   postal_code: null,
   country: null,
+  opening_balance: 0,
+  pay_term_no: null,
+  pay_term_period: null,
   image: [],
   is_active: true,
 }
 
-export function BillerCreateClient() {
+export function SupplierCreateClient() {
   const router = useRouter()
-  const { mutate: createBiller, isPending } = useCreateBiller()
+  const { mutate: createSupplier, isPending } = useCreateSupplier()
 
-  const form = useForm<BillerFormData>({
-    resolver: zodResolver(billerSchema) as Resolver<BillerFormData>,
-    defaultValues: defaultValues as BillerFormData,
+  const form = useForm<SupplierFormData>({
+    resolver: zodResolver(supplierSchema) as Resolver<SupplierFormData>,
+    defaultValues: defaultValues as SupplierFormData,
   })
 
-  const onSubmit = (data: BillerFormData) => {
-    createBiller(data, {
+  const onSubmit = (data: SupplierFormData) => {
+    createSupplier(data, {
       onSuccess: () => {
-        router.push('/people/billers')
+        router.push('/people/suppliers')
       },
     })
   }
@@ -61,16 +65,16 @@ export function BillerCreateClient() {
 
       <Main className="flex flex-1 flex-col gap-4 sm:gap-6">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Add Biller</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Add Supplier</h2>
           <p className="text-muted-foreground">
-            Create a new biller. Fill in the details below.
+            Create a new supplier. Fill in the details below.
           </p>
         </div>
 
-        <BillerForm
+        <SupplierForm
           form={form}
           onSubmit={onSubmit}
-          id="biller-create-form"
+          id="supplier-create-form"
           isPending={isPending}
           isEdit={false}
         />

@@ -1,23 +1,23 @@
 import { auth } from '@/auth'
 import { ForbiddenError } from '@/features/errors/forbidden'
-import { BillerViewClient } from '@/features/people/billers'
+import { SupplierEditClient } from '@/features/people/suppliers/components/supplier-edit-client'
 import { hasPermission } from '@/lib/utils/permissions'
 
 export const metadata = {
-  title: 'Biller',
+  title: 'Edit Supplier',
 }
 
 type Props = {
   params: Promise<{ id: string }>
 }
 
-export default async function BillerViewPage({ params }: Props) {
+export default async function SupplierEditPage({ params }: Props) {
   const session = await auth()
   const userPermissions = session?.user?.user_permissions ?? []
-  const canView = hasPermission(userPermissions, 'billers-index')
-  if (!canView) {
+  const canUpdate = hasPermission(userPermissions, 'suppliers-update')
+  if (!canUpdate) {
     return <ForbiddenError />
   }
   const { id } = await params
-  return <BillerViewClient id={id} />
+  return <SupplierEditClient id={id} />
 }

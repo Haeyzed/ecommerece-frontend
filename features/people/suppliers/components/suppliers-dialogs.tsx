@@ -1,26 +1,26 @@
 'use client'
 
-import { useBillersContext } from './billers-provider'
+import { useSuppliersContext } from './suppliers-provider'
 import { useAuthSession } from '@/features/auth/api'
-import { BillersDeleteDialog } from './billers-delete-dialog'
-import { BillersExportDialog } from './billers-export-dialog'
-import { BillersImportDialog } from './billers-import-dialog'
-import { BillersViewDialog } from './billers-view-dialog'
+import { SuppliersDeleteDialog } from './suppliers-delete-dialog'
+import { SuppliersExportDialog } from './suppliers-export-dialog'
+import { SuppliersImportDialog } from './suppliers-import-dialog'
+import { SuppliersViewDialog } from './suppliers-view-dialog'
 
-export function BillersDialogs() {
-  const { open, setOpen, currentRow, setCurrentRow } = useBillersContext()
+export function SuppliersDialogs() {
+  const { open, setOpen, currentRow, setCurrentRow } = useSuppliersContext()
   const { data: session } = useAuthSession()
 
   const userPermissions = session?.user?.user_permissions || []
-  const canImport = userPermissions.includes('billers-import')
-  const canExport = userPermissions.includes('billers-export')
-  const canDelete = userPermissions.includes('billers-delete')
-  const canView = userPermissions.includes('billers-index')
+  const canImport = userPermissions.includes('suppliers-import')
+  const canExport = userPermissions.includes('suppliers-export')
+  const canDelete = userPermissions.includes('suppliers-delete')
+  const canView = userPermissions.includes('suppliers-index')
 
   return (
     <>
       {canView && currentRow && (
-        <BillersViewDialog
+        <SuppliersViewDialog
           currentRow={currentRow}
           open={open === 'view'}
           onOpenChange={(state) => {
@@ -33,14 +33,14 @@ export function BillersDialogs() {
       )}
 
       {canImport && (
-        <BillersImportDialog
+        <SuppliersImportDialog
           open={open === 'import'}
           onOpenChange={(state) => setOpen(state ? 'import' : null)}
         />
       )}
 
       {canExport && (
-        <BillersExportDialog
+        <SuppliersExportDialog
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}
@@ -48,7 +48,7 @@ export function BillersDialogs() {
       )}
 
       {currentRow && canDelete && (
-        <BillersDeleteDialog
+        <SuppliersDeleteDialog
           open={open === 'delete'}
           onOpenChange={(state) => {
             if (!state) {

@@ -339,10 +339,12 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Suppliers",
               url: "/people/suppliers",
+              permissions: ["suppliers-index"],
             },
             {
               title: "Add Supplier",
               url: "/people/suppliers/create",
+              permissions: ["suppliers-create"],
             },
           ],
         },

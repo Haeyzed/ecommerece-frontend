@@ -15,72 +15,80 @@ import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { Spinner } from '@/components/ui/spinner'
 import { Button } from '@/components/ui/button'
-import { useBiller, useUpdateBiller } from '../api'
-import { billerSchema, type BillerFormData } from '../schemas'
-import { BillerForm } from './biller-form'
+import { useSupplier, useUpdateSupplier } from '../api'
+import { supplierSchema, type SupplierFormData } from '../schemas'
+import { SupplierForm } from './supplier-form'
 
-type BillerEditClientProps = {
+type SupplierEditClientProps = {
   id: string
 }
 
-export function BillerEditClient({ id }: BillerEditClientProps) {
+export function SupplierEditClient({ id }: SupplierEditClientProps) {
   const router = useRouter()
-  const billerId = Number(id)
-  const { data: biller, isLoading: billerLoading } = useBiller(billerId)
-  const { mutate: updateBiller, isPending } = useUpdateBiller()
+  const supplierId = Number(id)
+  const { data: supplier, isLoading: supplierLoading } = useSupplier(supplierId)
+  const { mutate: updateSupplier, isPending } = useUpdateSupplier()
 
-  const form = useForm<BillerFormData>({
-    resolver: zodResolver(billerSchema) as Resolver<BillerFormData>,
+  const form = useForm<SupplierFormData>({
+    resolver: zodResolver(supplierSchema) as Resolver<SupplierFormData>,
     defaultValues: {
       name: '',
-      company_name: '',
+      company_name: null,
       vat_number: null,
-      email: '',
-      phone_number: '',
-      address: '',
-      city: '',
+      email: null,
+      phone_number: null,
+      wa_number: null,
+      address: null,
+      city: null,
       state: null,
       postal_code: null,
       country: null,
+      opening_balance: 0,
+      pay_term_no: null,
+      pay_term_period: null,
       image: [],
       is_active: true,
     },
   })
 
   useEffect(() => {
-    if (!biller) return
+    if (!supplier) return
     form.reset({
-      name: biller.name ?? '',
-      company_name: biller.company_name ?? '',
-      vat_number: biller.vat_number ?? null,
-      email: biller.email ?? '',
-      phone_number: biller.phone_number ?? '',
-      address: biller.address ?? '',
-      city: biller.city ?? '',
-      state: biller.state ?? null,
-      postal_code: biller.postal_code ?? null,
-      country: biller.country ?? null,
+      name: supplier.name ?? '',
+      company_name: supplier.company_name ?? null,
+      vat_number: supplier.vat_number ?? null,
+      email: supplier.email ?? null,
+      phone_number: supplier.phone_number ?? null,
+      wa_number: supplier.wa_number ?? null,
+      address: supplier.address ?? null,
+      city: supplier.city ?? null,
+      state: supplier.state ?? null,
+      postal_code: supplier.postal_code ?? null,
+      country: supplier.country ?? null,
+      opening_balance: supplier.opening_balance ?? 0,
+      pay_term_no: supplier.pay_term_no ?? null,
+      pay_term_period: supplier.pay_term_period ?? null,
       image: [],
-      is_active: biller.is_active ?? true,
+      is_active: supplier.is_active ?? true,
     })
-  }, [biller, form])
+  }, [supplier, form])
 
-  const onSubmit = (data: BillerFormData) => {
+  const onSubmit = (data: SupplierFormData) => {
     const payload = { ...data }
-    if (!payload.image?.length) delete (payload as Partial<BillerFormData>).image
-    updateBiller(
-      { id: billerId, data: payload },
+    if (!payload.image?.length) delete (payload as Partial<SupplierFormData>).image
+    updateSupplier(
+      { id: supplierId, data: payload },
       {
         onSuccess: () => {
-          router.push('/people/billers')
+          router.push('/people/suppliers')
         },
       }
     )
   }
 
-  const isLoading = billerLoading
+  const isLoading = supplierLoading
 
-  if (isLoading && !biller) {
+  if (isLoading && !supplier) {
     return (
       <AuthenticatedLayout>
         <Header fixed>
@@ -98,7 +106,7 @@ export function BillerEditClient({ id }: BillerEditClientProps) {
     )
   }
 
-  if (!biller) {
+  if (!supplier) {
     return (
       <AuthenticatedLayout>
         <Header fixed>
@@ -110,9 +118,9 @@ export function BillerEditClient({ id }: BillerEditClientProps) {
           </div>
         </Header>
         <Main className="flex flex-1 flex-col gap-4">
-          <p className="text-muted-foreground">Biller not found.</p>
+          <p className="text-muted-foreground">Supplier not found.</p>
           <Button asChild variant="outline">
-            <Link href="/people/billers">Back to billers</Link>
+            <Link href="/people/suppliers">Back to suppliers</Link>
           </Button>
         </Main>
       </AuthenticatedLayout>
@@ -133,20 +141,20 @@ export function BillerEditClient({ id }: BillerEditClientProps) {
       <Main className="flex flex-1 flex-col gap-4 sm:gap-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">Edit Biller</h2>
-            <p className="text-muted-foreground">{biller.name}</p>
+            <h2 className="text-2xl font-bold tracking-tight">Edit Supplier</h2>
+            <p className="text-muted-foreground">{supplier.name}</p>
           </div>
           <Button asChild variant="outline">
-            <Link href="/people/billers">Back to list</Link>
+            <Link href="/people/suppliers">Back to list</Link>
           </Button>
         </div>
 
-        <BillerForm
+        <SupplierForm
           form={form}
           onSubmit={onSubmit}
-          id="biller-edit-form"
+          id="supplier-edit-form"
           isPending={isPending}
-          biller={biller}
+          supplier={supplier}
           isEdit
         />
       </Main>

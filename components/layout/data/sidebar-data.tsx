@@ -329,10 +329,12 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Billers",
               url: "/people/billers",
+              permissions: ["billers-index"],
             },
             {
               title: "Add Biller",
               url: "/people/billers/create",
+              permissions: ["billers-create"],
             },
             {
               title: "Suppliers",

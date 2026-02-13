@@ -12,8 +12,40 @@ import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { AuthenticatedLayout } from '@/components/layout/authenticated-layout'
 
-export function ForbiddenError() {
+type ForbiddenErrorProps = {
+  /** Optional message from API (e.g. "Permission denied for viewing brands list.") */
+  message?: string | null
+  /** When true, renders only the 403 content (for use inside existing layouts) */
+  inline?: boolean
+}
+
+export function ForbiddenError({ message, inline }: ForbiddenErrorProps = {}) {
   const router = useRouter()
+
+  const content = (
+    <div className="m-auto flex flex-col items-center justify-center gap-2 py-12">
+      <h1 className="text-[7rem] leading-tight font-bold">403</h1>
+      <span className="font-medium">Access Forbidden</span>
+      <p className="text-center text-muted-foreground">
+        {message ?? (
+          <>
+            You don't have necessary permission <br />
+            to view this resource.
+          </>
+        )}
+      </p>
+      <div className="mt-6 flex gap-4">
+        <Button variant="outline" onClick={() => router.back()}>
+          Go Back
+        </Button>
+        <Button onClick={() => router.push('/')}>Back to Home</Button>
+      </div>
+    </div>
+  )
+
+  if (inline) {
+    return <div className="flex flex-1 flex-col">{content}</div>
+  }
 
   return (
     <AuthenticatedLayout>
@@ -26,24 +58,9 @@ export function ForbiddenError() {
         </div>
       </Header>
 
-      <Main className='flex flex-1 flex-col gap-4 sm:gap-6'>
+      <Main className="flex flex-1 flex-col gap-4 sm:gap-6">
         <Suspense fallback={<Spinner />}>
-          <div className='h-svh'>
-            <div className='m-auto flex h-full w-full flex-col items-center justify-center gap-2'>
-              <h1 className='text-[7rem] leading-tight font-bold'>403</h1>
-              <span className='font-medium'>Access Forbidden</span>
-              <p className='text-center text-muted-foreground'>
-                You don't have necessary permission <br />
-                to view this resource.
-              </p>
-              <div className='mt-6 flex gap-4'>
-                <Button variant='outline' onClick={() => router.back()}>
-                  Go Back
-                </Button>
-                <Button onClick={() => router.push('/')}>Back to Home</Button>
-              </div>
-            </div>
-          </div>
+          <div className="h-svh">{content}</div>
         </Suspense>
       </Main>
     </AuthenticatedLayout>

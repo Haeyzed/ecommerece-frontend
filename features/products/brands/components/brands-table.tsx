@@ -37,6 +37,8 @@ import {
   DataTableBulkActions,
   brandsColumns as columns
 } from '@/features/products/brands'
+import { ForbiddenError } from '@/features/errors/forbidden'
+import { ForbiddenError as ForbiddenErrorClass } from '@/lib/api/api-errors'
 
 export function BrandsTable() {
   // Local UI-only states
@@ -123,9 +125,11 @@ export function BrandsTable() {
   }, [pageCount, ensurePageInRange])
 
   if (error) {
-    return (
-      toast.error(error.message)
-    )
+    if (error instanceof ForbiddenErrorClass) {
+      return <ForbiddenError message={error.message} inline />
+    }
+    toast.error(error.message)
+    return null
   }
 
   const hasData = data?.meta?.total && data.meta.total > 0

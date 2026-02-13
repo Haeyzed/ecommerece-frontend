@@ -10,7 +10,7 @@ export const metadata = {
 export default async function BrandsPage() {
   const session = await auth()
   const userPermissions = session?.user?.user_permissions || []
-  const canView = hasPermission(userPermissions, "brands-index")
+  const canView = hasPermission(userPermissions, "view brands")
   if (!canView) {
     return (
       <ForbiddenError />

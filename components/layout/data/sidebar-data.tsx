@@ -88,7 +88,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Brands",
               url: "/products/brands",
-              permissions: ["brands-index"],
+              permissions: ["view brands"],
             },
             {
               title: "Units",

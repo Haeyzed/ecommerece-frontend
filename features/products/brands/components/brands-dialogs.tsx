@@ -23,12 +23,12 @@ export function BrandsDialogs() {
   
   const userPermissions = session?.user?.user_permissions || []
 
-  const canCreate = userPermissions.includes('brands-create')
-  const canImport = userPermissions.includes('brands-import')
-  const canExport = userPermissions.includes('brands-export')
-  const canUpdate = userPermissions.includes('brands-update')
-  const canDelete = userPermissions.includes('brands-delete')
-  const canView = userPermissions.includes('brands-index')
+  const canCreate = userPermissions.includes('create brands')
+  const canImport = userPermissions.includes('import brands')
+  const canExport = userPermissions.includes('export brands')
+  const canUpdate = userPermissions.includes('update brands')
+  const canDelete = userPermissions.includes('delete brands')
+  const canView = userPermissions.includes('view brands')
 
   return (
     <>

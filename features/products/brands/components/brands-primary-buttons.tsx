@@ -22,9 +22,9 @@ export function BrandsPrimaryButtons() {
   const isMobile = useMediaQuery('(max-width: 767px)')
   
   const userPermissions = session?.user?.user_permissions || []
-  const canImport = userPermissions.includes('brands-import')
-  const canExport = userPermissions.includes('brands-export')
-  const canCreate = userPermissions.includes('brands-create')
+  const canImport = userPermissions.includes('import brands')
+  const canExport = userPermissions.includes('export brands')
+  const canCreate = userPermissions.includes('create brands')
 
   if (!canImport && !canExport && !canCreate) return null
 

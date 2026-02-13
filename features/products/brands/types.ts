@@ -43,6 +43,14 @@ export interface BrandFormData {
   is_active?: boolean | null;
 }
 
+export type BrandExportParams = {
+  ids?: number[];
+  format: "excel" | "pdf";
+  method: "download" | "email";
+  columns: string[];
+  user_id?: number;
+};
+
 /**
  * BrandStatus
  * * distinct union type for brand statuses.

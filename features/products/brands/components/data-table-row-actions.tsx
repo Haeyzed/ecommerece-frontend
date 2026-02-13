@@ -42,9 +42,9 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   
   const userPermissions = session?.user?.user_permissions || []
 
-  const canView = userPermissions.includes('brands-index')
-  const canUpdate = userPermissions.includes('brands-update')
-  const canDelete = userPermissions.includes('brands-delete')
+  const canView = userPermissions.includes('view brands')
+  const canUpdate = userPermissions.includes('update brands')
+  const canDelete = userPermissions.includes('delete brands')
 
   if (!canView && !canUpdate && !canDelete) return null
 

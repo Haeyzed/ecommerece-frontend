@@ -53,7 +53,7 @@ export function DataTableBulkActions<TData>({
   const { mutate: deactivateBrands, isPending: isDeactivating } = useBulkDeactivateBrands()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canUpdate = userPermissions.includes('edit brands')
+  const canUpdate = userPermissions.includes('update brands')
   const canDelete = userPermissions.includes('delete brands')
   const canExport = userPermissions.includes('export brands')
   if (!canUpdate && !canDelete && !canExport) return null

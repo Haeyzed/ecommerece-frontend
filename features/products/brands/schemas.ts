@@ -1,19 +1,5 @@
-/**
- * Brands Schemas
- *
- * Validation schemas and type inference for brand forms.
- * Uses Zod for client-side validation that mirrors server-side rules.
- *
- * @module features/products/brands/schemas
- */
-
 import { z } from "zod";
 
-/**
- * brandSchema
- *
- * Zod validation schema for creating and updating brands.
- */
 export const brandSchema = z.object({
   name: z.string().min(1, "Brand name is required").max(255, "Name is too long"),
   slug: z.string().max(255, "Slug is too long").nullable().optional(),
@@ -30,11 +16,6 @@ export const brandSchema = z.object({
   is_active: z.boolean().nullable().optional(),
 });
 
-/**
- * brandImportSchema
- * * Validation for the file import form.
- * Ensures a file is selected and is of correct type.
- */
 export const brandImportSchema = z.object({
   file: z
     .array(z.custom<File>())
@@ -46,19 +27,14 @@ export const brandImportSchema = z.object({
     }, "File is required"),
 })
 
-/**
- * brandExportSchema
- *
- * Validation for the export form.
- * Ensures format, method, and columns are selected.
- * When method is 'email', user_id is required.
- */
 export const brandExportSchema = z
   .object({
     format: z.enum(["excel", "pdf"]),
     method: z.enum(["download", "email"]),
     columns: z.array(z.string()).min(1, "Please select at least one column"),
     user_id: z.number().optional(),
+    start_date: z.string().optional(),
+    end_date: z.string().optional(),
   })
   .refine(
     (data) => {
@@ -70,12 +46,6 @@ export const brandExportSchema = z
     { message: "Please select a user to send the email to", path: ["user_id"] }
   );
 
-/**
- * BrandFormData
- *
- * Type definition inferred from the Zod schema.
- * Used for type-safe form handling.
- */
 export type BrandFormData = z.infer<typeof brandSchema>;
 export type BrandImportFormData = z.infer<typeof brandImportSchema>;
 export type BrandExportFormData = z.infer<typeof brandExportSchema>;

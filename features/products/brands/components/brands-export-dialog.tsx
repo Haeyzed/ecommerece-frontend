@@ -1,12 +1,5 @@
 'use client'
 
-/**
- * BrandsExportDialog
- *
- * Dialog/drawer component for exporting brands to Excel or PDF.
- * Supports download or email delivery.
- */
-
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -53,6 +46,7 @@ import { useMediaQuery } from '@/hooks/use-media-query'
 import { useQuery } from '@tanstack/react-query'
 import { useApiClient } from '@/lib/api/api-client-client'
 import { Spinner } from '@/components/ui/spinner'
+import { DateRangePicker } from '@/components/date-range-picker'
 
 const AVAILABLE_COLUMNS = [
   { value: 'id', label: 'ID' },
@@ -73,10 +67,10 @@ type BrandsExportDialogProps = {
 }
 
 export function BrandsExportDialog({
-  open,
-  onOpenChange,
-  ids = [],
-}: BrandsExportDialogProps) {
+                                     open,
+                                     onOpenChange,
+                                     ids = [],
+                                   }: BrandsExportDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: exportBrands, isPending } = useBrandsExport()
   const { api } = useApiClient()
@@ -87,6 +81,8 @@ export function BrandsExportDialog({
       format: 'excel',
       method: 'download',
       columns: ['id', 'name', 'slug', 'is_active'],
+      start_date: undefined,
+      end_date: undefined,
     },
   })
 
@@ -116,6 +112,8 @@ export function BrandsExportDialog({
         method: data.method,
         columns: data.columns,
         user_id: data.method === 'email' ? data.user_id : undefined,
+        start_date: data.start_date,
+        end_date: data.end_date,
       },
       {
         onSuccess: () => handleOpenChange(false),
@@ -134,6 +132,27 @@ export function BrandsExportDialog({
   const ExportContent = () => (
     <form id="export-form" onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
       <FieldGroup>
+        {/* Date Range Picker Integration */}
+        <Controller
+          control={form.control}
+          name="start_date"
+          render={({ fieldState }) => (
+            <DateRangePicker
+              label="Created Date Range"
+              description="Filter the brands included in this export by their creation date."
+              value={{
+                from: form.watch('start_date') ? new Date(form.watch('start_date')!) : undefined,
+                to: form.watch('end_date') ? new Date(form.watch('end_date')!) : undefined,
+              }}
+              onChange={(range) => {
+                form.setValue('start_date', range?.from?.toISOString())
+                form.setValue('end_date', range?.to?.toISOString())
+              }}
+              className="w-full"
+            />
+          )}
+        />
+
         <Controller
           control={form.control}
           name="format"

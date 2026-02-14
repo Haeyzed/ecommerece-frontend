@@ -22,6 +22,8 @@ export function useBrands(params?: {
   per_page?: number;
   search?: string;
   status?: string;
+  start_date?: string;
+  end_date?: string;
 }) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({

@@ -1,18 +1,3 @@
-/**
- * Brands Types
- *
- * Type definitions for Brand entities and related data structures.
- * These types align with the Laravel backend API resources.
- *
- * @module features/brands/types
- */
-
-/**
- * Brand
- *
- * Represents the full Brand entity returned by the API.
- * Used in data tables, detail views, and API responses.
- */
 export interface Brand {
   id: number;
   name: string;
@@ -27,13 +12,6 @@ export interface Brand {
   updated_at: string | null;
 }
 
-/**
- * BrandFormData
- *
- * Interface for data submitted when creating or updating a brand.
- * Note: This interface describes the raw values, often used in API mutation payloads.
- * For form state management, prefer the Zod inferred type from `schemas.ts`.
- */
 export interface BrandFormData {
   name: string;
   slug?: string | null;
@@ -49,10 +27,8 @@ export type BrandExportParams = {
   method: "download" | "email";
   columns: string[];
   user_id?: number;
+  start_date?: string;
+  end_date?: string;
 };
 
-/**
- * BrandStatus
- * * distinct union type for brand statuses.
- */
 export type BrandStatus = 'active' | 'inactive';

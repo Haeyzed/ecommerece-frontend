@@ -4,6 +4,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Upload01Icon } from '@hugeicons/core-free-icons'
+import { format } from 'date-fns'
 
 import { useBrandsExport } from '@/features/products/brands/api'
 import { brandExportSchema, type BrandExportFormData } from '@/features/products/brands/schemas'
@@ -132,11 +133,10 @@ export function BrandsExportDialog({
   const ExportContent = () => (
     <form id="export-form" onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
       <FieldGroup>
-        {/* Date Range Picker Integration */}
         <Controller
           control={form.control}
           name="start_date"
-          render={({ fieldState }) => (
+          render={() => (
             <DateRangePicker
               label="Created Date Range"
               description="Filter the brands included in this export by their creation date."
@@ -145,8 +145,14 @@ export function BrandsExportDialog({
                 to: form.watch('end_date') ? new Date(form.watch('end_date')!) : undefined,
               }}
               onChange={(range) => {
-                form.setValue('start_date', range?.from?.toISOString())
-                form.setValue('end_date', range?.to?.toISOString())
+                form.setValue(
+                  'start_date',
+                  range?.from ? format(range.from, 'yyyy-MM-dd') : undefined
+                )
+                form.setValue(
+                  'end_date',
+                  range?.to ? format(range.to, 'yyyy-MM-dd') : undefined
+                )
               }}
               className="w-full"
             />

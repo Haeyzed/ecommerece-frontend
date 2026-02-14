@@ -59,6 +59,7 @@ import {
   FileUploadTrigger,
 } from '@/components/ui/file-upload'
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { Spinner } from '@/components/ui/spinner'
 
 type BrandsImportDialogProps = {
   open: boolean
@@ -72,7 +73,7 @@ export function BrandsImportDialog({
   const isDesktop = useMediaQuery("(min-width: 768px)")
   const { mutate: importBrands, isPending } = useBrandsImport()
 
-  const { mutate: downloadTemplate, isPending: isDownloadingTemplate } = useBrandsTemplateDownload()
+  const { mutate: downloadTemplate, isPending: isDownloading } = useBrandsTemplateDownload()
 
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewData, setPreviewData] = useState<any[]>([])
@@ -144,14 +145,23 @@ export function BrandsImportDialog({
           variant="outline"
           size="sm"
           onClick={handleDownloadSample}
-          disabled={isDownloadingTemplate}
+          disabled={isDownloading}
           className="text-muted-foreground"
         >
-          <HugeiconsIcon
-            icon={Download01Icon}
-            className={`mr-2 size-4 ${isDownloadingTemplate ? 'animate-bounce' : ''}`}
-          />
-          {isDownloadingTemplate ? 'Downloading...' : 'Download Sample CSV'}
+          {isDownloading ? (
+            <>
+              <Spinner className="mr-2 size-4" />
+              Downloading...
+            </>
+          ) : (
+            <>
+              <HugeiconsIcon
+                icon={Download01Icon}
+                className={'mr-2 size-4'}
+              />
+              Download Sample CSV
+            </>
+          )}
         </Button>
       </div>
 

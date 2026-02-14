@@ -1,14 +1,5 @@
 "use client";
 
-/**
- * Brands API Hooks
- *
- * Client-side hooks for managing Brands using TanStack Query and a NextAuth-aware API client.
- * Handles CRUD operations, bulk actions, and file imports with automatic cache invalidation.
- *
- * @module features/brands/api
- */
-
 import { useApiClient } from "@/lib/api/api-client-client";
 import { ValidationError } from "@/lib/api/api-errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -21,7 +12,10 @@ export const brandKeys = {
   list: (filters?: Record<string, unknown>) => [...brandKeys.lists(), filters] as const,
   details: () => [...brandKeys.all, "detail"] as const,
   detail: (id: number) => [...brandKeys.details(), id] as const,
+  template: () => [...brandKeys.all, "template"] as const,
 };
+
+const BASE_PATH = '/brands'
 
 export function useBrands(params?: {
   page?: number;
@@ -34,7 +28,7 @@ export function useBrands(params?: {
     queryKey: brandKeys.list(params),
     queryFn: async () => {
       const response = await api.get<Brand[]>(
-        "/brands",
+        BASE_PATH,
         { params }
       );
       return response;
@@ -52,7 +46,7 @@ export function useBrand(id: number) {
   const query = useQuery({
     queryKey: brandKeys.detail(id),
     queryFn: async () => {
-      const response = await api.get<Brand>(`/brands/${id}`);
+      const response = await api.get<Brand>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
     enabled: !!id && sessionStatus !== "loading",
@@ -70,7 +64,7 @@ export function useCreateBrand() {
   return useMutation({
     mutationFn: async (data: BrandFormData) => {
       const formData = new FormData();
-      
+
       formData.append("name", data.name);
       if (data.slug) formData.append("slug", data.slug);
       if (data.short_description) formData.append("short_description", data.short_description);
@@ -80,21 +74,21 @@ export function useCreateBrand() {
       }
       if (data.is_active !== undefined) formData.append("is_active", data.is_active ? "1" : "0");
 
-      const response = await api.post<{ data: Brand }>("/brands", formData);
-      if (!response.success || !response.data) {
+      const response = await api.post<{ data: Brand }>(BASE_PATH, formData);
+      if (!response.success) {
         if (response.errors) {
           throw new ValidationError(response.message, response.errors);
         }
         throw new Error(response.message);
       }
-      return response.data;
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: brandKeys.lists() });
-      toast.success("Brand created successfully");
+      toast.success(response.message);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to create brand");
+      toast.error(error.message);
     },
   });
 }
@@ -115,22 +109,23 @@ export function useUpdateBrand() {
         formData.append("image", data.image[0]);
       }
       if (data.is_active !== undefined) formData.append("is_active", data.is_active ? "1" : "0");
-      const response = await api.post<{ data: Brand }>(`/brands/${id}`, formData);
-      if (!response.success || !response.data) {
+
+      const response = await api.post<{ data: Brand }>(`${BASE_PATH}/${id}`, formData);
+      if (!response.success) {
         if (response.errors) {
           throw new ValidationError(response.message, response.errors);
         }
         throw new Error(response.message);
       }
-      return response.data;
+      return { id, message: response.message };
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: brandKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: brandKeys.detail(variables.id) });
-      toast.success("Brand updated successfully");
+      queryClient.invalidateQueries({ queryKey: brandKeys.detail(data.id) });
+      toast.success(data.message);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to update brand");
+      toast.error(error.message);
     },
   });
 }
@@ -141,18 +136,18 @@ export function useDeleteBrand() {
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const response = await api.delete(`/brands/${id}`);
+      const response = await api.delete(`${BASE_PATH}/${id}`);
       if (!response.success) {
         throw new Error(response.message);
       }
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: brandKeys.lists() });
-      toast.success("Brand deleted successfully");
+      toast.success(response.message);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to delete brand");
+      toast.error(error.message);
     },
   });
 }
@@ -163,17 +158,17 @@ export function useBulkActivateBrands() {
   return useMutation({
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
-        "/brands/bulk-activate",
+        `${BASE_PATH}/bulk-activate`,
         { ids }
       );
       if (!response.success) throw new Error(response.message);
-      return response.data;
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: brandKeys.lists() });
-      toast.success("Brands activated");
+      toast.success(response.message);
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to activate"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
@@ -183,17 +178,17 @@ export function useBulkDeactivateBrands() {
   return useMutation({
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ deactivated_count: number }>(
-        "/brands/bulk-deactivate",
+        `${BASE_PATH}/bulk-deactivate`,
         { ids }
       );
       if (!response.success) throw new Error(response.message);
-      return response.data;
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: brandKeys.lists() });
-      toast.success("Brands deactivated");
+      toast.success(response.message);
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to deactivate"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
@@ -202,17 +197,17 @@ export function useBulkDestroyBrands() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.delete("/brands/bulk-destroy", {
+      const response = await api.delete(`${BASE_PATH}/bulk-destroy`, {
         body: JSON.stringify({ ids }),
       });
       if (!response.success) throw new Error(response.message);
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: brandKeys.lists() });
-      toast.success("Brands deleted");
+      toast.success(response.message);
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to delete"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
@@ -223,26 +218,25 @@ export function useBrandsImport() {
     mutationFn: async (file: File) => {
       const form = new FormData();
       form.append("file", file);
-      const response = await api.post("/brands/import", form);
+      const response = await api.post(`${BASE_PATH}/import`, form);
       if (!response.success) throw new Error(response.message);
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: brandKeys.lists() });
-      toast.success("Brands imported");
+      toast.success(response.message);
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Import failed"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
 export function useBrandsExport() {
   const { api } = useApiClient();
-  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (params: BrandExportParams) => {
       if (params.method === "download") {
-        const blob = await api.postBlob("/brands/export", params);
+        const blob = await api.postBlob(`${BASE_PATH}/export`, params);
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
@@ -255,18 +249,35 @@ export function useBrandsExport() {
         return { message: "Export downloaded successfully" };
       }
 
-      const response = await api.post("/brands/export", params);
+      const response = await api.post(`${BASE_PATH}/export`, params);
       if (!response.success) throw new Error(response.message);
       return response;
     },
-    onSuccess: (_, variables) => {
-      if (variables.method === "email") {
-        toast.success("Export sent via email successfully");
-      } else {
-        toast.success("Export downloaded successfully");
-      }
+    onSuccess: (response) => {
+      toast.success(response.message);
     },
-    onError: (e) =>
-      toast.error(e instanceof Error ? e.message : "Export failed"),
+    onError: (error) => toast.error(error.message),
+  });
+}
+
+export function useBrandsTemplateDownload() {
+  const { api } = useApiClient();
+  return useMutation({
+    mutationFn: async () => {
+      const blob = await api.getBlob(`${BASE_PATH}/download`);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `brands-sample.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      return { message: "Sample template downloaded" };
+    },
+    onSuccess: (response) => {
+      toast.success(response.message);
+    },
+    onError: (error) => toast.error(error.message),
   });
 }

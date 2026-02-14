@@ -19,10 +19,8 @@ import {
   CancelCircleIcon
 } from '@hugeicons/core-free-icons'
 
-import { useBrandsImport } from '@/features/products/brands/api'
+import { useBrandsImport, useBrandsTemplateDownload } from '@/features/products/brands/api'
 import { brandImportSchema, type BrandImportFormData } from '@/features/products/brands/schemas'
-import { downloadSampleAsCsv } from '@/lib/download-sample-csv'
-import { SAMPLE_BRANDS_CSV } from '../constants'
 import { BrandsCsvPreviewDialog } from './brands-csv-preview-dialog'
 
 import { Button } from '@/components/ui/button'
@@ -68,11 +66,13 @@ type BrandsImportDialogProps = {
 }
 
 export function BrandsImportDialog({
-  open,
-  onOpenChange,
-}: BrandsImportDialogProps) {
+                                     open,
+                                     onOpenChange,
+                                   }: BrandsImportDialogProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)")
   const { mutate: importBrands, isPending } = useBrandsImport()
+
+  const { mutate: downloadTemplate, isPending: isDownloadingTemplate } = useBrandsTemplateDownload()
 
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewData, setPreviewData] = useState<any[]>([])
@@ -89,7 +89,6 @@ export function BrandsImportDialog({
     const lines = text.split('\n').filter(line => line.trim() !== '')
     const headers = lines[0].split(',').map(h => h.trim())
     return lines.slice(1).map(line => {
-      // Basic split handling - for production consider a robust library like papaparse
       const values = line.split(',')
       return headers.reduce((obj, header, i) => {
         obj[header] = values[i]?.trim()
@@ -126,7 +125,7 @@ export function BrandsImportDialog({
   }
 
   const handleDownloadSample = () => {
-    downloadSampleAsCsv(SAMPLE_BRANDS_CSV, 'brands_sample.csv')
+    downloadTemplate()
   }
 
   const handleOpenChange = (value: boolean) => {
@@ -145,10 +144,14 @@ export function BrandsImportDialog({
           variant="outline"
           size="sm"
           onClick={handleDownloadSample}
+          disabled={isDownloadingTemplate}
           className="text-muted-foreground"
         >
-          <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
-          Download Sample CSV
+          <HugeiconsIcon
+            icon={Download01Icon}
+            className={`mr-2 size-4 ${isDownloadingTemplate ? 'animate-bounce' : ''}`}
+          />
+          {isDownloadingTemplate ? 'Downloading...' : 'Download Sample CSV'}
         </Button>
       </div>
 
@@ -205,7 +208,7 @@ export function BrandsImportDialog({
                       <div className="flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary">
                         <HugeiconsIcon icon={File02Icon} className="size-4" />
                       </div>
-                      <FileUploadItemPreview className="hidden" /> {/* Hide default image preview for CSVs */}
+                      <FileUploadItemPreview className="hidden" />
                       <FileUploadItemMetadata className="ml-2 flex-1" />
                       <FileUploadItemDelete asChild>
                         <Button
@@ -251,7 +254,7 @@ export function BrandsImportDialog({
               <Button variant='outline' onClick={() => handleOpenChange(false)}>
                 Cancel
               </Button>
-              <Button type="submit" form="import-form" disabled={!form.formState.isValid}>
+              <Button type="submit" form="import-form" disabled={!form.formState.isValid || isPending}>
                 Preview Data
                 <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
               </Button>
@@ -273,7 +276,7 @@ export function BrandsImportDialog({
             </div>
 
             <DrawerFooter>
-              <Button type="submit" form="import-form" disabled={!form.formState.isValid}>
+              <Button type="submit" form="import-form" disabled={!form.formState.isValid || isPending}>
                 Preview Data
                 <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
               </Button>
@@ -285,7 +288,6 @@ export function BrandsImportDialog({
         </Drawer>
       )}
 
-      {/* CSV Preview Dialog */}
       <BrandsCsvPreviewDialog
         open={previewOpen}
         onOpenChange={setPreviewOpen}

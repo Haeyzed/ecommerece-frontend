@@ -103,6 +103,15 @@ export interface UseApiClientReturn {
       body?: unknown,
       options?: ApiClientOptions
     ) => Promise<Blob>;
+
+    /**
+     * Performs a GET request and returns the response as a Blob.
+     * Used for downloading static files (e.g., CSV templates).
+     */
+    getBlob: (
+      url: string,
+      options?: ApiRequestOptions
+    ) => Promise<Blob>;
   };
 
   /**
@@ -255,6 +264,24 @@ export function useApiClient(): UseApiClientReturn {
       return api.postBlob(url, body, {
         ...options,
         headers,
+        skipAuth: true,
+      });
+    },
+
+    /**
+     * Performs a GET request and returns the response as a Blob.
+     * Used for downloading files like CSV templates.
+     */
+    getBlob: async (
+      url: string,
+      options?: ApiRequestOptions
+    ): Promise<Blob> => {
+      return api.getBlob(url, {
+        ...options,
+        headers: {
+          ...getHeaders(),
+          ...options?.headers,
+        },
         skipAuth: true,
       });
     },

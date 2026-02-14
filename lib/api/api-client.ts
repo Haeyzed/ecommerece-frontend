@@ -424,6 +424,50 @@ class ApiClient {
 
     return response.blob();
   }
+
+  /**
+   * Performs a GET request and returns the response as a Blob.
+   * Used for downloading static files (e.g., CSV templates).
+   *
+   * @param url - Endpoint URL.
+   * @param options - Request options.
+   * @returns {Promise<Blob>} The response body as a Blob.
+   */
+  async getBlob(
+    url: string,
+    options?: ApiRequestOptions
+  ): Promise<Blob> {
+    const { skipAuth = false, params, headers = {}, ...fetchOptions } =
+    options || {};
+
+    const fullURL = this.buildURL(url, params);
+
+    const requestHeaders: Record<string, string> = {
+      Accept: "*/*",
+      ...(headers as Record<string, string>),
+    };
+
+    let authToken: string | null = null;
+    if (!skipAuth) {
+      authToken = await this.getAuthToken();
+    }
+
+    if (authToken) {
+      requestHeaders.Authorization = `Bearer ${authToken}`;
+    }
+
+    const response = await fetch(fullURL, {
+      ...fetchOptions,
+      method: "GET",
+      headers: requestHeaders,
+    });
+
+    if (!response.ok) {
+      await this.handleError(response);
+    }
+
+    return response.blob();
+  }
 }
 
 /**

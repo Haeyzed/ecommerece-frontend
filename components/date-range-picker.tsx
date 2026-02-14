@@ -8,30 +8,21 @@ import { CalendarIcon } from '@hugeicons/core-free-icons'
 
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
-import { Field, FieldLabel, FieldDescription } from '@/components/ui/field'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 
 interface DateRangePickerProps {
   value?: DateRange
   onChange?: (range: DateRange | undefined) => void
-  label?: string
-  description?: string
   placeholder?: string
-  className?: string
 }
 
 export function DateRangePicker({
                                   value,
                                   onChange,
-                                  label = "Date Range",
-                                  description,
                                   placeholder = "Pick a date range",
-                                  className,
                                 }: DateRangePickerProps) {
   return (
-    <Field className={cn("grid gap-1.5", className)}>
-      {label && <FieldLabel>{label}</FieldLabel>}
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -72,7 +63,5 @@ export function DateRangePicker({
           />
         </PopoverContent>
       </Popover>
-      {description && <FieldDescription>{description}</FieldDescription>}
-    </Field>
   )
 }

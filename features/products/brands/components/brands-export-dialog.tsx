@@ -48,6 +48,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useApiClient } from '@/lib/api/api-client-client'
 import { Spinner } from '@/components/ui/spinner'
 import { DateRangePicker } from '@/components/date-range-picker'
+import { cn } from '@/lib/utils'
 
 const AVAILABLE_COLUMNS = [
   { value: 'id', label: 'ID' },
@@ -136,10 +137,10 @@ export function BrandsExportDialog({
         <Controller
           control={form.control}
           name="start_date"
-          render={() => (
+          render={({ field, fieldState }) => (
+            <Field className={"grid gap-1.5 w-full"}>
+              <FieldLabel>Export Format</FieldLabel>
             <DateRangePicker
-              label="Created Date Range"
-              description="Filter the brands included in this export by their creation date."
               value={{
                 from: form.watch('start_date') ? new Date(form.watch('start_date')!) : undefined,
                 to: form.watch('end_date') ? new Date(form.watch('end_date')!) : undefined,
@@ -154,8 +155,9 @@ export function BrandsExportDialog({
                   range?.to ? format(range.to, 'yyyy-MM-dd') : undefined
                 )
               }}
-              className="w-full"
             />
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 

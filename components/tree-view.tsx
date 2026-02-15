@@ -51,7 +51,6 @@ type TreeProps = React.HTMLAttributes<HTMLDivElement> & {
     defaultLeafIcon?: React.ComponentType<{ className?: string }>
     onDocumentDrag?: (sourceItem: TreeDataItem, targetItem: TreeDataItem) => void
     renderItem?: (params: TreeRenderItemParams) => React.ReactNode
-    enableDragHandle?: boolean
 }
 
 const TreeView = React.forwardRef<HTMLDivElement, TreeProps>(
@@ -66,10 +65,9 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeProps>(
             className,
             onDocumentDrag,
             renderItem,
-            enableDragHandle = false,
             ...props
-        }: TreeProps,
-        ref: React.Ref<HTMLDivElement>
+        },
+        ref
     ) => {
         const [selectedItemId, setSelectedItemId] = React.useState<
             string | undefined
@@ -143,12 +141,11 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeProps>(
                     draggedItem={draggedItem}
                     renderItem={renderItem}
                     level={0}
-                    enableDragHandle={enableDragHandle}
                     {...props}
                 />
                 <div
                     className='w-full h-[48px]'
-                    onDrop={(e) => { handleDrop({id: '', name: 'parent_div'})}}>
+                    onDrop={() => { handleDrop({id: '', name: 'parent_div'})}}>
                 </div>
             </div>
         )
@@ -166,7 +163,6 @@ type TreeItemProps = TreeProps & {
     handleDrop?: (item: TreeDataItem) => void
     draggedItem: TreeDataItem | null
     level?: number
-    enableDragHandle?: boolean
 }
 
 const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>(
@@ -184,14 +180,13 @@ const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>(
             draggedItem,
             renderItem,
             level,
-            enableDragHandle,
             onSelectChange,
             expandAll,
             initialSelectedItemId,
             onDocumentDrag,
             ...props
-        }: TreeItemProps,
-        ref: React.Ref<HTMLDivElement>
+        },
+        ref
     ) => {
         if (!(Array.isArray(data))) {
             data = [data]
@@ -199,7 +194,7 @@ const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>(
         return (
             <div ref={ref} role="tree" className={className} {...props}>
                 <ul>
-                    {data.map((item: TreeDataItem) => (
+                    {data.map((item) => (
                         <li key={item.id}>
                             {item.children ? (
                                 <TreeNode
@@ -214,7 +209,6 @@ const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>(
                                     handleDrop={handleDrop}
                                     draggedItem={draggedItem}
                                     renderItem={renderItem}
-                                    enableDragHandle={enableDragHandle}
                                 />
                             ) : (
                                 <TreeLeaf
@@ -227,7 +221,6 @@ const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>(
                                     handleDrop={handleDrop}
                                     draggedItem={draggedItem}
                                     renderItem={renderItem}
-                                    enableDragHandle={enableDragHandle}
                                 />
                             )}
                         </li>
@@ -251,7 +244,6 @@ const TreeNode = ({
     draggedItem,
     renderItem,
     level = 0,
-    enableDragHandle,
 }: {
     item: TreeDataItem
     handleSelectChange: (item: TreeDataItem | undefined) => void
@@ -264,7 +256,6 @@ const TreeNode = ({
     draggedItem: TreeDataItem | null
     renderItem?: (params: TreeRenderItemParams) => React.ReactNode
     level?: number
-    enableDragHandle?: boolean
 }) => {
     const [value, setValue] = React.useState(
         expandedItemIds.includes(item.id) ? [item.id] : []
@@ -304,7 +295,7 @@ const TreeNode = ({
         <AccordionPrimitive.Root
             type="multiple"
             value={value}
-            onValueChange={(s: string[]) => setValue(s)}
+            onValueChange={(s) => setValue(s)}
         >
             <AccordionPrimitive.Item value={item.id}>
                 <AccordionTrigger
@@ -361,7 +352,6 @@ const TreeNode = ({
                         draggedItem={draggedItem}
                         renderItem={renderItem}
                         level={level + 1}
-                        enableDragHandle={enableDragHandle}
                     />
                 </AccordionContent>
             </AccordionPrimitive.Item>
@@ -381,7 +371,6 @@ const TreeLeaf = React.forwardRef<
         handleDrop?: (item: TreeDataItem) => void
         draggedItem: TreeDataItem | null
         renderItem?: (params: TreeRenderItemParams) => React.ReactNode
-        enableDragHandle?: boolean
     }
 >(
     (
@@ -396,21 +385,9 @@ const TreeLeaf = React.forwardRef<
             handleDrop,
             draggedItem,
             renderItem,
-            enableDragHandle,
             ...props
-        }: React.HTMLAttributes<HTMLDivElement> & {
-            item: TreeDataItem
-            level: number
-            selectedItemId?: string
-            handleSelectChange: (item: TreeDataItem | undefined) => void
-            defaultLeafIcon?: React.ComponentType<{ className?: string }>
-            handleDragStart?: (item: TreeDataItem) => void
-            handleDrop?: (item: TreeDataItem) => void
-            draggedItem: TreeDataItem | null
-            renderItem?: (params: TreeRenderItemParams) => React.ReactNode
-            enableDragHandle?: boolean
         },
-        ref: React.Ref<HTMLDivElement>
+        ref
     ) => {
         const [isDragOver, setIsDragOver] = React.useState(false)
         const isSelected = selectedItemId === item.id
@@ -468,7 +445,6 @@ const TreeLeaf = React.forwardRef<
             >
                 {renderItem ? (
                     <>
-                        {/* 占位元素，与 ChevronRight 相同尺寸，保持对齐 */}
                         <div className="h-4 w-4 shrink-0 mr-1" />
                         {renderItem({
                             item,
@@ -500,7 +476,7 @@ TreeLeaf.displayName = 'TreeLeaf'
 const AccordionTrigger = React.forwardRef<
     React.ElementRef<typeof AccordionPrimitive.Trigger>,
     React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
->(({ className, children, ...props }: React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>, ref: React.Ref<React.ElementRef<typeof AccordionPrimitive.Trigger>>) => (
+>(({ className, children, ...props }, ref) => (
     <AccordionPrimitive.Header>
         <AccordionPrimitive.Trigger
             ref={ref}
@@ -520,7 +496,7 @@ AccordionTrigger.displayName = AccordionPrimitive.Trigger.displayName
 const AccordionContent = React.forwardRef<
     React.ElementRef<typeof AccordionPrimitive.Content>,
     React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Content>
->(({ className, children, ...props }: React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Content>, ref: React.Ref<React.ElementRef<typeof AccordionPrimitive.Content>>) => (
+>(({ className, children, ...props }, ref) => (
     <AccordionPrimitive.Content
         ref={ref}
         className={cn(

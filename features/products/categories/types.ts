@@ -20,7 +20,13 @@ export interface Category {
   updated_at: string | null;
   deleted_at: string | null;
   parent?: Pick<Category, "id" | "name"> | null;
-  children?: Category[];
+  children?: CategoryTreeItem[];
+}
+
+export interface CategoryTreeItem {
+  id: string;
+  name: string;
+  children?: CategoryTreeItem[];
 }
 
 export interface CategoryFormData {

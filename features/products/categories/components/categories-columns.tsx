@@ -110,13 +110,13 @@ export const categoriesColumns: ColumnDef<Category>[] = [
     meta: { className: 'w-48' },
   },
   {
-    accessorKey: 'parent_name',
+    accessorKey: 'parent.name',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Parent Category' />
     ),
     cell: ({ row }) => (
       <LongText className='max-w-36'>
-        {row.original.parent_name || '-'}
+        {row.original.parent?.name || '-'}
       </LongText>
     ),
     meta: { className: 'w-36' },

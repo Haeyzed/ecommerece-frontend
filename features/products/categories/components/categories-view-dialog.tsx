@@ -141,10 +141,10 @@ function CategoryView({ className, currentRow }: CategoryViewProps) {
         </div>
       )}
 
-      {currentRow.parent_name && (
+      {currentRow.parent?.name && (
         <div className='space-y-2'>
           <div className='text-sm font-medium text-muted-foreground'>Parent Category</div>
-          <div className='text-sm font-medium'>{currentRow.parent_name}</div>
+          <div className='text-sm font-medium'>{currentRow.parent.name}</div>
         </div>
       )}
 

@@ -8,8 +8,6 @@ export interface Category {
   image_url: string | null;
   icon: string | null;
   icon_url: string | null;
-  parent_id: number | null;
-  parent_name: string | null;
   is_active: boolean;
   active_status: CategoryStatus;
   featured: boolean;
@@ -21,6 +19,7 @@ export interface Category {
   created_at: string | null;
   updated_at: string | null;
   deleted_at: string | null;
+  parent?: Pick<Category, "id" | "name"> | null;
 }
 
 export interface CategoryFormData {

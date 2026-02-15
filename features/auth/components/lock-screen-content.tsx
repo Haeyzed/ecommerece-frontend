@@ -1,16 +1,5 @@
 "use client"
 
-/**
- * LockScreenContent
- *
- * The layout wrapper for the lock screen view.
- * It displays the user's avatar and name, and renders the LockScreenForm.
- * It also checks the session status to ensure the user is still technically
- * authenticated before allowing unlock attempts.
- *
- * @component
- */
-
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"

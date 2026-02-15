@@ -314,6 +314,7 @@ const TreeNode = ({
                         isDragOver && dragOverVariants(),
                         item.className
                     )}
+                    style={{ paddingLeft: level * 20 }}
                     onClick={() => {
                         handleSelectChange(item)
                         item.onClick?.()
@@ -348,7 +349,7 @@ const TreeNode = ({
                         </>
                     )}
                 </AccordionTrigger>
-                <AccordionContent className="ml-4 pl-1 border-l">
+                <AccordionContent className="ml-6 pl-2 border-l-2 border-muted">
                     <TreeItem
                         data={item.children ? item.children : item}
                         selectedItemId={selectedItemId}
@@ -446,7 +447,7 @@ const TreeLeaf = React.forwardRef<
             <div
                 ref={ref}
                 className={cn(
-                    'ml-5 flex text-left items-center py-2 cursor-pointer before:right-1',
+                    'flex text-left items-center py-2 cursor-pointer before:right-1',
                     treeVariants(),
                     className,
                     isSelected && selectedTreeVariants(),
@@ -454,6 +455,7 @@ const TreeLeaf = React.forwardRef<
                     item.disabled && 'opacity-50 cursor-not-allowed pointer-events-none',
                     item.className
                 )}
+                style={{ paddingLeft: level * 20 }}
                 onClick={() => {
                     if (item.disabled) return
                     handleSelectChange(item)

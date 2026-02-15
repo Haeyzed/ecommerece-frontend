@@ -133,28 +133,6 @@ export function BrandsExportDialog({
 
   const ExportContent = () => (
     <form id="export-form" onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
-
-      <FieldGroup>
-        <Controller
-          control={form.control}
-          name="start_date"
-          render={({ field, fieldState }) => (
-            <Field className={"grid gap-1.5 w-full"}>
-              <FieldLabel>Date Time Range</FieldLabel>
-              <DateTimePicker
-                value={field.value ? new Date(field.value) : undefined}
-                error={fieldState.error?.message}
-                onChange={(date) => {
-                  // Format to "YYYY-MM-DD HH:mm:ss" for Laravel Datetime columns
-                  field.onChange(date ? format(date, 'yyyy-MM-dd HH:mm:ss') : null)
-                }}
-              />
-              {fieldState.error && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-      </FieldGroup>
-
       <FieldGroup>
         <Controller
           control={form.control}

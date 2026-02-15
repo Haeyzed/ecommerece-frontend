@@ -342,7 +342,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({
             </>
           )}
         </AccordionTrigger>
-        <AccordionContent className="border-l border-border pl-1">
+        <AccordionContent className="border-l border-border pl-4">
           <TreeItem
             data={item.children || item}
             selectedItemId={selectedItemId}
@@ -437,7 +437,7 @@ const TreeLeaf = React.forwardRef<HTMLDivElement, TreeLeafProps>(
       <div
         ref={ref}
         className={cn(
-          'group relative flex cursor-pointer items-center py-2 pl-5 text-left before:absolute before:left-0 before:-z-10 before:h-8 before:w-full before:rounded-lg before:bg-accent/70 before:opacity-0 hover:before:opacity-100',
+          'group relative flex cursor-pointer items-center py-2 pl-7 text-left before:absolute before:left-0 before:-z-10 before:h-8 before:w-full before:rounded-lg before:bg-accent/70 before:opacity-0 hover:before:opacity-100',
           treeVariants(),
           isSelected && selectedTreeVariants(),
           isDragOver && dragOverVariants(),

@@ -132,7 +132,7 @@ export const categoriesColumns: ColumnDef<Category>[] = [
       return (
         <div className='flex justify-center'>
           <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
-            {row.getValue('status')}
+            {row.getValue('active_status')}
           </Badge>
         </div>
       )

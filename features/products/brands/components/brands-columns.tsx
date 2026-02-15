@@ -114,7 +114,7 @@ export const brandsColumns: ColumnDef<Brand>[] = [
       return (
         <div className='flex justify-center'>
           <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
-            {row.getValue('status')}
+            {row.getValue('active_status')}
           </Badge>
         </div>
       )

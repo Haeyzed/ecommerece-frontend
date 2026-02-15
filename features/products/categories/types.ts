@@ -26,6 +26,7 @@ export interface Category {
 export interface CategoryTreeItem {
   id: string;
   name: string;
+  icon_url?: string | null;
   children?: CategoryTreeItem[];
 }
 

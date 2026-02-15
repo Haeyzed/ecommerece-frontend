@@ -22,6 +22,7 @@ interface TreeDataItem {
     id: string
     name: string
     icon?: React.ComponentType<{ className?: string }>
+    iconUrl?: string | null
     selectedIcon?: React.ComponentType<{ className?: string }>
     openIcon?: React.ComponentType<{ className?: string }>
     children?: TreeDataItem[]
@@ -545,6 +546,16 @@ const TreeIcon = ({
     isSelected?: boolean
     default?: React.ComponentType<{ className?: string }>
 }) => {
+    if (item.iconUrl) {
+        return (
+            <img
+                src={item.iconUrl}
+                alt=""
+                className="h-4 w-4 shrink-0 mr-2 object-contain"
+            />
+        )
+    }
+
     let Icon: React.ComponentType<{ className?: string }> | undefined = defaultIcon
     if (isSelected && item.selectedIcon) {
         Icon = item.selectedIcon

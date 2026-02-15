@@ -1,18 +1,3 @@
-/**
- * Warehouse Types
- *
- * Type definitions for Warehouse entities and related data structures.
- * These types align with the Laravel backend API resources.
- *
- * @module features/settings/warehouse/types
- */
-
-/**
- * Warehouse
- *
- * Represents the full Warehouse entity returned by the API.
- * Used in data tables, detail views, and API responses.
- */
 export interface Warehouse {
   id: number;
   name: string;
@@ -26,11 +11,6 @@ export interface Warehouse {
   updated_at: string | null;
 }
 
-/**
- * WarehouseFormData
- *
- * Interface for data submitted when creating or updating a warehouse.
- */
 export interface WarehouseFormData {
   name: string;
   phone?: string | null;
@@ -38,3 +18,20 @@ export interface WarehouseFormData {
   address?: string | null;
   is_active?: boolean | null;
 }
+
+export type WarehouseExportParams = {
+  ids?: number[];
+  format: "excel" | "pdf";
+  method: "download" | "email";
+  columns: string[];
+  user_id?: number;
+  start_date?: string;
+  end_date?: string;
+};
+
+export interface WarehouseOption {
+  value: number;
+  label: string;
+}
+
+export type WarehouseStatus = 'active' | 'inactive';

@@ -12,7 +12,7 @@ export const categoryKeys = {
   list: (filters?: Record<string, unknown>) => [...categoryKeys.lists(), filters] as const,
   details: () => [...categoryKeys.all, "detail"] as const,
   detail: (id: number) => [...categoryKeys.details(), id] as const,
-  parents: () => [...categoryKeys.all, "parents"] as const,
+  options: () => [...categoryKeys.all, "options"] as const,
   template: () => [...categoryKeys.all, "template"] as const,
 };
 
@@ -47,12 +47,12 @@ export function useCategories(params?: {
   };
 }
 
-export function useParentCategories() {
+export function useOptionCategories() {
   const { api, sessionStatus } = useApiClient();
   return useQuery({
-    queryKey: categoryKeys.parents(),
+    queryKey: categoryKeys.options(),
     queryFn: async () => {
-      const response = await api.get<CategoryOption[]>(`${BASE_PATH}/parents`);
+      const response = await api.get<CategoryOption[]>(`${BASE_PATH}/options`);
       return response.data ?? [];
     },
     enabled: sessionStatus !== "loading",
@@ -110,7 +110,7 @@ export function useCreateCategory() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: categoryKeys.parents() });
+      queryClient.invalidateQueries({ queryKey: categoryKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => {
@@ -156,7 +156,7 @@ export function useUpdateCategory() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: categoryKeys.detail(data.id) });
-      queryClient.invalidateQueries({ queryKey: categoryKeys.parents() });
+      queryClient.invalidateQueries({ queryKey: categoryKeys.options() });
       toast.success(data.message);
     },
     onError: (error) => {
@@ -189,7 +189,7 @@ export function useReparentCategory() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: categoryKeys.detail(data.id) });
-      queryClient.invalidateQueries({ queryKey: categoryKeys.parents() });
+      queryClient.invalidateQueries({ queryKey: categoryKeys.options() });
       toast.success(data.message);
     },
     onError: (error) => {
@@ -212,7 +212,7 @@ export function useDeleteCategory() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: categoryKeys.parents() });
+      queryClient.invalidateQueries({ queryKey: categoryKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => {
@@ -354,7 +354,7 @@ export function useBulkDestroyCategories() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: categoryKeys.parents() });
+      queryClient.invalidateQueries({ queryKey: categoryKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
@@ -374,7 +374,7 @@ export function useCategoriesImport() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: categoryKeys.parents() });
+      queryClient.invalidateQueries({ queryKey: categoryKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),

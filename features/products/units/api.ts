@@ -1,56 +1,20 @@
 "use client";
 
-/**
- * Units API Hooks
- *
- * Client-side hooks for managing Units using TanStack Query and a NextAuth-aware API client.
- * Handles CRUD operations, bulk actions, and file imports with automatic cache invalidation.
- *
- * @module features/products/units/api
- */
-
 import { useApiClient } from "@/lib/api/api-client-client";
 import { ValidationError } from "@/lib/api/api-errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { Unit, UnitFormData, UnitOption } from "./types";
 
-/**
- * Unit query key factory.
- * Generates consistent, type-safe cache keys for TanStack Query.
- */
 export const unitKeys = {
-  /** Root key for all unit-related queries */
   all: ["units"] as const,
-
-  /** Base key for unit list queries */
   lists: () => [...unitKeys.all, "list"] as const,
-
-  /**
-   * Unit list key with optional filters
-   * @param {Record<string, unknown>} [filters] - Pagination, search, and status filters
-   */
-  list: (filters?: Record<string, unknown>) =>
-    [...unitKeys.lists(), filters] as const,
-
-  /** Base key for single unit queries */
+  list: (filters?: Record<string, unknown>) => [...unitKeys.lists(), filters] as const,
   details: () => [...unitKeys.all, "detail"] as const,
-
-  /**
-   * Single unit query key
-   * @param {number} id - Unit ID
-   */
   detail: (id: number) => [...unitKeys.details(), id] as const,
-
-  /** Key for base units list (combobox options) */
   baseUnits: () => [...unitKeys.all, "base-units"] as const,
 };
 
-/**
- * useUnits
- *
- * Fetches a paginated list of units with optional filtering.
- */
 export function useUnits(params?: {
   page?: number;
   per_page?: number;
@@ -96,11 +60,6 @@ export function useUnit(id: number) {
   };
 }
 
-/**
- * useBaseUnits
- *
- * Fetches a lightweight list of units suitable for the Base Unit combobox.
- */
 export function useBaseUnits() {
   const { api, sessionStatus } = useApiClient();
   return useQuery({
@@ -113,11 +72,6 @@ export function useBaseUnits() {
   });
 }
 
-/**
- * useCreateUnit
- *
- * Mutation hook to create a new unit.
- */
 export function useCreateUnit() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
@@ -154,11 +108,6 @@ export function useCreateUnit() {
   });
 }
 
-/**
- * useUpdateUnit
- *
- * Mutation hook to update an existing unit.
- */
 export function useUpdateUnit() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
@@ -197,11 +146,6 @@ export function useUpdateUnit() {
   });
 }
 
-/**
- * useDeleteUnit
- *
- * Mutation hook to delete a single unit by ID.
- */
 export function useDeleteUnit() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
@@ -224,9 +168,6 @@ export function useDeleteUnit() {
   });
 }
 
-/**
- * useBulkActivateUnits
- */
 export function useBulkActivateUnits() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
@@ -247,9 +188,6 @@ export function useBulkActivateUnits() {
   });
 }
 
-/**
- * useBulkDeactivateUnits
- */
 export function useBulkDeactivateUnits() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
@@ -270,9 +208,6 @@ export function useBulkDeactivateUnits() {
   });
 }
 
-/**
- * useBulkDestroyUnits
- */
 export function useBulkDestroyUnits() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
@@ -292,9 +227,6 @@ export function useBulkDestroyUnits() {
   });
 }
 
-/**
- * useUnitsImport
- */
 export function useUnitsImport() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
@@ -322,12 +254,6 @@ export type UnitExportParams = {
   user_id?: number;
 };
 
-/**
- * useUnitsExport
- *
- * Mutation hook to export units to Excel or PDF.
- * Supports download or email delivery.
- */
 export function useUnitsExport() {
   const { api } = useApiClient();
 

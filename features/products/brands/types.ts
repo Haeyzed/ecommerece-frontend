@@ -31,4 +31,9 @@ export type BrandExportParams = {
   end_date?: string;
 };
 
+export interface BrandOption {
+  value: number;
+  label: string;
+}
+
 export type BrandActiveStatus = 'active' | 'inactive';

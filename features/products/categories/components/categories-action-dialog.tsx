@@ -14,7 +14,7 @@ import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 import {
   useCreateCategory,
   useUpdateCategory,
-  useParentCategories
+  useOptionCategories
 } from '@/features/products/categories/api'
 import { categorySchema, type CategoryFormData } from '@/features/products/categories/schemas'
 import { type Category } from '../types'
@@ -234,8 +234,8 @@ interface CategoryFormProps {
 function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: CategoryFormProps) {
   const { resolvedTheme } = useTheme()
   const [isSlugDisabled, setIsSlugDisabled] = useState(true)
-  const { data: parentCategories } = useParentCategories()
-  const availableParents = parentCategories?.filter((c) => c.value !== currentRow?.id) ?? []
+  const { data: optionCategories } = useOptionCategories()
+  const availableParents = optionCategories?.filter((c) => c.value !== currentRow?.id) ?? []
 
   return (
     <form

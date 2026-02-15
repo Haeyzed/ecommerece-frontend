@@ -1,25 +1,6 @@
-/**
- * Taxes Schemas
- *
- * Validation schemas and type inference for tax forms.
- * Uses Zod for client-side validation that mirrors server-side rules.
- *
- * @module features/products/taxes/schemas
- */
-
 import { z } from "zod";
+import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
-/**
- * taxSchema
- *
- * Zod validation schema for creating and updating taxes.
- *
- * Validation rules:
- * - `name`: Required, max 255 chars
- * - `rate`: Required number, min 0
- * - `is_active`: Optional boolean
- * - `woocommerce_tax_id`: Optional number (nullable)
- */
 export const taxSchema = z.object({
   name: z.string().min(1, "Tax name is required").max(255, "Name is too long"),
   rate: z.number().min(0, "Rate must be 0 or greater"),
@@ -27,30 +8,32 @@ export const taxSchema = z.object({
   woocommerce_tax_id: z.number().int().nullable().optional(),
 });
 
-/**
- * taxImportSchema
- * * Validation for the file import form.
- */
 export const taxImportSchema = z.object({
   file: z
     .array(z.custom<File>())
     .min(1, "Please select a file to import")
     .max(1, "Please select only one file")
-    .refine((files) => files.length > 0, "File is required"),
+    .refine((files) => {
+      return files?.[0]?.size <= MAX_FILE_SIZE;
+    }, `Max file size is 5MB.`)
+    .refine((files) => {
+      const file = files?.[0];
+      if (!file) return false;
+      const isValidMime = CSV_MIME_TYPES.includes(file.type);
+      const isValidExtension = file.name.toLowerCase().endsWith(".csv");
+
+      return isValidMime || isValidExtension;
+    }, "Only .csv files are allowed"),
 });
 
-/**
- * taxExportSchema
- *
- * Validation for the export form.
- * When method is 'email', user_id is required.
- */
 export const taxExportSchema = z
   .object({
     format: z.enum(["excel", "pdf"]),
     method: z.enum(["download", "email"]),
     columns: z.array(z.string()).min(1, "Please select at least one column"),
     user_id: z.number().optional(),
+    start_date: z.string().optional(),
+    end_date: z.string().optional(),
   })
   .refine(
     (data) => {
@@ -62,12 +45,6 @@ export const taxExportSchema = z
     { message: "Please select a user to send the email to", path: ["user_id"] }
   );
 
-/**
- * TaxFormData
- *
- * Type definition inferred from the Zod schema.
- * Used for type-safe form handling.
- */
 export type TaxFormData = z.infer<typeof taxSchema>;
 export type TaxImportFormData = z.infer<typeof taxImportSchema>;
 export type TaxExportFormData = z.infer<typeof taxExportSchema>;

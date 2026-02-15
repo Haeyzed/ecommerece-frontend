@@ -1,5 +1,6 @@
 'use client'
 
+import { Spinner } from '@/components/ui/spinner'
 import { TreeView } from '@/components/tree-view'
 import type { TreeDataItem } from '@/components/tree-view'
 import { useReparentCategory } from '../api'
@@ -54,7 +55,10 @@ export function CategoryChildrenTree({
       <div className="text-sm font-medium text-muted-foreground">
         Child Categories
         {isPending && (
-          <span className="ml-2 text-xs text-muted-foreground">(updating…)</span>
+          <span className="ml-2 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Spinner className="size-3.5" />
+            Updating…
+          </span>
         )}
       </div>
       <TreeView

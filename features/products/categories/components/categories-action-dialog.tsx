@@ -116,7 +116,7 @@ export function CategoriesActionDialog({
         is_active: currentRow.is_active,
         featured: currentRow.featured,
         is_sync_disable: currentRow.is_sync_disable,
-        parent_id: currentRow.parent_id,
+        parent_id: currentRow?.parent?.id,
         image: [],
         icon: [],
         woocommerce_category_id: currentRow.woocommerce_category_id,

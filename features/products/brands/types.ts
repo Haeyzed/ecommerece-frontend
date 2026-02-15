@@ -7,7 +7,7 @@ export interface Brand {
   image: string | null;
   image_url: string | null;
   is_active: boolean;
-  status: BrandStatus;
+  active_status: BrandStatus;
   created_at: string | null;
   updated_at: string | null;
 }

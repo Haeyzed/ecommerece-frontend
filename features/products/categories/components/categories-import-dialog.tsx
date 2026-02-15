@@ -1,14 +1,5 @@
 'use client'
 
-/**
- * CategoriesImportDialog
- *
- * A responsive dialog/drawer component for importing categories via file upload.
- * Handles CSV preview and bulk import.
- *
- * @component
- */
-
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -21,10 +12,8 @@ import {
   CancelCircleIcon
 } from '@hugeicons/core-free-icons'
 
-import { useCategoriesImport } from '@/features/products/categories/api'
+import { useCategoriesImport, useCategoriesTemplateDownload } from '@/features/products/categories/api'
 import { categoryImportSchema, type CategoryImportFormData } from '@/features/products/categories/schemas'
-import { downloadSampleAsCsv } from '@/lib/download-sample-csv'
-import { SAMPLE_CATEGORIES_CSV } from '../constants'
 import { CategoriesCsvPreviewDialog } from './categories-csv-preview-dialog'
 
 import { Button } from '@/components/ui/button'
@@ -63,6 +52,7 @@ import {
   FileUploadTrigger,
 } from '@/components/ui/file-upload'
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { Spinner } from '@/components/ui/spinner'
 
 type CategoriesImportDialogProps = {
   open: boolean
@@ -70,11 +60,13 @@ type CategoriesImportDialogProps = {
 }
 
 export function CategoriesImportDialog({
-  open,
-  onOpenChange,
-}: CategoriesImportDialogProps) {
+                                         open,
+                                         onOpenChange,
+                                       }: CategoriesImportDialogProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)")
   const { mutate: importCategories, isPending } = useCategoriesImport()
+
+  const { mutate: downloadTemplate, isPending: isDownloading } = useCategoriesTemplateDownload()
 
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewData, setPreviewData] = useState<any[]>([])
@@ -127,7 +119,7 @@ export function CategoriesImportDialog({
   }
 
   const handleDownloadSample = () => {
-    downloadSampleAsCsv(SAMPLE_CATEGORIES_CSV, 'categories_sample.csv')
+    downloadTemplate()
   }
 
   const handleOpenChange = (value: boolean) => {
@@ -146,10 +138,23 @@ export function CategoriesImportDialog({
           variant="outline"
           size="sm"
           onClick={handleDownloadSample}
+          disabled={isDownloading}
           className="text-muted-foreground"
         >
-          <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
-          Download Sample CSV
+          {isDownloading ? (
+            <>
+              <Spinner className="mr-2 size-4" />
+              Downloading...
+            </>
+          ) : (
+            <>
+              <HugeiconsIcon
+                icon={Download01Icon}
+                className={'mr-2 size-4'}
+              />
+              Download Sample CSV
+            </>
+          )}
         </Button>
       </div>
 
@@ -161,12 +166,10 @@ export function CategoriesImportDialog({
           </ul>
           <div className='font-medium mt-3'>Optional Fields:</div>
           <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>parent_category</code> - Parent category name</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>short_description</code> - Category description</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>page_title</code> - Page title</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>parentcategory</code> - Parent category name</li>
           </ul>
-          <div className='font-medium mt-3'>Column Order:</div>
-          <div className='text-muted-foreground'>
-            <code className='rounded bg-background px-1 py-0.5 text-xs'>name*, parent_category</code>
-          </div>
         </div>
         <Controller
           control={form.control}
@@ -254,7 +257,7 @@ export function CategoriesImportDialog({
               <Button variant='outline' onClick={() => handleOpenChange(false)}>
                 Cancel
               </Button>
-              <Button type="submit" form="import-form" disabled={!form.formState.isValid}>
+              <Button type="submit" form="import-form" disabled={!form.formState.isValid || isPending}>
                 Preview Data
                 <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
               </Button>
@@ -276,7 +279,7 @@ export function CategoriesImportDialog({
             </div>
 
             <DrawerFooter>
-              <Button type="submit" form="import-form" disabled={!form.formState.isValid}>
+              <Button type="submit" form="import-form" disabled={!form.formState.isValid || isPending}>
                 Preview Data
                 <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
               </Button>
@@ -288,7 +291,6 @@ export function CategoriesImportDialog({
         </Drawer>
       )}
 
-      {/* CSV Preview Dialog */}
       <CategoriesCsvPreviewDialog
         open={previewOpen}
         onOpenChange={setPreviewOpen}

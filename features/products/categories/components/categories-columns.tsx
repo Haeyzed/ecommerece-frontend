@@ -127,8 +127,8 @@ export const categoriesColumns: ColumnDef<Category>[] = [
       <DataTableColumnHeader column={column} title='Status' />
     ),
     cell: ({ row }) => {
-      const { status } = row.original
-      const statusBadgeColor = statusTypes.get(status)
+      const { active_status } = row.original
+      const statusBadgeColor = statusTypes.get(active_status)
       return (
         <div className='flex justify-center'>
           <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>

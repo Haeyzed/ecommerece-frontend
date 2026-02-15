@@ -48,7 +48,6 @@ import { useQuery } from '@tanstack/react-query'
 import { useApiClient } from '@/lib/api/api-client-client'
 import { Spinner } from '@/components/ui/spinner'
 import { DateRangePicker } from '@/components/date-range-picker'
-import { DateTimePicker } from "@/components/date-time-picker"
 
 const AVAILABLE_COLUMNS = [
   { value: 'id', label: 'ID' },

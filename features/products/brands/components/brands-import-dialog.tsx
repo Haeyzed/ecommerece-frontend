@@ -1,12 +1,5 @@
 'use client'
 
-/**
- * BrandsImportDialog
- *
- * A dialog/drawer component for bulk importing brands via file upload (CSV/Excel).
- * Handles file selection, CSV parsing for preview, and final submission.
- */
-
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'

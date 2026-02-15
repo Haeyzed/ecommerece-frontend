@@ -1,68 +1,23 @@
 "use client";
 
-/**
- * Categories API Hooks
- *
- * Client-side hooks for managing Categories using TanStack Query and a NextAuth-aware API client.
- * Handles CRUD operations, bulk actions, and file imports with automatic cache invalidation.
- *
- * @module features/categories/api
- */
-
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApiClient } from "@/lib/api/api-client-client";
-import type { Category, CategoryFormData, CategoryOption } from "./types";
-import type { PaginationMeta } from "@/lib/api/api-types";
 import { ValidationError } from "@/lib/api/api-errors";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import type { Category, CategoryFormData, CategoryOption, CategoryExportParams } from "./types";
 
-/**
- * Category query key factory.
- * Generates consistent, type-safe cache keys for TanStack Query.
- */
 export const categoryKeys = {
-  /** Root key for all category-related queries */
   all: ["categories"] as const,
-
-  /** Base key for category list queries */
   lists: () => [...categoryKeys.all, "list"] as const,
-
-  /**
-   * Category list key with optional filters
-   * @param {Record<string, unknown>} [filters] - Pagination, search, and filter options
-   */
-  list: (filters?: Record<string, unknown>) =>
-    [...categoryKeys.lists(), filters] as const,
-
-  /** Base key for single category queries */
+  list: (filters?: Record<string, unknown>) => [...categoryKeys.lists(), filters] as const,
   details: () => [...categoryKeys.all, "detail"] as const,
-
-  /**
-   * Single category query key
-   * @param {number} id - Category ID
-   */
   detail: (id: number) => [...categoryKeys.details(), id] as const,
-
-  /** Key for parent category options */
   parents: () => [...categoryKeys.all, "parents"] as const,
+  template: () => [...categoryKeys.all, "template"] as const,
 };
 
-/**
- * useCategories
- *
- * Fetches a paginated list of categories with optional filtering.
- * Automatically pauses until the user session is authenticated.
- *
- * @param {Object} [params] - Query parameters
- * @param {number} [params.page] - Page number
- * @param {number} [params.per_page] - Items per page
- * @param {string} [params.search] - Search term
- * @param {string} [params.status] - Filter by active status
- * @param {string} [params.featured_status] - Filter by featured status
- * @param {string} [params.sync_status] - Filter by sync status
- * @param {number|null} [params.parent_id] - Filter by parent category
- * @returns {Object} TanStack Query result including `isSessionLoading` flag
- */
+const BASE_PATH = '/categories';
+
 export function useCategories(params?: {
   page?: number;
   per_page?: number;
@@ -71,13 +26,15 @@ export function useCategories(params?: {
   featured_status?: string;
   sync_status?: string;
   parent_id?: number | null;
+  start_date?: string;
+  end_date?: string;
 }) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
     queryKey: categoryKeys.list(params),
     queryFn: async () => {
       const response = await api.get<Category[]>(
-        "/categories",
+        BASE_PATH,
         { params }
       );
       return response;
@@ -86,64 +43,38 @@ export function useCategories(params?: {
   });
   return {
     ...query,
-    /** Indicates whether NextAuth session is still loading */
     isSessionLoading: sessionStatus === "loading",
   };
 }
 
-/**
- * useParentCategories
- *
- * Fetches a list of simplified category options (value/label) suitable for
- * parent category selection in forms.
- *
- * @returns {Object} TanStack Query result containing CategoryOption array
- */
 export function useParentCategories() {
   const { api, sessionStatus } = useApiClient();
   return useQuery({
     queryKey: categoryKeys.parents(),
     queryFn: async () => {
-      const response = await api.get<CategoryOption[]>("/categories/parents");
+      const response = await api.get<CategoryOption[]>(`${BASE_PATH}/parents`);
       return response.data ?? [];
     },
     enabled: sessionStatus !== "loading",
   });
 }
 
-/**
- * useCategory
- *
- * Fetches details for a single category by ID.
- *
- * @param {number} id - The ID of the category to fetch
- * @returns {Object} TanStack Query result containing the Category object or null
- */
 export function useCategory(id: number) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
     queryKey: categoryKeys.detail(id),
     queryFn: async () => {
-      const response = await api.get<Category>(`/categories/${id}`);
+      const response = await api.get<Category>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
     enabled: !!id && sessionStatus !== "loading",
   });
   return {
     ...query,
-    /** Indicates whether NextAuth session is still loading */
     isSessionLoading: sessionStatus === "loading",
   };
 }
 
-/**
- * useCreateCategory
- *
- * Mutation hook to create a new category.
- * Handles FormData conversion for file uploads.
- *
- * @returns {Object} TanStack Mutation result
- */
 export function useCreateCategory() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
@@ -151,8 +82,7 @@ export function useCreateCategory() {
   return useMutation({
     mutationFn: async (data: CategoryFormData) => {
       const formData = new FormData();
-      
-      // Add all fields to FormData
+
       formData.append("name", data.name);
       if (data.slug) formData.append("slug", data.slug);
       if (data.short_description) formData.append("short_description", data.short_description);
@@ -169,34 +99,26 @@ export function useCreateCategory() {
       if (data.is_sync_disable !== undefined) formData.append("is_sync_disable", data.is_sync_disable ? "1" : "0");
       if (data.woocommerce_category_id) formData.append("woocommerce_category_id", data.woocommerce_category_id.toString());
 
-      const response = await api.post<{ data: Category }>("/categories", formData);
-      if (!response.success || !response.data) {
+      const response = await api.post<{ data: Category }>(BASE_PATH, formData);
+      if (!response.success) {
         if (response.errors) {
           throw new ValidationError(response.message, response.errors);
         }
         throw new Error(response.message);
       }
-      return response.data;
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: categoryKeys.parents() });
-      toast.success("Category created successfully");
+      toast.success(response.message);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to create category");
+      toast.error(error.message);
     },
   });
 }
 
-/**
- * useUpdateCategory
- *
- * Mutation hook to update an existing category.
- * Uses POST with `_method=PUT` to handle file uploads in Laravel.
- *
- * @returns {Object} TanStack Mutation result
- */
 export function useUpdateCategory() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
@@ -204,10 +126,8 @@ export function useUpdateCategory() {
   return useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<CategoryFormData> }) => {
       const formData = new FormData();
-      
-      // Laravel convention: use POST with _method=PUT for file uploads
       formData.append("_method", "PUT");
-      // Add all fields to FormData
+
       if (data.name) formData.append("name", data.name);
       if (data.slug !== undefined) formData.append("slug", data.slug || "");
       if (data.short_description !== undefined) formData.append("short_description", data.short_description || "");
@@ -224,253 +144,110 @@ export function useUpdateCategory() {
       if (data.is_sync_disable !== undefined) formData.append("is_sync_disable", data.is_sync_disable ? "1" : "0");
       if (data.woocommerce_category_id !== undefined) formData.append("woocommerce_category_id", data.woocommerce_category_id?.toString() || "");
 
-      const response = await api.post<{ data: Category }>(`/categories/${id}`, formData);
-      if (!response.success || !response.data) {
+      const response = await api.post<{ data: Category }>(`${BASE_PATH}/${id}`, formData);
+      if (!response.success) {
         if (response.errors) {
           throw new ValidationError(response.message, response.errors);
         }
         throw new Error(response.message);
       }
-      return response.data;
+      return { id, message: response.message };
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: categoryKeys.detail(variables.id) });
+      queryClient.invalidateQueries({ queryKey: categoryKeys.detail(data.id) });
       queryClient.invalidateQueries({ queryKey: categoryKeys.parents() });
-      toast.success("Category updated successfully");
+      toast.success(data.message);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to update category");
+      toast.error(error.message);
     },
   });
 }
 
-/**
- * useDeleteCategory
- *
- * Mutation hook to delete a single category by ID.
- *
- * @returns {Object} TanStack Mutation result
- */
 export function useDeleteCategory() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const response = await api.delete(`/categories/${id}`);
+      const response = await api.delete(`${BASE_PATH}/${id}`);
       if (!response.success) {
         throw new Error(response.message);
       }
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: categoryKeys.parents() });
-      toast.success("Category deleted successfully");
+      toast.success(response.message);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to delete category");
+      toast.error(error.message);
     },
   });
 }
 
-/**
- * useBulkActivateCategories
- *
- * Mutation hook to bulk activate multiple categories.
- *
- * @returns {Object} TanStack Mutation result
- */
 export function useBulkActivateCategories() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
-        "/categories/bulk-activate",
+        `${BASE_PATH}/bulk-activate`,
         { ids }
       );
       if (!response.success) throw new Error(response.message);
-      return response.data;
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
-      toast.success("Categories activated");
+      toast.success(response.message);
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to activate"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
-/**
- * useBulkDeactivateCategories
- *
- * Mutation hook to bulk deactivate multiple categories.
- *
- * @returns {Object} TanStack Mutation result
- */
 export function useBulkDeactivateCategories() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ deactivated_count: number }>(
-        "/categories/bulk-deactivate",
+        `${BASE_PATH}/bulk-deactivate`,
         { ids }
       );
       if (!response.success) throw new Error(response.message);
-      return response.data;
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
-      toast.success("Categories deactivated");
+      toast.success(response.message);
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to deactivate"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
-/**
- * useBulkEnableFeaturedCategories
- *
- * Mutation hook to mark multiple categories as featured.
- *
- * @returns {Object} TanStack Mutation result
- */
-export function useBulkEnableFeaturedCategories() {
-  const { api } = useApiClient();
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (ids: number[]) => {
-      const response = await api.patch<{ updated_count: number }>(
-        "/categories/bulk-enable-featured",
-        { ids }
-      );
-      if (!response.success) throw new Error(response.message);
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
-      toast.success("Categories featured");
-    },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to update"),
-  });
-}
-
-/**
- * useBulkDisableFeaturedCategories
- *
- * Mutation hook to remove the featured flag from multiple categories.
- *
- * @returns {Object} TanStack Mutation result
- */
-export function useBulkDisableFeaturedCategories() {
-  const { api } = useApiClient();
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (ids: number[]) => {
-      const response = await api.patch<{ updated_count: number }>(
-        "/categories/bulk-disable-featured",
-        { ids }
-      );
-      if (!response.success) throw new Error(response.message);
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
-      toast.success("Categories unfeatured");
-    },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to update"),
-  });
-}
-
-/**
- * useBulkEnableSyncCategories
- *
- * Mutation hook to enable synchronization for multiple categories.
- *
- * @returns {Object} TanStack Mutation result
- */
-export function useBulkEnableSyncCategories() {
-  const { api } = useApiClient();
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (ids: number[]) => {
-      const response = await api.patch<{ updated_count: number }>(
-        "/categories/bulk-enable-sync",
-        { ids }
-      );
-      if (!response.success) throw new Error(response.message);
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
-      toast.success("Sync enabled");
-    },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to update"),
-  });
-}
-
-/**
- * useBulkDisableSyncCategories
- *
- * Mutation hook to disable synchronization for multiple categories.
- *
- * @returns {Object} TanStack Mutation result
- */
-export function useBulkDisableSyncCategories() {
-  const { api } = useApiClient();
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (ids: number[]) => {
-      const response = await api.patch<{ updated_count: number }>(
-        "/categories/bulk-disable-sync",
-        { ids }
-      );
-      if (!response.success) throw new Error(response.message);
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
-      toast.success("Sync disabled");
-    },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to update"),
-  });
-}
-
-/**
- * useBulkDestroyCategories
- *
- * Mutation hook to permanently delete multiple categories.
- *
- * @returns {Object} TanStack Mutation result
- */
 export function useBulkDestroyCategories() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.delete("/categories/bulk-destroy", {
+      const response = await api.delete(`${BASE_PATH}/bulk-destroy`, {
         body: JSON.stringify({ ids }),
       });
       if (!response.success) throw new Error(response.message);
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: categoryKeys.parents() });
-      toast.success("Categories deleted");
+      toast.success(response.message);
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to delete"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
-/**
- * useCategoriesImport
- *
- * Mutation hook to import categories from a file (CSV/Excel).
- *
- * @returns {Object} TanStack Mutation result
- */
 export function useCategoriesImport() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
@@ -478,40 +255,26 @@ export function useCategoriesImport() {
     mutationFn: async (file: File) => {
       const form = new FormData();
       form.append("file", file);
-      const response = await api.post("/categories/import", form);
+      const response = await api.post(`${BASE_PATH}/import`, form);
       if (!response.success) throw new Error(response.message);
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: categoryKeys.parents() });
-      toast.success("Categories imported");
+      toast.success(response.message);
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Import failed"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
-export type CategoryExportParams = {
-  ids?: number[];
-  format: "excel" | "pdf";
-  method: "download" | "email";
-  columns: string[];
-  user_id?: number;
-};
-
-/**
- * useCategoriesExport
- *
- * Mutation hook to export categories to Excel or PDF.
- * Supports download or email delivery.
- */
 export function useCategoriesExport() {
   const { api } = useApiClient();
 
   return useMutation({
     mutationFn: async (params: CategoryExportParams) => {
       if (params.method === "download") {
-        const blob = await api.postBlob("/categories/export", params);
+        const blob = await api.postBlob(`${BASE_PATH}/export`, params);
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
@@ -524,18 +287,35 @@ export function useCategoriesExport() {
         return { message: "Export downloaded successfully" };
       }
 
-      const response = await api.post("/categories/export", params);
+      const response = await api.post(`${BASE_PATH}/export`, params);
       if (!response.success) throw new Error(response.message);
       return response;
     },
-    onSuccess: (_, variables) => {
-      if (variables.method === "email") {
-        toast.success("Export sent via email successfully");
-      } else {
-        toast.success("Export downloaded successfully");
-      }
+    onSuccess: (response) => {
+      toast.success(response.message);
     },
-    onError: (e) =>
-      toast.error(e instanceof Error ? e.message : "Export failed"),
+    onError: (error) => toast.error(error.message),
+  });
+}
+
+export function useCategoriesTemplateDownload() {
+  const { api } = useApiClient();
+  return useMutation({
+    mutationFn: async () => {
+      const blob = await api.getBlob(`${BASE_PATH}/download`);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `categories-sample.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      return { message: "Sample template downloaded" };
+    },
+    onSuccess: (response) => {
+      toast.success(response.message);
+    },
+    onError: (error) => toast.error(error.message),
   });
 }

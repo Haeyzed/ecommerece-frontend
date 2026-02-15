@@ -218,7 +218,10 @@ function CategoryView({ className, currentRow }: CategoryViewProps) {
         </div>
       </div>
       
-      <CategoryChildrenTree children={currentRow.children} />
+      <CategoryChildrenTree
+            children={currentRow.children}
+            parentId={currentRow.id}
+          />
 
       <div className='grid grid-cols-2 gap-4'>
         <div className='space-y-2'>

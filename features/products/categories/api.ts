@@ -165,6 +165,39 @@ export function useUpdateCategory() {
   });
 }
 
+export function useReparentCategory() {
+  const { api } = useApiClient();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      parent_id,
+    }: {
+      id: number;
+      parent_id: number | null;
+    }) => {
+      const response = await api.patch<{ data: Category }>(
+        `${BASE_PATH}/${id}/reparent`,
+        { parent_id }
+      );
+      if (!response.success) {
+        throw new Error(response.message);
+      }
+      return { id, message: response.message };
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: categoryKeys.detail(data.id) });
+      queryClient.invalidateQueries({ queryKey: categoryKeys.parents() });
+      toast.success(data.message);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+}
+
 export function useDeleteCategory() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();

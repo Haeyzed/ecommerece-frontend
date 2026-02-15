@@ -1,8 +1,10 @@
 "use client"
 
-import { format } from 'date-fns'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { Calendar03Icon } from '@hugeicons/core-free-icons'
+import * as React from "react"
+import { format } from "date-fns"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { ArrowDownIcon } from "@hugeicons/core-free-icons"
+
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import {
@@ -10,49 +12,67 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { cn } from "@/lib/utils"
 
-type DatePickerProps = {
-  selected: Date | undefined
-  onSelect: (date: Date | undefined) => void
+interface DatePickerProps {
+  value?: Date
+  onChange?: (date: Date | undefined) => void
   placeholder?: string
+  error?: string
+  disabled?: boolean
 }
 
 export function DatePicker({
-  selected,
-  onSelect,
-  placeholder = 'Pick a date',
-}: DatePickerProps) {
+                                     value,
+                                     onChange,
+                                     placeholder = "Pick a date",
+                                     error,
+                                     disabled
+                                   }: DatePickerProps) {
+  const [open, setOpen] = React.useState(false)
+
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant='outline'
-          data-empty={!selected}
-          className='w-[240px] justify-start text-start font-normal data-[empty=true]:text-muted-foreground'
-        >
-          {selected ? (
-            format(selected, 'MMM d, yyyy')
-          ) : (
-            <span>{placeholder}</span>
-          )}
-          <HugeiconsIcon 
-            icon={Calendar03Icon} 
-            className='ms-auto h-4 w-4 opacity-50' 
-            strokeWidth={2} 
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            disabled={disabled}
+            className={cn(
+              "justify-start px-2.5 font-normal",
+              !value && "text-muted-foreground",
+              error && "border-destructive"
+            )}
+          >
+            {value ? format(value, "PPP") : <span>{placeholder}</span>}
+            <HugeiconsIcon
+              icon={ArrowDownIcon}
+              strokeWidth={2}
+              className="ml-auto size-4 opacity-50"
+            />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            mode="single"
+            captionLayout="dropdown" // Enables Month/Year dropdowns
+            selected={value}
+            onSelect={(date) => {
+              onChange?.(date)
+              // Optionally close on select for better UX in single-mode
+              // setOpen(false)
+            }}
           />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className='w-auto p-0'>
-        <Calendar
-          mode='single'
-          captionLayout='dropdown'
-          selected={selected}
-          onSelect={onSelect}
-          disabled={(date: Date) =>
-            date > new Date() || date < new Date('1900-01-01')
-          }
-        />
-      </PopoverContent>
-    </Popover>
+          <div className="flex gap-2 border-t p-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full"
+              onClick={() => setOpen(false)}
+            >
+              Done
+            </Button>
+          </div>
+        </PopoverContent>
+      </Popover>
   )
 }

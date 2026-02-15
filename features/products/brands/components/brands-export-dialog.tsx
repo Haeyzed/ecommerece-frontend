@@ -48,7 +48,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useApiClient } from '@/lib/api/api-client-client'
 import { Spinner } from '@/components/ui/spinner'
 import { DateRangePicker } from '@/components/date-range-picker'
-import { cn } from '@/lib/utils'
+import { DateTimePicker } from "@/components/date-time-picker"
 
 const AVAILABLE_COLUMNS = [
   { value: 'id', label: 'ID' },
@@ -133,13 +133,35 @@ export function BrandsExportDialog({
 
   const ExportContent = () => (
     <form id="export-form" onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
+
       <FieldGroup>
         <Controller
           control={form.control}
           name="start_date"
           render={({ field, fieldState }) => (
             <Field className={"grid gap-1.5 w-full"}>
-              <FieldLabel>Export Format</FieldLabel>
+              <FieldLabel>Date Time Range</FieldLabel>
+              <DateTimePicker
+                value={field.value ? new Date(field.value) : undefined}
+                error={fieldState.error?.message}
+                onChange={(date) => {
+                  // Format to "YYYY-MM-DD HH:mm:ss" for Laravel Datetime columns
+                  field.onChange(date ? format(date, 'yyyy-MM-dd HH:mm:ss') : null)
+                }}
+              />
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+      </FieldGroup>
+
+      <FieldGroup>
+        <Controller
+          control={form.control}
+          name="start_date"
+          render={({ field, fieldState }) => (
+            <Field className={"grid gap-1.5 w-full"}>
+              <FieldLabel>Date Range</FieldLabel>
             <DateRangePicker
               value={{
                 from: form.watch('start_date') ? new Date(form.watch('start_date')!) : undefined,

@@ -15,12 +15,16 @@ interface DateRangePickerProps {
   value?: DateRange
   onChange?: (range: DateRange | undefined) => void
   placeholder?: string
+  disabled?: boolean
+  error?: string
 }
 
 export function DateRangePicker({
                                   value,
                                   onChange,
                                   placeholder = "Pick a date range",
+                                  disabled,
+                                  error
                                 }: DateRangePickerProps) {
   return (
       <Popover>
@@ -28,9 +32,11 @@ export function DateRangePicker({
           <Button
             id="date"
             variant="outline"
+            disabled={disabled}
             className={cn(
               "justify-start text-left font-normal px-2.5",
-              !value && "text-muted-foreground"
+              !value && "text-muted-foreground",
+              error && "border-destructive"
             )}
           >
             <HugeiconsIcon
@@ -54,7 +60,6 @@ export function DateRangePicker({
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
           <Calendar
-            initialFocus
             mode="range"
             defaultMonth={value?.from}
             selected={value}

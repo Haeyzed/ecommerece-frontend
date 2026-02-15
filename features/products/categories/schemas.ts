@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
 export const categorySchema = z.object({
   name: z.string().min(1, "Category name is required").max(255, "Name is too long"),
@@ -30,8 +31,16 @@ export const categoryImportSchema = z.object({
     .min(1, "Please select a file to import")
     .max(1, "Please select only one file")
     .refine((files) => {
-      return files.length > 0;
-    }, "File is required"),
+      return files?.[0]?.size <= MAX_FILE_SIZE;
+    }, `Max file size is 5MB.`)
+    .refine((files) => {
+      const file = files?.[0];
+      if (!file) return false;
+      const isValidMime = CSV_MIME_TYPES.includes(file.type);
+      const isValidExtension = file.name.toLowerCase().endsWith(".csv");
+
+      return isValidMime || isValidExtension;
+    }, "Only .csv files are allowed"),
 });
 
 export const categoryExportSchema = z

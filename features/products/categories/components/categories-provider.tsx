@@ -1,16 +1,5 @@
 'use client'
 
-/**
- * CategoriesProvider
- *
- * Context provider for managing the state of category dialogs (open/closed)
- * and the currently selected row for editing or deletion.
- *
- * @component
- * @param {Object} props - The component props
- * @param {React.ReactNode} props.children - Child components
- */
-
 import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type Category } from '../types'

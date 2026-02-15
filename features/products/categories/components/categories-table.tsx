@@ -1,15 +1,5 @@
 "use client"
 
-/**
- * CategoriesTable
- *
- * The main table component for displaying categories.
- * Handles server-side pagination, sorting, filtering, and data fetching
- * via the URL state hook and TanStack Table.
- *
- * @component
- */
-
 import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
 import {
   Table,
@@ -164,7 +154,7 @@ export function CategoriesTable() {
         searchKey='name'
         filters={[
           {
-            columnId: 'status',
+            columnId: 'active_status',
             title: 'Status',
             options: [
               { label: 'Active', value: 'active' },

@@ -1,14 +1,5 @@
 "use client"
 
-/**
- * CategoriesEmptyState
- *
- * Displays a placeholder UI when no categories are available in the system.
- * Provides primary actions to add or import categories.
- *
- * @component
- */
-
 import { DataTableEmptyState } from '@/components/data-table'
 import { HugeiconsIcon } from "@hugeicons/react"
 import { PlusSignIcon, Download01Icon } from "@hugeicons/core-free-icons"

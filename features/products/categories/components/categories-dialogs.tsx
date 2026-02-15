@@ -1,15 +1,5 @@
 'use client'
 
-/**
- * CategoriesDialogs
- *
- * A orchestrator component that manages the rendering of various dialogs
- * (Add, Edit, Delete, Import) based on the current state from the CategoriesProvider
- * and the User's Permissions.
- *
- * @component
- */
-
 import { CategoriesActionDialog } from './categories-action-dialog'
 import { CategoriesDeleteDialog } from './categories-delete-dialog'
 import { CategoriesExportDialog } from './categories-export-dialog'
@@ -21,11 +11,7 @@ import { useAuthSession } from '@/features/auth/api'
 export function CategoriesDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useCategories()
   const { data: session } = useAuthSession()
-  
-  // Get permissions safely
   const userPermissions = session?.user?.user_permissions || []
-
-  // Define permission checks based on your ACL
   const canCreate = userPermissions.includes('create categories')
   const canImport = userPermissions.includes('import categories')
   const canExport = userPermissions.includes('export categories')

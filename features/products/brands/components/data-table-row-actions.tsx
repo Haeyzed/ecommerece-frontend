@@ -1,16 +1,5 @@
 'use client'
 
-/**
- * DataTableRowActions
- *
- * Renders the actions dropdown menu (Edit, Delete) for a specific row
- * in the brands data table.
- *
- * @component
- * @param {Object} props - The component props
- * @param {Row<Brand>} props.row - The table row containing brand data
- */
-
 import { HugeiconsIcon } from '@hugeicons/react'
 import { 
   Delete02Icon, 

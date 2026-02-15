@@ -1,20 +1,11 @@
 'use client'
 
-/**
- * BrandsPrimaryButtons
- *
- * Renders the main call-to-action buttons for the brands view (Import, Add).
- * Triggers the respective dialogs via the BrandsProvider context.
- *
- * @component
- */
-
 import { HugeiconsIcon } from '@hugeicons/react'
 import { FileImportIcon, PlusSignIcon, Upload01Icon } from '@hugeicons/core-free-icons'
 import { Button } from '@/components/ui/button'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { useBrands } from './brands-provider'
-import { useAuthSession } from '@/features/auth/api' // Import the session hook
+import { useAuthSession } from '@/features/auth/api'
 
 export function BrandsPrimaryButtons() {
   const { setOpen } = useBrands()

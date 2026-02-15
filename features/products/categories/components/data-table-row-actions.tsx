@@ -1,17 +1,5 @@
 'use client'
 
-/**
- * DataTableRowActions
- *
- * Renders the dropdown menu for row-specific actions (Edit, Delete) within the data table.
- * It connects to the CategoriesProvider context to trigger the appropriate dialogs
- * and set the current row context.
- *
- * @component
- * @param {Object} props - The component props
- * @param {Row<Category>} props.row - The table row object containing category data
- */
-
 import { HugeiconsIcon } from '@hugeicons/react'
 import { 
   Delete02Icon, 
@@ -72,7 +60,6 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
                   <HugeiconsIcon icon={ViewIcon} strokeWidth={2} size={16} />
                 </DropdownMenuShortcut>
               </DropdownMenuItem>
-              {/* Show separator if there are subsequent actions */}
               {(canUpdate || canDelete) && <DropdownMenuSeparator />}
             </>
           )}

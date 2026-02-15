@@ -1,19 +1,5 @@
 'use client'
 
-/**
- * CategoriesDeleteDialog
- *
- * A confirmation dialog for deleting a single category.
- * Requires the user to type the category name to confirm deletion
- * as a safety measure.
- *
- * @component
- * @param {Object} props - The component props
- * @param {boolean} props.open - Controls the visibility of the dialog
- * @param {function} props.onOpenChange - Callback to change the open state
- * @param {Category} props.currentRow - The category selected for deletion
- */
-
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Alert02Icon } from '@hugeicons/core-free-icons'
@@ -23,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { useDeleteCategory } from '../api'
 import { type Category } from '../types'
-import { useAuthSession } from '@/features/auth/api' // Import session hook
+import { useAuthSession } from '@/features/auth/api'
 
 type CategoriesDeleteDialogProps = {
   open: boolean

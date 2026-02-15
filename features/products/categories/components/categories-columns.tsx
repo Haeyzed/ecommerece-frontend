@@ -122,7 +122,7 @@ export const categoriesColumns: ColumnDef<Category>[] = [
     meta: { className: 'w-36' },
   },
   {
-    accessorKey: 'status',
+    accessorKey: 'active_status',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Status' />
     ),

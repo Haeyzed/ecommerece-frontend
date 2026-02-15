@@ -1,14 +1,5 @@
 'use client'
 
-/**
- * CategoriesPrimaryButtons
- *
- * Renders the main action buttons for the categories view (Add, Import).
- * Triggers the respective dialogs via the context provider.
- *
- * @component
- */
-
 import { HugeiconsIcon } from '@hugeicons/react'
 import { FileImportIcon, PlusSignIcon, Upload01Icon } from '@hugeicons/core-free-icons'
 import { Button } from '@/components/ui/button'

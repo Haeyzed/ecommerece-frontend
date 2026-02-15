@@ -7,7 +7,7 @@ export interface Brand {
   image: string | null;
   image_url: string | null;
   is_active: boolean;
-  active_status: BrandStatus;
+  active_status: BrandActiveStatus;
   created_at: string | null;
   updated_at: string | null;
 }
@@ -31,4 +31,4 @@ export type BrandExportParams = {
   end_date?: string;
 };
 
-export type BrandStatus = 'active' | 'inactive';
+export type BrandActiveStatus = 'active' | 'inactive';

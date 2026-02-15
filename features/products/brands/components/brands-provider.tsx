@@ -1,16 +1,5 @@
 'use client'
 
-/**
- * BrandsProvider
- *
- * Context provider for managing the state of brand-related dialogs and the
- * currently selected brand for editing or deletion.
- *
- * @component
- * @param {Object} props - The component props
- * @param {React.ReactNode} props.children - Child components
- */
-
 import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type Brand } from '../types'

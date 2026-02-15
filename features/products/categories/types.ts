@@ -9,7 +9,7 @@ export interface Category {
   icon: string | null;
   icon_url: string | null;
   is_active: boolean;
-  active_status: CategoryStatus;
+  active_status: CategoryActiveStatus;
   featured: boolean;
   featured_status: CategoryFeaturedStatus;
   is_sync_disable: boolean;
@@ -51,6 +51,6 @@ export interface CategoryOption {
   label: string;
 }
 
-export type CategoryStatus = 'active' | 'inactive';
-export type CategoryFeaturedStatus = 'featured' | 'not featured';
+export type CategoryActiveStatus = 'active' | 'inactive';
+export type CategoryFeaturedStatus = 'yes' | 'no';
 export type CategorySyncStatus = 'enabled' | 'disabled';

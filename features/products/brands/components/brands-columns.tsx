@@ -104,7 +104,7 @@ export const brandsColumns: ColumnDef<Brand>[] = [
     meta: { className: 'w-48' },
   },
   {
-    accessorKey: 'status',
+    accessorKey: 'active_status',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Status' />
     ),

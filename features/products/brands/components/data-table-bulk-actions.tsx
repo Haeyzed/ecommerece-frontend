@@ -1,17 +1,5 @@
 'use client'
 
-/**
- * DataTableBulkActions
- *
- * Renders the floating toolbar for bulk operations on selected brand rows.
- * Provides actions for bulk activation, deactivation, and deletion.
- *
- * @component
- * @template TData - The type of data in the table
- * @param {Object} props - The component props
- * @param {Table<TData>} props.table - The TanStack table instance
- */
-
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { 

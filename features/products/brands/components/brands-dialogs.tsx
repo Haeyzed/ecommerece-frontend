@@ -1,14 +1,5 @@
 'use client'
 
-/**
- * BrandsDialogs
- *
- * Orchestrator component that renders the appropriate dialog (Add, Edit, Delete, Import)
- * based on the current state from the BrandsProvider and User Permissions.
- *
- * @component
- */
-
 import { BrandsActionDialog } from './brands-action-dialog'
 import { BrandsDeleteDialog } from './brands-delete-dialog'
 import { BrandsExportDialog } from './brands-export-dialog'

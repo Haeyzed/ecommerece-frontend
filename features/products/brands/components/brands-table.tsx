@@ -151,7 +151,7 @@ export function BrandsTable() {
         searchKey='name'
         filters={[
           {
-            columnId: 'status',
+            columnId: 'active_status',
             title: 'Status',
             options: [
               { label: 'Active', value: 'active' },

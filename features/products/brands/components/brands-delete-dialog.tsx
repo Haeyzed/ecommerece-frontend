@@ -1,17 +1,5 @@
 'use client'
 
-/**
- * BrandsDeleteDialog
- *
- * A confirmation dialog for deleting a single brand.
- * Requires the user to type the brand name to confirm the destructive action.
- *
- * @component
- * @param {Object} props - The component props
- * @param {boolean} props.open - Controls visibility
- * @param {function} props.onOpenChange - Callback for visibility changes
- * @param {Brand} props.currentRow - The brand selected for deletion
- */
 
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'

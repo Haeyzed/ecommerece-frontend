@@ -128,7 +128,6 @@ function CategoryView({ className, currentRow }: CategoryViewProps) {
         </div>
       )}
 
-      {/* Basic Info */}
       <div className='space-y-2'>
         <div className='text-sm font-medium text-muted-foreground'>Name</div>
         <div className='text-sm font-medium'>{currentRow.name}</div>
@@ -195,7 +194,6 @@ function CategoryView({ className, currentRow }: CategoryViewProps) {
         </div>
       )}
 
-      {/* Badges Grid */}
       <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
         <div className='space-y-2'>
           <div className='text-sm font-medium text-muted-foreground'>Status</div>

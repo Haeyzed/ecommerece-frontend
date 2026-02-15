@@ -1,18 +1,5 @@
 'use client'
 
-/**
- * BrandsActionDialog
- *
- * A dialog/drawer component for creating or editing a brand.
- * It adapts its presentation (Dialog vs Drawer) based on screen size.
- *
- * @component
- * @param {Object} props - The component props
- * @param {Brand} [props.currentRow] - The brand to edit (undefined for create)
- * @param {boolean} props.open - Controls visibility
- * @param {function} props.onOpenChange - Callback for visibility changes
- */
-
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   CancelCircleIcon,
@@ -334,7 +321,6 @@ function BrandForm({ form, onSubmit, id, className, isEdit, currentRow }: BrandF
           name='image'
           render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
             const existingImageUrl = isEdit && currentRow?.image_url ? currentRow.image_url : null
-            // Check if there is a pending new file upload
             const hasNewImage = value instanceof File || (Array.isArray(value) && value.length > 0)
 
             return (

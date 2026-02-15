@@ -47,8 +47,6 @@ export function BrandsCsvPreviewDialog({
   isPending,
 }: BrandsCsvPreviewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
-
-  // Get headers from the first row of data
   const headers = data.length > 0 ? Object.keys(data[0]) : []
 
   const PreviewContent = () => (

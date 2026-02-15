@@ -1,18 +1,5 @@
 'use client'
 
-/**
- * DataTableBulkActions
- *
- * Renders the floating toolbar for bulk operations on selected rows.
- * Provides actions for bulk activation, deactivation, deletion, 
- * as well as managing Featured and Sync statuses.
- *
- * @component
- * @template TData - The type of data in the table
- * @param {Object} props - The component props
- * @param {Table<TData>} props.table - The TanStack table instance containing selection state
- */
-
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import {
@@ -245,7 +232,6 @@ export function DataTableBulkActions<TData>({
               </>
             )}
 
-            {/* Delete Action */}
             {canDelete && (
               <>
                 {(canUpdate || canExport) && <Separator orientation="vertical" className="h-6 mx-1" />}

@@ -1,19 +1,5 @@
 'use client'
 
-/**
- * CategoriesActionDialog
- *
- * A responsive dialog (modal on desktop, drawer on mobile) used for creating
- * and updating category details. It handles form state, validation using Zod,
- * and API mutations.
- *
- * @component
- * @param {Object} props - The component props
- * @param {Category} [props.currentRow] - The category data to edit (if in edit mode)
- * @param {boolean} props.open - Controls the visibility of the dialog
- * @param {function} props.onOpenChange - Callback to change the open state
- */
-
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   CancelCircleIcon,
@@ -249,8 +235,6 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
   const { resolvedTheme } = useTheme()
   const [isSlugDisabled, setIsSlugDisabled] = useState(true)
   const { data: parentCategories } = useParentCategories()
-
-  // Filter out the current category from parents list to avoid self-reference in the dropdown
   const availableParents = parentCategories?.filter((c) => c.value !== currentRow?.id) ?? []
 
   return (
@@ -260,7 +244,6 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
       className={cn('space-y-4', className)}
     >
       <FieldGroup>
-        {/* Name Field */}
         <Controller
           control={form.control}
           name='name'
@@ -284,7 +267,6 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
           )}
         />
 
-        {/* Slug Field */}
         <Controller
           control={form.control}
           name='slug'
@@ -319,7 +301,6 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
           )}
         />
 
-        {/* Parent Category Combobox */}
         <Controller
           control={form.control}
           name='parent_id'
@@ -381,7 +362,6 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
           )}
         />
 
-        {/* Page Title */}
         <Controller
           control={form.control}
           name='page_title'
@@ -400,7 +380,6 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
           )}
         />
 
-        {/* Image Upload */}
         <Controller
           control={form.control}
           name='image'
@@ -483,7 +462,6 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
           }}
         />
 
-        {/* Icon Upload */}
         <Controller
           control={form.control}
           name='icon'
@@ -565,7 +543,6 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
           }}
         />
 
-        {/* WooCommerce ID */}
         <Controller
           control={form.control}
           name='woocommerce_category_id'

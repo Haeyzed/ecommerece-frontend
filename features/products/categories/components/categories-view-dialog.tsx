@@ -97,7 +97,7 @@ interface CategoryViewProps {
 
 function CategoryView({ className, currentRow }: CategoryViewProps) {
   const { resolvedTheme } = useTheme()
-  const statusBadgeColor = statusTypes.get(currentRow.status)
+  const statusBadgeColor = statusTypes.get(currentRow.active_status)
   const featuredStatusBadgeColor = featuredTypes.get(currentRow.featured_status)
   const syncStatusBadgeColor = syncTypes.get(currentRow.sync_status)
 
@@ -200,21 +200,21 @@ function CategoryView({ className, currentRow }: CategoryViewProps) {
         <div className='space-y-2'>
           <div className='text-sm font-medium text-muted-foreground'>Status</div>
           <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
-          {currentRow.status}
+          {currentRow.active_status}
         </Badge>
         </div>
 
         <div className='space-y-2'>
           <div className='text-sm font-medium text-muted-foreground'>Featured</div>
           <Badge variant='outline' className={cn('capitalize', featuredStatusBadgeColor)}>
-          {currentRow.status}
+          {currentRow.featured_status}
         </Badge>
         </div>
 
         <div className='space-y-2'>
           <div className='text-sm font-medium text-muted-foreground'>Sync Disabled</div>
           <Badge variant='outline' className={cn('capitalize', syncStatusBadgeColor)}>
-          {currentRow.status}
+          {currentRow.sync_status}
         </Badge>
         </div>
       </div>

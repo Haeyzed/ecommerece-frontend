@@ -96,7 +96,7 @@ interface BrandViewProps {
 
 function BrandView({ className, currentRow }: BrandViewProps) {
   const { resolvedTheme } = useTheme()
-  const statusBadgeColor = statusTypes.get(currentRow.status)
+  const statusBadgeColor = statusTypes.get(currentRow.active_status)
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -155,7 +155,7 @@ function BrandView({ className, currentRow }: BrandViewProps) {
       <div className='space-y-2'>
         <div className='text-sm font-medium text-muted-foreground'>Status</div>
         <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
-          {currentRow.status}
+          {currentRow.active_status}
         </Badge>
       </div>
 

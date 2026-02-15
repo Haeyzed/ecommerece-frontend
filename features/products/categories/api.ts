@@ -13,7 +13,6 @@ export const categoryKeys = {
   details: () => [...categoryKeys.all, "detail"] as const,
   detail: (id: number) => [...categoryKeys.details(), id] as const,
   parents: () => [...categoryKeys.all, "parents"] as const,
-  tree: (includeInactive?: boolean) => [...categoryKeys.all, "tree", includeInactive] as const,
   template: () => [...categoryKeys.all, "template"] as const,
 };
 
@@ -54,24 +53,6 @@ export function useParentCategories() {
     queryKey: categoryKeys.parents(),
     queryFn: async () => {
       const response = await api.get<CategoryOption[]>(`${BASE_PATH}/parents`);
-      return response.data ?? [];
-    },
-    enabled: sessionStatus !== "loading",
-  });
-}
-
-/** Category tree node from API - matches nested CategoryResource with children */
-export interface CategoryTreeNode extends Category {
-  children?: CategoryTreeNode[];
-}
-
-export function useCategoryTree(includeInactive = true) {
-  const { api, sessionStatus } = useApiClient();
-  return useQuery({
-    queryKey: categoryKeys.tree(includeInactive),
-    queryFn: async () => {
-      const params = includeInactive ? { include_inactive: 1 } : {};
-      const response = await api.get<CategoryTreeNode[]>(`${BASE_PATH}/tree`, { params });
       return response.data ?? [];
     },
     enabled: sessionStatus !== "loading",
@@ -130,7 +111,6 @@ export function useCreateCategory() {
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: categoryKeys.parents() });
-      queryClient.invalidateQueries({ queryKey: [...categoryKeys.all, "tree"] });
       toast.success(response.message);
     },
     onError: (error) => {
@@ -177,7 +157,6 @@ export function useUpdateCategory() {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: categoryKeys.detail(data.id) });
       queryClient.invalidateQueries({ queryKey: categoryKeys.parents() });
-      queryClient.invalidateQueries({ queryKey: [...categoryKeys.all, "tree"] });
       toast.success(data.message);
     },
     onError: (error) => {
@@ -201,7 +180,6 @@ export function useDeleteCategory() {
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: categoryKeys.parents() });
-      queryClient.invalidateQueries({ queryKey: [...categoryKeys.all, "tree"] });
       toast.success(response.message);
     },
     onError: (error) => {
@@ -224,7 +202,6 @@ export function useBulkActivateCategories() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: [...categoryKeys.all, "tree"] });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
@@ -265,7 +242,6 @@ export function useBulkEnableFeaturedCategories() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: [...categoryKeys.all, "tree"] });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
@@ -286,7 +262,6 @@ export function useBulkDisableFeaturedCategories() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: [...categoryKeys.all, "tree"] });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
@@ -307,7 +282,6 @@ export function useBulkEnableSyncCategories() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: [...categoryKeys.all, "tree"] });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
@@ -348,7 +322,6 @@ export function useBulkDestroyCategories() {
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: categoryKeys.parents() });
-      queryClient.invalidateQueries({ queryKey: [...categoryKeys.all, "tree"] });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
@@ -369,7 +342,6 @@ export function useCategoriesImport() {
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: categoryKeys.parents() });
-      queryClient.invalidateQueries({ queryKey: [...categoryKeys.all, "tree"] });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),

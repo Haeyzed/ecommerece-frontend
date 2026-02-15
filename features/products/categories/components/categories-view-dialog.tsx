@@ -20,35 +20,19 @@ import {
 } from '@/components/ui/drawer'
 import { ImageZoom } from '@/components/ui/image-zoom'
 import { Separator } from '@/components/ui/separator'
-import { TreeView, type TreeDataItem } from '@/components/tree-view'
-import { Spinner } from '@/components/ui/spinner'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { useTheme } from '@/lib/providers/theme-provider'
 import { cn } from '@/lib/utils'
+import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
-import { useCallback, useEffect, useMemo, useState } from 'react'
 import { type Category } from '../types'
 import { featuredTypes, statusTypes, syncTypes } from '../constants'
-import { useCategoryTree, type CategoryTreeNode } from '../api'
+import { CategoryChildrenTree } from './category-children-tree'
 
 type CategoriesViewDialogProps = {
-  currentRow?: Category | null
+  currentRow?: Category
   open: boolean
   onOpenChange: (open: boolean) => void
-}
-
-/** Tree node with attached category for details panel */
-type CategoryTreeDataItem = TreeDataItem & { category: Category }
-
-function toTreeDataItems(nodes: CategoryTreeNode[]): CategoryTreeDataItem[] {
-  return nodes.map((node) => ({
-    id: String(node.id),
-    name: node.name,
-    category: node as Category,
-    children: node.children?.length
-      ? toTreeDataItems(node.children)
-      : undefined,
-  }))
 }
 
 export function CategoriesViewDialog({
@@ -57,81 +41,26 @@ export function CategoriesViewDialog({
   onOpenChange,
 }: CategoriesViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
-  const [displayedCategory, setDisplayedCategory] = useState<Category | null>(
-    currentRow ?? null
-  )
-  const { data: treeData, isLoading: isTreeLoading } = useCategoryTree(true)
-
-  useEffect(() => {
-    if (currentRow) {
-      setDisplayedCategory(currentRow)
-    }
-  }, [currentRow])
-
-  const treeItems = useMemo(
-    () => (treeData ? toTreeDataItems(treeData) : []),
-    [treeData]
-  )
-
-  const handleSelectChange = useCallback((item: TreeDataItem | undefined) => {
-    const catItem = item as CategoryTreeDataItem | undefined
-    if (catItem?.category) {
-      setDisplayedCategory(catItem.category)
-    }
-  }, [])
-
-  if (!currentRow && !displayedCategory) return null
-
+  if (!currentRow) return null
   const handleOpenChange = (value: boolean) => {
     onOpenChange(value)
   }
 
-  const content = (
-    <div className='flex flex-col gap-4 sm:flex-row sm:gap-6'>
-      {/* Tree navigation */}
-      <div className='min-w-0 flex-1 sm:min-w-[200px] sm:max-w-[280px]'>
-        <div className='text-sm font-medium text-muted-foreground mb-2'>
-          Category Tree
-        </div>
-        {isTreeLoading ? (
-          <div className='flex items-center justify-center py-8'>
-            <Spinner className='size-6' />
-          </div>
-        ) : treeItems.length > 0 ? (
-          <div className='rounded-md border bg-muted/30 p-2 max-h-[300px] overflow-y-auto'>
-            <TreeView
-              data={treeItems}
-              initialSelectedItemId={displayedCategory ? String(displayedCategory.id) : undefined}
-              onSelectChange={handleSelectChange}
-              expandAll={false}
-              className='text-sm'
-            />
-          </div>
-        ) : (
-          <p className='text-sm text-muted-foreground py-4'>No categories</p>
-        )}
-      </div>
-
-      {/* Details panel */}
-      <div className='min-w-0 flex-1 overflow-y-auto'>
-        {displayedCategory && <CategoryView currentRow={displayedCategory} />}
-      </div>
-    </div>
-  )
-
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className='sm:max-w-2xl'>
+        <DialogContent className='sm:max-w-lg'>
           <DialogHeader className='text-start'>
             <DialogTitle>Category Details</DialogTitle>
             <DialogDescription>
-              Browse the category tree and view details below.
+              View category information below.
             </DialogDescription>
           </DialogHeader>
 
           <div className='max-h-[70vh] overflow-y-auto py-1 pe-2'>
-            {content}
+            <CategoryView
+              currentRow={currentRow}
+            />
           </div>
         </DialogContent>
       </Dialog>
@@ -143,12 +72,14 @@ export function CategoriesViewDialog({
       <DrawerContent>
         <DrawerHeader className='text-left'>
           <DrawerTitle>Category Details</DrawerTitle>
-          <DrawerDescription>
-            Browse the category tree and view details below.
-          </DrawerDescription>
+          <DrawerDescription>View category information below.</DrawerDescription>
         </DrawerHeader>
 
-        <div className='max-h-[80vh] overflow-y-auto px-4 pb-4'>{content}</div>
+        <div className='max-h-[80vh] overflow-y-auto px-4'>
+          <CategoryView
+            currentRow={currentRow}
+          />
+        </div>
 
         <DrawerFooter>
           <DrawerClose asChild>
@@ -286,6 +217,10 @@ function CategoryView({ className, currentRow }: CategoryViewProps) {
         </Badge>
         </div>
       </div>
+
+      <Separator />
+
+      <CategoryChildrenTree children={currentRow.children} />
 
       <Separator />
 

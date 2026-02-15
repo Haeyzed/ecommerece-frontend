@@ -713,9 +713,76 @@ export interface TreeTableItem extends TreeDataItem {
     updatedAt?: string
 }
 
+export type TreeTableColumn = {
+    key: string
+    label: string
+    widthIndex: number
+    isFirst?: boolean
+    render: (item: TreeTableItem, level: number, isSelected: boolean) => React.ReactNode
+}
+
+const DEFAULT_COLUMNS: TreeTableColumn[] = [
+    {
+        key: 'name',
+        label: 'Task name',
+        widthIndex: 0,
+        isFirst: true,
+        render: (item: TreeTableItem, _level: number, isSelected: boolean) => (
+            <span className={isSelected ? 'font-semibold text-neutral-50' : 'text-neutral-200'}>
+                {item.name}
+            </span>
+        ),
+    },
+    {
+        key: 'type',
+        label: 'Type',
+        widthIndex: 1,
+        render: (item: TreeTableItem) => (
+            <span className="text-neutral-400">{item.type ?? '—'}</span>
+        ),
+    },
+    {
+        key: 'owner',
+        label: 'Assigned to',
+        widthIndex: 2,
+        render: (item: TreeTableItem) => (
+            <span className="text-neutral-400">{item.owner ?? '—'}</span>
+        ),
+    },
+    {
+        key: 'status',
+        label: 'Status',
+        widthIndex: 3,
+        render: (item: TreeTableItem) => {
+            const statusClass =
+                item.status === 'Done'
+                    ? 'text-emerald-400'
+                    : item.status === 'In progress'
+                        ? 'text-sky-400'
+                        : item.status === 'Archived'
+                            ? 'text-neutral-500'
+                            : 'text-neutral-400'
+            return <span className={statusClass}>{item.status ?? '—'}</span>
+        },
+    },
+    {
+        key: 'updatedAt',
+        label: 'Last edited time',
+        widthIndex: 4,
+        render: (item: TreeTableItem) => (
+            <span className="text-neutral-500">{item.updatedAt ?? '—'}</span>
+        ),
+    },
+]
+
+const DEFAULT_COLUMN_WIDTHS = [280, 140, 140, 140, 160]
+
 type TreeTableProps = {
     data: TreeTableItem[]
     enableDragHandle?: boolean
+    columns?: TreeTableColumn[]
+    columnWidths?: number[]
+    compact?: boolean
 }
 
 const useIsomorphicLayoutEffect =
@@ -789,16 +856,19 @@ const insertTreeItem = (
     return inserted ? updated : items
 }
 
-export function TreeTable({ data, enableDragHandle = false }: TreeTableProps) {
+export function TreeTable({
+    data,
+    enableDragHandle = false,
+    columns: columnsProp,
+    columnWidths: columnWidthsProp,
+    compact = false,
+}: TreeTableProps) {
+    const columns = columnsProp ?? DEFAULT_COLUMNS
+    const defaultWidths = columnWidthsProp ?? DEFAULT_COLUMN_WIDTHS
+
     const [selectedItem, setSelectedItem] = useState<TreeTableItem | undefined>(undefined)
     const [treeData, setTreeData] = useState<TreeTableItem[]>(data)
-    const [columnWidths, setColumnWidths] = useState<number[]>([
-        280,
-        140,
-        140,
-        140,
-        160,
-    ])
+    const [columnWidths, setColumnWidths] = useState<number[]>(defaultWidths)
     const [hasUserResized, setHasUserResized] = useState(false)
 
     useEffect(() => {
@@ -845,60 +915,6 @@ export function TreeTable({ data, enableDragHandle = false }: TreeTableProps) {
         observer.observe(node)
         return () => observer.disconnect()
     }, [isLayoutReady])
-
-    const columns = [
-        {
-            key: 'name',
-            label: 'Task name',
-            widthIndex: 0,
-            isFirst: true,
-            render: (item: TreeTableItem, level: number, isSelected: boolean) => (
-                <span className={isSelected ? 'font-semibold text-neutral-50' : 'text-neutral-200'}>
-                    {item.name}
-                </span>
-            ),
-        },
-        {
-            key: 'type',
-            label: 'Type',
-            widthIndex: 1,
-            render: (item: TreeTableItem) => (
-                <span className="text-neutral-400">{item.type ?? '—'}</span>
-            ),
-        },
-        {
-            key: 'owner',
-            label: 'Assigned to',
-            widthIndex: 2,
-            render: (item: TreeTableItem) => (
-                <span className="text-neutral-400">{item.owner ?? '—'}</span>
-            ),
-        },
-        {
-            key: 'status',
-            label: 'Status',
-            widthIndex: 3,
-            render: (item: TreeTableItem) => {
-                const statusClass =
-                    item.status === 'Done'
-                        ? 'text-emerald-400'
-                        : item.status === 'In progress'
-                            ? 'text-sky-400'
-                            : item.status === 'Archived'
-                                ? 'text-neutral-500'
-                                : 'text-neutral-400'
-                return <span className={statusClass}>{item.status ?? '—'}</span>
-            },
-        },
-        {
-            key: 'updatedAt',
-            label: 'Last edited time',
-            widthIndex: 4,
-            render: (item: TreeTableItem) => (
-                <span className="text-neutral-500">{item.updatedAt ?? '—'}</span>
-            ),
-        },
-    ]
 
     const fillColumnIndex = columns.length - 1
     const baseContainerWidth = containerWidth || 0
@@ -1066,16 +1082,29 @@ export function TreeTable({ data, enableDragHandle = false }: TreeTableProps) {
     }
 
     return (
-        <div className="p-8 min-h-screen" style={{ backgroundColor: 'rgb(25, 25, 25)' }}>
+        <div
+            className={
+                compact
+                    ? 'rounded-lg border bg-card overflow-hidden'
+                    : 'p-8 min-h-screen'
+            }
+            style={
+                compact ? undefined : { backgroundColor: 'rgb(25, 25, 25)' }
+            }
+        >
             <div
                 ref={containerRef}
-                className="rounded-lg p-6"
-                style={{
-                    backgroundColor: 'rgb(37, 37, 37)',
-                    border: '1px solid rgb(47, 47, 47)',
-                    opacity: isLayoutReady ? 1 : 0,
-                    transition: 'opacity 120ms ease',
-                }}
+                className={compact ? 'p-4' : 'rounded-lg p-6'}
+                style={
+                    compact
+                        ? { opacity: isLayoutReady ? 1 : 0, transition: 'opacity 120ms ease' }
+                        : {
+                            backgroundColor: 'rgb(37, 37, 37)',
+                            border: '1px solid rgb(47, 47, 47)',
+                            opacity: isLayoutReady ? 1 : 0,
+                            transition: 'opacity 120ms ease',
+                        }
+                }
             >
                 <div style={{ width: '100%', overflowX: isLayoutReady ? 'auto' : 'hidden' }}>
                     <div style={{ minWidth: `${effectiveWidth}px` }}>

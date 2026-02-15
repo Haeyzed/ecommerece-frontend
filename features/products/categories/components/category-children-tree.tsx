@@ -22,9 +22,7 @@ export function CategoryChildrenTree({
       <div className="text-sm font-medium text-muted-foreground">
         Child Categories
       </div>
-      <div className="rounded-md border p-2">
         <TreeView data={categoryChildren} />
-      </div>
     </div>
   )
 }

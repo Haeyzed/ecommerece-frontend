@@ -217,12 +217,8 @@ function CategoryView({ className, currentRow }: CategoryViewProps) {
         </Badge>
         </div>
       </div>
-
-      <Separator />
-
+      
       <CategoryChildrenTree children={currentRow.children} />
-
-      <Separator />
 
       <div className='grid grid-cols-2 gap-4'>
         <div className='space-y-2'>

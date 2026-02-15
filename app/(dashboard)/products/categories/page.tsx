@@ -10,7 +10,7 @@ export const metadata = {
 export default async function CategoriesPage() {
   const session = await auth()
   const userPermissions = session?.user?.user_permissions || []
-  const canView = hasPermission(userPermissions, "categories-index")
+  const canView = hasPermission(userPermissions, "view categories")
   if (!canView) {
     return (
       <ForbiddenError />

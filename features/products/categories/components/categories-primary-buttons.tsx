@@ -21,9 +21,9 @@ export function CategoriesPrimaryButtons() {
   const { data: session } = useAuthSession()
   const isMobile = useMediaQuery('(max-width: 767px)')
   const userPermissions = session?.user?.user_permissions || []
-  const canImport = userPermissions.includes('categories-import')
-  const canExport = userPermissions.includes('categories-export')
-  const canCreate = userPermissions.includes('categories-create')
+  const canImport = userPermissions.includes('import categories')
+  const canExport = userPermissions.includes('export categories')
+  const canCreate = userPermissions.includes('create categories')
   if (!canImport && !canExport && !canCreate) return null
 
   return (

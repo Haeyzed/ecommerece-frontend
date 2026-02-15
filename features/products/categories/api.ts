@@ -228,6 +228,86 @@ export function useBulkDeactivateCategories() {
   });
 }
 
+export function useBulkEnableFeaturedCategories() {
+  const { api } = useApiClient();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (ids: number[]) => {
+      const response = await api.patch<{ updated_count: number }>(
+        `${BASE_PATH}/bulk-enable-featured`,
+        { ids }
+      );
+      if (!response.success) throw new Error(response.message);
+      return response;
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
+      toast.success(response.message);
+    },
+    onError: (error) => toast.error(error.message),
+  });
+}
+
+export function useBulkDisableFeaturedCategories() {
+  const { api } = useApiClient();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (ids: number[]) => {
+      const response = await api.patch<{ updated_count: number }>(
+        `${BASE_PATH}/bulk-disable-featured`,
+        { ids }
+      );
+      if (!response.success) throw new Error(response.message);
+      return response;
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
+      toast.success(response.message);
+    },
+    onError: (error) => toast.error(error.message),
+  });
+}
+
+export function useBulkEnableSyncCategories() {
+  const { api } = useApiClient();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (ids: number[]) => {
+      const response = await api.patch<{ updated_count: number }>(
+        `${BASE_PATH}/bulk-enable-sync`,
+        { ids }
+      );
+      if (!response.success) throw new Error(response.message);
+      return response;
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
+      toast.success(response.message);
+    },
+    onError: (error) => toast.error(error.message),
+  });
+}
+
+export function useBulkDisableSyncCategories() {
+  const { api } = useApiClient();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (ids: number[]) => {
+      const response = await api.patch<{ updated_count: number }>(
+        `${BASE_PATH}/bulk-disable-sync`,
+        { ids }
+      );
+      if (!response.success) throw new Error(response.message);
+      return response;
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: categoryKeys.lists() });
+      toast.success(response.message);
+    },
+    onError: (error) => toast.error(error.message),
+  });
+}
+
 export function useBulkDestroyCategories() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();

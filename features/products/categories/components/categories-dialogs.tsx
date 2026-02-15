@@ -26,12 +26,12 @@ export function CategoriesDialogs() {
   const userPermissions = session?.user?.user_permissions || []
 
   // Define permission checks based on your ACL
-  const canCreate = userPermissions.includes('categories-create')
-  const canImport = userPermissions.includes('categories-import')
-  const canExport = userPermissions.includes('categories-export')
-  const canUpdate = userPermissions.includes('categories-update')
-  const canDelete = userPermissions.includes('categories-delete')
-  const canView = userPermissions.includes('categories-index')
+  const canCreate = userPermissions.includes('create categories')
+  const canImport = userPermissions.includes('import categories')
+  const canExport = userPermissions.includes('export categories')
+  const canUpdate = userPermissions.includes('update categories')
+  const canDelete = userPermissions.includes('delete categories')
+  const canView = userPermissions.includes('view categories')
 
   return (
     <>

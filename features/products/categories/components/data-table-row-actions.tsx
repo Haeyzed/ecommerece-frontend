@@ -41,9 +41,9 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const { setOpen, setCurrentRow } = useCategories()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canView = userPermissions.includes('categories-index')
-  const canUpdate = userPermissions.includes('categories-update')
-  const canDelete = userPermissions.includes('categories-delete')
+  const canView = userPermissions.includes('view category details')
+  const canUpdate = userPermissions.includes('update categories')
+  const canDelete = userPermissions.includes('delete categories')
   if (!canView && !canUpdate && !canDelete) return null
 
   return (

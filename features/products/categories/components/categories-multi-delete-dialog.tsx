@@ -1,18 +1,5 @@
 'use client'
 
-/**
- * CategoriesMultiDeleteDialog
- *
- * A confirmation dialog for bulk deletion of categories.
- * Requires the user to type a specific confirmation word to proceed.
- *
- * @component
- * @param {Object} props - The component props
- * @param {boolean} props.open - Controls the visibility of the dialog
- * @param {function} props.onOpenChange - Callback to change the open state
- * @param {Table<TData>} props.table - The table instance containing selected rows
- */
-
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Alert02Icon } from '@hugeicons/core-free-icons'
@@ -24,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { type Category } from '../types'
-import { useAuthSession } from '@/features/auth/api' // Import session hook
+import { useAuthSession } from '@/features/auth/api'
 
 type CategoriesMultiDeleteDialogProps<TData> = {
   open: boolean
@@ -46,7 +33,7 @@ export function CategoriesMultiDeleteDialog<TData>({
   const { mutate: bulkDestroy, isPending } = useBulkDestroyCategories()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canDelete = userPermissions.includes('categories-delete')
+  const canDelete = userPermissions.includes('delete categories')
   if (!canDelete) return null
 
   const handleDelete = () => {

@@ -40,7 +40,7 @@ export function CategoriesDeleteDialog({
   const { mutate: deleteCategory, isPending } = useDeleteCategory()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canDelete = userPermissions.includes('categories-delete')
+  const canDelete = userPermissions.includes('delete categories')
   if (!canDelete) return null
 
   const handleDelete = () => {

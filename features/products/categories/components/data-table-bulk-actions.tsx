@@ -67,9 +67,9 @@ export function DataTableBulkActions<TData>({
   const { mutate: disableSync, isPending: isDisablingSync } = useBulkDisableSyncCategories()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canUpdate = userPermissions.includes('categories-update')
-  const canDelete = userPermissions.includes('categories-delete')
-  const canExport = userPermissions.includes('categories-export')
+  const canUpdate = userPermissions.includes('update categories')
+  const canDelete = userPermissions.includes('delete categories')
+  const canExport = userPermissions.includes('export categories')
 
   if (!canUpdate && !canDelete && !canExport) return null
 

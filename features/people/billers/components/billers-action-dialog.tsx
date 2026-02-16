@@ -147,7 +147,7 @@ export function BillersActionDialog({
 
   if (isDesktop) {
     return (
-      <Dialog open={open} onOpenChange={handleOpenChange}>
+      <Dialog open={open} onOpenChange={handleOpenChange} modal={false}>
         <DialogContent className='sm:max-w-lg'>
           <DialogHeader className='text-start'>
             <DialogTitle>{isEdit ? 'Edit Biller' : 'Add New Biller'}</DialogTitle>

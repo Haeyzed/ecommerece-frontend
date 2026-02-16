@@ -1,14 +1,5 @@
 'use client'
 
-/**
- * TaxesDialogs
- *
- * Orchestrator component that renders the appropriate dialog (Add, Edit, Delete, Import)
- * based on the current state from the TaxesProvider and User Permissions.
- *
- * @component
- */
-
 import { TaxesActionDialog } from './taxes-action-dialog'
 import { TaxesDeleteDialog } from './taxes-delete-dialog'
 import { TaxesExportDialog } from './taxes-export-dialog'
@@ -21,12 +12,12 @@ export function TaxesDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useTaxes()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canCreate = userPermissions.includes('taxes-create')
-  const canImport = userPermissions.includes('taxes-import')
-  const canExport = userPermissions.includes('taxes-export')
-  const canUpdate = userPermissions.includes('taxes-update')
-  const canDelete = userPermissions.includes('taxes-delete')
-  const canView = userPermissions.includes('taxes-index')
+  const canCreate = userPermissions.includes('create taxes')
+  const canImport = userPermissions.includes('import taxes')
+  const canExport = userPermissions.includes('export taxes')
+  const canUpdate = userPermissions.includes('update taxes')
+  const canDelete = userPermissions.includes('delete taxes')
+  const canView = userPermissions.includes('view taxes')
 
   return (
     <>

@@ -1,16 +1,5 @@
 'use client'
 
-/**
- * TaxesProvider
- *
- * Context provider for managing the state of tax-related dialogs and the
- * currently selected tax for editing or deletion.
- *
- * @component
- * @param {Object} props - The component props
- * @param {React.ReactNode} props.children - Child components
- */
-
 import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type Tax } from '../types'

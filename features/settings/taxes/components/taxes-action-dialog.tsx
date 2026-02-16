@@ -1,18 +1,5 @@
 'use client'
 
-/**
- * TaxesActionDialog
- *
- * A dialog/drawer component for creating or editing a tax.
- * It adapts its presentation (Dialog vs Drawer) based on screen size.
- *
- * @component
- * @param {Object} props - The component props
- * @param {Tax} [props.currentRow] - The tax to edit (undefined for create)
- * @param {boolean} props.open - Controls visibility
- * @param {function} props.onOpenChange - Callback for visibility changes
- */
-
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'

@@ -1,14 +1,5 @@
 "use client"
 
-/**
- * TaxesEmptyState
- *
- * Displays a placeholder UI when no taxes are found in the system.
- * Provides entry points to add or import taxes.
- *
- * @component
- */
-
 import { DataTableEmptyState } from '@/components/data-table'
 import { HugeiconsIcon } from "@hugeicons/react"
 import { PlusSignIcon, Download01Icon } from "@hugeicons/core-free-icons"

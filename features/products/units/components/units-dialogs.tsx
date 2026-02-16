@@ -13,8 +13,8 @@ export function UnitsDialogs() {
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
   const canCreate = userPermissions.includes('create units')
-  const canImport = userPermissions.includes('units-import')
-  const canExport = userPermissions.includes('units-export')
+  const canImport = userPermissions.includes('import units')
+  const canExport = userPermissions.includes('export units')
   const canUpdate = userPermissions.includes('update units')
   const canDelete = userPermissions.includes('delete units')
   const canView = userPermissions.includes('view units')

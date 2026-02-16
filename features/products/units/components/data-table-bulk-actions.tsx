@@ -43,7 +43,7 @@ export function DataTableBulkActions<TData>({
   const userPermissions = session?.user?.user_permissions || []
   const canUpdate = userPermissions.includes('update units')
   const canDelete = userPermissions.includes('delete units')
-  const canExport = userPermissions.includes('units-export')
+  const canExport = userPermissions.includes('export units')
   if (!canUpdate && !canDelete && !canExport) return null
   const isBusy = isActivating || isDeactivating
 

@@ -1,18 +1,5 @@
 'use client'
 
-/**
- * TaxesDeleteDialog
- *
- * A confirmation dialog for deleting a single tax.
- * Requires the user to type the tax name to confirm the destructive action.
- *
- * @component
- * @param {Object} props - The component props
- * @param {boolean} props.open - Controls visibility
- * @param {function} props.onOpenChange - Callback for visibility changes
- * @param {Tax} props.currentRow - The tax selected for deletion
- */
-
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Alert02Icon } from '@hugeicons/core-free-icons'
@@ -39,7 +26,7 @@ export function TaxesDeleteDialog({
   const { mutate: deleteTax, isPending } = useDeleteTax()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canDelete = userPermissions.includes('taxes-delete')
+  const canDelete = userPermissions.includes('delete taxes')
   if (!canDelete) return null
 
   const handleDelete = () => {

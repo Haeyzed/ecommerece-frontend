@@ -1,16 +1,5 @@
 'use client'
 
-/**
- * DataTableRowActions
- *
- * Renders the actions dropdown menu (Edit, Delete) for a specific row
- * in the taxes data table.
- *
- * @component
- * @param {Object} props - The component props
- * @param {Row<Tax>} props.row - The table row containing tax data
- */
-
 import { HugeiconsIcon } from '@hugeicons/react'
 import { 
   Delete02Icon, 
@@ -30,7 +19,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { type Tax } from '../types'
 import { useTaxes } from './taxes-provider'
-import { useAuthSession } from '@/features/auth/api' // Import session hook
+import { useAuthSession } from '@/features/auth/api'
 
 type DataTableRowActionsProps = {
   row: Row<Tax>
@@ -40,9 +29,9 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const { setOpen, setCurrentRow } = useTaxes()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canView = userPermissions.includes('taxes-index')
-  const canUpdate = userPermissions.includes('taxes-update')
-  const canDelete = userPermissions.includes('taxes-delete')
+  const canView = userPermissions.includes('view taxes')
+  const canUpdate = userPermissions.includes('update taxes')
+  const canDelete = userPermissions.includes('delete taxes')
   if (!canView && !canUpdate && !canDelete) return null
 
   return (

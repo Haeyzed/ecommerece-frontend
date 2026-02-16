@@ -30,12 +30,10 @@ import { CategoriesEmptyState } from './categories-empty-state'
 import { DataTableBulkActions } from './data-table-bulk-actions'
 
 export function CategoriesTable() {
-  // Local UI-only states
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [sorting, setSorting] = useState<SortingState>([])
 
-  // Synced with URL states
   const {
     columnFilters,
     onColumnFiltersChange,
@@ -53,18 +51,15 @@ export function CategoriesTable() {
     ],
   })
 
-  // Extract API params from URL and column filters
   const apiParams = useMemo(() => {
     const page = pagination.pageIndex + 1
     const perPage = pagination.pageSize
-    
-    // Extract filter objects
+
     const nameFilter = columnFilters.find((f) => f.id === 'name')
     const statusFilter = columnFilters.find((f) => f.id === 'status')
     const featuredStatusFilter = columnFilters.find((f) => f.id === 'featured_status')
     const syncStatusFilter = columnFilters.find((f) => f.id === 'sync_status')
 
-    // Helper to extract single value from array filter
     const getFilterValue = (filter: typeof statusFilter) => {
       if (filter?.value && Array.isArray(filter.value) && filter.value.length === 1) {
         return filter.value[0]
@@ -82,10 +77,8 @@ export function CategoriesTable() {
     }
   }, [pagination, columnFilters])
 
-  // Fetch data from API
   const { data, isLoading, error } = useCategories(apiParams)
 
-  // Calculate pagination info from API response
   const pageCount = useMemo(() => {
     if (!data?.meta) return 0
     return Math.ceil((data.meta.total || 0) / (data.meta.per_page || 10))

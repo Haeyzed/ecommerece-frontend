@@ -90,17 +90,17 @@ export const taxesColumns: ColumnDef<Tax>[] = [
     meta: { className: 'w-36' },
   },
   {
-    accessorKey: 'status',
+    accessorKey: 'active_status',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Status' />
     ),
     cell: ({ row }) => {
-      const { status } = row.original
-      const statusBadgeColor = statusTypes.get(status)
+      const { active_status } = row.original
+      const statusBadgeColor = statusTypes.get(active_status)
       return (
         <div className='flex justify-center'>
           <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
-            {row.getValue('status')}
+            {row.getValue('active_status')}
           </Badge>
         </div>
       )

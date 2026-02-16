@@ -1,29 +1,20 @@
 'use client'
 
-/**
- * TaxesPrimaryButtons
- *
- * Renders the main call-to-action buttons for the taxes view (Import, Add).
- * Triggers the respective dialogs via the TaxesProvider context.
- *
- * @component
- */
-
 import { HugeiconsIcon } from '@hugeicons/react'
 import { FileImportIcon, PlusSignIcon, Upload01Icon } from '@hugeicons/core-free-icons'
 import { Button } from '@/components/ui/button'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { useTaxes } from './taxes-provider'
-import { useAuthSession } from '@/features/auth/api' // Import session hook
+import { useAuthSession } from '@/features/auth/api'
 
 export function TaxesPrimaryButtons() {
   const { setOpen } = useTaxes()
   const { data: session } = useAuthSession()
   const isMobile = useMediaQuery('(max-width: 767px)')
   const userPermissions = session?.user?.user_permissions || []
-  const canImport = userPermissions.includes('taxes-import')
-  const canExport = userPermissions.includes('taxes-export')
-  const canCreate = userPermissions.includes('taxes-create')
+  const canImport = userPermissions.includes('import taxes')
+  const canExport = userPermissions.includes('export taxes')
+  const canCreate = userPermissions.includes('create taxes')
   if (!canImport && !canExport && !canCreate) return null
 
   return (

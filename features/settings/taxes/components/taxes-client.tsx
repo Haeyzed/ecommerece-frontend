@@ -37,7 +37,13 @@ export function TaxesClient() {
             </div>
             <TaxesPrimaryButtons />
           </div>
-          <Suspense fallback={<Spinner />}>
+          <Suspense
+            fallback={
+              <div className="flex flex-1 items-center justify-center min-h-[400px]">
+                <Spinner className="size-6" />
+              </div>
+            }
+          >
             <TaxesTable />
           </Suspense>
         </Main>

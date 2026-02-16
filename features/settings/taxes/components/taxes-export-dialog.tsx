@@ -1,16 +1,10 @@
 'use client'
 
-/**
- * TaxesExportDialog
- *
- * Dialog/drawer component for exporting taxes to Excel or PDF.
- * Supports download or email delivery.
- */
-
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Upload01Icon } from '@hugeicons/core-free-icons'
+import { format } from 'date-fns'
 
 import { useTaxesExport } from '@/features/settings/taxes/api'
 import { taxExportSchema, type TaxExportFormData } from '@/features/settings/taxes/schemas'
@@ -53,6 +47,7 @@ import { useMediaQuery } from '@/hooks/use-media-query'
 import { useQuery } from '@tanstack/react-query'
 import { useApiClient } from '@/lib/api/api-client-client'
 import { Spinner } from '@/components/ui/spinner'
+import { DateRangePicker } from '@/components/date-range-picker'
 
 const AVAILABLE_COLUMNS = [
   { value: 'id', label: 'ID' },
@@ -71,10 +66,10 @@ type TaxesExportDialogProps = {
 }
 
 export function TaxesExportDialog({
-  open,
-  onOpenChange,
-  ids = [],
-}: TaxesExportDialogProps) {
+                                    open,
+                                    onOpenChange,
+                                    ids = [],
+                                  }: TaxesExportDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: exportTaxes, isPending } = useTaxesExport()
   const { api } = useApiClient()
@@ -85,6 +80,8 @@ export function TaxesExportDialog({
       format: 'excel',
       method: 'download',
       columns: ['id', 'name', 'rate', 'is_active'],
+      start_date: undefined,
+      end_date: undefined,
     },
   })
 
@@ -114,6 +111,8 @@ export function TaxesExportDialog({
         method: data.method,
         columns: data.columns,
         user_id: data.method === 'email' ? data.user_id : undefined,
+        start_date: data.start_date,
+        end_date: data.end_date,
       },
       {
         onSuccess: () => handleOpenChange(false),
@@ -132,6 +131,33 @@ export function TaxesExportDialog({
   const ExportContent = () => (
     <form id="export-form" onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
       <FieldGroup>
+        <Controller
+          control={form.control}
+          name="start_date"
+          render={({ field, fieldState }) => (
+            <Field className={"grid gap-1.5 w-full"}>
+              <FieldLabel>Date Range</FieldLabel>
+              <DateRangePicker
+                value={{
+                  from: form.watch('start_date') ? new Date(form.watch('start_date')!) : undefined,
+                  to: form.watch('end_date') ? new Date(form.watch('end_date')!) : undefined,
+                }}
+                onChange={(range) => {
+                  form.setValue(
+                    'start_date',
+                    range?.from ? format(range.from, 'yyyy-MM-dd') : undefined
+                  )
+                  form.setValue(
+                    'end_date',
+                    range?.to ? format(range.to, 'yyyy-MM-dd') : undefined
+                  )
+                }}
+              />
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
         <Controller
           control={form.control}
           name="format"

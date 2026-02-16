@@ -614,7 +614,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Taxes",
               url: "/settings/taxes",
-              permissions: ["taxes-index"],
+              permissions: ["view taxes"],
             },
             {
               title: "User Profile",

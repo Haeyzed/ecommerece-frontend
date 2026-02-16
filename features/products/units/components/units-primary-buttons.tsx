@@ -12,8 +12,8 @@ export function UnitsPrimaryButtons() {
   const { data: session } = useAuthSession()
   const isMobile = useMediaQuery('(max-width: 767px)')
   const userPermissions = session?.user?.user_permissions || []
-  const canImport = userPermissions.includes('units-import')
-  const canExport = userPermissions.includes('units-export')
+  const canImport = userPermissions.includes('import units')
+  const canExport = userPermissions.includes('export units')
   const canCreate = userPermissions.includes('create units')
   if (!canImport && !canExport && !canCreate) return null
 

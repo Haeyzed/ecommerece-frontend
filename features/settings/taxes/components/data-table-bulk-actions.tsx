@@ -1,17 +1,5 @@
 'use client'
 
-/**
- * DataTableBulkActions
- *
- * Renders the floating toolbar for bulk operations on selected tax rows.
- * Provides actions for bulk activation, deactivation, and deletion.
- *
- * @component
- * @template TData - The type of data in the table
- * @param {Object} props - The component props
- * @param {Table<TData>} props.table - The TanStack table instance
- */
-
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { 
@@ -56,9 +44,9 @@ export function DataTableBulkActions<TData>({
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
 
-  const canUpdate = userPermissions.includes('taxes-update')
-  const canDelete = userPermissions.includes('taxes-delete')
-  const canExport = userPermissions.includes('taxes-export')
+  const canUpdate = userPermissions.includes('update taxes')
+  const canDelete = userPermissions.includes('delete taxes')
+  const canExport = userPermissions.includes('export taxes')
 
   if (!canUpdate && !canDelete && !canExport) return null
 

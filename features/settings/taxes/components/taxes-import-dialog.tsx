@@ -1,14 +1,5 @@
 'use client'
 
-/**
- * TaxesImportDialog
- *
- * A dialog/drawer component for bulk importing taxes via file upload (CSV/Excel).
- * Handles CSV preview and bulk import.
- *
- * @component
- */
-
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -21,10 +12,8 @@ import {
   CancelCircleIcon
 } from '@hugeicons/core-free-icons'
 
-import { useTaxesImport } from '@/features/settings/taxes/api'
+import { useTaxesImport, useTaxesTemplateDownload } from '@/features/settings/taxes/api'
 import { taxImportSchema, type TaxImportFormData } from '@/features/settings/taxes/schemas'
-import { downloadSampleAsCsv } from '@/lib/download-sample-csv'
-import { SAMPLE_TAXES_CSV } from '../constants'
 import { TaxesCsvPreviewDialog } from './taxes-csv-preview-dialog'
 
 import { Button } from '@/components/ui/button'
@@ -63,6 +52,7 @@ import {
   FileUploadTrigger,
 } from '@/components/ui/file-upload'
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { Spinner } from '@/components/ui/spinner'
 
 type TaxesImportDialogProps = {
   open: boolean
@@ -70,11 +60,12 @@ type TaxesImportDialogProps = {
 }
 
 export function TaxesImportDialog({
-  open,
-  onOpenChange,
-}: TaxesImportDialogProps) {
+                                    open,
+                                    onOpenChange,
+                                  }: TaxesImportDialogProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)")
   const { mutate: importTaxes, isPending } = useTaxesImport()
+  const { mutate: downloadTemplate, isPending: isDownloading } = useTaxesTemplateDownload()
 
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewData, setPreviewData] = useState<any[]>([])
@@ -127,7 +118,7 @@ export function TaxesImportDialog({
   }
 
   const handleDownloadSample = () => {
-    downloadSampleAsCsv(SAMPLE_TAXES_CSV, 'taxes_sample.csv')
+    downloadTemplate()
   }
 
   const handleOpenChange = (value: boolean) => {
@@ -146,10 +137,20 @@ export function TaxesImportDialog({
           variant="outline"
           size="sm"
           onClick={handleDownloadSample}
+          disabled={isDownloading}
           className="text-muted-foreground"
         >
-          <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
-          Download Sample CSV
+          {isDownloading ? (
+            <>
+              <Spinner className="mr-2 size-4" />
+              Downloading...
+            </>
+          ) : (
+            <>
+              <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
+              Download Sample CSV
+            </>
+          )}
         </Button>
       </div>
 
@@ -250,7 +251,7 @@ export function TaxesImportDialog({
               <Button variant='outline' onClick={() => handleOpenChange(false)}>
                 Cancel
               </Button>
-              <Button type="submit" form="import-form" disabled={!form.formState.isValid}>
+              <Button type="submit" form="import-form" disabled={!form.formState.isValid || isPending}>
                 Preview Data
                 <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
               </Button>
@@ -272,7 +273,7 @@ export function TaxesImportDialog({
             </div>
 
             <DrawerFooter>
-              <Button type="submit" form="import-form" disabled={!form.formState.isValid}>
+              <Button type="submit" form="import-form" disabled={!form.formState.isValid || isPending}>
                 Preview Data
                 <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
               </Button>
@@ -284,7 +285,6 @@ export function TaxesImportDialog({
         </Drawer>
       )}
 
-      {/* CSV Preview Dialog */}
       <TaxesCsvPreviewDialog
         open={previewOpen}
         onOpenChange={setPreviewOpen}

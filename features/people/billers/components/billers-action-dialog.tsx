@@ -62,6 +62,7 @@ import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { Spinner } from '@/components/ui/spinner'
+import { PhoneInput } from '@/components/ui/phone-input'
 
 type BillerActionDialogProps = {
   currentRow?: Biller
@@ -382,7 +383,7 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
                 <FieldLabel htmlFor='biller-phone'>Phone Number <span className="text-destructive">*</span></FieldLabel>
-                <Input
+                <PhoneInput
                   id='biller-phone'
                   placeholder='Phone number'
                   autoComplete='off'

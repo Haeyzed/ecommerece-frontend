@@ -13,7 +13,7 @@ export const languageKeys = {
   options: () => [...languageKeys.all, "options"] as const,
 };
 
-const BASE_PATH = "/languages";
+const BASE_PATH = '/languages'
 
 export function useLanguages(params?: LanguageListParams) {
   const { api, sessionStatus } = useApiClient();

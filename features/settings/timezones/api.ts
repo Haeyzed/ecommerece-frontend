@@ -13,7 +13,7 @@ export const timezoneKeys = {
   options: () => [...timezoneKeys.all, "options"] as const,
 };
 
-const BASE_PATH = "/timezones";
+const BASE_PATH = '/timezones'
 
 export function useTimezones(params?: TimezoneListParams) {
   const { api, sessionStatus } = useApiClient();

@@ -13,7 +13,7 @@ export const currencyKeys = {
   options: () => [...currencyKeys.all, "options"] as const,
 };
 
-const BASE_PATH = "/currencies";
+const BASE_PATH = '/currencies'
 
 export function useCurrencies(params?: CurrencyListParams) {
   const { api, sessionStatus } = useApiClient();

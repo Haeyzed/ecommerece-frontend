@@ -4,17 +4,30 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import { useMediaQuery } from '@/hooks/use-media-query'
+import { cn } from '@/lib/utils'
 import { type Country } from '../types'
 
-type CountriesViewDialogProps = { currentRow?: Country; open: boolean; onOpenChange: (open: boolean) => void }
+type CountriesViewDialogProps = {
+  currentRow?: Country
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}
 
-export function CountriesViewDialog({ currentRow, open, onOpenChange }: CountriesViewDialogProps) {
+export function CountriesViewDialog({
+  currentRow,
+  open,
+  onOpenChange,
+}: CountriesViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   if (!currentRow) return null
 
+  const handleOpenChange = (value: boolean) => {
+    onOpenChange(value)
+  }
+
   if (isDesktop) {
     return (
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className='sm:max-w-lg'>
           <DialogHeader className='text-start'>
             <DialogTitle>Country Details</DialogTitle>
@@ -28,26 +41,35 @@ export function CountriesViewDialog({ currentRow, open, onOpenChange }: Countrie
     )
   }
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
+    <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
         <DrawerHeader className='text-left'>
           <DrawerTitle>Country Details</DrawerTitle>
           <DrawerDescription>View country information below.</DrawerDescription>
         </DrawerHeader>
+
         <div className='no-scrollbar max-h-[80vh] overflow-y-auto px-4'>
           <CountryView currentRow={currentRow} />
         </div>
+
         <DrawerFooter>
-          <DrawerClose asChild><Button variant='outline'>Close</Button></DrawerClose>
+          <DrawerClose asChild>
+            <Button variant='outline'>Close</Button>
+          </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
   )
 }
 
-function CountryView({ currentRow }: { currentRow: Country }) {
+interface CountryViewProps {
+  className?: string
+  currentRow: Country
+}
+
+function CountryView({ className, currentRow }: CountryViewProps) {
   return (
-    <div className='space-y-6'>
+    <div className={cn('space-y-6', className)}>
       <div className='space-y-2'>
         <div className='text-sm font-medium text-muted-foreground'>Name</div>
         <div className='text-sm font-medium'>{currentRow.name}</div>

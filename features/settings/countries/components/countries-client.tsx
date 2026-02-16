@@ -12,7 +12,6 @@ import { CountriesDialogs } from '@/features/settings/countries/components/count
 import { CountriesPrimaryButtons } from '@/features/settings/countries/components/countries-primary-buttons'
 import { CountriesProvider } from '@/features/settings/countries/components/countries-provider'
 import { CountriesTable } from '@/features/settings/countries/components/countries-table'
-import { COUNTRY_LIST_DESCRIPTION, COUNTRY_LIST_TITLE } from '@/features/settings/countries/constants'
 import { Suspense } from 'react'
 
 export function CountriesClient() {
@@ -31,8 +30,10 @@ export function CountriesClient() {
         <Main className='flex flex-1 flex-col gap-4 sm:gap-6'>
           <div className='flex flex-wrap items-end justify-between gap-2'>
             <div>
-              <h2 className='text-2xl font-bold tracking-tight'>{COUNTRY_LIST_TITLE}</h2>
-              <p className='text-muted-foreground'>{COUNTRY_LIST_DESCRIPTION}</p>
+              <h2 className='text-2xl font-bold tracking-tight'>Countries List</h2>
+              <p className='text-muted-foreground'>
+                View World reference countries.
+              </p>
             </div>
             <CountriesPrimaryButtons />
           </div>

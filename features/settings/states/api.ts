@@ -14,7 +14,7 @@ export const stateKeys = {
   cities: (stateId: number) => [...stateKeys.all, "cities", stateId] as const,
 };
 
-const BASE_PATH = "/states";
+const BASE_PATH = '/states'
 
 export function useStates(params?: StateListParams) {
   const { api, sessionStatus } = useApiClient();

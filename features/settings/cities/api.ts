@@ -13,7 +13,7 @@ export const cityKeys = {
   options: () => [...cityKeys.all, "options"] as const,
 };
 
-const BASE_PATH = "/cities";
+const BASE_PATH = '/cities'
 
 export function useCities(params?: CityListParams) {
   const { api, sessionStatus } = useApiClient();

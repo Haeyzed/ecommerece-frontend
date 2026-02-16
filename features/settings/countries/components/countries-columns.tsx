@@ -19,7 +19,12 @@ export const countriesColumns: ColumnDef<Country>[] = [
         <LongText className='max-w-36'>{row.getValue('name')}</LongText>
       </div>
     ),
-    meta: { className: cn('ps-0.5 max-md:sticky start-0') },
+    meta: {
+      className: cn(
+        'drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]',
+        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none'
+      ),
+    },
     enableHiding: false,
   },
   {
@@ -49,6 +54,8 @@ export const countriesColumns: ColumnDef<Country>[] = [
   {
     id: 'actions',
     cell: ({ row }) => <DataTableRowActions row={row} />,
-    meta: { className: cn('max-md:sticky end-0 z-10 rounded-tr-[inherit]') },
+    meta: {
+      className: cn('max-md:sticky end-0 z-10 rounded-tr-[inherit]'),
+    },
   },
 ]

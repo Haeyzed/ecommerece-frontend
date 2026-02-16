@@ -19,6 +19,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { useCountries } from '@/features/settings/countries/api'
 import { CountriesEmptyState } from './countries-empty-state'
+import { DataTableBulkActions } from './data-table-bulk-actions'
 import { countriesColumns as columns } from './countries-columns'
 
 export function CountriesTable() {
@@ -72,11 +73,11 @@ export function CountriesTable() {
     if (pageCount > 0) ensurePageInRange(pageCount)
   }, [pageCount, ensurePageInRange])
 
+  if (error) toast.error(error.message)
+
   const hasData = data?.meta?.total && data.meta.total > 0
   const isFiltered = !!apiParams.search
   if (!isLoading && !hasData && !isFiltered) return <CountriesEmptyState />
-
-  if (error) toast.error(error.message)
 
   return (
     <div className={cn('max-sm:has-[div[role="toolbar"]]:mb-16', 'flex flex-1 flex-col gap-4')}>
@@ -96,7 +97,8 @@ export function CountriesTable() {
                     colSpan={header.colSpan}
                     className={cn(
                       'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
-                      (header.column.columnDef.meta as { className?: string })?.className
+                      (header.column.columnDef.meta as { className?: string })?.className,
+                      (header.column.columnDef.meta as { thClassName?: string })?.thClassName
                     )}
                   >
                     {header.isPlaceholder
@@ -118,8 +120,9 @@ export function CountriesTable() {
                       <TableCell
                         key={cell.id}
                         className={cn(
-                          'bg-background group-hover/row:bg-muted',
-                          (cell.column.columnDef.meta as { className?: string })?.className
+                          'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
+                          (cell.column.columnDef.meta as { className?: string })?.className,
+                          (cell.column.columnDef.meta as { tdClassName?: string })?.tdClassName
                         )}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -139,6 +142,7 @@ export function CountriesTable() {
         </Table>
       </div>
       <DataTablePagination table={table} className='mt-auto' />
+      <DataTableBulkActions table={table} />
     </div>
   )
 }

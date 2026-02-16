@@ -4,9 +4,11 @@ import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Upload01Icon } from '@hugeicons/core-free-icons'
+import { format } from 'date-fns'
+
 import { useBillersExport } from '../api'
 import { billerExportSchema, type BillerExportFormData } from '../schemas'
-import { BILLER_EXPORT_COLUMNS } from '../constants'
+
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -45,11 +47,20 @@ import { useMediaQuery } from '@/hooks/use-media-query'
 import { useQuery } from '@tanstack/react-query'
 import { useApiClient } from '@/lib/api/api-client-client'
 import { Spinner } from '@/components/ui/spinner'
+import { DateRangePicker } from '@/components/date-range-picker'
 
-const AVAILABLE_COLUMNS = BILLER_EXPORT_COLUMNS.map((value) => ({
-  value,
-  label: value.replace(/_/g, ' '),
-}))
+const AVAILABLE_COLUMNS = [
+  { value: 'id', label: 'ID' },
+  { value: 'name', label: 'Name' },
+  { value: 'company_name', label: 'Company Name' },
+  { value: 'email', label: 'Email' },
+  { value: 'phone_number', label: 'Phone' },
+  { value: 'vat_number', label: 'VAT Number' },
+  { value: 'city', label: 'City' },
+  { value: 'is_active', label: 'Status' },
+  { value: 'created_at', label: 'Created At' },
+  { value: 'updated_at', label: 'Updated At' },
+] as const
 
 type BillersExportDialogProps = {
   open: boolean
@@ -58,10 +69,10 @@ type BillersExportDialogProps = {
 }
 
 export function BillersExportDialog({
-  open,
-  onOpenChange,
-  ids = [],
-}: BillersExportDialogProps) {
+                                      open,
+                                      onOpenChange,
+                                      ids = [],
+                                    }: BillersExportDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: exportBillers, isPending } = useBillersExport()
   const { api } = useApiClient()
@@ -71,7 +82,9 @@ export function BillersExportDialog({
     defaultValues: {
       format: 'excel',
       method: 'download',
-      columns: ['name', 'company_name', 'email', 'phone_number', 'is_active'],
+      columns: ['id', 'name', 'company_name', 'email', 'is_active'],
+      start_date: undefined,
+      end_date: undefined,
     },
   })
 
@@ -86,7 +99,7 @@ export function BillersExportDialog({
     enabled: open && method === 'email',
   })
 
-  const users = Array.isArray(usersResponse?.data) ? usersResponse.data : []
+  const users = usersResponse?.data ?? []
 
   const handleOpenChange = (value: boolean) => {
     if (!value) form.reset()
@@ -101,26 +114,53 @@ export function BillersExportDialog({
         method: data.method,
         columns: data.columns,
         user_id: data.method === 'email' ? data.user_id : undefined,
+        start_date: data.start_date,
+        end_date: data.end_date,
       },
-      { onSuccess: () => handleOpenChange(false) }
+      {
+        onSuccess: () => handleOpenChange(false),
+      }
     )
   }
 
   const handleSelectAllColumns = () => {
-    form.setValue('columns', [...BILLER_EXPORT_COLUMNS])
+    form.setValue('columns', AVAILABLE_COLUMNS.map((c) => c.value))
   }
 
   const handleDeselectAllColumns = () => {
     form.setValue('columns', [])
   }
 
-  const content = (
-    <form
-      id="billers-export-form"
-      onSubmit={form.handleSubmit(onSubmit)}
-      className="grid gap-4 py-4"
-    >
+  const ExportContent = () => (
+    <form id="export-form" onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
       <FieldGroup>
+        <Controller
+          control={form.control}
+          name="start_date"
+          render={({ field, fieldState }) => (
+            <Field className={"grid gap-1.5 w-full"}>
+              <FieldLabel>Date Range</FieldLabel>
+              <DateRangePicker
+                value={{
+                  from: form.watch('start_date') ? new Date(form.watch('start_date')!) : undefined,
+                  to: form.watch('end_date') ? new Date(form.watch('end_date')!) : undefined,
+                }}
+                onChange={(range) => {
+                  form.setValue(
+                    'start_date',
+                    range?.from ? format(range.from, 'yyyy-MM-dd') : undefined
+                  )
+                  form.setValue(
+                    'end_date',
+                    range?.to ? format(range.to, 'yyyy-MM-dd') : undefined
+                  )
+                }}
+              />
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
         <Controller
           control={form.control}
           name="format"
@@ -134,13 +174,13 @@ export function BillersExportDialog({
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="excel" id="format-excel" />
-                  <label htmlFor="format-excel" className="cursor-pointer text-sm font-medium">
+                  <label htmlFor="format-excel" className="text-sm font-medium cursor-pointer">
                     Excel (XLSX)
                   </label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="pdf" id="format-pdf" />
-                  <label htmlFor="format-pdf" className="cursor-pointer text-sm font-medium">
+                  <label htmlFor="format-pdf" className="text-sm font-medium cursor-pointer">
                     PDF
                   </label>
                 </div>
@@ -166,13 +206,13 @@ export function BillersExportDialog({
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="download" id="method-download" />
-                  <label htmlFor="method-download" className="cursor-pointer text-sm font-medium">
+                  <label htmlFor="method-download" className="text-sm font-medium cursor-pointer">
                     Download
                   </label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="email" id="method-email" />
-                  <label htmlFor="method-email" className="cursor-pointer text-sm font-medium">
+                  <label htmlFor="method-email" className="text-sm font-medium cursor-pointer">
                     Send via Email
                   </label>
                 </div>
@@ -191,26 +231,24 @@ export function BillersExportDialog({
                 <FieldLabel>Select User</FieldLabel>
                 <Select
                   value={field.value ? String(field.value) : ''}
-                  onValueChange={(v) => field.onChange(v ? Number(v) : undefined)}
+                  onValueChange={(value) => field.onChange(value ? Number(value) : undefined)}
                   disabled={isLoadingUsers}
                 >
                   <SelectTrigger data-invalid={!!fieldState.error}>
                     <SelectValue placeholder="Select user to send email to" />
                   </SelectTrigger>
                   <SelectContent>
-                    {users.map((u) => (
-                      <SelectItem key={u.id} value={String(u.id)}>
+                    {users.map((user) => (
+                      <SelectItem key={user.id} value={String(user.id)}>
                         <div className="flex flex-col">
-                          <span className="font-medium">{u.name}</span>
-                          <span className="text-xs text-muted-foreground">{u.email}</span>
+                          <span className="font-medium">{user.name}</span>
+                          <span className="text-xs text-muted-foreground">{user.email}</span>
                         </div>
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                <FieldDescription>
-                  Select a user to receive the export file via email
-                </FieldDescription>
+                <FieldDescription>Select a user to receive the export file via email</FieldDescription>
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -233,23 +271,26 @@ export function BillersExportDialog({
                   </Button>
                 </div>
               </div>
-              <div className="grid max-h-60 grid-cols-2 gap-3 overflow-y-auto rounded-md border p-3">
-                {AVAILABLE_COLUMNS.map((col) => (
-                  <div key={col.value} className="flex items-center space-x-2">
+              <div className="grid grid-cols-2 gap-3 rounded-md border p-3 max-h-60 overflow-y-auto">
+                {AVAILABLE_COLUMNS.map((column) => (
+                  <div key={column.value} className="flex items-center space-x-2">
                     <Checkbox
-                      id={`col-${col.value}`}
-                      checked={field.value?.includes(col.value) ?? false}
+                      id={`column-${column.value}`}
+                      checked={field.value?.includes(column.value) ?? false}
                       onCheckedChange={(checked) => {
                         const current = field.value ?? []
                         if (checked) {
-                          field.onChange([...current, col.value])
+                          field.onChange([...current, column.value])
                         } else {
-                          field.onChange(current.filter((c) => c !== col.value))
+                          field.onChange(current.filter((c) => c !== column.value))
                         }
                       }}
                     />
-                    <label htmlFor={`col-${col.value}`} className="cursor-pointer text-sm font-medium">
-                      {col.label}
+                    <label
+                      htmlFor={`column-${column.value}`}
+                      className="text-sm font-medium cursor-pointer"
+                    >
+                      {column.label}
                     </label>
                   </div>
                 ))}
@@ -263,27 +304,26 @@ export function BillersExportDialog({
     </form>
   )
 
-  const description =
-    ids.length > 0
-      ? `Select export format, method, and columns. ${ids.length} biller(s) selected.`
-      : 'Select export format, method, and columns.'
-
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader className="text-start">
             <DialogTitle>Export Billers</DialogTitle>
-            <DialogDescription>{description}</DialogDescription>
+            <DialogDescription>
+              Select export format, method, and columns. {ids.length > 0 && `${ids.length} biller(s) selected.`}
+            </DialogDescription>
           </DialogHeader>
-          {content}
+
+          <ExportContent />
+
           <DialogFooter className="gap-y-2">
             <Button variant="outline" onClick={() => handleOpenChange(false)}>
               Cancel
             </Button>
             <Button
               type="submit"
-              form="billers-export-form"
+              form="export-form"
               disabled={isPending || (method === 'email' && isLoadingUsers)}
             >
               {isPending ? (
@@ -309,13 +349,19 @@ export function BillersExportDialog({
       <DrawerContent>
         <DrawerHeader className="text-left">
           <DrawerTitle>Export Billers</DrawerTitle>
-          <DrawerDescription>{description}</DrawerDescription>
+          <DrawerDescription>
+            Select export format, method, and columns. {ids.length > 0 && `${ids.length} biller(s) selected.`}
+          </DrawerDescription>
         </DrawerHeader>
-        <div className="no-scrollbar overflow-y-auto px-4">{content}</div>
+
+        <div className="no-scrollbar overflow-y-auto px-4">
+          <ExportContent />
+        </div>
+
         <DrawerFooter>
           <Button
             type="submit"
-            form="billers-export-form"
+            form="export-form"
             disabled={isPending || (method === 'email' && isLoadingUsers)}
           >
             {isPending ? (

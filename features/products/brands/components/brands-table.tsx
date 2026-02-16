@@ -1,12 +1,5 @@
 "use client"
 
-/**
- * BrandsTable
- *
- * The main table component for displaying brands.
- * Handles server-side pagination, sorting, filtering, and data fetching.
- */
-
 import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
 import {
   Table,

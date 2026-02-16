@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
 import {
@@ -20,14 +20,18 @@ import {
   getFacetedUniqueValues,
   getFilteredRowModel,
   getSortedRowModel,
-  useReactTable,
+  useReactTable
 } from '@tanstack/react-table'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { useBillers } from '../api'
-import { billersColumns as columns } from './billers-columns'
-import { BillersEmptyState } from './billers-empty-state'
-import { DataTableBulkActions } from './data-table-bulk-actions'
+import {
+  BillersEmptyState,
+  DataTableBulkActions,
+  billersColumns as columns
+} from '@/features/people/billers'
+import { ForbiddenError } from '@/features/errors/forbidden'
+import { ForbiddenError as ForbiddenErrorClass } from '@/lib/api/api-errors'
 
 export function BillersTable() {
   const [rowSelection, setRowSelection] = useState({})
@@ -54,12 +58,13 @@ export function BillersTable() {
     const perPage = pagination.pageSize
     const nameFilter = columnFilters.find((f) => f.id === 'name')
     const statusFilter = columnFilters.find((f) => f.id === 'status')
-    let statusValue: string | undefined
+    let statusValue: string | undefined = undefined
     if (statusFilter?.value && Array.isArray(statusFilter.value)) {
       if (statusFilter.value.length === 1) {
         statusValue = statusFilter.value[0]
       }
     }
+
     return {
       page,
       per_page: perPage,
@@ -71,15 +76,12 @@ export function BillersTable() {
   const { data, isLoading, error } = useBillers(apiParams)
 
   const pageCount = useMemo(() => {
-    const meta = data?.meta
-    if (meta) return Math.ceil((meta.total || 0) / (meta.per_page || 10))
-    const payload = data?.data as { last_page?: number } | undefined
-    if (payload && typeof payload.last_page === 'number') return payload.last_page
-    return 0
-  }, [data?.meta, data?.data])
+    if (!data?.meta) return 0
+    return Math.ceil((data.meta.total || 0) / (data.meta.per_page || 10))
+  }, [data?.meta])
 
   const table = useReactTable({
-    data: data?.data ?? [],
+    data: data?.data || [],
     columns,
     pageCount,
     state: {
@@ -110,16 +112,14 @@ export function BillersTable() {
   }, [pageCount, ensurePageInRange])
 
   if (error) {
+    if (error instanceof ForbiddenErrorClass) {
+      return <ForbiddenError message={error.message} inline />
+    }
     toast.error(error.message)
     return null
   }
 
-  const total =
-    data?.meta?.total ??
-    (data?.data && typeof data.data === 'object' && 'total' in data.data
-      ? (data.data as { total: number }).total
-      : 0)
-  const hasData = total > 0
+  const hasData = data?.meta?.total && data.meta.total > 0
   const isFiltered = !!apiParams.search || !!apiParams.status
   if (!isLoading && !hasData && !isFiltered) {
     return <BillersEmptyState />
@@ -134,11 +134,11 @@ export function BillersTable() {
     >
       <DataTableToolbar
         table={table}
-        searchPlaceholder="Filter billers..."
-        searchKey="name"
+        searchPlaceholder='Filter billers...'
+        searchKey='name'
         filters={[
           {
-            columnId: 'status',
+            columnId: 'active_status',
             title: 'Status',
             options: [
               { label: 'Active', value: 'active' },
@@ -147,26 +147,31 @@ export function BillersTable() {
           },
         ]}
       />
-      <div className="overflow-hidden rounded-md border">
+      <div className='overflow-hidden rounded-md border'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="group/row">
-                {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    colSpan={header.colSpan}
-                    className={cn(
-                      'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
-                      (header.column.columnDef.meta as { className?: string })?.className,
-                      (header.column.columnDef.meta as { thClassName?: string })?.thClassName
-                    )}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                ))}
+              <TableRow key={headerGroup.id} className='group/row'>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      className={cn(
+                        'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
+                        (header.column.columnDef.meta as any)?.className,
+                        (header.column.columnDef.meta as any)?.thClassName
+                      )}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                    </TableHead>
+                  )
+                })}
               </TableRow>
             ))}
           </TableHeader>
@@ -179,25 +184,31 @@ export function BillersTable() {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    className="group/row"
+                    className='group/row'
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
                         className={cn(
                           'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
-                          (cell.column.columnDef.meta as { className?: string })?.className,
-                          (cell.column.columnDef.meta as { tdClassName?: string })?.tdClassName
+                          (cell.column.columnDef.meta as any)?.className,
+                          (cell.column.columnDef.meta as any)?.tdClassName
                         )}
                       >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
                       </TableCell>
                     ))}
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                  <TableCell
+                    colSpan={columns.length}
+                    className='h-24 text-center'
+                  >
                     No results.
                   </TableCell>
                 </TableRow>
@@ -206,7 +217,7 @@ export function BillersTable() {
           )}
         </Table>
       </div>
-      <DataTablePagination table={table} className="mt-auto" />
+      <DataTablePagination table={table} className='mt-auto' />
       <DataTableBulkActions table={table} />
     </div>
   )

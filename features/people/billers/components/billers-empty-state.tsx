@@ -1,28 +1,30 @@
-'use client'
+"use client"
 
-import { useRouter } from 'next/navigation'
 import { DataTableEmptyState } from '@/components/data-table'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { PlusSignIcon, Download01Icon } from '@hugeicons/core-free-icons'
-import { useBillersContext } from './billers-provider'
+import { HugeiconsIcon } from "@hugeicons/react"
+import { PlusSignIcon, Download01Icon } from "@hugeicons/core-free-icons"
+import { useBillers } from './billers-provider'
 
 export function BillersEmptyState() {
-  const router = useRouter()
-  const { setOpen } = useBillersContext()
+  const { setOpen } = useBillers()
 
   return (
     <DataTableEmptyState
       title="No billers yet"
-      description="You haven't added any billers yet. Get started by adding your first biller or importing from a file."
+      description="You haven't added any billers yet. Get started by adding your first biller."
       primaryAction={{
-        label: 'Add Biller',
-        onClick: () => router.push('/people/billers/create'),
-        icon: <HugeiconsIcon icon={PlusSignIcon} className="mr-2 size-4" />,
+        label: "Add Biller",
+        onClick: () => setOpen('add'),
+        icon: <HugeiconsIcon icon={PlusSignIcon} className="size-4 mr-2" />,
       }}
       secondaryAction={{
-        label: 'Import Billers',
+        label: "Import Billers",
         onClick: () => setOpen('import'),
-        icon: <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />,
+        icon: <HugeiconsIcon icon={Download01Icon} className="size-4 mr-2" />,
+      }}
+      learnMoreLink={{
+        href: "#",
+        label: "Learn more",
       }}
     />
   )

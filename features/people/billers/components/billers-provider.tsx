@@ -2,13 +2,13 @@
 
 import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
-import type { Biller } from '../schemas'
+import { type Biller } from '../types'
 
-type BillersDialogType = 'import' | 'delete' | 'export' | 'view' | 'multi-delete'
+type BillersDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
 
 type BillersContextType = {
   open: BillersDialogType | null
-  setOpen: (value: BillersDialogType | null) => void
+  setOpen: (str: BillersDialogType | null) => void
   currentRow: Biller | null
   setCurrentRow: React.Dispatch<React.SetStateAction<Biller | null>>
 }
@@ -26,11 +26,12 @@ export function BillersProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
-export function useBillersContext() {
-  const ctx = React.useContext(BillersContext)
-  if (!ctx) {
-    throw new Error('useBillersContext must be used within BillersProvider')
-  }
-  return ctx
-}
+export const useBillers = () => {
+  const billersContext = React.useContext(BillersContext)
 
+  if (!billersContext) {
+    throw new Error('useBillers has to be used within <BillersContext>')
+  }
+
+  return billersContext
+}

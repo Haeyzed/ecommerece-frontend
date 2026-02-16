@@ -1,14 +1,5 @@
 "use client"
 
-/**
- * brandsColumns
- *
- * Defines the column definitions for the TanStack React Table used in the brands module.
- * Maps brand properties to table columns and defines custom cell renderers.
- *
- * @constant
- */
-
 import { type ColumnDef } from '@tanstack/react-table'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'

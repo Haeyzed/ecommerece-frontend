@@ -6,13 +6,10 @@ import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
-import type { Biller } from '../schemas'
+import type { Biller } from '../types'
 import { DataTableRowActions } from './data-table-row-actions'
-import { BILLER_STATUS_OPTIONS } from '../constants'
-
-const statusMap = Object.fromEntries(
-  BILLER_STATUS_OPTIONS.filter((o) => o.value).map((o) => [o.value, o.label])
-)
+import { ImageZoomCell } from '@/components/image-zoom'
+import { statusTypes } from '../constants'
 
 export const billersColumns: ColumnDef<Biller>[] = [
   {
@@ -24,8 +21,8 @@ export const billersColumns: ColumnDef<Biller>[] = [
           (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
+        aria-label='Select all'
+        className='translate-y-[2px]'
       />
     ),
     meta: { className: cn('max-md:sticky start-0 z-10 rounded-tl-[inherit]') },
@@ -33,8 +30,8 @@ export const billersColumns: ColumnDef<Biller>[] = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
+        aria-label='Select row'
+        className='translate-y-[2px]'
       />
     ),
     enableSorting: false,
@@ -42,23 +39,19 @@ export const billersColumns: ColumnDef<Biller>[] = [
   },
   {
     accessorKey: 'name',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
+    header: ({ column }) => <DataTableColumnHeader column={column} title='Name' />,
     cell: ({ row }) => (
-      <div className="flex items-center gap-3 ps-3">
+      <div className='flex items-center gap-3 ps-3'>
         {row.original.image_url ? (
-          <img
-            src={row.original.image_url}
-            alt=""
-            className="size-10 rounded-md object-cover"
-          />
+          <ImageZoomCell src={row.original.image_url} alt={row.original.name} />
         ) : (
-          <div className="flex size-10 items-center justify-center rounded-md bg-muted">
-            <span className="text-xs font-medium">
-              {String(row.original.name).charAt(0).toUpperCase()}
+          <div className='flex size-10 items-center justify-center rounded-md bg-muted'>
+            <span className='text-xs font-medium'>
+              {row.original.name.charAt(0).toUpperCase()}
             </span>
           </div>
         )}
-        <LongText className="max-w-36">{row.getValue('name')}</LongText>
+        <LongText className='max-w-36'>{row.getValue('name')}</LongText>
       </div>
     ),
     meta: {
@@ -72,10 +65,10 @@ export const billersColumns: ColumnDef<Biller>[] = [
   {
     accessorKey: 'company_name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Company" />
+      <DataTableColumnHeader column={column} title='Company' />
     ),
     cell: ({ row }) => (
-      <LongText className="max-w-32">
+      <LongText className='max-w-32'>
         {row.original.company_name ?? '-'}
       </LongText>
     ),
@@ -84,61 +77,50 @@ export const billersColumns: ColumnDef<Biller>[] = [
   {
     accessorKey: 'email',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Email" />
+      <DataTableColumnHeader column={column} title='Email' />
     ),
     cell: ({ row }) => (
-      <LongText className="max-w-36">{row.original.email ?? '-'}</LongText>
+      <LongText className='max-w-36'>{row.original.email ?? '-'}</LongText>
     ),
     meta: { className: 'w-36' },
   },
   {
     accessorKey: 'phone_number',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Phone" />
+      <DataTableColumnHeader column={column} title='Phone' />
     ),
-    cell: ({ row }) => (
-      <span>{row.original.phone_number ?? '-'}</span>
-    ),
+    cell: ({ row }) => <span>{row.original.phone_number ?? '-'}</span>,
     meta: { className: 'w-28' },
   },
   {
     accessorKey: 'city',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="City" />
+      <DataTableColumnHeader column={column} title='City' />
     ),
-    cell: ({ row }) => (
-      <span>{row.original.city ?? '-'}</span>
-    ),
+    cell: ({ row }) => <span>{row.original.city ?? '-'}</span>,
     meta: { className: 'w-24' },
   },
   {
-    accessorKey: 'is_active',
-    id: 'status',
+    accessorKey: 'active_status',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title='Status' />
     ),
     cell: ({ row }) => {
-      const status = row.original.is_active ? 'active' : 'inactive'
-      const label = statusMap[status] ?? status
+      const { active_status } = row.original
+      const statusBadgeColor = statusTypes.get(active_status)
       return (
-        <div className="flex justify-center">
+        <div className='flex justify-center'>
           <Badge
-            variant="outline"
-            className={cn(
-              'capitalize',
-              status === 'active'
-                ? 'border-green-500/50 text-green-700 dark:text-green-400'
-                : 'border-muted-foreground/50'
-            )}
+            variant='outline'
+            className={cn('capitalize', statusBadgeColor)}
           >
-            {label}
+            {row.getValue('active_status')}
           </Badge>
         </div>
       )
     },
     filterFn: (row, id, value) => {
-      const status = row.original.is_active ? 'active' : 'inactive'
-      return Array.isArray(value) && value.includes(status)
+      return value.includes(row.getValue(id))
     },
   },
   {

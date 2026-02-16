@@ -1,10 +1,3 @@
-/**
- * Taxes Module Exports
- *
- * This file exports all components related to the taxes feature
- * to allow for easier imports in other parts of the application.
- */
-
 export * from './components/taxes-action-dialog'
 export * from './components/taxes-columns'
 export * from './components/taxes-delete-dialog'

@@ -4,7 +4,7 @@ import { useApiClient } from "@/lib/api/api-client-client";
 import { ValidationError } from "@/lib/api/api-errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { Unit, UnitFormData, UnitOption } from "./types";
+import type { Unit, UnitExportParams, UnitFormData, UnitListParams, UnitOption } from './types'
 
 export const unitKeys = {
   all: ["units"] as const,
@@ -12,21 +12,20 @@ export const unitKeys = {
   list: (filters?: Record<string, unknown>) => [...unitKeys.lists(), filters] as const,
   details: () => [...unitKeys.all, "detail"] as const,
   detail: (id: number) => [...unitKeys.details(), id] as const,
+  options: () => [...unitKeys.all, "options"] as const,
   baseUnits: () => [...unitKeys.all, "base-units"] as const,
+  template: () => [...unitKeys.all, "template"] as const,
 };
 
-export function useUnits(params?: {
-  page?: number;
-  per_page?: number;
-  search?: string;
-  status?: string;
-}) {
+const BASE_PATH = '/units'
+
+export function useUnits(params?: UnitListParams) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
     queryKey: unitKeys.list(params),
     queryFn: async () => {
       const response = await api.get<Unit[]>(
-        "/units",
+        BASE_PATH,
         { params }
       );
       return response;
@@ -39,17 +38,36 @@ export function useUnits(params?: {
   };
 }
 
-/**
- * useUnit
- *
- * Fetches details for a single unit by ID.
- */
+export function useOptionUnits() {
+  const { api, sessionStatus } = useApiClient();
+  return useQuery({
+    queryKey: unitKeys.options(),
+    queryFn: async () => {
+      const response = await api.get<UnitOption[]>(`${BASE_PATH}/options`);
+      return response.data ?? [];
+    },
+    enabled: sessionStatus !== "loading",
+  });
+}
+
+export function useBaseUnits() {
+  const { api, sessionStatus } = useApiClient();
+  return useQuery({
+    queryKey: unitKeys.baseUnits(),
+    queryFn: async () => {
+      const response = await api.get<UnitOption[]>(`${BASE_PATH}/base-units`);
+      return response.data || [];
+    },
+    enabled: sessionStatus !== "loading",
+  });
+}
+
 export function useUnit(id: number) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
     queryKey: unitKeys.detail(id),
     queryFn: async () => {
-      const response = await api.get<Unit>(`/units/${id}`);
+      const response = await api.get<Unit>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
     enabled: !!id && sessionStatus !== "loading",
@@ -58,18 +76,6 @@ export function useUnit(id: number) {
     ...query,
     isSessionLoading: sessionStatus === "loading",
   };
-}
-
-export function useBaseUnits() {
-  const { api, sessionStatus } = useApiClient();
-  return useQuery({
-    queryKey: unitKeys.baseUnits(),
-    queryFn: async () => {
-      const response = await api.get<UnitOption[]>("/units/base-units");
-      return response.data || [];
-    },
-    enabled: sessionStatus !== "loading",
-  });
 }
 
 export function useCreateUnit() {
@@ -89,21 +95,21 @@ export function useCreateUnit() {
       }
       if (data.is_active !== undefined) formData.append("is_active", data.is_active ? "1" : "0");
 
-      const response = await api.post<{ data: Unit }>("/units", formData);
-      if (!response.success || !response.data) {
+      const response = await api.post<{ data: Unit }>(BASE_PATH, formData);
+      if (!response.success) {
         if (response.errors) {
           throw new ValidationError(response.message, response.errors);
         }
         throw new Error(response.message);
       }
-      return response.data;
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
-      toast.success("Unit created successfully");
+      toast.success(response.message);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to create unit");
+      toast.error(error.message);
     },
   });
 }
@@ -126,22 +132,22 @@ export function useUpdateUnit() {
       }
       if (data.is_active !== undefined) formData.append("is_active", data.is_active ? "1" : "0");
 
-      const response = await api.post<{ data: Unit }>(`/units/${id}`, formData);
-      if (!response.success || !response.data) {
+      const response = await api.post<{ data: Unit }>(`${BASE_PATH}/${id}`, formData);
+      if (!response.success) {
         if (response.errors) {
           throw new ValidationError(response.message, response.errors);
         }
         throw new Error(response.message);
       }
-      return response.data;
+      return { id, message: response.message };
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: unitKeys.detail(variables.id) });
-      toast.success("Unit updated successfully");
+      queryClient.invalidateQueries({ queryKey: unitKeys.detail(data.id) });
+      toast.success(data.message);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to update unit");
+      toast.error(error.message);
     },
   });
 }
@@ -152,18 +158,18 @@ export function useDeleteUnit() {
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const response = await api.delete(`/units/${id}`);
+      const response = await api.delete(`${BASE_PATH}/${id}`);
       if (!response.success) {
         throw new Error(response.message);
       }
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
-      toast.success("Unit deleted successfully");
+      toast.success(response.message);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to delete unit");
+      toast.error(error.message);
     },
   });
 }
@@ -174,17 +180,17 @@ export function useBulkActivateUnits() {
   return useMutation({
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
-        "/units/bulk-activate",
+        `${BASE_PATH}/bulk-activate`,
         { ids }
       );
       if (!response.success) throw new Error(response.message);
-      return response.data;
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
-      toast.success("Units activated");
+      toast.success(response.message);
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to activate"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
@@ -194,17 +200,17 @@ export function useBulkDeactivateUnits() {
   return useMutation({
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ deactivated_count: number }>(
-        "/units/bulk-deactivate",
+        `${BASE_PATH}/bulk-deactivate`,
         { ids }
       );
       if (!response.success) throw new Error(response.message);
-      return response.data;
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
-      toast.success("Units deactivated");
+      toast.success(response.message);
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to deactivate"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
@@ -213,17 +219,17 @@ export function useBulkDestroyUnits() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.delete("/units/bulk-destroy", {
+      const response = await api.delete(`${BASE_PATH}/bulk-destroy`, {
         body: JSON.stringify({ ids }),
       });
       if (!response.success) throw new Error(response.message);
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
-      toast.success("Units deleted");
+      toast.success(response.message);
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to delete"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
@@ -234,25 +240,17 @@ export function useUnitsImport() {
     mutationFn: async (file: File) => {
       const form = new FormData();
       form.append("file", file);
-      const response = await api.post("/units/import", form);
+      const response = await api.post(`${BASE_PATH}/import`, form);
       if (!response.success) throw new Error(response.message);
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
-      toast.success("Units imported");
+      toast.success(response.message);
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Import failed"),
+    onError: (error) => toast.error(error.message),
   });
 }
-
-export type UnitExportParams = {
-  ids?: number[];
-  format: "excel" | "pdf";
-  method: "download" | "email";
-  columns: string[];
-  user_id?: number;
-};
 
 export function useUnitsExport() {
   const { api } = useApiClient();
@@ -260,7 +258,7 @@ export function useUnitsExport() {
   return useMutation({
     mutationFn: async (params: UnitExportParams) => {
       if (params.method === "download") {
-        const blob = await api.postBlob("/units/export", params);
+        const blob = await api.postBlob(`${BASE_PATH}/export`, params);
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
@@ -273,18 +271,35 @@ export function useUnitsExport() {
         return { message: "Export downloaded successfully" };
       }
 
-      const response = await api.post("/units/export", params);
+      const response = await api.post(`${BASE_PATH}/export`, params);
       if (!response.success) throw new Error(response.message);
       return response;
     },
-    onSuccess: (_, variables) => {
-      if (variables.method === "email") {
-        toast.success("Export sent via email successfully");
-      } else {
-        toast.success("Export downloaded successfully");
-      }
+    onSuccess: (response) => {
+      toast.success(response.message);
     },
-    onError: (e) =>
-      toast.error(e instanceof Error ? e.message : "Export failed"),
+    onError: (error) => toast.error(error.message),
+  });
+}
+
+export function useUnitsTemplateDownload() {
+  const { api } = useApiClient();
+  return useMutation({
+    mutationFn: async () => {
+      const blob = await api.getBlob(`${BASE_PATH}/download`);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `units-sample.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      return { message: "Sample template downloaded" };
+    },
+    onSuccess: (response) => {
+      toast.success(response.message);
+    },
+    onError: (error) => toast.error(error.message),
   });
 }

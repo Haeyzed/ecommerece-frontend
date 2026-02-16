@@ -1,16 +1,5 @@
 'use client'
 
-/**
- * DataTableRowActions
- *
- * Renders the actions dropdown menu (Edit, Delete) for a specific row
- * in the units data table.
- *
- * @component
- * @param {Object} props - The component props
- * @param {Row<Unit>} props.row - The table row containing unit data
- */
-
 import { HugeiconsIcon } from '@hugeicons/react'
 import { 
   Delete02Icon, 
@@ -30,7 +19,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { type Unit } from '../types'
 import { useUnits } from './units-provider'
-import { useAuthSession } from '@/features/auth/api' // Import session hook
+import { useAuthSession } from '@/features/auth/api'
 
 type DataTableRowActionsProps = {
   row: Row<Unit>
@@ -40,9 +29,9 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const { setOpen, setCurrentRow } = useUnits()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canView = userPermissions.includes('units-index')
-  const canUpdate = userPermissions.includes('units-update')
-  const canDelete = userPermissions.includes('units-delete')
+  const canView = userPermissions.includes('view units')
+  const canUpdate = userPermissions.includes('update units')
+  const canDelete = userPermissions.includes('delete units')
   if (!canView && !canUpdate && !canDelete) return null
 
   return (

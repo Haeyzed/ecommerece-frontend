@@ -11,7 +11,7 @@ export interface Unit {
   operator: string | null;
   operation_value: number | null;
   is_active: boolean;
-  status: UnitStatus;
+  active_status: UnitActiveStatus;
   created_at: string | null;
   updated_at: string | null;
 }
@@ -24,6 +24,15 @@ export interface UnitFormData {
   operation_value?: number | null;
   is_active?: boolean | null;
 }
+
+export type UnitListParams = {
+  page?: number;
+  per_page?: number;
+  search?: string;
+  status?: string;
+  start_date?: string;
+  end_date?: string;
+};
 
 export type UnitExportParams = {
   ids?: number[];
@@ -40,4 +49,4 @@ export interface UnitOption {
   label: string;
 }
 
-export type UnitStatus = 'active' | 'inactive';
+export type UnitActiveStatus = 'active' | 'inactive';

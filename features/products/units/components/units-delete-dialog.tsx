@@ -1,18 +1,5 @@
 'use client'
 
-/**
- * UnitsDeleteDialog
- *
- * A confirmation dialog for deleting a single unit.
- * Requires the user to type the unit name to confirm the destructive action.
- *
- * @component
- * @param {Object} props - The component props
- * @param {boolean} props.open - Controls visibility
- * @param {function} props.onOpenChange - Callback for visibility changes
- * @param {Unit} props.currentRow - The unit selected for deletion
- */
-
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Alert02Icon } from '@hugeicons/core-free-icons'
@@ -22,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { useDeleteUnit } from '../api'
 import { type Unit } from '../types'
-import { useAuthSession } from '@/features/auth/api' // Import session hook
+import { useAuthSession } from '@/features/auth/api'
 
 type UnitDeleteDialogProps = {
   open: boolean
@@ -39,7 +26,7 @@ export function UnitsDeleteDialog({
   const { mutate: deleteUnit, isPending } = useDeleteUnit()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canDelete = userPermissions.includes('units-delete')
+  const canDelete = userPermissions.includes('delete units')
   if (!canDelete) return null
 
   const handleDelete = () => {

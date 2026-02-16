@@ -1,12 +1,5 @@
 "use client"
 
-/**
- * UnitsTable
- *
- * The main table component for displaying units.
- * Handles server-side pagination, sorting, filtering, and data fetching.
- */
-
 import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
 import {
   Table,
@@ -39,12 +32,10 @@ import {
 } from '@/features/products/units'
 
 export function UnitsTable() {
-  // Local UI-only states
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [sorting, setSorting] = useState<SortingState>([])
 
-  // Synced with URL states
   const {
     columnFilters,
     onColumnFiltersChange,
@@ -60,7 +51,6 @@ export function UnitsTable() {
     ],
   })
 
-  // Extract API params from URL and column filters
   const apiParams = useMemo(() => {
     const page = pagination.pageIndex + 1
     const perPage = pagination.pageSize
@@ -81,10 +71,8 @@ export function UnitsTable() {
     }
   }, [pagination, columnFilters])
 
-  // Fetch data from API
   const { data, isLoading, error } = useUnits(apiParams)
 
-  // Calculate pagination info
   const pageCount = useMemo(() => {
     if (!data?.meta) return 0
     return Math.ceil((data.meta.total || 0) / (data.meta.per_page || 10))
@@ -147,7 +135,7 @@ export function UnitsTable() {
         searchKey='name'
         filters={[
           {
-            columnId: 'status',
+            columnId: 'active_status',
             title: 'Status',
             options: [
               { label: 'Active', value: 'active' },

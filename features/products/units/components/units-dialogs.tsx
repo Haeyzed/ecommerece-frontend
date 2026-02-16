@@ -1,14 +1,5 @@
 'use client'
 
-/**
- * UnitsDialogs
- *
- * Orchestrator component that renders the appropriate dialog (Add, Edit, Delete, Import)
- * based on the current state from the UnitsProvider and User Permissions.
- *
- * @component
- */
-
 import { UnitsActionDialog } from './units-action-dialog'
 import { UnitsDeleteDialog } from './units-delete-dialog'
 import { UnitsExportDialog } from './units-export-dialog'
@@ -21,12 +12,12 @@ export function UnitsDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useUnits()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canCreate = userPermissions.includes('units-create')
+  const canCreate = userPermissions.includes('create units')
   const canImport = userPermissions.includes('units-import')
   const canExport = userPermissions.includes('units-export')
-  const canUpdate = userPermissions.includes('units-update')
-  const canDelete = userPermissions.includes('units-delete')
-  const canView = userPermissions.includes('units-index')
+  const canUpdate = userPermissions.includes('update units')
+  const canDelete = userPermissions.includes('delete units')
+  const canView = userPermissions.includes('view units')
 
   return (
     <>

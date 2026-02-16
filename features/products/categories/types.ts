@@ -44,6 +44,18 @@ export interface CategoryFormData {
   woocommerce_category_id?: number | null;
 }
 
+export type CategoryListParams = {
+  page?: number;
+  per_page?: number;
+  search?: string;
+  status?: string;
+  featured_status?: string;
+  sync_status?: string;
+  parent_id?: number | null;
+  start_date?: string;
+  end_date?: string;
+};
+
 export type CategoryExportParams = {
   ids?: number[];
   format: "excel" | "pdf";

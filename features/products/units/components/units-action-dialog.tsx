@@ -1,14 +1,5 @@
 'use client'
 
-/**
- * UnitsActionDialog
- *
- * A dialog/drawer component for creating or editing a unit.
- * It adapts its presentation (Dialog vs Drawer) based on screen size.
- *
- * @component
- */
-
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 import { useState, useMemo } from 'react'
@@ -66,11 +57,7 @@ import {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-  ComboboxTrigger,
-  ComboboxValue,
 } from "@/components/ui/combobox"
-import { HugeiconsIcon } from '@hugeicons/react'
-import { CheckmarkCircle02Icon } from '@hugeicons/core-free-icons'
 
 type UnitActionDialogProps = {
   currentRow?: Unit
@@ -238,8 +225,6 @@ function UnitForm({
   currentRow 
 }: UnitFormProps) {
   const [openCombobox, setOpenCombobox] = useState(false)
-
-  // Filter out the current unit from base units options to avoid self-referencing
   const availableBaseUnits = useMemo(() => {
     return baseUnits.filter(u => !isEdit || u.value !== currentRow?.id)
   }, [baseUnits, isEdit, currentRow])
@@ -247,7 +232,6 @@ function UnitForm({
   const unitItems = useMemo(() => availableBaseUnits.map((unit) => ({
     id: unit.value,
     label: unit.label,
-    code: unit.code
   })), [availableBaseUnits])
 
   const name = form.watch('name')
@@ -255,7 +239,6 @@ function UnitForm({
   const operator = form.watch('operator')
   const operationValue = form.watch('operation_value')
 
-  // Find the selected base unit object for the preview label
   const selectedBaseUnitForPreview = useMemo(() => 
     unitItems.find(u => u.id === baseUnitId),
     [unitItems, baseUnitId]
@@ -414,7 +397,6 @@ function UnitForm({
                 )}
               />
             </div><div className="rounded-md border bg-muted/50 p-3 text-sm text-muted-foreground">
-              {/* Dynamic Preview Section */}
               {name && operator && operationValue && selectedBaseUnitForPreview && (
                 <div className="mb-3 border-b border-border/50 pb-3 text-foreground">
                   <div className="font-semibold mb-1">Preview:</div>

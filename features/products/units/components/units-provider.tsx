@@ -1,16 +1,5 @@
 'use client'
 
-/**
- * UnitsProvider
- *
- * Context provider for managing the state of unit-related dialogs and the
- * currently selected unit for editing or deletion.
- *
- * @component
- * @param {Object} props - The component props
- * @param {React.ReactNode} props.children - Child components
- */
-
 import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type Unit } from '../types'

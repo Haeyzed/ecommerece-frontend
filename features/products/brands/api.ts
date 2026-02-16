@@ -4,7 +4,7 @@ import { useApiClient } from "@/lib/api/api-client-client";
 import { ValidationError } from "@/lib/api/api-errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { Brand, BrandExportParams, BrandFormData } from "./types";
+import type { Brand, BrandExportParams, BrandFormData, BrandListParams, BrandOption } from './types'
 
 export const brandKeys = {
   all: ["brands"] as const,
@@ -12,19 +12,13 @@ export const brandKeys = {
   list: (filters?: Record<string, unknown>) => [...brandKeys.lists(), filters] as const,
   details: () => [...brandKeys.all, "detail"] as const,
   detail: (id: number) => [...brandKeys.details(), id] as const,
+  options: () => [...brandKeys.all, "options"] as const,
   template: () => [...brandKeys.all, "template"] as const,
 };
 
 const BASE_PATH = '/brands'
 
-export function useBrands(params?: {
-  page?: number;
-  per_page?: number;
-  search?: string;
-  status?: string;
-  start_date?: string;
-  end_date?: string;
-}) {
+export function useBrands(params?: BrandListParams) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
     queryKey: brandKeys.list(params),
@@ -41,6 +35,18 @@ export function useBrands(params?: {
     ...query,
     isSessionLoading: sessionStatus === "loading",
   };
+}
+
+export function useOptionBrands() {
+  const { api, sessionStatus } = useApiClient();
+  return useQuery({
+    queryKey: brandKeys.options(),
+    queryFn: async () => {
+      const response = await api.get<BrandOption[]>(`${BASE_PATH}/options`);
+      return response.data ?? [];
+    },
+    enabled: sessionStatus !== "loading",
+  });
 }
 
 export function useBrand(id: number) {

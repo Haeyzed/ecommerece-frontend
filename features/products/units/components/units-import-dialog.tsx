@@ -1,14 +1,5 @@
 'use client'
 
-/**
- * UnitsImportDialog
- *
- * A dialog/drawer component for bulk importing units via file upload (CSV/Excel).
- * Handles CSV preview and bulk import.
- *
- * @component
- */
-
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -21,10 +12,8 @@ import {
   CancelCircleIcon
 } from '@hugeicons/core-free-icons'
 
-import { useUnitsImport } from '@/features/products/units/api'
+import { useUnitsImport, useUnitsTemplateDownload } from '@/features/products/units/api'
 import { unitImportSchema, type UnitImportFormData } from '@/features/products/units/schemas'
-import { downloadSampleAsCsv } from '@/lib/download-sample-csv'
-import { SAMPLE_UNITS_CSV } from '../constants'
 import { UnitsCsvPreviewDialog } from './units-csv-preview-dialog'
 
 import { Button } from '@/components/ui/button'
@@ -63,6 +52,7 @@ import {
   FileUploadTrigger,
 } from '@/components/ui/file-upload'
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { Spinner } from '@/components/ui/spinner'
 
 type UnitsImportDialogProps = {
   open: boolean
@@ -70,11 +60,12 @@ type UnitsImportDialogProps = {
 }
 
 export function UnitsImportDialog({
-  open,
-  onOpenChange,
-}: UnitsImportDialogProps) {
+                                    open,
+                                    onOpenChange,
+                                  }: UnitsImportDialogProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)")
   const { mutate: importUnits, isPending } = useUnitsImport()
+  const { mutate: downloadTemplate, isPending: isDownloading } = useUnitsTemplateDownload()
 
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewData, setPreviewData] = useState<any[]>([])
@@ -127,7 +118,7 @@ export function UnitsImportDialog({
   }
 
   const handleDownloadSample = () => {
-    downloadSampleAsCsv(SAMPLE_UNITS_CSV, 'units_sample.csv')
+    downloadTemplate()
   }
 
   const handleOpenChange = (value: boolean) => {
@@ -146,10 +137,20 @@ export function UnitsImportDialog({
           variant="outline"
           size="sm"
           onClick={handleDownloadSample}
+          disabled={isDownloading}
           className="text-muted-foreground"
         >
-          <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
-          Download Sample CSV
+          {isDownloading ? (
+            <>
+              <Spinner className="mr-2 size-4" />
+              Downloading...
+            </>
+          ) : (
+            <>
+              <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
+              Download Sample CSV
+            </>
+          )}
         </Button>
       </div>
 
@@ -247,7 +248,7 @@ export function UnitsImportDialog({
               <Button variant='outline' onClick={() => handleOpenChange(false)}>
                 Cancel
               </Button>
-              <Button type="submit" form="import-form" disabled={!form.formState.isValid}>
+              <Button type="submit" form="import-form" disabled={!form.formState.isValid || isPending}>
                 Preview Data
                 <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
               </Button>
@@ -269,7 +270,7 @@ export function UnitsImportDialog({
             </div>
 
             <DrawerFooter>
-              <Button type="submit" form="import-form" disabled={!form.formState.isValid}>
+              <Button type="submit" form="import-form" disabled={!form.formState.isValid || isPending}>
                 Preview Data
                 <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
               </Button>

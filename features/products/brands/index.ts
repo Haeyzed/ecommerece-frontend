@@ -1,10 +1,3 @@
-/**
- * Brands Module Exports
- *
- * This file exports all components related to the brands feature
- * to allow for easier imports in other parts of the application.
- */
-
 export * from './components/brands-action-dialog'
 export * from './components/brands-columns'
 export * from './components/brands-delete-dialog'

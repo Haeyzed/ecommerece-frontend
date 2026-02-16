@@ -41,12 +41,10 @@ import { ForbiddenError } from '@/features/errors/forbidden'
 import { ForbiddenError as ForbiddenErrorClass } from '@/lib/api/api-errors'
 
 export function BrandsTable() {
-  // Local UI-only states
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [sorting, setSorting] = useState<SortingState>([])
 
-  // Synced with URL states
   const {
     columnFilters,
     onColumnFiltersChange,
@@ -62,7 +60,6 @@ export function BrandsTable() {
     ],
   })
 
-  // Extract API params from URL and column filters
   const apiParams = useMemo(() => {
     const page = pagination.pageIndex + 1
     const perPage = pagination.pageSize
@@ -83,10 +80,8 @@ export function BrandsTable() {
     }
   }, [pagination, columnFilters])
 
-  // Fetch data from API
   const { data, isLoading, error } = useBrands(apiParams)
 
-  // Calculate pagination info
   const pageCount = useMemo(() => {
     if (!data?.meta) return 0
     return Math.ceil((data.meta.total || 0) / (data.meta.per_page || 10))

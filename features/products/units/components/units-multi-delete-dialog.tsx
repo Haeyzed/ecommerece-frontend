@@ -1,19 +1,5 @@
 'use client'
 
-/**
- * UnitsMultiDeleteDialog
- *
- * A confirmation dialog for bulk deletion of units.
- * Requires the user to type a confirmation word ('DELETE') to proceed.
- *
- * @component
- * @template TData - The type of data in the table
- * @param {Object} props - The component props
- * @param {boolean} props.open - Controls visibility
- * @param {function} props.onOpenChange - Callback for visibility changes
- * @param {Table<TData>} props.table - The table instance containing selected rows
- */
-
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Alert02Icon } from '@hugeicons/core-free-icons'
@@ -25,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { type Unit } from '../types'
-import { useAuthSession } from '@/features/auth/api' // Import session hook
+import { useAuthSession } from '@/features/auth/api'
 
 type UnitsMultiDeleteDialogProps<TData> = {
   open: boolean
@@ -46,7 +32,7 @@ export function UnitsMultiDeleteDialog<TData>({
   const { mutate: bulkDestroy, isPending } = useBulkDestroyUnits()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canDelete = userPermissions.includes('units-delete')
+  const canDelete = userPermissions.includes('delete units')
   if (!canDelete) return null
 
   const handleDelete = () => {

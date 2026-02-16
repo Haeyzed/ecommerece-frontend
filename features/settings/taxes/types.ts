@@ -3,7 +3,7 @@ export interface Tax {
   name: string;
   rate: number;
   is_active: boolean;
-  status: TaxStatus,
+  active_status: TaxActiveStatus,
   woocommerce_tax_id: number | null;
   created_at: string | null;
   updated_at: string | null;
@@ -15,6 +15,15 @@ export interface TaxFormData {
   is_active?: boolean | null;
   woocommerce_tax_id?: number | null;
 }
+
+export type TaxListParams = {
+  page?: number;
+  per_page?: number;
+  search?: string;
+  status?: string;
+  start_date?: string;
+  end_date?: string;
+};
 
 export type TaxExportParams = {
   ids?: number[];
@@ -31,4 +40,4 @@ export interface TaxOption {
   label: string;
 }
 
-export type TaxStatus = 'active' | 'inactive';
+export type TaxActiveStatus = 'active' | 'inactive';

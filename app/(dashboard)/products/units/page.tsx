@@ -10,7 +10,7 @@ export const metadata = {
 export default async function UnitsPage() {
   const session = await auth()
   const userPermissions = session?.user?.user_permissions || []
-  const canView = hasPermission(userPermissions, "units-index")
+  const canView = hasPermission(userPermissions, "view units")
   if (!canView) {
     return (
       <ForbiddenError />

@@ -19,6 +19,15 @@ export interface WarehouseFormData {
   is_active?: boolean | null;
 }
 
+export type WarehouseListParams = {
+  page?: number;
+  per_page?: number;
+  search?: string;
+  status?: string;
+  start_date?: string;
+  end_date?: string;
+};
+
 export type WarehouseExportParams = {
   ids?: number[];
   format: "excel" | "pdf";
@@ -34,4 +43,4 @@ export interface WarehouseOption {
   label: string;
 }
 
-export type WarehouseStatus = 'active' | 'inactive';
+export type WarehouseActiveStatus = 'active' | 'inactive';

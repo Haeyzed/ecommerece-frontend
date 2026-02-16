@@ -1,73 +1,30 @@
 "use client";
 
-/**
- * Taxes API Hooks
- *
- * Client-side hooks for managing Taxes using TanStack Query and a NextAuth-aware API client.
- * Handles CRUD operations, bulk actions, and file imports with automatic cache invalidation.
- *
- * @module features/settings/taxes/api
- */
-
 import { useApiClient } from "@/lib/api/api-client-client";
 import { ValidationError } from "@/lib/api/api-errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { Tax, TaxFormData } from "./types";
+import type { Tax, TaxExportParams, TaxFormData, TaxListParams, TaxOption } from './types'
 
-/**
- * Tax query key factory.
- * Generates consistent, type-safe cache keys for TanStack Query.
- */
 export const taxKeys = {
-  /** Root key for all tax-related queries */
   all: ["taxes"] as const,
-
-  /** Base key for tax list queries */
   lists: () => [...taxKeys.all, "list"] as const,
-
-  /**
-   * Tax list key with optional filters
-   * @param {Record<string, unknown>} [filters] - Pagination, search, and status filters
-   */
-  list: (filters?: Record<string, unknown>) =>
-    [...taxKeys.lists(), filters] as const,
-
-  /** Base key for single tax queries */
+  list: (filters?: Record<string, unknown>) => [...taxKeys.lists(), filters] as const,
   details: () => [...taxKeys.all, "detail"] as const,
-
-  /**
-   * Single tax query key
-   * @param {number} id - Tax ID
-   */
   detail: (id: number) => [...taxKeys.details(), id] as const,
+  options: () => [...taxKeys.all, "options"] as const,
+  template: () => [...taxKeys.all, "template"] as const,
 };
 
-/**
- * useTaxes
- *
- * Fetches a paginated list of taxes with optional filtering.
- * Automatically pauses until the user session is authenticated.
- *
- * @param {Object} [params] - Query parameters
- * @param {number} [params.page] - Page number
- * @param {number} [params.per_page] - Items per page
- * @param {string} [params.search] - Search term
- * @param {string} [params.status] - Filter by active status
- * @returns {Object} TanStack Query result including `isSessionLoading` flag
- */
-export function useTaxes(params?: {
-  page?: number;
-  per_page?: number;
-  search?: string;
-  status?: string;
-}) {
+const BASE_PATH = '/taxes'
+
+export function useTaxes(params?: TaxListParams) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
     queryKey: taxKeys.list(params),
     queryFn: async () => {
       const response = await api.get<Tax[]>(
-        "/taxes",
+        BASE_PATH,
         { params }
       );
       return response;
@@ -76,43 +33,38 @@ export function useTaxes(params?: {
   });
   return {
     ...query,
-    /** Indicates whether NextAuth session is still loading */
     isSessionLoading: sessionStatus === "loading",
   };
 }
 
-/**
- * useTax
- *
- * Fetches details for a single tax by ID.
- *
- * @param {number} id - The ID of the tax to fetch
- * @returns {Object} TanStack Query result containing the Tax object or null
- */
+export function useOptionTaxes() {
+  const { api, sessionStatus } = useApiClient();
+  return useQuery({
+    queryKey: taxKeys.options(),
+    queryFn: async () => {
+      const response = await api.get<TaxOption[]>(`${BASE_PATH}/options`);
+      return response.data ?? [];
+    },
+    enabled: sessionStatus !== "loading",
+  });
+}
+
 export function useTax(id: number) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
     queryKey: taxKeys.detail(id),
     queryFn: async () => {
-      const response = await api.get<Tax>(`/taxes/${id}`);
+      const response = await api.get<Tax>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
     enabled: !!id && sessionStatus !== "loading",
   });
   return {
     ...query,
-    /** Indicates whether NextAuth session is still loading */
     isSessionLoading: sessionStatus === "loading",
   };
 }
 
-/**
- * useCreateTax
- *
- * Mutation hook to create a new tax.
- *
- * @returns {Object} TanStack Mutation result
- */
 export function useCreateTax() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
@@ -120,38 +72,33 @@ export function useCreateTax() {
   return useMutation({
     mutationFn: async (data: TaxFormData) => {
       const formData = new FormData();
-      
+
       formData.append("name", data.name);
       formData.append("rate", data.rate.toString());
-      if (data.woocommerce_tax_id) formData.append("woocommerce_tax_id", data.woocommerce_tax_id.toString());
+      if (data.woocommerce_tax_id) {
+        formData.append("woocommerce_tax_id", data.woocommerce_tax_id.toString());
+      }
       if (data.is_active !== undefined) formData.append("is_active", data.is_active ? "1" : "0");
-      const response = await api.post<{ data: Tax }>("/taxes", formData);
-      if (!response.success || !response.data) {
+
+      const response = await api.post<{ data: Tax }>(BASE_PATH, formData);
+      if (!response.success) {
         if (response.errors) {
           throw new ValidationError(response.message, response.errors);
         }
         throw new Error(response.message);
       }
-      return response.data;
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: taxKeys.lists() });
-      toast.success("Tax created successfully");
+      toast.success(response.message);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to create tax");
+      toast.error(error.message);
     },
   });
 }
 
-/**
- * useUpdateTax
- *
- * Mutation hook to update an existing tax.
- * Uses POST with `_method=PUT` to maintain Laravel convention.
- *
- * @returns {Object} TanStack Mutation result
- */
 export function useUpdateTax() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
@@ -159,151 +106,114 @@ export function useUpdateTax() {
   return useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<TaxFormData> }) => {
       const formData = new FormData();
-      
-      // Laravel convention: use POST with _method=PUT
       formData.append("_method", "PUT");
-      
+
       if (data.name) formData.append("name", data.name);
       if (data.rate !== undefined) formData.append("rate", data.rate.toString());
       if (data.woocommerce_tax_id !== undefined) formData.append("woocommerce_tax_id", data.woocommerce_tax_id ? data.woocommerce_tax_id.toString() : "");
       if (data.is_active !== undefined) formData.append("is_active", data.is_active ? "1" : "0");
 
-      const response = await api.post<{ data: Tax }>(`/taxes/${id}`, formData);
-      if (!response.success || !response.data) {
+      const response = await api.post<{ data: Tax }>(`${BASE_PATH}/${id}`, formData);
+      if (!response.success) {
         if (response.errors) {
           throw new ValidationError(response.message, response.errors);
         }
         throw new Error(response.message);
       }
-      return response.data;
+      return { id, message: response.message };
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: taxKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: taxKeys.detail(variables.id) });
-      toast.success("Tax updated successfully");
+      queryClient.invalidateQueries({ queryKey: taxKeys.detail(data.id) });
+      toast.success(data.message);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to update tax");
+      toast.error(error.message);
     },
   });
 }
 
-/**
- * useDeleteTax
- *
- * Mutation hook to delete a single tax by ID.
- *
- * @returns {Object} TanStack Mutation result
- */
 export function useDeleteTax() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const response = await api.delete(`/taxes/${id}`);
+      const response = await api.delete(`${BASE_PATH}/${id}`);
       if (!response.success) {
         throw new Error(response.message);
       }
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: taxKeys.lists() });
-      toast.success("Tax deleted successfully");
+      toast.success(response.message);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to delete tax");
+      toast.error(error.message);
     },
   });
 }
 
-/**
- * useBulkActivateTaxes
- *
- * Mutation hook to bulk activate multiple taxes.
- *
- * @returns {Object} TanStack Mutation result
- */
 export function useBulkActivateTaxes() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
-        "/taxes/bulk-activate",
+        `${BASE_PATH}/bulk-activate`,
         { ids }
       );
       if (!response.success) throw new Error(response.message);
-      return response.data;
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: taxKeys.lists() });
-      toast.success("Taxes activated");
+      toast.success(response.message);
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to activate"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
-/**
- * useBulkDeactivateTaxes
- *
- * Mutation hook to bulk deactivate multiple taxes.
- *
- * @returns {Object} TanStack Mutation result
- */
 export function useBulkDeactivateTaxes() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ deactivated_count: number }>(
-        "/taxes/bulk-deactivate",
+        `${BASE_PATH}/bulk-deactivate`,
         { ids }
       );
       if (!response.success) throw new Error(response.message);
-      return response.data;
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: taxKeys.lists() });
-      toast.success("Taxes deactivated");
+      toast.success(response.message);
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to deactivate"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
-/**
- * useBulkDestroyTaxes
- *
- * Mutation hook to permanently delete multiple taxes.
- *
- * @returns {Object} TanStack Mutation result
- */
 export function useBulkDestroyTaxes() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.delete("/taxes/bulk-destroy", {
+      const response = await api.delete(`${BASE_PATH}/bulk-destroy`, {
         body: JSON.stringify({ ids }),
       });
       if (!response.success) throw new Error(response.message);
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: taxKeys.lists() });
-      toast.success("Taxes deleted");
+      toast.success(response.message);
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to delete"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
-/**
- * useTaxesImport
- *
- * Mutation hook to import taxes from a file (CSV/Excel).
- *
- * @returns {Object} TanStack Mutation result
- */
 export function useTaxesImport() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
@@ -311,39 +221,25 @@ export function useTaxesImport() {
     mutationFn: async (file: File) => {
       const form = new FormData();
       form.append("file", file);
-      const response = await api.post("/taxes/import", form);
+      const response = await api.post(`${BASE_PATH}/import`, form);
       if (!response.success) throw new Error(response.message);
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: taxKeys.lists() });
-      toast.success("Taxes imported");
+      toast.success(response.message);
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Import failed"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
-export type TaxExportParams = {
-  ids?: number[];
-  format: "excel" | "pdf";
-  method: "download" | "email";
-  columns: string[];
-  user_id?: number;
-};
-
-/**
- * useTaxesExport
- *
- * Mutation hook to export taxes to Excel or PDF.
- * Supports download or email delivery.
- */
 export function useTaxesExport() {
   const { api } = useApiClient();
 
   return useMutation({
     mutationFn: async (params: TaxExportParams) => {
       if (params.method === "download") {
-        const blob = await api.postBlob("/taxes/export", params);
+        const blob = await api.postBlob(`${BASE_PATH}/export`, params);
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
@@ -356,18 +252,35 @@ export function useTaxesExport() {
         return { message: "Export downloaded successfully" };
       }
 
-      const response = await api.post("/taxes/export", params);
+      const response = await api.post(`${BASE_PATH}/export`, params);
       if (!response.success) throw new Error(response.message);
       return response;
     },
-    onSuccess: (_, variables) => {
-      if (variables.method === "email") {
-        toast.success("Export sent via email successfully");
-      } else {
-        toast.success("Export downloaded successfully");
-      }
+    onSuccess: (response) => {
+      toast.success(response.message);
     },
-    onError: (e) =>
-      toast.error(e instanceof Error ? e.message : "Export failed"),
+    onError: (error) => toast.error(error.message),
+  });
+}
+
+export function useTaxesTemplateDownload() {
+  const { api } = useApiClient();
+  return useMutation({
+    mutationFn: async () => {
+      const blob = await api.getBlob(`${BASE_PATH}/download`);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `taxes-sample.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      return { message: "Sample template downloaded" };
+    },
+    onSuccess: (response) => {
+      toast.success(response.message);
+    },
+    onError: (error) => toast.error(error.message),
   });
 }

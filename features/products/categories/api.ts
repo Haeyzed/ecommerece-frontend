@@ -4,7 +4,7 @@ import { useApiClient } from "@/lib/api/api-client-client";
 import { ValidationError } from "@/lib/api/api-errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { Category, CategoryFormData, CategoryOption, CategoryExportParams } from "./types";
+import type { Category, CategoryFormData, CategoryOption, CategoryExportParams, CategoryListParams } from './types'
 
 export const categoryKeys = {
   all: ["categories"] as const,
@@ -18,17 +18,7 @@ export const categoryKeys = {
 
 const BASE_PATH = '/categories';
 
-export function useCategories(params?: {
-  page?: number;
-  per_page?: number;
-  search?: string;
-  status?: string;
-  featured_status?: string;
-  sync_status?: string;
-  parent_id?: number | null;
-  start_date?: string;
-  end_date?: string;
-}) {
+export function useCategories(params?: CategoryListParams) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
     queryKey: categoryKeys.list(params),

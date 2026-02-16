@@ -1,7 +1,3 @@
-/**
- * Warehouse Module Exports
- */
-
 export * from './components/warehouses-action-dialog'
 export * from './components/warehouses-columns'
 export * from './components/warehouses-csv-preview-dialog'

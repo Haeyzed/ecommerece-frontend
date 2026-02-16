@@ -1,17 +1,5 @@
 'use client'
 
-/**
- * DataTableBulkActions
- *
- * Renders the floating toolbar for bulk operations on selected unit rows.
- * Provides actions for bulk activation, deactivation, and deletion.
- *
- * @component
- * @template TData - The type of data in the table
- * @param {Object} props - The component props
- * @param {Table<TData>} props.table - The TanStack table instance containing selection state
- */
-
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import {
@@ -53,8 +41,8 @@ export function DataTableBulkActions<TData>({
   const { mutate: deactivateUnits, isPending: isDeactivating } = useBulkDeactivateUnits()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canUpdate = userPermissions.includes('units-update')
-  const canDelete = userPermissions.includes('units-delete')
+  const canUpdate = userPermissions.includes('update units')
+  const canDelete = userPermissions.includes('delete units')
   const canExport = userPermissions.includes('units-export')
   if (!canUpdate && !canDelete && !canExport) return null
   const isBusy = isActivating || isDeactivating

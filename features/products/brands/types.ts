@@ -21,6 +21,15 @@ export interface BrandFormData {
   is_active?: boolean | null;
 }
 
+export type BrandListParams = {
+  page?: number;
+  per_page?: number;
+  search?: string;
+  status?: string;
+  start_date?: string;
+  end_date?: string;
+};
+
 export type BrandExportParams = {
   ids?: number[];
   format: "excel" | "pdf";

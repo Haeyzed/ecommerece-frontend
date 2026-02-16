@@ -1,40 +1,38 @@
 "use client";
 
-/**
- * Warehouses API Hooks
- *
- * Client-side hooks for managing Warehouses using TanStack Query.
- * Handles CRUD operations, bulk actions, and file imports/exports.
- *
- * @module features/settings/warehouse/api
- */
-
 import { useApiClient } from "@/lib/api/api-client-client";
 import { ValidationError } from "@/lib/api/api-errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { Warehouse, WarehouseFormData } from "./types";
+import type {
+  Warehouse,
+  WarehouseExportParams,
+  WarehouseFormData,
+  WarehouseListParams,
+  WarehouseOption
+} from "./types";
 
 export const warehouseKeys = {
   all: ["warehouses"] as const,
   lists: () => [...warehouseKeys.all, "list"] as const,
-  list: (filters?: Record<string, unknown>) =>
-    [...warehouseKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) => [...warehouseKeys.lists(), filters] as const,
   details: () => [...warehouseKeys.all, "detail"] as const,
   detail: (id: number) => [...warehouseKeys.details(), id] as const,
+  options: () => [...warehouseKeys.all, "options"] as const,
+  template: () => [...warehouseKeys.all, "template"] as const,
 };
 
-export function useWarehouses(params?: {
-  page?: number;
-  per_page?: number;
-  search?: string;
-  status?: string;
-}) {
+const BASE_PATH = '/warehouses'
+
+export function useWarehouses(params?: WarehouseListParams) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
     queryKey: warehouseKeys.list(params),
     queryFn: async () => {
-      const response = await api.get<Warehouse[]>("/warehouses", { params });
+      const response = await api.get<Warehouse[]>(
+        BASE_PATH,
+        { params }
+      );
       return response;
     },
     enabled: sessionStatus !== "loading",
@@ -45,12 +43,24 @@ export function useWarehouses(params?: {
   };
 }
 
+export function useOptionWarehouses() {
+  const { api, sessionStatus } = useApiClient();
+  return useQuery({
+    queryKey: warehouseKeys.options(),
+    queryFn: async () => {
+      const response = await api.get<WarehouseOption[]>(`${BASE_PATH}/options`);
+      return response.data ?? [];
+    },
+    enabled: sessionStatus !== "loading",
+  });
+}
+
 export function useWarehouse(id: number) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
     queryKey: warehouseKeys.detail(id),
     queryFn: async () => {
-      const response = await api.get<Warehouse>(`/warehouses/${id}`);
+      const response = await api.get<Warehouse>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
     enabled: !!id && sessionStatus !== "loading",
@@ -68,28 +78,28 @@ export function useCreateWarehouse() {
   return useMutation({
     mutationFn: async (data: WarehouseFormData) => {
       const formData = new FormData();
+
       formData.append("name", data.name);
       if (data.phone) formData.append("phone", data.phone);
-      if (data.email) formData.append("email", data.email || "");
-      if (data.address) formData.append("address", data.address || "");
-      if (data.is_active !== undefined)
-        formData.append("is_active", data.is_active ? "1" : "0");
+      if (data.email) formData.append("email", data.email);
+      if (data.address) formData.append("address", data.address);
+      if (data.is_active !== undefined) formData.append("is_active", data.is_active ? "1" : "0");
 
-      const response = await api.post<{ data: Warehouse }>("/warehouses", formData);
-      if (!response.success || !response.data) {
+      const response = await api.post<{ data: Warehouse }>(BASE_PATH, formData);
+      if (!response.success) {
         if (response.errors) {
           throw new ValidationError(response.message, response.errors);
         }
         throw new Error(response.message);
       }
-      return response.data;
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: warehouseKeys.lists() });
-      toast.success("Warehouse created successfully");
+      toast.success(response.message);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to create warehouse");
+      toast.error(error.message);
     },
   });
 }
@@ -102,29 +112,29 @@ export function useUpdateWarehouse() {
     mutationFn: async ({ id, data }: { id: number; data: Partial<WarehouseFormData> }) => {
       const formData = new FormData();
       formData.append("_method", "PUT");
+
       if (data.name) formData.append("name", data.name);
       if (data.phone !== undefined) formData.append("phone", data.phone || "");
       if (data.email !== undefined) formData.append("email", data.email || "");
       if (data.address !== undefined) formData.append("address", data.address || "");
-      if (data.is_active !== undefined)
-        formData.append("is_active", data.is_active ? "1" : "0");
+      if (data.is_active !== undefined) formData.append("is_active", data.is_active ? "1" : "0");
 
-      const response = await api.post<{ data: Warehouse }>(`/warehouses/${id}`, formData);
-      if (!response.success || !response.data) {
+      const response = await api.post<{ data: Warehouse }>(`${BASE_PATH}/${id}`, formData);
+      if (!response.success) {
         if (response.errors) {
           throw new ValidationError(response.message, response.errors);
         }
         throw new Error(response.message);
       }
-      return response.data;
+      return { id, message: response.message };
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: warehouseKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: warehouseKeys.detail(variables.id) });
-      toast.success("Warehouse updated successfully");
+      queryClient.invalidateQueries({ queryKey: warehouseKeys.detail(data.id) });
+      toast.success(data.message);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to update warehouse");
+      toast.error(error.message);
     },
   });
 }
@@ -135,16 +145,18 @@ export function useDeleteWarehouse() {
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const response = await api.delete(`/warehouses/${id}`);
-      if (!response.success) throw new Error(response.message);
+      const response = await api.delete(`${BASE_PATH}/${id}`);
+      if (!response.success) {
+        throw new Error(response.message);
+      }
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: warehouseKeys.lists() });
-      toast.success("Warehouse deleted successfully");
+      toast.success(response.message);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to delete warehouse");
+      toast.error(error.message);
     },
   });
 }
@@ -155,17 +167,17 @@ export function useBulkActivateWarehouses() {
   return useMutation({
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
-        "/warehouses/bulk-activate",
+        `${BASE_PATH}/bulk-activate`,
         { ids }
       );
       if (!response.success) throw new Error(response.message);
-      return response.data;
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: warehouseKeys.lists() });
-      toast.success("Warehouses activated");
+      toast.success(response.message);
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to activate"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
@@ -175,17 +187,17 @@ export function useBulkDeactivateWarehouses() {
   return useMutation({
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ deactivated_count: number }>(
-        "/warehouses/bulk-deactivate",
+        `${BASE_PATH}/bulk-deactivate`,
         { ids }
       );
       if (!response.success) throw new Error(response.message);
-      return response.data;
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: warehouseKeys.lists() });
-      toast.success("Warehouses deactivated");
+      toast.success(response.message);
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to deactivate"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
@@ -194,17 +206,17 @@ export function useBulkDestroyWarehouses() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.delete("/warehouses/bulk-destroy", {
+      const response = await api.delete(`${BASE_PATH}/bulk-destroy`, {
         body: JSON.stringify({ ids }),
       });
       if (!response.success) throw new Error(response.message);
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: warehouseKeys.lists() });
-      toast.success("Warehouses deleted");
+      toast.success(response.message);
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to delete"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
@@ -215,26 +227,17 @@ export function useWarehousesImport() {
     mutationFn: async (file: File) => {
       const form = new FormData();
       form.append("file", file);
-      const response = await api.post("/warehouses/import", form);
+      const response = await api.post(`${BASE_PATH}/import`, form);
       if (!response.success) throw new Error(response.message);
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: warehouseKeys.lists() });
-      toast.success("Warehouses imported");
+      toast.success(response.message);
     },
-    onError: (e) =>
-      toast.error(e instanceof Error ? e.message : "Import failed"),
+    onError: (error) => toast.error(error.message),
   });
 }
-
-export type WarehouseExportParams = {
-  ids?: number[];
-  format: "excel" | "pdf";
-  method: "download" | "email";
-  columns: string[];
-  user_id?: number;
-};
 
 export function useWarehousesExport() {
   const { api } = useApiClient();
@@ -242,7 +245,7 @@ export function useWarehousesExport() {
   return useMutation({
     mutationFn: async (params: WarehouseExportParams) => {
       if (params.method === "download") {
-        const blob = await api.postBlob("/warehouses/export", params);
+        const blob = await api.postBlob(`${BASE_PATH}/export`, params);
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
@@ -255,18 +258,35 @@ export function useWarehousesExport() {
         return { message: "Export downloaded successfully" };
       }
 
-      const response = await api.post("/warehouses/export", params);
+      const response = await api.post(`${BASE_PATH}/export`, params);
       if (!response.success) throw new Error(response.message);
       return response;
     },
-    onSuccess: (_, variables) => {
-      if (variables.method === "email") {
-        toast.success("Export sent via email successfully");
-      } else {
-        toast.success("Export downloaded successfully");
-      }
+    onSuccess: (response) => {
+      toast.success(response.message);
     },
-    onError: (e) =>
-      toast.error(e instanceof Error ? e.message : "Export failed"),
+    onError: (error) => toast.error(error.message),
+  });
+}
+
+export function useWarehousesTemplateDownload() {
+  const { api } = useApiClient();
+  return useMutation({
+    mutationFn: async () => {
+      const blob = await api.getBlob(`${BASE_PATH}/download`);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `warehouses-sample.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      return { message: "Sample template downloaded" };
+    },
+    onSuccess: (response) => {
+      toast.success(response.message);
+    },
+    onError: (error) => toast.error(error.message),
   });
 }

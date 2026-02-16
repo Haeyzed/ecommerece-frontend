@@ -1,14 +1,5 @@
 'use client'
 
-/**
- * UnitsPrimaryButtons
- *
- * Renders the main call-to-action buttons for the units view (Import, Add).
- * Triggers the respective dialogs via the UnitsProvider context.
- *
- * @component
- */
-
 import { HugeiconsIcon } from '@hugeicons/react'
 import { FileImportIcon, PlusSignIcon, Upload01Icon } from '@hugeicons/core-free-icons'
 import { Button } from '@/components/ui/button'
@@ -23,7 +14,7 @@ export function UnitsPrimaryButtons() {
   const userPermissions = session?.user?.user_permissions || []
   const canImport = userPermissions.includes('units-import')
   const canExport = userPermissions.includes('units-export')
-  const canCreate = userPermissions.includes('units-create')
+  const canCreate = userPermissions.includes('create units')
   if (!canImport && !canExport && !canCreate) return null
 
   return (

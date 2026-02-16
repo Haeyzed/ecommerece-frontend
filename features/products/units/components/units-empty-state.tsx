@@ -1,14 +1,5 @@
 "use client"
 
-/**
- * UnitsEmptyState
- *
- * Displays a placeholder UI when no units are found in the system.
- * Provides entry points to add or import units.
- *
- * @component
- */
-
 import { DataTableEmptyState } from '@/components/data-table'
 import { HugeiconsIcon } from "@hugeicons/react"
 import { PlusSignIcon, Download01Icon } from "@hugeicons/core-free-icons"

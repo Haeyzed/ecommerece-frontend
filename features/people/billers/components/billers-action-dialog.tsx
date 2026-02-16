@@ -94,35 +94,35 @@ export function BillersActionDialog({
 
   const form = useForm<BillerFormData>({
     resolver: zodResolver(billerSchema),
-    defaultValues: isEdit
+    defaultValues: isEdit && currentRow
       ? {
-        name: currentRow.name,
-        company_name: currentRow.company_name,
-        vat_number: currentRow.vat_number || '',
-        email: currentRow.email,
-        phone_number: currentRow.phone_number,
-        address: currentRow.address,
-        country_id: currentRow.country_id ?? undefined,
-        state_id: currentRow.state_id ?? undefined,
-        city_id: currentRow.city_id ?? undefined,
-        postal_code: currentRow.postal_code || '',
-        is_active: currentRow.is_active,
-        image: [],
-      }
+          name: currentRow.name ?? '',
+          company_name: currentRow.company_name ?? '',
+          vat_number: currentRow.vat_number ?? '',
+          email: currentRow.email ?? '',
+          phone_number: currentRow.phone_number ?? '',
+          address: currentRow.address ?? '',
+          country_id: currentRow.country_id ?? undefined,
+          state_id: currentRow.state_id ?? undefined,
+          city_id: currentRow.city_id ?? undefined,
+          postal_code: currentRow.postal_code ?? '',
+          is_active: currentRow.is_active ?? true,
+          image: [],
+        }
       : {
-        name: '',
-        company_name: '',
-        vat_number: '',
-        email: '',
-        phone_number: '',
-        address: '',
-        country_id: undefined,
-        state_id: undefined,
-        city_id: undefined,
-        postal_code: '',
-        is_active: true,
-        image: [],
-      },
+          name: '',
+          company_name: '',
+          vat_number: '',
+          email: '',
+          phone_number: '',
+          address: '',
+          country_id: undefined,
+          state_id: undefined,
+          city_id: undefined,
+          postal_code: '',
+          is_active: true,
+          image: [],
+        },
   })
 
   const onSubmit = (values: BillerFormData) => {
@@ -241,24 +241,34 @@ function BillerLocationComboboxes({ form, currentRow }: BillerLocationComboboxes
   const { data: statesData = [] } = useStatesByCountry(countryId ?? null)
   const { data: citiesData = [] } = useCitiesByState(stateId ?? null)
 
-  const stateOptions: OptionItem[] = statesData.map((s: { value?: number; id?: number; label?: string; name?: string }) => ({
-    value: s.value ?? s.id ?? 0,
-    label: s.label ?? s.name ?? '',
+  const statesList = Array.isArray(statesData) ? statesData : []
+  const citiesList = Array.isArray(citiesData) ? citiesData : []
+  const countryList = Array.isArray(countryOptions) ? countryOptions : []
+
+  const stateOptions: OptionItem[] = statesList.map((s: { value?: number; id?: number; label?: string; name?: string }) => ({
+    value: Number(s.value ?? s.id ?? 0),
+    label: String(s.label ?? s.name ?? ''),
   }))
-  const cityOptions: OptionItem[] = citiesData.map((c: { value?: number; id?: number; label?: string; name?: string }) => ({
-    value: c.value ?? c.id ?? 0,
-    label: c.label ?? c.name ?? '',
+  const cityOptions: OptionItem[] = citiesList.map((c: { value?: number; id?: number; label?: string; name?: string }) => ({
+    value: Number(c.value ?? c.id ?? 0),
+    label: String(c.label ?? c.name ?? ''),
   }))
 
   const selectedCountry =
-    countryOptions.find((c) => c.value === countryId) ??
-    (currentRow?.country ? { value: currentRow.country.id, label: currentRow.country.name } : null)
+    countryList.find((c) => c.value === countryId) ??
+    (currentRow?.country != null && typeof currentRow.country.id === 'number'
+      ? { value: currentRow.country.id, label: currentRow.country.name ?? '' }
+      : null)
   const selectedState =
     stateOptions.find((s) => s.value === stateId) ??
-    (currentRow?.state ? { value: currentRow.state.id, label: currentRow.state.name } : null)
+    (currentRow?.state != null && typeof currentRow.state.id === 'number'
+      ? { value: currentRow.state.id, label: currentRow.state.name ?? '' }
+      : null)
   const selectedCity =
     cityOptions.find((c) => c.value === cityId) ??
-    (currentRow?.city ? { value: currentRow.city.id, label: currentRow.city.name } : null)
+    (currentRow?.city != null && typeof currentRow.city.id === 'number'
+      ? { value: currentRow.city.id, label: currentRow.city.name ?? '' }
+      : null)
 
   return (
     <>
@@ -269,8 +279,8 @@ function BillerLocationComboboxes({ form, currentRow }: BillerLocationComboboxes
           <Field data-invalid={!!fieldState.error} className='flex flex-col'>
             <FieldLabel htmlFor='biller-country'>Country</FieldLabel>
             <Combobox
-              items={countryOptions}
-              itemToStringLabel={(item) => item.label}
+              items={countryList}
+              itemToStringLabel={(item) => item?.label ?? ''}
               value={selectedCountry}
               onValueChange={(item) => {
                 field.onChange(item?.value ?? null)
@@ -304,7 +314,7 @@ function BillerLocationComboboxes({ form, currentRow }: BillerLocationComboboxes
             <FieldLabel htmlFor='biller-state'>State</FieldLabel>
             <Combobox
               items={stateOptions}
-              itemToStringLabel={(item) => item.label}
+              itemToStringLabel={(item) => item?.label ?? ''}
               value={selectedState}
               onValueChange={(item) => {
                 field.onChange(item?.value ?? null)
@@ -337,7 +347,7 @@ function BillerLocationComboboxes({ form, currentRow }: BillerLocationComboboxes
             <FieldLabel htmlFor='biller-city'>City</FieldLabel>
             <Combobox
               items={cityOptions}
-              itemToStringLabel={(item) => item.label}
+              itemToStringLabel={(item) => item?.label ?? ''}
               value={selectedCity}
               onValueChange={(item) => {
                 field.onChange(item?.value ?? null)

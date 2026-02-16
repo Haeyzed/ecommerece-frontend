@@ -63,6 +63,17 @@ import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { Spinner } from '@/components/ui/spinner'
 import { PhoneInput } from '@/components/ui/phone-input'
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from '@/components/ui/combobox'
+import { useOptionCountries } from '@/features/settings/countries/api'
+import { useStatesByCountry } from '@/features/settings/countries/api'
+import { useCitiesByState } from '@/features/settings/states/api'
 
 type BillerActionDialogProps = {
   currentRow?: Biller
@@ -91,10 +102,10 @@ export function BillersActionDialog({
         email: currentRow.email,
         phone_number: currentRow.phone_number,
         address: currentRow.address,
-        city: currentRow.city,
-        state: currentRow.state || '',
+        country_id: currentRow.country_id ?? undefined,
+        state_id: currentRow.state_id ?? undefined,
+        city_id: currentRow.city_id ?? undefined,
         postal_code: currentRow.postal_code || '',
-        country: currentRow.country || '',
         is_active: currentRow.is_active,
         image: [],
       }
@@ -105,10 +116,10 @@ export function BillersActionDialog({
         email: '',
         phone_number: '',
         address: '',
-        city: '',
-        state: '',
+        country_id: undefined,
+        state_id: undefined,
+        city_id: undefined,
         postal_code: '',
-        country: '',
         is_active: true,
         image: [],
       },
@@ -211,6 +222,129 @@ export function BillersActionDialog({
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
+  )
+}
+
+interface BillerLocationComboboxesProps {
+  form: UseFormReturn<BillerFormData>
+}
+
+function BillerLocationComboboxes({ form }: BillerLocationComboboxesProps) {
+  const countryId = form.watch('country_id')
+  const stateId = form.watch('state_id')
+
+  const { data: countryOptions = [] } = useOptionCountries()
+  const { data: statesData = [] } = useStatesByCountry(countryId ?? null)
+  const { data: citiesData = [] } = useCitiesByState(stateId ?? null)
+
+  const stateOptions = statesData.map((s: { id: number; name: string }) => ({ value: s.id, label: s.name }))
+  const cityOptions = citiesData.map((c: { id: number; name: string }) => ({ value: c.id, label: c.name }))
+
+  const selectedCountry = countryOptions.find((c) => c.value === countryId) ?? null
+  const selectedState = stateOptions.find((s) => s.value === stateId) ?? null
+  const selectedCity = cityOptions.find((c) => c.value === form.watch('city_id')) ?? null
+
+  return (
+    <>
+      <Controller
+        control={form.control}
+        name='country_id'
+        render={({ field, fieldState }) => (
+          <Field data-invalid={!!fieldState.error} className='flex flex-col'>
+            <FieldLabel htmlFor='biller-country'>Country</FieldLabel>
+            <Combobox
+              items={countryOptions}
+              itemToStringLabel={(item) => item.label}
+              value={selectedCountry}
+              onValueChange={(item) => {
+                field.onChange(item?.value ?? null)
+                form.setValue('state_id', null)
+                form.setValue('city_id', null)
+              }}
+              isItemEqualToValue={(a, b) => a?.value === b?.value}
+            >
+              <ComboboxInput id='biller-country' name='biller-country' placeholder='Select country...' showClear />
+              <ComboboxContent>
+                <ComboboxEmpty>No country found.</ComboboxEmpty>
+                <ComboboxList>
+                  {(item) => (
+                    <ComboboxItem key={item.value} value={item}>
+                      {item.label}
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxContent>
+            </Combobox>
+            {fieldState.error && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
+
+      <Controller
+        control={form.control}
+        name='state_id'
+        render={({ field, fieldState }) => (
+          <Field data-invalid={!!fieldState.error} className='flex flex-col'>
+            <FieldLabel htmlFor='biller-state'>State</FieldLabel>
+            <Combobox
+              items={stateOptions}
+              itemToStringLabel={(item) => item.label}
+              value={selectedState}
+              onValueChange={(item) => {
+                field.onChange(item?.value ?? null)
+                form.setValue('city_id', null)
+              }}
+              isItemEqualToValue={(a, b) => a?.value === b?.value}
+            >
+              <ComboboxInput id='biller-state' name='biller-state' placeholder='Select state...' showClear disabled={!countryId} />
+              <ComboboxContent>
+                <ComboboxEmpty>No state found.</ComboboxEmpty>
+                <ComboboxList>
+                  {(item) => (
+                    <ComboboxItem key={item.value} value={item}>
+                      {item.label}
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxContent>
+            </Combobox>
+            {fieldState.error && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
+
+      <Controller
+        control={form.control}
+        name='city_id'
+        render={({ field, fieldState }) => (
+          <Field data-invalid={!!fieldState.error} className='flex flex-col'>
+            <FieldLabel htmlFor='biller-city'>City</FieldLabel>
+            <Combobox
+              items={cityOptions}
+              itemToStringLabel={(item) => item.label}
+              value={selectedCity}
+              onValueChange={(item) => {
+                field.onChange(item?.value ?? null)
+              }}
+              isItemEqualToValue={(a, b) => a?.value === b?.value}
+            >
+              <ComboboxInput id='biller-city' name='biller-city' placeholder='Select city...' showClear disabled={!stateId} />
+              <ComboboxContent>
+                <ComboboxEmpty>No city found.</ComboboxEmpty>
+                <ComboboxList>
+                  {(item) => (
+                    <ComboboxItem key={item.value} value={item}>
+                      {item.label}
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxContent>
+            </Combobox>
+            {fieldState.error && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
+    </>
   )
 }
 
@@ -395,42 +529,25 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
           />
         </div>
 
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-          <Controller
-            control={form.control}
-            name='vat_number'
-            render={({ field, fieldState }) => (
-              <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='vat-number'>VAT Number</FieldLabel>
-                <Input
-                  id='vat-number'
-                  placeholder='VAT number'
-                  autoComplete='off'
-                  {...field}
-                  value={field.value || ''}
-                />
-                {fieldState.error && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
+        <Controller
+          control={form.control}
+          name='vat_number'
+          render={({ field, fieldState }) => (
+            <Field data-invalid={!!fieldState.error}>
+              <FieldLabel htmlFor='vat-number'>VAT Number</FieldLabel>
+              <Input
+                id='vat-number'
+                placeholder='VAT number'
+                autoComplete='off'
+                {...field}
+                value={field.value || ''}
+              />
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
 
-          <Controller
-            control={form.control}
-            name='city'
-            render={({ field, fieldState }) => (
-              <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='biller-city'>City <span className="text-destructive">*</span></FieldLabel>
-                <Input
-                  id='biller-city'
-                  placeholder='City'
-                  autoComplete='off'
-                  {...field}
-                />
-                {fieldState.error && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
-        </div>
+        <BillerLocationComboboxes form={form} />
 
         <Controller
           control={form.control}
@@ -450,25 +567,7 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
           )}
         />
 
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-3'>
-          <Controller
-            control={form.control}
-            name='state'
-            render={({ field, fieldState }) => (
-              <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='biller-state'>State</FieldLabel>
-                <Input
-                  id='biller-state'
-                  placeholder='State'
-                  autoComplete='off'
-                  {...field}
-                  value={field.value || ''}
-                />
-                {fieldState.error && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
-
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
           <Controller
             control={form.control}
             name='postal_code'
@@ -478,24 +577,6 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
                 <Input
                   id='postal-code'
                   placeholder='Postal Code'
-                  autoComplete='off'
-                  {...field}
-                  value={field.value || ''}
-                />
-                {fieldState.error && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
-
-          <Controller
-            control={form.control}
-            name='country'
-            render={({ field, fieldState }) => (
-              <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='biller-country'>Country</FieldLabel>
-                <Input
-                  id='biller-country'
-                  placeholder='Country'
                   autoComplete='off'
                   {...field}
                   value={field.value || ''}

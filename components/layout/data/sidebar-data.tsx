@@ -594,6 +594,40 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
               permissions: ["warehouses-index"],
             },
             {
+              title: "Countries",
+              url: "/settings/countries",
+              permissions: ["view countries"],
+            },
+            {
+              title: "States",
+              url: "/settings/states",
+              permissions: ["view states"],
+            },
+            {
+              title: "Cities",
+              url: "/settings/cities",
+              permissions: ["view cities"],
+            },
+            {
+              title: "Timezones",
+              url: "/settings/timezones",
+              permissions: ["view timezones"],
+            },
+            {
+              title: "Currencies",
+              url: "/settings/currencies",
+              permissions: ["view currencies"],
+            },
+            {
+              title: "Languages",
+              url: "/settings/languages",
+              permissions: ["view languages"],
+            },
+            {
+              title: "Currency",
+              url: "/settings/currency",
+            },
+            {
               title: "Tables",
               url: "/settings/tables",
             },
@@ -601,10 +635,6 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
               title: "Customer Group",
               url: "/settings/customer-group",
               permissions: ["customer-groups-index"],
-            },
-            {
-              title: "Currency",
-              url: "/settings/currency",
             },
             {
               title: "Taxes",

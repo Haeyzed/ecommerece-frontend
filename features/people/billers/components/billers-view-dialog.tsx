@@ -158,10 +158,10 @@ function BillerView({ className, currentRow }: BillerViewProps) {
         <div className='space-y-2'>
           <div className='text-sm font-medium text-muted-foreground'>Address</div>
           <div className='text-sm text-muted-foreground'>
-            {[currentRow.address, currentRow.city, currentRow.state, currentRow.postal_code]
+            {[currentRow.address, currentRow.city?.name, currentRow.state?.name, currentRow.postal_code]
               .filter(Boolean)
               .join(', ')}
-            {currentRow.country && `, ${currentRow.country}`}
+            {currentRow.country?.name && `, ${currentRow.country.name}`}
           </div>
         </div>
       )}

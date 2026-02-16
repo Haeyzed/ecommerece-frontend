@@ -6,10 +6,13 @@ export interface Biller {
   email: string;
   phone_number: string;
   address: string;
-  city: string;
-  state: string | null;
+  country_id: number | null;
+  state_id: number | null;
+  city_id: number | null;
+  country?: { id: number; name: string } | null;
+  state?: { id: number; name: string } | null;
+  city?: { id: number; name: string } | null;
   postal_code: string | null;
-  country: string | null;
   image: string | null;
   image_url: string | null;
   is_active: boolean;
@@ -25,10 +28,10 @@ export interface BillerFormData {
   email: string;
   phone_number: string;
   address: string;
-  city: string;
-  state?: string | null;
+  country_id?: number | null;
+  state_id?: number | null;
+  city_id?: number | null;
   postal_code?: string | null;
-  country?: string | null;
   image?: File[] | null;
   is_active?: boolean | null;
 }

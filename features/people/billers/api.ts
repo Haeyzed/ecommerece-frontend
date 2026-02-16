@@ -79,10 +79,10 @@ export function useCreateBiller() {
       formData.append("email", data.email);
       formData.append("phone_number", data.phone_number);
       formData.append("address", data.address);
-      formData.append("city", data.city);
-      if (data.state) formData.append("state", data.state);
+      if (data.country_id != null) formData.append("country_id", String(data.country_id));
+      if (data.state_id != null) formData.append("state_id", String(data.state_id));
+      if (data.city_id != null) formData.append("city_id", String(data.city_id));
       if (data.postal_code) formData.append("postal_code", data.postal_code);
-      if (data.country) formData.append("country", data.country);
       if (data.image && data.image.length > 0) {
         formData.append("image", data.image[0]);
       }
@@ -122,10 +122,10 @@ export function useUpdateBiller() {
       if (data.email) formData.append("email", data.email);
       if (data.phone_number) formData.append("phone_number", data.phone_number);
       if (data.address) formData.append("address", data.address);
-      if (data.city) formData.append("city", data.city);
-      if (data.state !== undefined) formData.append("state", data.state ?? "");
+      if (data.country_id !== undefined) formData.append("country_id", data.country_id != null ? String(data.country_id) : "");
+      if (data.state_id !== undefined) formData.append("state_id", data.state_id != null ? String(data.state_id) : "");
+      if (data.city_id !== undefined) formData.append("city_id", data.city_id != null ? String(data.city_id) : "");
       if (data.postal_code !== undefined) formData.append("postal_code", data.postal_code ?? "");
-      if (data.country !== undefined) formData.append("country", data.country ?? "");
       if (data.image && data.image.length > 0) {
         formData.append("image", data.image[0]);
       }

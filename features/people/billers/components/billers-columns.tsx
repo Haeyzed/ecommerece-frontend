@@ -97,7 +97,7 @@ export const billersColumns: ColumnDef<Biller>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='City' />
     ),
-    cell: ({ row }) => <span>{row.original.city ?? '-'}</span>,
+    cell: ({ row }) => <span>{row.original.city?.name ?? '-'}</span>,
     meta: { className: 'w-24' },
   },
   {

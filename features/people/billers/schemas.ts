@@ -8,10 +8,10 @@ export const billerSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email").max(255),
   phone_number: z.string().min(1, "Phone number is required").max(255),
   address: z.string().min(1, "Address is required").max(500),
-  city: z.string().min(1, "City is required").max(255),
-  state: z.string().max(255).nullable().optional(),
+  country_id: z.number().nullable().optional(),
+  state_id: z.number().nullable().optional(),
+  city_id: z.number().nullable().optional(),
   postal_code: z.string().max(50).nullable().optional(),
-  country: z.string().max(255).nullable().optional(),
   image: z
     .array(z.custom<File>())
     .max(1, "Please select only one image")

@@ -624,10 +624,6 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
               permissions: ["view languages"],
             },
             {
-              title: "Currency",
-              url: "/settings/currency",
-            },
-            {
               title: "Tables",
               url: "/settings/tables",
             },

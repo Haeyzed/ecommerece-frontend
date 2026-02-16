@@ -225,24 +225,40 @@ export function BillersActionDialog({
   )
 }
 
+type OptionItem = { value: number; label: string }
+
 interface BillerLocationComboboxesProps {
   form: UseFormReturn<BillerFormData>
+  currentRow?: Biller
 }
 
-function BillerLocationComboboxes({ form }: BillerLocationComboboxesProps) {
+function BillerLocationComboboxes({ form, currentRow }: BillerLocationComboboxesProps) {
   const countryId = form.watch('country_id')
   const stateId = form.watch('state_id')
+  const cityId = form.watch('city_id')
 
   const { data: countryOptions = [] } = useOptionCountries()
   const { data: statesData = [] } = useStatesByCountry(countryId ?? null)
   const { data: citiesData = [] } = useCitiesByState(stateId ?? null)
 
-  const stateOptions = statesData.map((s: { id: number; name: string }) => ({ value: s.id, label: s.name }))
-  const cityOptions = citiesData.map((c: { id: number; name: string }) => ({ value: c.id, label: c.name }))
+  const stateOptions: OptionItem[] = statesData.map((s: { value?: number; id?: number; label?: string; name?: string }) => ({
+    value: s.value ?? s.id ?? 0,
+    label: s.label ?? s.name ?? '',
+  }))
+  const cityOptions: OptionItem[] = citiesData.map((c: { value?: number; id?: number; label?: string; name?: string }) => ({
+    value: c.value ?? c.id ?? 0,
+    label: c.label ?? c.name ?? '',
+  }))
 
-  const selectedCountry = countryOptions.find((c) => c.value === countryId) ?? null
-  const selectedState = stateOptions.find((s) => s.value === stateId) ?? null
-  const selectedCity = cityOptions.find((c) => c.value === form.watch('city_id')) ?? null
+  const selectedCountry =
+    countryOptions.find((c) => c.value === countryId) ??
+    (currentRow?.country ? { value: currentRow.country.id, label: currentRow.country.name } : null)
+  const selectedState =
+    stateOptions.find((s) => s.value === stateId) ??
+    (currentRow?.state ? { value: currentRow.state.id, label: currentRow.state.name } : null)
+  const selectedCity =
+    cityOptions.find((c) => c.value === cityId) ??
+    (currentRow?.city ? { value: currentRow.city.id, label: currentRow.city.name } : null)
 
   return (
     <>
@@ -547,7 +563,7 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
           )}
         />
 
-        <BillerLocationComboboxes form={form} />
+        <BillerLocationComboboxes form={form} currentRow={currentRow} />
 
         <Controller
           control={form.control}

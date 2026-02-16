@@ -2,11 +2,11 @@
 
 import { DataTableEmptyState } from '@/components/data-table'
 
-export function CitiesEmptyState() {
+export function TimezonesEmptyState() {
   return (
     <DataTableEmptyState
-      title="No timezones found"
-      description="No timezone data is available or your search did not match any results."
+      title='No timezones found'
+      description='No timezone data is available or your search did not match any results.'
     />
   )
 }

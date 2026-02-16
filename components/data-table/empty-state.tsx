@@ -15,7 +15,7 @@ import { ReactNode } from 'react'
 type DataTableEmptyStateProps = {
   title: string
   description: string
-  primaryAction: {
+  primaryAction?: {
     label: string
     onClick: () => void
     icon?: ReactNode
@@ -44,28 +44,32 @@ export function DataTableEmptyState({
         <EmptyTitle>{title}</EmptyTitle>
         <EmptyDescription>{description}</EmptyDescription>
       </EmptyHeader>
-      <EmptyContent>
-        <div className="flex gap-2">
-          <Button onClick={primaryAction.onClick}>
-            {primaryAction.icon}
-            <span>{primaryAction.label}</span>
-          </Button>
-          {secondaryAction && (
-            <Button variant="outline" onClick={secondaryAction.onClick}>
-              {secondaryAction.icon}
-              <span>{secondaryAction.label}</span>
-            </Button>
-          )}
-        </div>
-        {learnMoreLink && (
-          <Button variant="link" asChild className="text-muted-foreground">
-            <a href={learnMoreLink.href}>
-              {learnMoreLink.label}{" "}
-              <HugeiconsIcon icon={ArrowUpRight01Icon} strokeWidth={2} />
-            </a>
-          </Button>
-        )}
-      </EmptyContent>
+      {(primaryAction ?? secondaryAction ?? learnMoreLink) && (
+        <EmptyContent>
+          <div className="flex flex-wrap gap-2">
+            {primaryAction && (
+              <Button onClick={primaryAction.onClick}>
+                {primaryAction.icon}
+                <span>{primaryAction.label}</span>
+              </Button>
+            )}
+            {secondaryAction && (
+              <Button variant="outline" onClick={secondaryAction.onClick}>
+                {secondaryAction.icon}
+                <span>{secondaryAction.label}</span>
+              </Button>
+            )}
+            {learnMoreLink && (
+              <Button variant="link" asChild className="text-muted-foreground">
+                <a href={learnMoreLink.href}>
+                  {learnMoreLink.label}{' '}
+                  <HugeiconsIcon icon={ArrowUpRight01Icon} strokeWidth={2} />
+                </a>
+              </Button>
+            )}
+          </div>
+        </EmptyContent>
+      )}
     </Empty>
   )
 }

@@ -94,19 +94,19 @@ export function BillersActionDialog({
 
   const form = useForm<BillerFormData>({
     resolver: zodResolver(billerSchema),
-    defaultValues: isEdit && currentRow
+    defaultValues: isEdit
       ? {
-          name: currentRow.name ?? '',
-          company_name: currentRow.company_name ?? '',
-          vat_number: currentRow.vat_number ?? '',
-          email: currentRow.email ?? '',
-          phone_number: currentRow.phone_number ?? '',
-          address: currentRow.address ?? '',
-          country_id: currentRow.country_id ?? undefined,
-          state_id: currentRow.state_id ?? undefined,
-          city_id: currentRow.city_id ?? undefined,
-          postal_code: currentRow.postal_code ?? '',
-          is_active: currentRow.is_active ?? true,
+          name: currentRow?.name ?? '',
+          company_name: currentRow?.company_name ?? '',
+          vat_number: currentRow?.vat_number ?? '',
+          email: currentRow?.email ?? '',
+          phone_number: currentRow?.phone_number ?? '',
+          address: currentRow?.address ?? '',
+          country_id: currentRow?.country_id ?? undefined,
+          state_id: currentRow?.state_id ?? undefined,
+          city_id: currentRow?.city_id ?? undefined,
+          postal_code: currentRow?.postal_code ?? '',
+          is_active: currentRow?.is_active ?? true,
           image: [],
         }
       : {
@@ -225,50 +225,31 @@ export function BillersActionDialog({
   )
 }
 
-type OptionItem = { value: number; label: string }
-
 interface BillerLocationComboboxesProps {
   form: UseFormReturn<BillerFormData>
-  currentRow?: Biller
 }
 
-function BillerLocationComboboxes({ form, currentRow }: BillerLocationComboboxesProps) {
+function BillerLocationComboboxes({ form }: BillerLocationComboboxesProps) {
   const countryId = form.watch('country_id')
   const stateId = form.watch('state_id')
-  const cityId = form.watch('city_id')
 
-  const { data: countryOptions = [] } = useOptionCountries()
-  const { data: statesData = [] } = useStatesByCountry(countryId ?? null)
-  const { data: citiesData = [] } = useCitiesByState(stateId ?? null)
+  const { data: optionCountries } = useOptionCountries()
+  const { data: statesData } = useStatesByCountry(countryId ?? null)
+  const { data: citiesData } = useCitiesByState(stateId ?? null)
 
-  const statesList = Array.isArray(statesData) ? statesData : []
-  const citiesList = Array.isArray(citiesData) ? citiesData : []
-  const countryList = Array.isArray(countryOptions) ? countryOptions : []
-
-  const stateOptions: OptionItem[] = statesList.map((s: { value?: number; id?: number; label?: string; name?: string }) => ({
-    value: Number(s.value ?? s.id ?? 0),
-    label: String(s.label ?? s.name ?? ''),
-  }))
-  const cityOptions: OptionItem[] = citiesList.map((c: { value?: number; id?: number; label?: string; name?: string }) => ({
-    value: Number(c.value ?? c.id ?? 0),
-    label: String(c.label ?? c.name ?? ''),
-  }))
-
-  const selectedCountry =
-    countryList.find((c) => c.value === countryId) ??
-    (currentRow?.country != null && typeof currentRow.country.id === 'number'
-      ? { value: currentRow.country.id, label: currentRow.country.name ?? '' }
-      : null)
-  const selectedState =
-    stateOptions.find((s) => s.value === stateId) ??
-    (currentRow?.state != null && typeof currentRow.state.id === 'number'
-      ? { value: currentRow.state.id, label: currentRow.state.name ?? '' }
-      : null)
-  const selectedCity =
-    cityOptions.find((c) => c.value === cityId) ??
-    (currentRow?.city != null && typeof currentRow.city.id === 'number'
-      ? { value: currentRow.city.id, label: currentRow.city.name ?? '' }
-      : null)
+  const countryOptions = Array.isArray(optionCountries) ? optionCountries : []
+  const stateOptions = (Array.isArray(statesData) ? statesData : []).map(
+    (s: { value?: number; id?: number; label?: string; name?: string }) => ({
+      value: s.value ?? s.id ?? 0,
+      label: s.label ?? s.name ?? '',
+    })
+  )
+  const cityOptions = (Array.isArray(citiesData) ? citiesData : []).map(
+    (c: { value?: number; id?: number; label?: string; name?: string }) => ({
+      value: c.value ?? c.id ?? 0,
+      label: c.label ?? c.name ?? '',
+    })
+  )
 
   return (
     <>
@@ -279,13 +260,13 @@ function BillerLocationComboboxes({ form, currentRow }: BillerLocationComboboxes
           <Field data-invalid={!!fieldState.error} className='flex flex-col'>
             <FieldLabel htmlFor='biller-country'>Country</FieldLabel>
             <Combobox
-              items={countryList}
-              itemToStringLabel={(item) => item?.label ?? ''}
-              value={selectedCountry}
+              items={countryOptions}
+              itemToStringLabel={(item) => item.label}
+              value={countryOptions.find((p) => p.value === field.value) ?? null}
               onValueChange={(item) => {
                 field.onChange(item?.value ?? null)
-                form.setValue('state_id', null)
-                form.setValue('city_id', null)
+                form.setValue('state_id', undefined)
+                form.setValue('city_id', undefined)
               }}
               isItemEqualToValue={(a, b) => a?.value === b?.value}
             >
@@ -314,11 +295,11 @@ function BillerLocationComboboxes({ form, currentRow }: BillerLocationComboboxes
             <FieldLabel htmlFor='biller-state'>State</FieldLabel>
             <Combobox
               items={stateOptions}
-              itemToStringLabel={(item) => item?.label ?? ''}
-              value={selectedState}
+              itemToStringLabel={(item) => item.label}
+              value={stateOptions.find((p) => p.value === field.value) ?? null}
               onValueChange={(item) => {
                 field.onChange(item?.value ?? null)
-                form.setValue('city_id', null)
+                form.setValue('city_id', undefined)
               }}
               isItemEqualToValue={(a, b) => a?.value === b?.value}
             >
@@ -347,8 +328,8 @@ function BillerLocationComboboxes({ form, currentRow }: BillerLocationComboboxes
             <FieldLabel htmlFor='biller-city'>City</FieldLabel>
             <Combobox
               items={cityOptions}
-              itemToStringLabel={(item) => item?.label ?? ''}
-              value={selectedCity}
+              itemToStringLabel={(item) => item.label}
+              value={cityOptions.find((p) => p.value === field.value) ?? null}
               onValueChange={(item) => {
                 field.onChange(item?.value ?? null)
               }}
@@ -573,7 +554,7 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
           )}
         />
 
-        <BillerLocationComboboxes form={form} currentRow={currentRow} />
+        <BillerLocationComboboxes form={form} />
 
         <Controller
           control={form.control}

@@ -225,11 +225,17 @@ export function BillersActionDialog({
   )
 }
 
-interface BillerLocationComboboxesProps {
+interface BillerFormProps {
   form: UseFormReturn<BillerFormData>
+  onSubmit: (data: BillerFormData) => void
+  id: string
+  className?: string
+  isEdit: boolean
+  currentRow?: Biller
 }
 
-function BillerLocationComboboxes({ form }: BillerLocationComboboxesProps) {
+function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: BillerFormProps) {
+  const { resolvedTheme } = useTheme()
   const countryId = form.watch('country_id')
   const stateId = form.watch('state_id')
 
@@ -250,122 +256,6 @@ function BillerLocationComboboxes({ form }: BillerLocationComboboxesProps) {
       label: c.label ?? c.name ?? '',
     })
   )
-
-  return (
-    <>
-      <Controller
-        control={form.control}
-        name='country_id'
-        render={({ field, fieldState }) => (
-          <Field data-invalid={!!fieldState.error} className='flex flex-col'>
-            <FieldLabel htmlFor='biller-country'>Country</FieldLabel>
-            <Combobox
-              items={countryOptions}
-              itemToStringLabel={(item) => item.label}
-              value={countryOptions.find((p) => p.value === field.value) ?? null}
-              onValueChange={(item) => {
-                field.onChange(item?.value ?? null)
-                form.setValue('state_id', undefined)
-                form.setValue('city_id', undefined)
-              }}
-              isItemEqualToValue={(a, b) => a?.value === b?.value}
-            >
-              <ComboboxInput id='biller-country' name='biller-country' placeholder='Select country...' showClear />
-              <ComboboxContent>
-                <ComboboxEmpty>No country found.</ComboboxEmpty>
-                <ComboboxList>
-                  {(item) => (
-                    <ComboboxItem key={item.value} value={item}>
-                      {item.label}
-                    </ComboboxItem>
-                  )}
-                </ComboboxList>
-              </ComboboxContent>
-            </Combobox>
-            {fieldState.error && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
-
-      <Controller
-        control={form.control}
-        name='state_id'
-        render={({ field, fieldState }) => (
-          <Field data-invalid={!!fieldState.error} className='flex flex-col'>
-            <FieldLabel htmlFor='biller-state'>State</FieldLabel>
-            <Combobox
-              items={stateOptions}
-              itemToStringLabel={(item) => item.label}
-              value={stateOptions.find((p) => p.value === field.value) ?? null}
-              onValueChange={(item) => {
-                field.onChange(item?.value ?? null)
-                form.setValue('city_id', undefined)
-              }}
-              isItemEqualToValue={(a, b) => a?.value === b?.value}
-            >
-              <ComboboxInput id='biller-state' name='biller-state' placeholder='Select state...' showClear disabled={!countryId} />
-              <ComboboxContent>
-                <ComboboxEmpty>No state found.</ComboboxEmpty>
-                <ComboboxList>
-                  {(item) => (
-                    <ComboboxItem key={item.value} value={item}>
-                      {item.label}
-                    </ComboboxItem>
-                  )}
-                </ComboboxList>
-              </ComboboxContent>
-            </Combobox>
-            {fieldState.error && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
-
-      <Controller
-        control={form.control}
-        name='city_id'
-        render={({ field, fieldState }) => (
-          <Field data-invalid={!!fieldState.error} className='flex flex-col'>
-            <FieldLabel htmlFor='biller-city'>City</FieldLabel>
-            <Combobox
-              items={cityOptions}
-              itemToStringLabel={(item) => item.label}
-              value={cityOptions.find((p) => p.value === field.value) ?? null}
-              onValueChange={(item) => {
-                field.onChange(item?.value ?? null)
-              }}
-              isItemEqualToValue={(a, b) => a?.value === b?.value}
-            >
-              <ComboboxInput id='biller-city' name='biller-city' placeholder='Select city...' showClear disabled={!stateId} />
-              <ComboboxContent>
-                <ComboboxEmpty>No city found.</ComboboxEmpty>
-                <ComboboxList>
-                  {(item) => (
-                    <ComboboxItem key={item.value} value={item}>
-                      {item.label}
-                    </ComboboxItem>
-                  )}
-                </ComboboxList>
-              </ComboboxContent>
-            </Combobox>
-            {fieldState.error && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
-    </>
-  )
-}
-
-interface BillerFormProps {
-  form: UseFormReturn<BillerFormData>
-  onSubmit: (data: BillerFormData) => void
-  id: string
-  className?: string
-  isEdit: boolean
-  currentRow?: Biller
-}
-
-function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: BillerFormProps) {
-  const { resolvedTheme } = useTheme()
 
   return (
     <form
@@ -554,7 +444,104 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
           )}
         />
 
-        <BillerLocationComboboxes form={form} />
+        <Controller
+          control={form.control}
+          name='country_id'
+          render={({ field, fieldState }) => (
+            <Field data-invalid={!!fieldState.error} className='flex flex-col'>
+              <FieldLabel htmlFor='biller-country'>Country</FieldLabel>
+              <Combobox
+                items={countryOptions}
+                itemToStringLabel={(item) => item.label}
+                value={countryOptions.find((p) => p.value === field.value) ?? null}
+                onValueChange={(item) => {
+                  field.onChange(item?.value ?? null)
+                  form.setValue('state_id', undefined)
+                  form.setValue('city_id', undefined)
+                }}
+                isItemEqualToValue={(a, b) => a?.value === b?.value}
+              >
+                <ComboboxInput id='biller-country' name='biller-country' placeholder='Select country...' showClear />
+                <ComboboxContent>
+                  <ComboboxEmpty>No country found.</ComboboxEmpty>
+                  <ComboboxList>
+                    {(item) => (
+                      <ComboboxItem key={item.value} value={item}>
+                        {item.label}
+                      </ComboboxItem>
+                    )}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name='state_id'
+          render={({ field, fieldState }) => (
+            <Field data-invalid={!!fieldState.error} className='flex flex-col'>
+              <FieldLabel htmlFor='biller-state'>State</FieldLabel>
+              <Combobox
+                items={stateOptions}
+                itemToStringLabel={(item) => item.label}
+                value={stateOptions.find((p) => p.value === field.value) ?? null}
+                onValueChange={(item) => {
+                  field.onChange(item?.value ?? null)
+                  form.setValue('city_id', undefined)
+                }}
+                isItemEqualToValue={(a, b) => a?.value === b?.value}
+              >
+                <ComboboxInput id='biller-state' name='biller-state' placeholder='Select state...' showClear disabled={!countryId} />
+                <ComboboxContent>
+                  <ComboboxEmpty>No state found.</ComboboxEmpty>
+                  <ComboboxList>
+                    {(item) => (
+                      <ComboboxItem key={item.value} value={item}>
+                        {item.label}
+                      </ComboboxItem>
+                    )}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name='city_id'
+          render={({ field, fieldState }) => (
+            <Field data-invalid={!!fieldState.error} className='flex flex-col'>
+              <FieldLabel htmlFor='biller-city'>City</FieldLabel>
+              <Combobox
+                items={cityOptions}
+                itemToStringLabel={(item) => item.label}
+                value={cityOptions.find((p) => p.value === field.value) ?? null}
+                onValueChange={(item) => {
+                  field.onChange(item?.value ?? null)
+                }}
+                isItemEqualToValue={(a, b) => a?.value === b?.value}
+              >
+                <ComboboxInput id='biller-city' name='biller-city' placeholder='Select city...' showClear disabled={!stateId} />
+                <ComboboxContent>
+                  <ComboboxEmpty>No city found.</ComboboxEmpty>
+                  <ComboboxList>
+                    {(item) => (
+                      <ComboboxItem key={item.value} value={item}>
+                        {item.label}
+                      </ComboboxItem>
+                    )}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
 
         <Controller
           control={form.control}

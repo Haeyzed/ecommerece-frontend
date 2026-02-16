@@ -65,7 +65,7 @@ export function useStatesByCountry(countryId: number | null) {
   return useQuery({
     queryKey: countryKeys.states(countryId ?? 0),
     queryFn: async () => {
-      const response = await api.get<{ id: number; name: string }[]>(
+      const response = await api.get<{ value: number; label: string }[]>(
         `${BASE_PATH}/${countryId}/states`
       );
       return response.data ?? [];

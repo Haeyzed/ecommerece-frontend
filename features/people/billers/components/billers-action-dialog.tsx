@@ -244,18 +244,8 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
   const { data: citiesData } = useCitiesByState(stateId ?? null)
 
   const countryOptions = Array.isArray(optionCountries) ? optionCountries : []
-  const stateOptions = (Array.isArray(statesData) ? statesData : []).map(
-    (s: { value?: number; id?: number; label?: string; name?: string }) => ({
-      value: s.value ?? s.id ?? 0,
-      label: s.label ?? s.name ?? '',
-    })
-  )
-  const cityOptions = (Array.isArray(citiesData) ? citiesData : []).map(
-    (c: { value?: number; id?: number; label?: string; name?: string }) => ({
-      value: c.value ?? c.id ?? 0,
-      label: c.label ?? c.name ?? '',
-    })
-  )
+  const stateOptions = Array.isArray(statesData) ? statesData : []
+  const cityOptions = Array.isArray(citiesData) ? citiesData : []
 
   return (
     <form

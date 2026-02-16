@@ -60,12 +60,14 @@ export function useStateDetail(id: number) {
   };
 }
 
+export type CityOptionByState = { value: number; label: string }
+
 export function useCitiesByState(stateId: number | null) {
   const { api, sessionStatus } = useApiClient();
   return useQuery({
     queryKey: stateKeys.cities(stateId ?? 0),
     queryFn: async () => {
-      const response = await api.get<{ id: number; name: string }[]>(
+      const response = await api.get<CityOptionByState[]>(
         `${BASE_PATH}/${stateId}/cities`
       );
       return response.data ?? [];

@@ -117,7 +117,9 @@ export function CustomerGroupsTable() {
                       (header.column.columnDef.meta as { thClassName?: string })?.thClassName
                     )}
                   >
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 ))}
               </TableRow>

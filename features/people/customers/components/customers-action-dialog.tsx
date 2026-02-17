@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/drawer'
 import {
   Field,
+  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -582,7 +583,12 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
           name='both'
           render={({ field }) => (
             <Field className='flex flex-row items-center justify-between rounded-md border p-4'>
-              <FieldLabel htmlFor='customer-both'>Also add as supplier</FieldLabel>
+              <div className='space-y-0.5'>
+                <FieldLabel htmlFor='customer-both'>Also register as supplier</FieldLabel>
+                <FieldDescription>
+                  Create a supplier record for this contact so they can be used for purchases.
+                </FieldDescription>
+              </div>
               <Switch id='customer-both' checked={!!field.value} onCheckedChange={field.onChange} />
             </Field>
           )}
@@ -593,7 +599,12 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
           name='user'
           render={({ field }) => (
             <Field className='flex flex-row items-center justify-between rounded-md border p-4'>
-              <FieldLabel htmlFor='customer-user'>Create login user</FieldLabel>
+              <div className='space-y-0.5'>
+                <FieldLabel htmlFor='customer-user'>Create portal login</FieldLabel>
+                <FieldDescription>
+                  Allow this customer to sign in with a username and password to access their account.
+                </FieldDescription>
+              </div>
               <Switch id='customer-user' checked={!!field.value} onCheckedChange={field.onChange} />
             </Field>
           )}

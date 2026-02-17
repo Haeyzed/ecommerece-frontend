@@ -8,7 +8,6 @@ export interface CustomerGroup {
   updated_at: string | null
 }
 
-export type CustomerGroupStatus = 'active' | 'inactive'
 
 export type CustomerGroupListParams = {
   page?: number
@@ -33,3 +32,5 @@ export interface CustomerGroupOption {
   value: number
   label: string
 }
+
+export type CustomerGroupStatus = 'active' | 'inactive'

@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
 import { DataTableEmptyState } from '@/components/data-table'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { PlusSignIcon, Download01Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from "@hugeicons/react"
+import { PlusSignIcon, Download01Icon } from "@hugeicons/core-free-icons"
 import { useCustomersContext } from './customers-provider'
 
 export function CustomersEmptyState() {

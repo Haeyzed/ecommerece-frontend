@@ -33,9 +33,9 @@ export function DataTableBulkActions<TData>({ table }: DataTableBulkActionsProps
   const { mutate: deactivateCustomerGroups, isPending: isDeactivating } = useBulkDeactivateCustomerGroups()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions ?? []
-  const canUpdate = userPermissions.includes('customer-groups-update')
-  const canDelete = userPermissions.includes('customer-groups-delete')
-  const canExport = userPermissions.includes('customer-groups-export')
+  const canUpdate = userPermissions.includes('update customer groups')
+  const canDelete = userPermissions.includes('delete customer groups')
+  const canExport = userPermissions.includes('export customer groups')
   if (!canUpdate && !canDelete && !canExport) return null
   const isBusy = isActivating || isDeactivating
 

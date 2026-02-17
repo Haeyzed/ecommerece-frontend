@@ -14,9 +14,9 @@ export function CustomersPrimaryButtons() {
   const isMobile = useMediaQuery('(max-width: 767px)')
 
   const userPermissions = session?.user?.user_permissions || []
-  const canImport = userPermissions.includes('customers-import')
-  const canExport = userPermissions.includes('customers-export')
-  const canCreate = userPermissions.includes('customers-create')
+  const canImport = userPermissions.includes('import customers')
+  const canExport = userPermissions.includes('export customers')
+  const canCreate = userPermissions.includes('create customers')
 
   if (!canImport && !canExport && !canCreate) return null
 

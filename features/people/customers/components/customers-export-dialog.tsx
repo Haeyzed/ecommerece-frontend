@@ -45,6 +45,8 @@ import { useMediaQuery } from '@/hooks/use-media-query'
 import { useQuery } from '@tanstack/react-query'
 import { useApiClient } from '@/lib/api/api-client-client'
 import { Spinner } from '@/components/ui/spinner'
+import { DateRangePicker } from '@/components/date-range-picker'
+import { format } from 'date-fns'
 
 const AVAILABLE_COLUMNS = CUSTOMER_EXPORT_COLUMNS.map((value) => ({
   value,
@@ -72,6 +74,8 @@ export function CustomersExportDialog({
       format: 'excel',
       method: 'download',
       columns: ['name', 'company_name', 'email', 'phone_number', 'is_active'],
+      start_date: undefined,
+      end_date: undefined,
     },
   })
 
@@ -101,6 +105,8 @@ export function CustomersExportDialog({
         method: data.method,
         columns: data.columns,
         user_id: data.method === 'email' ? data.user_id : undefined,
+        start_date: data.start_date,
+        end_date: data.end_date,
       },
       { onSuccess: () => handleOpenChange(false) }
     )
@@ -121,6 +127,37 @@ export function CustomersExportDialog({
       className="grid gap-4 py-4"
     >
       <FieldGroup>
+        <Controller
+          control={form.control}
+          name="start_date"
+          render={({ fieldState }) => (
+            <Field className="grid w-full gap-1.5">
+              <FieldLabel>Date Range</FieldLabel>
+              <DateRangePicker
+                value={{
+                  from: form.watch('start_date')
+                    ? new Date(form.watch('start_date')!)
+                    : undefined,
+                  to: form.watch('end_date')
+                    ? new Date(form.watch('end_date')!)
+                    : undefined,
+                }}
+                onChange={(range) => {
+                  form.setValue(
+                    'start_date',
+                    range?.from ? format(range.from, 'yyyy-MM-dd') : undefined
+                  )
+                  form.setValue(
+                    'end_date',
+                    range?.to ? format(range.to, 'yyyy-MM-dd') : undefined
+                  )
+                }}
+              />
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
         <Controller
           control={form.control}
           name="format"

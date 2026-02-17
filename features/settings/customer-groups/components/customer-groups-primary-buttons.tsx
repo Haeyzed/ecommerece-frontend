@@ -13,9 +13,9 @@ export function CustomerGroupsPrimaryButtons() {
   const isMobile = useMediaQuery('(max-width: 767px)')
 
   const userPermissions = session?.user?.user_permissions || []
-  const canImport = userPermissions.includes('customer-groups-import')
-  const canExport = userPermissions.includes('customer-groups-export')
-  const canCreate = userPermissions.includes('customer-groups-create')
+  const canImport = userPermissions.includes('import customer groups')
+  const canExport = userPermissions.includes('export customer groups')
+  const canCreate = userPermissions.includes('create customer groups')
 
   if (!canImport && !canExport && !canCreate) return null
 

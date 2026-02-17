@@ -2,7 +2,7 @@
 
 import { useApiClient } from "@/lib/api/api-client-client";
 import { useQuery } from "@tanstack/react-query";
-import type { Timezone, TimezoneListParams, TimezoneOption } from "./types";
+import type { Timezone, TimezoneListParams, TimezoneOptionsGrouped } from "./types";
 
 export const timezoneKeys = {
   all: ["timezones"] as const,
@@ -36,7 +36,7 @@ export function useOptionTimezones() {
   return useQuery({
     queryKey: timezoneKeys.options(),
     queryFn: async () => {
-      const response = await api.get<TimezoneOption[]>(`${BASE_PATH}/options`);
+      const response = await api.get<TimezoneOptionsGrouped[]>(`${BASE_PATH}/options`);
       return response.data ?? [];
     },
     enabled: sessionStatus !== "loading",

@@ -1,118 +1,76 @@
 "use client";
 
-/**
- * Customer Groups API Hooks
- *
- * Client-side hooks for managing Customer Groups using TanStack Query and a NextAuth-aware API client.
- * Handles CRUD operations, bulk actions, and file imports with automatic cache invalidation.
- *
- * @module features/settings/customer-groups/api
- */
-
 import { useApiClient } from "@/lib/api/api-client-client";
 import { ValidationError } from "@/lib/api/api-errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { CustomerGroupFormData } from "./schemas";
-import type { CustomerGroup } from "./types";
+import type {
+  CustomerGroup,
+  CustomerGroupExportParams,
+  CustomerGroupListParams,
+  CustomerGroupOption,
+} from "./types";
 
-/**
- * Customer group query key factory.
- * Generates consistent, type-safe cache keys for TanStack Query.
- */
 export const customerGroupKeys = {
-  /** Root key for all customer-group-related queries */
   all: ["customer-groups"] as const,
-
-  /** Base key for customer group list queries */
   lists: () => [...customerGroupKeys.all, "list"] as const,
-
-  /**
-   * Customer group list key with optional filters
-   * @param {Record<string, unknown>} [filters] - Pagination, search, and is_active filters
-   */
   list: (filters?: Record<string, unknown>) =>
     [...customerGroupKeys.lists(), filters] as const,
-
-  /** Base key for single customer group queries */
   details: () => [...customerGroupKeys.all, "detail"] as const,
-
-  /**
-   * Single customer group query key
-   * @param {number} id - Customer group ID
-   */
   detail: (id: number) => [...customerGroupKeys.details(), id] as const,
+  options: () => [...customerGroupKeys.all, "options"] as const,
+  template: () => [...customerGroupKeys.all, "template"] as const,
 };
 
-/**
- * useCustomerGroups
- *
- * Fetches a paginated list of customer groups with optional filtering.
- * Automatically pauses until the user session is authenticated.
- *
- * @param {Object} [params] - Query parameters
- * @param {number} [params.page] - Page number
- * @param {number} [params.per_page] - Items per page
- * @param {string} [params.search] - Search term
- * @param {string} [params.status] - Filter by status: 'active' or 'inactive'
- * @returns {Object} TanStack Query result including `isSessionLoading` flag
- */
-export function useCustomerGroups(params?: {
-  page?: number;
-  per_page?: number;
-  search?: string;
-  status?: string;
-}) {
+const BASE_PATH = "/customer-groups";
+
+export function useCustomerGroups(params?: CustomerGroupListParams) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
     queryKey: customerGroupKeys.list(params),
     queryFn: async () => {
-      const response = await api.get<CustomerGroup[]>("/customer-groups", {
-        params,
-      });
+      const response = await api.get<CustomerGroup[]>(BASE_PATH, { params });
       return response;
     },
     enabled: sessionStatus !== "loading",
   });
   return {
     ...query,
-    /** Indicates whether NextAuth session is still loading */
     isSessionLoading: sessionStatus === "loading",
   };
 }
 
-/**
- * useCustomerGroup
- *
- * Fetches details for a single customer group by ID.
- *
- * @param {number} id - The ID of the customer group to fetch
- * @returns {Object} TanStack Query result containing the CustomerGroup object or null
- */
+export function useOptionCustomerGroups() {
+  const { api, sessionStatus } = useApiClient();
+  return useQuery({
+    queryKey: customerGroupKeys.options(),
+    queryFn: async () => {
+      const response = await api.get<CustomerGroupOption[]>(
+        `${BASE_PATH}/options`
+      );
+      return response.data ?? [];
+    },
+    enabled: sessionStatus !== "loading",
+  });
+}
+
 export function useCustomerGroup(id: number) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
     queryKey: customerGroupKeys.detail(id),
     queryFn: async () => {
-      const response = await api.get<CustomerGroup>(`/customer-groups/${id}`);
+      const response = await api.get<CustomerGroup>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
     enabled: !!id && sessionStatus !== "loading",
   });
   return {
     ...query,
-    /** Indicates whether NextAuth session is still loading */
     isSessionLoading: sessionStatus === "loading",
   };
 }
 
-/**
- * useCreateCustomerGroup
- *
- * Mutation hook to create a new customer group.
- *
- * @returns {Object} TanStack Mutation result
- */
 export function useCreateCustomerGroup() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
@@ -124,34 +82,25 @@ export function useCreateCustomerGroup() {
         percentage: data.percentage ?? 0,
         is_active: data.is_active ?? true,
       };
-      const response = await api.post<CustomerGroup>("/customer-groups", payload);
-      if (!response.success || !response.data) {
+      const response = await api.post<{ data: CustomerGroup }>(BASE_PATH, payload);
+      if (!response.success) {
         if (response.errors) {
           throw new ValidationError(response.message, response.errors);
         }
         throw new Error(response.message);
       }
-      return response.data;
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: customerGroupKeys.lists() });
-      toast.success("Customer group created successfully");
+      toast.success(response.message);
     },
     onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to create customer group"
-      );
+      toast.error(error.message);
     },
   });
 }
 
-/**
- * useUpdateCustomerGroup
- *
- * Mutation hook to update an existing customer group.
- *
- * @returns {Object} TanStack Mutation result
- */
 export function useUpdateCustomerGroup() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
@@ -169,185 +118,126 @@ export function useUpdateCustomerGroup() {
         percentage: data.percentage,
         is_active: data.is_active,
       };
-      const response = await api.put<CustomerGroup>(
-        `/customer-groups/${id}`,
+      const response = await api.put<{ data: CustomerGroup }>(
+        `${BASE_PATH}/${id}`,
         payload
       );
-      if (!response.success || !response.data) {
+      if (!response.success) {
         if (response.errors) {
           throw new ValidationError(response.message, response.errors);
         }
         throw new Error(response.message);
       }
-      return response.data;
+      return { id, message: response.message };
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: customerGroupKeys.lists() });
-      queryClient.invalidateQueries({
-        queryKey: customerGroupKeys.detail(variables.id),
-      });
-      toast.success("Customer group updated successfully");
+      queryClient.invalidateQueries({ queryKey: customerGroupKeys.detail(data.id) });
+      toast.success(data.message);
     },
     onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to update customer group"
-      );
+      toast.error(error.message);
     },
   });
 }
 
-/**
- * useDeleteCustomerGroup
- *
- * Mutation hook to delete a single customer group by ID.
- *
- * @returns {Object} TanStack Mutation result
- */
 export function useDeleteCustomerGroup() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const response = await api.delete(`/customer-groups/${id}`);
+      const response = await api.delete(`${BASE_PATH}/${id}`);
       if (!response.success) {
         throw new Error(response.message);
       }
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: customerGroupKeys.lists() });
-      toast.success("Customer group deleted successfully");
+      toast.success(response.message);
     },
     onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to delete customer group"
-      );
+      toast.error(error.message);
     },
   });
 }
 
-/**
- * useBulkDestroyCustomerGroups
- *
- * Mutation hook to permanently delete multiple customer groups.
- *
- * @returns {Object} TanStack Mutation result
- */
-export function useBulkDestroyCustomerGroups() {
-  const { api } = useApiClient();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (ids: number[]) => {
-      const response = await api.delete("/customer-groups/bulk-destroy", {
-        body: JSON.stringify({ ids }),
-      });
-      if (!response.success) throw new Error(response.message);
-      return response;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: customerGroupKeys.lists() });
-      toast.success("Customer groups deleted");
-    },
-    onError: (e) =>
-      toast.error(
-        e instanceof Error ? e.message : "Failed to delete customer groups"
-      ),
-  });
-}
-
-/**
- * useBulkActivateCustomerGroups
- *
- * Mutation hook to bulk activate multiple customer groups.
- *
- * @returns {Object} TanStack Mutation result
- */
 export function useBulkActivateCustomerGroups() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.patch<{ activated_count: number }>(
-        "/customer-groups/bulk-activate",
+      const response = await api.post<{ activated_count: number }>(
+        `${BASE_PATH}/bulk-activate`,
         { ids }
       );
       if (!response.success) throw new Error(response.message);
-      return response.data;
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: customerGroupKeys.lists() });
-      toast.success("Customer groups activated");
+      toast.success(response.message);
     },
-    onError: (e) =>
-      toast.error(e instanceof Error ? e.message : "Failed to activate"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
-/**
- * useBulkDeactivateCustomerGroups
- *
- * Mutation hook to bulk deactivate multiple customer groups.
- *
- * @returns {Object} TanStack Mutation result
- */
 export function useBulkDeactivateCustomerGroups() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.patch<{ deactivated_count: number }>(
-        "/customer-groups/bulk-deactivate",
+      const response = await api.post<{ deactivated_count: number }>(
+        `${BASE_PATH}/bulk-deactivate`,
         { ids }
       );
       if (!response.success) throw new Error(response.message);
-      return response.data;
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: customerGroupKeys.lists() });
-      toast.success("Customer groups deactivated");
+      toast.success(response.message);
     },
-    onError: (e) =>
-      toast.error(e instanceof Error ? e.message : "Failed to deactivate"),
+    onError: (error) => toast.error(error.message),
   });
 }
 
-/**
- * useCustomerGroupsImport
- *
- * Mutation hook to import customer groups from a file (CSV/Excel).
- *
- * @returns {Object} TanStack Mutation result
- */
+export function useBulkDestroyCustomerGroups() {
+  const { api } = useApiClient();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (ids: number[]) => {
+      const response = await api.post(`${BASE_PATH}/bulk-destroy`, { ids });
+      if (!response.success) throw new Error(response.message);
+      return response;
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: customerGroupKeys.lists() });
+      toast.success(response.message);
+    },
+    onError: (error) => toast.error(error.message),
+  });
+}
+
 export function useCustomerGroupsImport() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async (file: File) => {
       const form = new FormData();
       form.append("file", file);
-      const response = await api.post("/customer-groups/import", form);
+      const response = await api.post(`${BASE_PATH}/import`, form);
       if (!response.success) throw new Error(response.message);
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: customerGroupKeys.lists() });
-      toast.success("Customer groups imported");
+      toast.success(response.message);
     },
-    onError: (e) =>
-      toast.error(e instanceof Error ? e.message : "Import failed"),
+    onError: (error) => toast.error(error.message),
   });
 }
-
-export type CustomerGroupExportParams = {
-  ids?: number[];
-  format: "excel" | "pdf";
-  method: "download" | "email";
-  columns: string[];
-  user_id?: number;
-};
 
 export function useCustomerGroupsExport() {
   const { api } = useApiClient();
@@ -355,7 +245,7 @@ export function useCustomerGroupsExport() {
   return useMutation({
     mutationFn: async (params: CustomerGroupExportParams) => {
       if (params.method === "download") {
-        const blob = await api.postBlob("/customer-groups/export", params);
+        const blob = await api.postBlob(`${BASE_PATH}/export`, params);
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
@@ -368,18 +258,35 @@ export function useCustomerGroupsExport() {
         return { message: "Export downloaded successfully" };
       }
 
-      const response = await api.post("/customer-groups/export", params);
+      const response = await api.post(`${BASE_PATH}/export`, params);
       if (!response.success) throw new Error(response.message);
       return response;
     },
-    onSuccess: (_, variables) => {
-      if (variables.method === "email") {
-        toast.success("Export sent via email successfully");
-      } else {
-        toast.success("Export downloaded successfully");
-      }
+    onSuccess: (response) => {
+      toast.success(response.message);
     },
-    onError: (e) =>
-      toast.error(e instanceof Error ? e.message : "Export failed"),
+    onError: (error) => toast.error(error.message),
+  });
+}
+
+export function useCustomerGroupsTemplateDownload() {
+  const { api } = useApiClient();
+  return useMutation({
+    mutationFn: async () => {
+      const blob = await api.getBlob(`${BASE_PATH}/download`);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "customer-groups-sample.csv";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      return { message: "Sample template downloaded" };
+    },
+    onSuccess: (response) => {
+      toast.success(response.message);
+    },
+    onError: (error) => toast.error(error.message),
   });
 }

@@ -12,13 +12,12 @@ import {
   CancelCircleIcon,
 } from '@hugeicons/core-free-icons'
 
-import { useCustomersImport } from '../api'
+import { useCustomersImport, useCustomersTemplateDownload } from '../api'
 import { customerImportSchema, type CustomerImportFormData } from '../schemas'
-import { downloadSampleAsCsv } from '@/lib/download-sample-csv'
-import { SAMPLE_CUSTOMERS_CSV } from '../constants'
 import { CustomersCsvPreviewDialog } from './customers-csv-preview-dialog'
 
 import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
 import {
   Dialog,
   DialogContent,
@@ -66,6 +65,8 @@ export function CustomersImportDialog({
 }: CustomersImportDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: importCustomers, isPending } = useCustomersImport()
+  const { mutate: downloadTemplate, isPending: isDownloading } =
+    useCustomersTemplateDownload()
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewData, setPreviewData] = useState<Record<string, string>[]>([])
 
@@ -113,7 +114,7 @@ export function CustomersImportDialog({
   }
 
   const handleDownloadSample = () => {
-    downloadSampleAsCsv(SAMPLE_CUSTOMERS_CSV, 'customers_sample.csv')
+    downloadTemplate()
   }
 
   const handleOpenChange = (value: boolean) => {
@@ -136,10 +137,20 @@ export function CustomersImportDialog({
           variant="outline"
           size="sm"
           onClick={handleDownloadSample}
+          disabled={isDownloading}
           className="text-muted-foreground"
         >
-          <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
-          Download Sample CSV
+          {isDownloading ? (
+            <>
+              <Spinner className="mr-2 size-4" />
+              Downloading...
+            </>
+          ) : (
+            <>
+              <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
+              Download Sample CSV
+            </>
+          )}
         </Button>
       </div>
       <FieldGroup>
@@ -225,7 +236,7 @@ export function CustomersImportDialog({
               <Button variant="outline" onClick={() => handleOpenChange(false)}>
                 Cancel
               </Button>
-              <Button type="submit" form="customers-import-form" disabled={!form.formState.isValid}>
+              <Button type="submit" form="customers-import-form" disabled={!form.formState.isValid || isPending}>
                 Preview Data
                 <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
               </Button>
@@ -245,7 +256,7 @@ export function CustomersImportDialog({
               <ImportContent />
             </div>
             <DrawerFooter>
-              <Button type="submit" form="customers-import-form" disabled={!form.formState.isValid}>
+              <Button type="submit" form="customers-import-form" disabled={!form.formState.isValid || isPending}>
                 Preview Data
                 <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
               </Button>

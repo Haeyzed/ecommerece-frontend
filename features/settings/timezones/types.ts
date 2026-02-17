@@ -11,6 +11,12 @@ export interface TimezoneOption {
   country_id?: number;
 }
 
+/** Timezone options grouped by region (e.g. Africa, America, Europe). */
+export interface TimezoneOptionsGrouped {
+  region: string;
+  options: TimezoneOption[];
+}
+
 export type TimezoneListParams = {
   page?: number;
   per_page?: number;

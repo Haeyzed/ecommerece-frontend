@@ -76,6 +76,8 @@ export const customerExportSchema = z
     method: z.enum(['download', 'email']),
     columns: z.array(z.string()).min(1, 'Please select at least one column'),
     user_id: z.number().optional(),
+    start_date: z.string().optional(),
+    end_date: z.string().optional(),
   })
   .refine(
     (data) => {

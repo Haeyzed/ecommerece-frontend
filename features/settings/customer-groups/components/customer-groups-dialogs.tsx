@@ -12,12 +12,12 @@ export function CustomerGroupsDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useCustomerGroups()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions ?? []
-  const canCreate = userPermissions.includes('customer-groups-create')
-  const canImport = userPermissions.includes('customer-groups-import')
-  const canExport = userPermissions.includes('customer-groups-export')
-  const canUpdate = userPermissions.includes('customer-groups-update')
-  const canDelete = userPermissions.includes('customer-groups-delete')
-  const canView = userPermissions.includes('customer-groups-index')
+  const canCreate = userPermissions.includes('create customer groups')
+  const canImport = userPermissions.includes('import customer groups')
+  const canExport = userPermissions.includes('export customer groups')
+  const canUpdate = userPermissions.includes('update customer groups')
+  const canDelete = userPermissions.includes('delete customer groups')
+  const canView = userPermissions.includes('view customer groups')
 
   return (
     <>

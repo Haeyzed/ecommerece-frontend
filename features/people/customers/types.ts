@@ -37,6 +37,7 @@ export interface Customer {
   pay_term_period: string | null
   expense: number
   is_active: boolean
+  active_status?: CustomerActiveStatus
   discount_plans?: string[]
   custom_fields?: Record<string, unknown>
   created_at: string | null
@@ -44,6 +45,33 @@ export interface Customer {
 }
 
 export type CustomerStatus = 'active' | 'inactive'
+
+export type CustomerActiveStatus = 'active' | 'inactive'
+
+export type CustomerListParams = {
+  page?: number
+  per_page?: number
+  search?: string
+  status?: string
+  customer_group_id?: number
+  start_date?: string
+  end_date?: string
+}
+
+export type CustomerExportParams = {
+  ids?: number[]
+  format: 'excel' | 'pdf'
+  method: 'download' | 'email'
+  columns: string[]
+  user_id?: number
+  start_date?: string
+  end_date?: string
+}
+
+export interface CustomerOption {
+  value: number
+  label: string
+}
 
 /** Deposit record from API (DepositResource with user loaded). */
 export interface CustomerDeposit {

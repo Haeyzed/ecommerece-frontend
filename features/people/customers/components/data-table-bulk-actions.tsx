@@ -2,7 +2,12 @@
 
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { Delete02Icon, Upload01Icon } from '@hugeicons/core-free-icons'
+import {
+  CheckmarkCircle02Icon,
+  Delete02Icon,
+  UnavailableIcon,
+  Upload01Icon,
+} from '@hugeicons/core-free-icons'
 import type { Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,6 +16,11 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
+import { Spinner } from '@/components/ui/spinner'
+import {
+  useBulkActivateCustomers,
+  useBulkDeactivateCustomers,
+} from '../api'
 import type { Customer } from '../types'
 import { CustomersExportDialog } from './customers-export-dialog'
 import { CustomersMultiDeleteDialog } from './customers-multi-delete-dialog'
@@ -27,16 +37,86 @@ export function DataTableBulkActions<TData>({
   const [showExportDialog, setShowExportDialog] = useState(false)
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map((row) => (row.original as Customer).id)
+  const { mutate: activateCustomers, isPending: isActivating } =
+    useBulkActivateCustomers()
+  const { mutate: deactivateCustomers, isPending: isDeactivating } =
+    useBulkDeactivateCustomers()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canDelete = userPermissions.includes('customers-delete')
-  const canExport = userPermissions.includes('customers-export')
+  const canUpdate = userPermissions.includes('update customers')
+  const canDelete = userPermissions.includes('delete customers')
+  const canExport = userPermissions.includes('export customers')
 
-  if (!canDelete && !canExport) return null
+  if (!canUpdate && !canDelete && !canExport) return null
+
+  const isBusy = isActivating || isDeactivating
+
+  const handleBulkStatusChange = (status: 'active' | 'inactive') => {
+    if (status === 'active') {
+      activateCustomers(selectedIds, {
+        onSuccess: () => table.resetRowSelection(),
+      })
+    } else {
+      deactivateCustomers(selectedIds, {
+        onSuccess: () => table.resetRowSelection(),
+      })
+    }
+  }
 
   return (
     <>
       <BulkActionsToolbar table={table} entityName="customer">
+        {canUpdate && (
+          <>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleBulkStatusChange('active')}
+                  disabled={isBusy}
+                  className="size-8"
+                  aria-label="Activate selected customers"
+                  title="Activate selected customers"
+                >
+                  {isActivating ? (
+                    <Spinner className="size-4" />
+                  ) : (
+                    <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
+                  )}
+                  <span className="sr-only">Activate selected customers</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Activate selected customers</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleBulkStatusChange('inactive')}
+                  disabled={isBusy}
+                  className="size-8"
+                  aria-label="Deactivate selected customers"
+                  title="Deactivate selected customers"
+                >
+                  {isDeactivating ? (
+                    <Spinner className="size-4" />
+                  ) : (
+                    <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
+                  )}
+                  <span className="sr-only">Deactivate selected customers</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Deactivate selected customers</p>
+              </TooltipContent>
+            </Tooltip>
+          </>
+        )}
+
         {canExport && (
           <Tooltip>
             <TooltipTrigger asChild>
@@ -44,6 +124,7 @@ export function DataTableBulkActions<TData>({
                 variant="outline"
                 size="icon"
                 onClick={() => setShowExportDialog(true)}
+                disabled={isBusy}
                 className="size-8"
                 aria-label="Export selected customers"
                 title="Export selected customers"
@@ -65,6 +146,7 @@ export function DataTableBulkActions<TData>({
                 variant="destructive"
                 size="icon"
                 onClick={() => setShowDeleteConfirm(true)}
+                disabled={isBusy}
                 className="size-8"
                 aria-label="Delete selected customers"
                 title="Delete selected customers"

@@ -12,13 +12,12 @@ import {
   CancelCircleIcon,
 } from '@hugeicons/core-free-icons'
 
-import { useCustomerGroupsImport } from '../api'
+import { useCustomerGroupsImport, useCustomerGroupsTemplateDownload } from '../api'
 import { customerGroupImportSchema, type CustomerGroupImportFormData } from '../schemas'
-import { downloadSampleAsCsv } from '@/lib/download-sample-csv'
-import { SAMPLE_CUSTOMER_GROUPS_CSV } from '../constants'
 import { CustomerGroupsCsvPreviewDialog } from './customer-groups-csv-preview-dialog'
 
 import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
 import {
   Dialog,
   DialogContent,
@@ -66,6 +65,7 @@ export function CustomerGroupsImportDialog({
 }: CustomerGroupsImportDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: importCustomerGroups, isPending } = useCustomerGroupsImport()
+  const { mutate: downloadTemplate, isPending: isDownloading } = useCustomerGroupsTemplateDownload()
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewData, setPreviewData] = useState<Record<string, string>[]>([])
 
@@ -113,7 +113,7 @@ export function CustomerGroupsImportDialog({
   }
 
   const handleDownloadSample = () => {
-    downloadSampleAsCsv(SAMPLE_CUSTOMER_GROUPS_CSV, 'customer_groups_sample.csv')
+    downloadTemplate()
   }
 
   const handleOpenChange = (value: boolean) => {
@@ -136,10 +136,20 @@ export function CustomerGroupsImportDialog({
           variant="outline"
           size="sm"
           onClick={handleDownloadSample}
+          disabled={isDownloading}
           className="text-muted-foreground"
         >
-          <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
-          Download Sample CSV
+          {isDownloading ? (
+            <>
+              <Spinner className="mr-2 size-4" />
+              Downloading...
+            </>
+          ) : (
+            <>
+              <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
+              Download Sample CSV
+            </>
+          )}
         </Button>
       </div>
       <FieldGroup>

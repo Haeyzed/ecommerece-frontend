@@ -8,11 +8,7 @@ import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
 import type { Customer } from '../types'
 import { DataTableRowActions } from './data-table-row-actions'
-import { CUSTOMER_STATUS_OPTIONS } from '../constants'
-
-const statusMap = Object.fromEntries(
-  CUSTOMER_STATUS_OPTIONS.filter((o) => o.value).map((o) => [o.value, o.label])
-)
+import { statusTypes } from '../constants'
 
 export const customersColumns: ColumnDef<Customer>[] = [
   {
@@ -155,33 +151,26 @@ export const customersColumns: ColumnDef<Customer>[] = [
     meta: { className: 'w-24' },
   },
   {
-    accessorKey: 'is_active',
-    id: 'status',
+    accessorKey: 'active_status',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title='Status' />
     ),
     cell: ({ row }) => {
-      const status = row.original.is_active ? 'active' : 'inactive'
-      const label = statusMap[status] ?? status
+      const { active_status } = row.original
+      const statusBadgeColor = statusTypes.get(active_status ?? 'inactive')
       return (
-        <div className="flex justify-center">
+        <div className='flex justify-center'>
           <Badge
-            variant="outline"
-            className={cn(
-              'capitalize',
-              status === 'active'
-                ? 'border-green-500/50 text-green-700 dark:text-green-400'
-                : 'border-muted-foreground/50'
-            )}
+            variant='outline'
+            className={cn('capitalize', statusBadgeColor)}
           >
-            {label}
+            {row.getValue('active_status') ?? 'inactive'}
           </Badge>
         </div>
       )
     },
     filterFn: (row, id, value) => {
-      const status = row.original.is_active ? 'active' : 'inactive'
-      return Array.isArray(value) && value.includes(status)
+      return value.includes(row.getValue(id))
     },
   },
   {

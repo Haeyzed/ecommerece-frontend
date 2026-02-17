@@ -34,9 +34,9 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const { data: session } = useAuthSession()
 
   const userPermissions = session?.user?.user_permissions || []
-  const canView = userPermissions.includes('customers-index')
-  const canUpdate = userPermissions.includes('customers-update')
-  const canDelete = userPermissions.includes('customers-delete')
+  const canView = userPermissions.includes('view customer details')
+  const canUpdate = userPermissions.includes('update customers')
+  const canDelete = userPermissions.includes('delete customers')
   const canDueReport = userPermissions.includes('due-report')
 
   if (!canView && !canUpdate && !canDelete && !canDueReport) return null
@@ -71,39 +71,43 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
       <DropdownMenuContent align="end" className="w-[180px]">
         {canView && (
           <>
-            <DropdownMenuItem asChild>
-              <Link href={`/people/customers/${id}`}>
-                View
-                <DropdownMenuShortcut>
-                  <HugeiconsIcon icon={ViewIcon} strokeWidth={2} size={16} />
-                </DropdownMenuShortcut>
-              </Link>
+            <DropdownMenuItem
+              onClick={() => {
+                setCurrentRow(row.original)
+                setOpen('view')
+              }}
+            >
+              View
+              <DropdownMenuShortcut>
+                <HugeiconsIcon icon={ViewIcon} strokeWidth={2} size={16} />
+              </DropdownMenuShortcut>
             </DropdownMenuItem>
-            {canView && (
-              <DropdownMenuItem onClick={openViewDeposit}>
-                View Deposit
-                <DropdownMenuShortcut>
-                  <HugeiconsIcon icon={Wallet01Icon} strokeWidth={2} size={16} />
-                </DropdownMenuShortcut>
-              </DropdownMenuItem>
-            )}
+            <DropdownMenuItem onClick={openViewDeposit}>
+              View Deposit
+              <DropdownMenuShortcut>
+                <HugeiconsIcon icon={Wallet01Icon} strokeWidth={2} size={16} />
+              </DropdownMenuShortcut>
+            </DropdownMenuItem>
             {(canUpdate || canDelete) && <DropdownMenuSeparator />}
           </>
         )}
 
         {canUpdate && (
           <>
-            <DropdownMenuItem asChild>
-              <Link href={`/people/customers/${id}/edit`}>
-                Edit
-                <DropdownMenuShortcut>
-                  <HugeiconsIcon
-                    icon={PencilEdit02Icon}
-                    strokeWidth={2}
-                    size={16}
-                  />
-                </DropdownMenuShortcut>
-              </Link>
+            <DropdownMenuItem
+              onClick={() => {
+                setCurrentRow(row.original)
+                setOpen('edit')
+              }}
+            >
+              Edit
+              <DropdownMenuShortcut>
+                <HugeiconsIcon
+                  icon={PencilEdit02Icon}
+                  strokeWidth={2}
+                  size={16}
+                />
+              </DropdownMenuShortcut>
             </DropdownMenuItem>
             {canDueReport && (
               <DropdownMenuItem asChild>

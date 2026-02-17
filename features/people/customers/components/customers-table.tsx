@@ -28,6 +28,8 @@ import { useCustomers } from '../api'
 import { customersColumns as columns } from './customers-columns'
 import { CustomersEmptyState } from './customers-empty-state'
 import { DataTableBulkActions } from './data-table-bulk-actions'
+import { ForbiddenError } from '@/features/errors/forbidden'
+import { ForbiddenError as ForbiddenErrorClass } from '@/lib/api/api-errors'
 
 export function CustomersTable() {
   const [rowSelection, setRowSelection] = useState({})
@@ -45,7 +47,7 @@ export function CustomersTable() {
     globalFilter: { enabled: false },
     columnFilters: [
       { columnId: 'name', searchKey: 'search', type: 'string' },
-      { columnId: 'status', searchKey: 'status', type: 'array' },
+      { columnId: 'active_status', searchKey: 'status', type: 'array' },
     ],
   })
 
@@ -53,7 +55,7 @@ export function CustomersTable() {
     const page = pagination.pageIndex + 1
     const perPage = pagination.pageSize
     const nameFilter = columnFilters.find((f) => f.id === 'name')
-    const statusFilter = columnFilters.find((f) => f.id === 'status')
+    const statusFilter = columnFilters.find((f) => f.id === 'active_status')
     let statusValue: string | undefined
     if (statusFilter?.value && Array.isArray(statusFilter.value)) {
       if (statusFilter.value.length === 1) {
@@ -71,12 +73,9 @@ export function CustomersTable() {
   const { data, isLoading, error } = useCustomers(apiParams)
 
   const pageCount = useMemo(() => {
-    const meta = data?.meta
-    if (meta) return Math.ceil((meta.total || 0) / (meta.per_page || 10))
-    const payload = data?.data as { last_page?: number } | undefined
-    if (payload && typeof payload.last_page === 'number') return payload.last_page
-    return 0
-  }, [data?.meta, data?.data])
+    if (!data?.meta) return 0
+    return Math.ceil((data.meta.total || 0) / (data.meta.per_page || 10))
+  }, [data?.meta])
 
   const table = useReactTable({
     data: data?.data ?? [],
@@ -110,6 +109,9 @@ export function CustomersTable() {
   }, [pageCount, ensurePageInRange])
 
   if (error) {
+    if (error instanceof ForbiddenErrorClass) {
+      return <ForbiddenError message={error.message} inline />
+    }
     toast.error(error.message)
     return null
   }
@@ -138,7 +140,7 @@ export function CustomersTable() {
         searchKey="name"
         filters={[
           {
-            columnId: 'status',
+            columnId: 'active_status',
             title: 'Status',
             options: [
               { label: 'Active', value: 'active' },

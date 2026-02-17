@@ -34,7 +34,7 @@ import { CheckmarkCircle02Icon } from '@hugeicons/core-free-icons'
 type CustomersCsvPreviewDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  data: Record<string, string>[]
+  data: any[]
   onConfirm: () => void
   isPending: boolean
 }
@@ -50,20 +50,24 @@ export function CustomersCsvPreviewDialog({
   const headers = data.length > 0 ? Object.keys(data[0]) : []
 
   const PreviewContent = () => (
-    <div className="rounded-md border">
+    <div className='rounded-md border'>
       <Table>
         <TableHeader>
           <TableRow>
-            {headers.map((h) => (
-              <TableHead key={h} className="capitalize">{h.replace(/_/g, ' ')}</TableHead>
+            {headers.map((header) => (
+              <TableHead key={header} className='capitalize'>
+                {header.replace(/_/g, ' ')}
+              </TableHead>
             ))}
           </TableRow>
         </TableHeader>
         <TableBody>
           {data.slice(0, 5).map((row, i) => (
             <TableRow key={i}>
-              {headers.map((h) => (
-                <TableCell key={h} className="max-w-[200px] truncate">{row[h]}</TableCell>
+              {headers.map((header) => (
+                <TableCell key={`${i}-${header}`} className='max-w-[200px] truncate'>
+                  {row[header]}
+                </TableCell>
               ))}
             </TableRow>
           ))}
@@ -93,7 +97,7 @@ export function CustomersCsvPreviewDialog({
             <PreviewContent />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
+            <Button variant='outline' onClick={() => onOpenChange(false)} disabled={isPending}>
               Cancel
             </Button>
             <Button onClick={onConfirm} disabled={isPending}>
@@ -142,7 +146,7 @@ export function CustomersCsvPreviewDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant="outline" disabled={isPending}>Cancel</Button>
+            <Button variant='outline' disabled={isPending}>Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>

@@ -65,10 +65,9 @@ export function CustomersImportDialog({
 }: CustomersImportDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: importCustomers, isPending } = useCustomersImport()
-  const { mutate: downloadTemplate, isPending: isDownloading } =
-    useCustomersTemplateDownload()
+  const { mutate: downloadTemplate, isPending: isDownloading } = useCustomersTemplateDownload()
   const [previewOpen, setPreviewOpen] = useState(false)
-  const [previewData, setPreviewData] = useState<Record<string, string>[]>([])
+  const [previewData, setPreviewData] = useState<any[]>([])
 
   const form = useForm<CustomerImportFormData>({
     resolver: zodResolver(customerImportSchema),
@@ -127,84 +126,90 @@ export function CustomersImportDialog({
 
   const ImportContent = () => (
     <form
-      id="customers-import-form"
+      id='import-form'
       onSubmit={form.handleSubmit(handlePreview)}
-      className="grid gap-4 py-4"
+      className='grid gap-4 py-4'
     >
-      <div className="flex justify-end">
+      <div className='flex justify-end'>
         <Button
-          type="button"
-          variant="outline"
-          size="sm"
+          type='button'
+          variant='outline'
+          size='sm'
           onClick={handleDownloadSample}
           disabled={isDownloading}
-          className="text-muted-foreground"
+          className='text-muted-foreground'
         >
           {isDownloading ? (
             <>
-              <Spinner className="mr-2 size-4" />
+              <Spinner className='mr-2 size-4' />
               Downloading...
             </>
           ) : (
             <>
-              <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
+              <HugeiconsIcon icon={Download01Icon} className='mr-2 size-4' />
               Download Sample CSV
             </>
           )}
         </Button>
       </div>
       <FieldGroup>
-        <div className="space-y-2 rounded-md border bg-muted/50 p-3 text-sm">
-          <div className="font-medium">Required: customer_group_id, name, phone_number</div>
-          <div className="text-muted-foreground">
-            Optional: company_name, email, address, city, state, postal_code, country, deposit
-          </div>
+        <div className='space-y-2 rounded-md border bg-muted/50 p-3 text-sm'>
+          <div className='font-medium'>Required Fields:</div>
+          <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>name*</code> - Customer name (required)</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>customer_group</code> - Customer group name (optional, resolved to ID)</li>
+          </ul>
+          <div className='font-medium mt-3'>Optional Fields:</div>
+          <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>company_name</code>, <code className='rounded bg-background px-1 py-0.5 text-xs'>email</code>, <code className='rounded bg-background px-1 py-0.5 text-xs'>phone_number</code></li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>address</code>, <code className='rounded bg-background px-1 py-0.5 text-xs'>city</code>, <code className='rounded bg-background px-1 py-0.5 text-xs'>state</code>, <code className='rounded bg-background px-1 py-0.5 text-xs'>country</code>, <code className='rounded bg-background px-1 py-0.5 text-xs'>postal_code</code>, <code className='rounded bg-background px-1 py-0.5 text-xs'>deposit</code></li>
+          </ul>
         </div>
         <Controller
           control={form.control}
-          name="file"
+          name='file'
           render={({ field: { value, onChange }, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel>Upload File</FieldLabel>
+              <FieldLabel htmlFor='import-file'>Upload File</FieldLabel>
               <FileUpload
                 value={value}
                 onValueChange={onChange}
-                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
                 maxFiles={1}
                 maxSize={5 * 1024 * 1024}
                 onFileReject={(_, msg) => form.setError('file', { message: msg })}
               >
-                <FileUploadDropzone className="flex-col items-center justify-center gap-2 border-dashed p-8 text-center">
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                <FileUploadDropzone className='flex-col items-center justify-center gap-2 border-dashed p-8 text-center'>
+                  <div className='flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground'>
                     <HugeiconsIcon icon={CloudUploadIcon} className="size-5" />
                   </div>
-                  <div className="text-sm">
-                    <span className="font-semibold text-primary">Click to upload</span> or drag and drop
+                  <div className='text-sm'>
+                    <span className='font-semibold text-primary'>Click to upload</span> or drag and drop
                     <br />
-                    <span className="text-muted-foreground">CSV or Excel (max 5MB)</span>
+                    <span className='text-muted-foreground'>CSV or Excel (max 5MB)</span>
                   </div>
                   <FileUploadTrigger asChild>
-                    <Button variant="link" size="sm" className="sr-only">
+                    <Button variant='link' size='sm' className='sr-only'>
                       Select file
                     </Button>
                   </FileUploadTrigger>
                 </FileUploadDropzone>
                 <FileUploadList>
                   {value?.map((file, i) => (
-                    <FileUploadItem key={i} value={file} className="w-full">
-                      <div className="flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary">
-                        <HugeiconsIcon icon={File02Icon} className="size-4" />
+                    <FileUploadItem key={i} value={file} className='w-full'>
+                      <div className='flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary'>
+                        <HugeiconsIcon icon={File02Icon} className='size-4' />
                       </div>
-                      <FileUploadItemPreview className="hidden" />
-                      <FileUploadItemMetadata className="ml-2 flex-1" />
+                      <FileUploadItemPreview className='hidden' />
+                      <FileUploadItemMetadata className='ml-2 flex-1' />
                       <FileUploadItemDelete asChild>
                         <Button
-                          variant="ghost"
-                          size="icon"
-                          className="size-7 text-muted-foreground hover:text-destructive"
+                          variant='ghost'
+                          size='icon'
+                          className='size-7 text-muted-foreground hover:text-destructive'
                         >
-                          <HugeiconsIcon icon={CancelCircleIcon} className="size-4" />
-                          <span className="sr-only">Remove</span>
+                          <HugeiconsIcon icon={CancelCircleIcon} className='size-4' />
+                          <span className='sr-only'>Remove</span>
                         </Button>
                       </FileUploadItemDelete>
                     </FileUploadItem>
@@ -224,8 +229,8 @@ export function CustomersImportDialog({
     <>
       {isDesktop ? (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader className="text-start">
+          <DialogContent className='sm:max-w-md'>
+            <DialogHeader className='text-start'>
               <DialogTitle>Import Customers</DialogTitle>
               <DialogDescription>
                 Bulk create customers by uploading a CSV or Excel file.
@@ -236,7 +241,7 @@ export function CustomersImportDialog({
               <Button variant="outline" onClick={() => handleOpenChange(false)}>
                 Cancel
               </Button>
-              <Button type="submit" form="customers-import-form" disabled={!form.formState.isValid || isPending}>
+              <Button type='submit' form='import-form' disabled={!form.formState.isValid || isPending}>
                 Preview Data
                 <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
               </Button>
@@ -256,7 +261,7 @@ export function CustomersImportDialog({
               <ImportContent />
             </div>
             <DrawerFooter>
-              <Button type="submit" form="customers-import-form" disabled={!form.formState.isValid || isPending}>
+              <Button type='submit' form='import-form' disabled={!form.formState.isValid || isPending}>
                 Preview Data
                 <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
               </Button>

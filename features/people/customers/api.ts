@@ -4,11 +4,11 @@ import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import type { CustomerFormData } from './schemas'
 import type {
   Customer,
   CustomerDeposit,
   CustomerExportParams,
-  CustomerFormData,
   CustomerListParams,
   CustomerOption,
 } from './types'

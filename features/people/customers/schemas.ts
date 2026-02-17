@@ -1,10 +1,3 @@
-/**
- * Customer schemas
- *
- * Zod validation for customer forms. Mirrors backend CustomerRequest where possible.
- * Unique checks (email, phone, username) are enforced on the server.
- */
-
 import { z } from 'zod'
 
 const optionalString = z.string().max(255).nullable().optional()
@@ -15,20 +8,20 @@ export const customerSchema = z
     customer_group_id: z.number().int().positive('Customer group is required'),
     name: z.string().min(1, 'Name is required').max(255, 'Name is too long'),
     company_name: optionalString,
-    email: z.string().email('Invalid email').max(255).nullable().optional().or(z.literal('')),
+    email: z.union([z.string().email('Invalid email').max(255), z.literal('')]).optional(),
     type: z.string().max(50).nullable().optional(),
     phone_number: optionalString,
     wa_number: optionalString,
     tax_no: optionalString,
     address: optionalStringLong,
-    city: optionalString,
-    state: optionalString,
+    country_id: z.number().nullable().optional(),
+    state_id: z.number().nullable().optional(),
+    city_id: z.number().nullable().optional(),
     postal_code: z.string().max(50).nullable().optional(),
-    country: optionalString,
-    opening_balance: z.coerce.number().min(0).nullable().optional(),
-    credit_limit: z.coerce.number().min(0).nullable().optional(),
-    deposit: z.coerce.number().min(0).nullable().optional(),
-    pay_term_no: z.coerce.number().int().min(0).nullable().optional(),
+    opening_balance: z.number().min(0).nullable().optional(),
+    credit_limit: z.number().min(0).nullable().optional(),
+    deposit: z.number().min(0).nullable().optional(),
+    pay_term_no: z.number().int().min(0).nullable().optional(),
     pay_term_period: z.string().max(50).nullable().optional(),
     is_active: z.boolean().nullable().optional(),
     both: z.boolean().optional(),
@@ -47,9 +40,6 @@ export const customerSchema = z
       if (!data.address?.trim()) {
         ctx.addIssue({ code: 'custom', message: 'Address is required when also adding as supplier', path: ['address'] })
       }
-      if (!data.city?.trim()) {
-        ctx.addIssue({ code: 'custom', message: 'City is required when also adding as supplier', path: ['city'] })
-      }
     }
     if (data.user) {
       if (!data.username?.trim()) {
@@ -60,8 +50,6 @@ export const customerSchema = z
       }
     }
   })
-
-export type CustomerFormData = z.infer<typeof customerSchema>
 
 export const customerImportSchema = z.object({
   file: z
@@ -87,12 +75,12 @@ export const customerExportSchema = z
     { message: 'Please select a user to send the email to', path: ['user_id'] }
   )
 
-export type CustomerImportFormData = z.infer<typeof customerImportSchema>
-export type CustomerExportFormData = z.infer<typeof customerExportSchema>
-
 export const addDepositSchema = z.object({
   amount: z.number().min(0.01, 'Amount must be at least 0.01'),
   note: z.string().max(500).optional().nullable(),
 })
 
 export type AddDepositFormData = z.infer<typeof addDepositSchema>
+export type CustomerImportFormData = z.infer<typeof customerImportSchema>
+export type CustomerExportFormData = z.infer<typeof customerExportSchema>
+export type CustomerFormData = z.infer<typeof customerSchema>

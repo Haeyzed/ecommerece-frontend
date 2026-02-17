@@ -6,6 +6,8 @@ import type { Customer } from '../types'
 
 type CustomersDialogType =
   | 'import'
+  | 'add'
+  | 'edit'
   | 'delete'
   | 'export'
   | 'view'

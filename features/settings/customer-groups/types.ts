@@ -1,9 +1,3 @@
-/**
- * Customer group types
- *
- * Aligns with Laravel API CustomerGroupResource.
- */
-
 export interface CustomerGroup {
   id: number
   name: string

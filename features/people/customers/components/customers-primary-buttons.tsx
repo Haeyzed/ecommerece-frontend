@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { FileImportIcon, PlusSignIcon, Upload01Icon } from '@hugeicons/core-free-icons'
 import { Button } from '@/components/ui/button'
@@ -47,11 +46,14 @@ export function CustomersPrimaryButtons() {
         </Button>
       )}
       {canCreate && (
-        <Button asChild size={isMobile ? 'icon' : 'default'} className={!isMobile ? 'space-x-1' : ''}>
-          <Link href="/people/customers/create" aria-label="Add Customer">
-            <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} size={18} />
-            {!isMobile && <span>Add Customer</span>}
-          </Link>
+        <Button
+          size={isMobile ? 'icon' : 'default'}
+          className={!isMobile ? 'space-x-1' : ''}
+          onClick={() => setOpen('add')}
+          aria-label="Add Customer"
+        >
+          <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} size={18} />
+          {!isMobile && <span>Add Customer</span>}
         </Button>
       )}
     </div>

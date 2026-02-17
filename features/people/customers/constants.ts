@@ -1,6 +1,9 @@
-/**
- * Customer feature constants
- */
+import { type CustomerActiveStatus } from './types'
+
+export const statusTypes = new Map<CustomerActiveStatus, string>([
+  ['active', 'border-green-500/50 text-green-700 dark:text-green-400'],
+  ['inactive', 'border-muted-foreground/50'],
+])
 
 export const CUSTOMER_STATUS_OPTIONS = [
   { value: '', label: 'All' },

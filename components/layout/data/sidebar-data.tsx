@@ -285,7 +285,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
           icon: HRMIcon,
           items: [
             {
-              title: "Department",
+              title: "Departments",
               url: "/hrm/departments",
               permissions: ["view departments"],
             },

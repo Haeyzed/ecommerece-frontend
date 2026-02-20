@@ -15,10 +15,8 @@
 import type {
   ApiResponse,
   NormalizedApiResponse,
-  PaginationMeta,
 } from "./api-types";
 import {
-  ApiError,
   UnauthorizedError,
   ValidationError,
   NotFoundError,
@@ -64,7 +62,7 @@ export interface ApiRequestOptions extends ApiClientOptions {
  */
 class ApiClient {
   /** The base URL for the API. */
-  private baseURL: string;
+  private readonly baseURL: string;
 
   /**
    * Initializes a new API client.

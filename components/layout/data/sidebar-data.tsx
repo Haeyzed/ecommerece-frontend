@@ -287,22 +287,27 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Department",
               url: "/hrm/departments",
+              permissions: ["view departments"],
             },
             {
               title: "Employee",
               url: "/hrm/employees",
+              permissions: ["view employees"],
             },
             {
               title: "Attendance",
               url: "/hrm/attendance",
+              permissions: ["view attendance"],
             },
             {
               title: "Payroll",
               url: "/hrm/payroll",
+              permissions: ["view payroll"],
             },
             {
               title: "Holiday",
               url: "/hrm/holidays",
+              permissions: ["view holidays"],
             },
           ],
         },
@@ -313,18 +318,22 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Users",
               url: "/people/users",
+              permissions: ["view users"],
             },
             {
               title: "Add User",
               url: "/people/users/create",
+              permissions: ["create users"],
             },
             {
               title: "Customers",
               url: "/people/customers",
+              permissions: ["view customers"],
             },
             {
               title: "Add Customer",
               url: "/people/customers/create",
+              permissions: ["create customers"],
             },
             {
               title: "Billers",
@@ -334,12 +343,12 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Suppliers",
               url: "/people/suppliers",
-              permissions: ["suppliers-index"],
+              permissions: ["view suppliers"],
             },
             {
               title: "Add Supplier",
               url: "/people/suppliers/create",
-              permissions: ["suppliers-create"],
+              permissions: ["create suppliers"],
             },
           ],
         },
@@ -350,7 +359,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Audit Logs",
               url: "/reports/audit-log",
-              permissions: ["audit-logs-index"],
+              permissions: ["view audit logs"],
             },
             {
               title: "Summary Report",
@@ -411,7 +420,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Customer Due Report",
               url: "/reports/customer-due",
-              permissions: ["due-report"],
+              permissions: ["view customer due report"],
             },
             {
               title: "Supplier Report",
@@ -591,7 +600,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Warehouses",
               url: "/settings/warehouses",
-              permissions: ["warehouses-index"],
+              permissions: ["view warehouses"],
             },
             {
               title: "Countries",
@@ -630,7 +639,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Customer Group",
               url: "/settings/customer-group",
-              permissions: ["customer-groups-index"],
+              permissions: ["view customer groups"],
             },
             {
               title: "Taxes",
@@ -652,43 +661,47 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "General Setting",
               url: "/settings/general",
-              permissions: ["general_setting"],
+              permissions: ["view general setting"],
             },
             {
               title: "Mail Setting",
               url: "/settings/mail",
-              permissions: ["mail_setting"],
+              permissions: ["view mail setting"],
             },
             {
               title: "Reward Point Setting",
               url: "/settings/reward-point",
-              permissions: ["reward_point_setting"],
+              permissions: ["view reward point setting"],
             },
             {
               title: "SMS Setting",
               url: "/settings/sms",
-              permissions: ["sms_setting"],
+              permissions: ["view sms setting"],
             },
             {
               title: "Payment Gateways",
               url: "/settings/payment-gateways",
-              permissions: ["payment_gateway_setting"],
+              permissions: ["view payment gateway setting"],
             },
             {
               title: "POS Settings",
               url: "/settings/pos",
+              permissions: ["view pos setting"],
             },
             {
               title: "HRM Setting",
               url: "/settings/hrm",
+              permissions: ["view hrm setting"],
             },
             {
               title: "Barcode Settings",
               url: "/settings/barcode",
+              permissions: ["view barcode setting"],
             },
             {
               title: "Languages",
               url: "/settings/languages",
+              permissions: ["view languages"],
             },
           ],
         },

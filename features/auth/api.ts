@@ -1,15 +1,5 @@
 "use client";
 
-/**
- * Authentication Hooks
- *
- * Custom React hooks for managing authentication state and operations.
- * Integrates TanStack Query for server state management with NextAuth.js
- * for session handling and a Laravel-based API backend.
- *
- * @module features/auth/hooks
- */
-
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -25,44 +15,16 @@ import type {
 } from './types';
 import { UnauthorizedError, ValidationError } from "@/lib/api/api-errors";
 
-/**
- * Authentication query keys.
- * Centralized key factory to ensure consistency across the application.
- */
 export const authKeys = {
   all: ["auth"] as const,
   user: () => [...authKeys.all, "user"] as const,
 };
 
-/**
- * useAuthSession
- *
- * Retrieves the current NextAuth session state.
- *
- * Use this hook to:
- * - Check if the user is `authenticated`, `unauthenticated`, or `loading`.
- * - Access the session token for client-side logic.
- *
- * @returns {SessionContextValue} The NextAuth session context.
- */
 export function useAuthSession() {
   const session = useSession();
   return session;
 }
 
-/**
- * useAuth
- *
- * Fetches the current authenticated user's full profile from the backend API.
- * Unlike `useAuthSession` which returns the session cookie data, this hook
- * fetches fresh data (roles, permissions, updated details) from the database.
- *
- * Behavior:
- * - Only executes if the NextAuth session status is "authenticated".
- * - Does not retry on 401 errors to prevent infinite loops.
- *
- * @returns {UseQueryResult<AuthUser, Error>} TanStack Query result containing the user profile.
- */
 export function useAuth() {
   const { api, sessionStatus } = useApiClient();
 
@@ -85,18 +47,6 @@ export function useAuth() {
   });
 }
 
-/**
- * useLogin
- *
- * Mutation hook to handle the login flow.
- *
- * Process:
- * 1. Authenticates credentials against the Laravel API.
- * 2. If valid, signs in via NextAuth `credentials` provider to establish the session.
- * 3. Redirects to the `callbackUrl` or dashboard.
- *
- * @returns {UseMutationResult} TanStack Mutation result.
- */
 export function useLogin() {
   const router = useRouter();
   const searchParams = useSearchParams();

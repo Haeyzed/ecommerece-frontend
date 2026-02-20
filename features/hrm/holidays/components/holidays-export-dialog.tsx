@@ -51,8 +51,13 @@ import { DateRangePicker } from '@/components/date-range-picker'
 
 const AVAILABLE_COLUMNS = [
   { value: 'id', label: 'ID' },
-  { value: 'name', label: 'Name' },
-  { value: 'is_active', label: 'Status' },
+  { value: 'user_id', label: 'User ID' },
+  { value: 'from_date', label: 'From Date' },
+  { value: 'to_date', label: 'To Date' },
+  { value: 'note', label: 'Note' },
+  { value: 'is_approved', label: 'Approved' },
+  { value: 'recurring', label: 'Recurring' },
+  { value: 'region', label: 'Region' },
   { value: 'created_at', label: 'Date Created' },
   { value: 'updated_at', label: 'Last Updated' },
 ] as const
@@ -77,7 +82,7 @@ export function HolidaysExportDialog({
     defaultValues: {
       format: 'excel',
       method: 'download',
-      columns: ['id', 'name', 'is_active'],
+      columns: ['id', 'from_date', 'to_date', 'note', 'is_approved'],
       start_date: undefined,
       end_date: undefined,
     },

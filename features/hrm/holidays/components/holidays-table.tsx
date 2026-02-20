@@ -46,28 +46,27 @@ export function HolidaysTable() {
     pagination: { defaultPage: 1, defaultPageSize: 10 },
     globalFilter: { enabled: false },
     columnFilters: [
-      { columnId: 'name', searchKey: 'search', type: 'string' },
-      { columnId: 'status', searchKey: 'status', type: 'array' },
+      { columnId: 'note', searchKey: 'search', type: 'string' },
+      { columnId: 'approval_status', searchKey: 'is_approved', type: 'array' },
     ],
   })
 
   const apiParams = useMemo(() => {
     const page = pagination.pageIndex + 1
     const perPage = pagination.pageSize
-    const nameFilter = columnFilters.find((f) => f.id === 'name')
-    const statusFilter = columnFilters.find((f) => f.id === 'status')
-    let statusValue: string | undefined = undefined
-    if (statusFilter?.value && Array.isArray(statusFilter.value)) {
-      if (statusFilter.value.length === 1) {
-        statusValue = statusFilter.value[0]
-      }
+    const searchFilter = columnFilters.find((f) => f.id === 'note')
+    const approvalFilter = columnFilters.find((f) => f.id === 'approval_status')
+    let isApproved: boolean | undefined
+    if (approvalFilter?.value && Array.isArray(approvalFilter.value)) {
+      if (approvalFilter.value.includes('approved')) isApproved = true
+      else if (approvalFilter.value.includes('pending')) isApproved = false
     }
 
     return {
       page,
       per_page: perPage,
-      search: nameFilter?.value as string | undefined,
-      status: statusValue, 
+      search: searchFilter?.value as string | undefined,
+      is_approved: isApproved,
     }
   }, [pagination, columnFilters])
 
@@ -117,7 +116,8 @@ export function HolidaysTable() {
   }
 
   const hasData = data?.meta?.total && data.meta.total > 0
-  const isFiltered = !!apiParams.search || !!apiParams.status
+  const isFiltered =
+    !!apiParams.search || apiParams.is_approved !== undefined
   if (!isLoading && !hasData && !isFiltered) {
     return <HolidaysEmptyState />
   }
@@ -131,15 +131,15 @@ export function HolidaysTable() {
     >
       <DataTableToolbar
         table={table}
-        searchPlaceholder='Filter holidays...'
-        searchKey='name'
+        searchPlaceholder="Filter by note..."
+        searchKey="note"
         filters={[
           {
-            columnId: 'active_status',
+            columnId: 'approval_status',
             title: 'Status',
             options: [
-              { label: 'Active', value: 'active' },
-              { label: 'Inactive', value: 'inactive' },
+              { label: 'Approved', value: 'approved' },
+              { label: 'Pending', value: 'pending' },
             ],
           },
         ]}

@@ -29,8 +29,10 @@ export function HolidaysDeleteDialog({
   const canDelete = userPermissions.includes('delete holidays')
   if (!canDelete) return null
 
+  const CONFIRM_WORD = 'DELETE'
+
   const handleDelete = () => {
-    if (value.trim() !== currentRow.name) return
+    if (value.trim() !== CONFIRM_WORD) return
 
     deleteHoliday(currentRow.id, {
       onSuccess: () => {
@@ -40,12 +42,17 @@ export function HolidaysDeleteDialog({
     })
   }
 
+  const periodLabel =
+    currentRow.from_date && currentRow.to_date
+      ? `${currentRow.from_date} to ${currentRow.to_date}`
+      : 'this leave request'
+
   return (
     <ConfirmDialog
       open={open}
       onOpenChange={onOpenChange}
       handleConfirm={handleDelete}
-      disabled={value.trim() !== currentRow.name || isPending}
+      disabled={value.trim() !== CONFIRM_WORD || isPending}
       title={
         <span className='text-destructive'>
           <HugeiconsIcon
@@ -60,19 +67,19 @@ export function HolidaysDeleteDialog({
       desc={
         <div className='space-y-4'>
           <p className='mb-2'>
-            Are you sure you want to delete{' '}
-            <span className='font-bold'>{currentRow.name}</span>?
+            Are you sure you want to delete the leave request{' '}
+            <span className='font-bold'>{periodLabel}</span>?
             <br />
-            This action will permanently remove the holiday from the system. 
-            This cannot be undone.
+            This action will permanently remove the holiday from the system. This
+            cannot be undone.
           </p>
 
           <Label className='my-2'>
-            Holiday Name:
+            Type &quot;{CONFIRM_WORD}&quot; to confirm:
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder='Enter holiday name to confirm deletion.'
+              placeholder={`Type "${CONFIRM_WORD}" to confirm.`}
             />
           </Label>
 

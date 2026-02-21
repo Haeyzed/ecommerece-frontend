@@ -53,6 +53,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Spinner } from '@/components/ui/spinner';
 import { DatePickerSingle } from '@/components/ui/date-picker';
+import { useAuthSession } from '@/features/auth/api'
 
 type HolidaysActionDialogProps = {
   currentRow?: Holiday;
@@ -70,6 +71,9 @@ export function HolidaysActionDialog({
   const { mutate: createHoliday, isPending: isCreating } = useCreateHoliday();
   const { mutate: updateHoliday, isPending: isUpdating } = useUpdateHoliday();
   const isLoading = isCreating || isUpdating;
+  const { data: session } = useAuthSession()
+  const userPermissions = session?.user?.user_permissions || []
+  const canApproveHolidays = userPermissions.includes('approve holidays')
 
   const form = useForm<HolidayFormData>({
     resolver: zodResolver(holidaySchema),
@@ -79,7 +83,7 @@ export function HolidaysActionDialog({
           from_date: currentRow.from_date ?? '',
           to_date: currentRow.to_date ?? '',
           note: currentRow.note ?? null,
-          is_approved: currentRow.is_approved ?? null,
+          is_approved: canApproveHolidays ? currentRow.is_approved ?? false : null,
           recurring: currentRow.recurring ?? null,
           region: currentRow.region ?? null,
         }
@@ -88,7 +92,7 @@ export function HolidaysActionDialog({
           from_date: '',
           to_date: '',
           note: null,
-          is_approved: null,
+          is_approved: canApproveHolidays ? false : null,
           recurring: null,
           region: null,
         },
@@ -129,7 +133,7 @@ export function HolidaysActionDialog({
           </DialogHeader>
 
           <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
-            <HolidayForm form={form} onSubmit={onSubmit} id="holiday-form" />
+            <HolidayForm form={form} onSubmit={onSubmit} id="holiday-form" canApproveHolidays={canApproveHolidays} />
           </div>
 
           <DialogFooter>
@@ -163,7 +167,7 @@ export function HolidaysActionDialog({
         </DrawerHeader>
 
         <div className="no-scrollbar overflow-y-auto px-4">
-          <HolidayForm form={form} onSubmit={onSubmit} id="holiday-form" />
+          <HolidayForm form={form} onSubmit={onSubmit} id="holiday-form" canApproveHolidays={canApproveHolidays} />
         </div>
 
         <DrawerFooter>
@@ -191,9 +195,10 @@ interface HolidayFormProps {
   onSubmit: (data: HolidayFormData) => void;
   id: string;
   className?: string;
+  canApproveHolidays: boolean;
 }
 
-function HolidayForm({ form, onSubmit, id, className }: HolidayFormProps) {
+function HolidayForm({ form, onSubmit, id, className, canApproveHolidays }: HolidayFormProps) {
   const { api } = useApiClient();
   const [userSelectOpen, setUserSelectOpen] = useState(false);
 
@@ -323,6 +328,7 @@ function HolidayForm({ form, onSubmit, id, className }: HolidayFormProps) {
           )}
         />
 
+        {canApproveHolidays && (
         <Controller
           control={form.control}
           name="is_approved"
@@ -346,6 +352,7 @@ function HolidayForm({ form, onSubmit, id, className }: HolidayFormProps) {
             </Field>
           )}
         />
+        )}
 
         <Controller
           control={form.control}

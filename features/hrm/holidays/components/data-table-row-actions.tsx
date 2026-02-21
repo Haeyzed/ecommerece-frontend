@@ -64,7 +64,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
                 <HugeiconsIcon icon={ViewIcon} strokeWidth={2} size={16} />
               </DropdownMenuShortcut>
             </DropdownMenuItem>
-            {(canUpdate || canDelete || canApprove) && <DropdownMenuSeparator />}
+            {(canUpdate || canDelete || (canApprove && !row.original.is_approved)) && <DropdownMenuSeparator />}
           </>
         )}
 
@@ -82,7 +82,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
 
         {canUpdate && (
           <>
-            {(canDelete || canApprove) && <DropdownMenuSeparator />}
+            {(canDelete || (canApprove && !row.original.is_approved)) && <DropdownMenuSeparator />}
             <DropdownMenuItem
               onClick={() => {
                 setCurrentRow(row.original);

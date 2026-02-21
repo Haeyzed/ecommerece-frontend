@@ -68,7 +68,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           </>
         )}
 
-        {canApprove && (
+        {canApprove && !row.original.is_approved && (
           <DropdownMenuItem
             onClick={() => approveHoliday(row.original.id)}
             disabled={isApproving}

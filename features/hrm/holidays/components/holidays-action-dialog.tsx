@@ -73,7 +73,7 @@ export function HolidaysActionDialog({
   const isLoading = isCreating || isUpdating;
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canApproveHolidays = userPermissions.includes('approve holidays')
+  const canApprove = userPermissions.includes('approve holidays')
 
   const form = useForm<HolidayFormData>({
     resolver: zodResolver(holidaySchema),
@@ -83,7 +83,7 @@ export function HolidaysActionDialog({
           from_date: currentRow.from_date ?? '',
           to_date: currentRow.to_date ?? '',
           note: currentRow.note ?? null,
-          is_approved: canApproveHolidays ? currentRow.is_approved ?? false : null,
+          is_approved: canApprove ? currentRow.is_approved ?? false : null,
           recurring: currentRow.recurring ?? null,
           region: currentRow.region ?? null,
         }
@@ -92,7 +92,7 @@ export function HolidaysActionDialog({
           from_date: '',
           to_date: '',
           note: null,
-          is_approved: canApproveHolidays ? false : null,
+          is_approved: canApprove ? false : null,
           recurring: null,
           region: null,
         },
@@ -133,7 +133,7 @@ export function HolidaysActionDialog({
           </DialogHeader>
 
           <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
-            <HolidayForm form={form} onSubmit={onSubmit} id="holiday-form" canApproveHolidays={canApproveHolidays} />
+            <HolidayForm form={form} onSubmit={onSubmit} id="holiday-form" canApprove={canApprove} />
           </div>
 
           <DialogFooter>
@@ -167,7 +167,7 @@ export function HolidaysActionDialog({
         </DrawerHeader>
 
         <div className="no-scrollbar overflow-y-auto px-4">
-          <HolidayForm form={form} onSubmit={onSubmit} id="holiday-form" canApproveHolidays={canApproveHolidays} />
+          <HolidayForm form={form} onSubmit={onSubmit} id="holiday-form" canApprove={canApprove} />
         </div>
 
         <DrawerFooter>
@@ -195,10 +195,10 @@ interface HolidayFormProps {
   onSubmit: (data: HolidayFormData) => void;
   id: string;
   className?: string;
-  canApproveHolidays: boolean;
+  canApprove: boolean;
 }
 
-function HolidayForm({ form, onSubmit, id, className, canApproveHolidays }: HolidayFormProps) {
+function HolidayForm({ form, onSubmit, id, className, canApprove }: HolidayFormProps) {
   const { api } = useApiClient();
   const [userSelectOpen, setUserSelectOpen] = useState(false);
 
@@ -328,7 +328,7 @@ function HolidayForm({ form, onSubmit, id, className, canApproveHolidays }: Holi
           )}
         />
 
-        {canApproveHolidays && (
+        {canApprove && (
         <Controller
           control={form.control}
           name="is_approved"

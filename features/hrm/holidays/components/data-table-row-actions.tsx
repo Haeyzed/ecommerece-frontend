@@ -36,7 +36,6 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const canUpdate = userPermissions.includes('update holidays');
   const canDelete = userPermissions.includes('delete holidays');
   const canApprove = userPermissions.includes('approve holidays');
-  const isPending = !row.original.is_approved;
 
   if (!canView && !canUpdate && !canDelete && !canApprove) return null;
 
@@ -65,11 +64,11 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
                 <HugeiconsIcon icon={ViewIcon} strokeWidth={2} size={16} />
               </DropdownMenuShortcut>
             </DropdownMenuItem>
-            {(canUpdate || canDelete || (canApprove && isPending)) && <DropdownMenuSeparator />}
+            {(canUpdate || canDelete || canApprove) && <DropdownMenuSeparator />}
           </>
         )}
 
-        {canApprove && isPending && (
+        {canApprove && (
           <DropdownMenuItem
             onClick={() => approveHoliday(row.original.id)}
             disabled={isApproving}
@@ -83,7 +82,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
 
         {canUpdate && (
           <>
-            {(canDelete || (canApprove && isPending)) && <DropdownMenuSeparator />}
+            {(canDelete || canApprove) && <DropdownMenuSeparator />}
             <DropdownMenuItem
               onClick={() => {
                 setCurrentRow(row.original);

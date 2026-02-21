@@ -1,45 +1,42 @@
-"use client";
+'use client';
 
-import { useApiClient } from "@/lib/api/api-client-client";
-import { ValidationError } from "@/lib/api/api-errors";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { useApiClient } from '@/lib/api/api-client-client';
+import { ValidationError } from '@/lib/api/api-errors';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import type {
   Warehouse,
   WarehouseExportParams,
   WarehouseFormData,
   WarehouseListParams,
-  WarehouseOption
-} from "./types";
+  WarehouseOption,
+} from './types';
 
 export const warehouseKeys = {
-  all: ["warehouses"] as const,
-  lists: () => [...warehouseKeys.all, "list"] as const,
+  all: ['warehouses'] as const,
+  lists: () => [...warehouseKeys.all, 'list'] as const,
   list: (filters?: Record<string, unknown>) => [...warehouseKeys.lists(), filters] as const,
-  details: () => [...warehouseKeys.all, "detail"] as const,
+  details: () => [...warehouseKeys.all, 'detail'] as const,
   detail: (id: number) => [...warehouseKeys.details(), id] as const,
-  options: () => [...warehouseKeys.all, "options"] as const,
-  template: () => [...warehouseKeys.all, "template"] as const,
+  options: () => [...warehouseKeys.all, 'options'] as const,
+  template: () => [...warehouseKeys.all, 'template'] as const,
 };
 
-const BASE_PATH = '/warehouses'
+const BASE_PATH = '/warehouses';
 
 export function useWarehouses(params?: WarehouseListParams) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
     queryKey: warehouseKeys.list(params),
     queryFn: async () => {
-      const response = await api.get<Warehouse[]>(
-        BASE_PATH,
-        { params }
-      );
+      const response = await api.get<Warehouse[]>(BASE_PATH, { params });
       return response;
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -51,7 +48,7 @@ export function useOptionWarehouses() {
       const response = await api.get<WarehouseOption[]>(`${BASE_PATH}/options`);
       return response.data ?? [];
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
 }
 
@@ -63,11 +60,11 @@ export function useWarehouse(id: number) {
       const response = await api.get<Warehouse>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
-    enabled: !!id && sessionStatus !== "loading",
+    enabled: !!id && sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -77,19 +74,17 @@ export function useCreateWarehouse() {
 
   return useMutation({
     mutationFn: async (data: WarehouseFormData) => {
-      const formData = new FormData();
+      const payload: Record<string, unknown> = {
+        name: data.name,
+        is_active: data.is_active ?? true,
+      };
+      if (data.phone != null) payload.phone = data.phone;
+      if (data.email != null) payload.email = data.email;
+      if (data.address != null) payload.address = data.address;
 
-      formData.append("name", data.name);
-      if (data.phone) formData.append("phone", data.phone);
-      if (data.email) formData.append("email", data.email);
-      if (data.address) formData.append("address", data.address);
-      if (data.is_active !== undefined) formData.append("is_active", data.is_active ? "1" : "0");
-
-      const response = await api.post<{ data: Warehouse }>(BASE_PATH, formData);
+      const response = await api.post<{ data: Warehouse }>(BASE_PATH, payload);
       if (!response.success) {
-        if (response.errors) {
-          throw new ValidationError(response.message, response.errors);
-        }
+        if (response.errors) throw new ValidationError(response.message, response.errors);
         throw new Error(response.message);
       }
       return response;
@@ -110,20 +105,16 @@ export function useUpdateWarehouse() {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<WarehouseFormData> }) => {
-      const formData = new FormData();
-      formData.append("_method", "PUT");
+      const payload: Record<string, unknown> = {};
+      if (data.name !== undefined) payload.name = data.name;
+      if (data.phone !== undefined) payload.phone = data.phone;
+      if (data.email !== undefined) payload.email = data.email;
+      if (data.address !== undefined) payload.address = data.address;
+      if (data.is_active !== undefined) payload.is_active = data.is_active;
 
-      if (data.name) formData.append("name", data.name);
-      if (data.phone !== undefined) formData.append("phone", data.phone || "");
-      if (data.email !== undefined) formData.append("email", data.email || "");
-      if (data.address !== undefined) formData.append("address", data.address || "");
-      if (data.is_active !== undefined) formData.append("is_active", data.is_active ? "1" : "0");
-
-      const response = await api.post<{ data: Warehouse }>(`${BASE_PATH}/${id}`, formData);
+      const response = await api.put<{ data: Warehouse }>(`${BASE_PATH}/${id}`, payload);
       if (!response.success) {
-        if (response.errors) {
-          throw new ValidationError(response.message, response.errors);
-        }
+        if (response.errors) throw new ValidationError(response.message, response.errors);
         throw new Error(response.message);
       }
       return { id, message: response.message };
@@ -146,9 +137,7 @@ export function useDeleteWarehouse() {
   return useMutation({
     mutationFn: async (id: number) => {
       const response = await api.delete(`${BASE_PATH}/${id}`);
-      if (!response.success) {
-        throw new Error(response.message);
-      }
+      if (!response.success) throw new Error(response.message);
       return response;
     },
     onSuccess: (response) => {
@@ -206,9 +195,7 @@ export function useBulkDestroyWarehouses() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.delete(`${BASE_PATH}/bulk-destroy`, {
-        body: JSON.stringify({ ids }),
-      });
+      const response = await api.post(`${BASE_PATH}/bulk-destroy`, { ids });
       if (!response.success) throw new Error(response.message);
       return response;
     },
@@ -226,7 +213,7 @@ export function useWarehousesImport() {
   return useMutation({
     mutationFn: async (file: File) => {
       const form = new FormData();
-      form.append("file", file);
+      form.append('file', file);
       const response = await api.post(`${BASE_PATH}/import`, form);
       if (!response.success) throw new Error(response.message);
       return response;
@@ -244,12 +231,12 @@ export function useWarehousesExport() {
 
   return useMutation({
     mutationFn: async (params: WarehouseExportParams) => {
-      if (params.method === "download") {
+      if (params.method === 'download') {
         const blob = await api.postBlob(`${BASE_PATH}/export`, params);
         const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
+        const link = document.createElement('a');
         link.href = url;
-        const fileName = `warehouses-export-${Date.now()}.${params.format === "pdf" ? "pdf" : "xlsx"}`;
+        const fileName = `warehouses-export-${Date.now()}.${params.format === 'pdf' ? 'pdf' : 'xlsx'}`;
         link.download = fileName;
         document.body.appendChild(link);
         link.click();

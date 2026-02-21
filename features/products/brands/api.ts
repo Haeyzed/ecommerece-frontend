@@ -1,22 +1,28 @@
-"use client";
+'use client';
 
-import { useApiClient } from "@/lib/api/api-client-client";
-import { ValidationError } from "@/lib/api/api-errors";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import type { Brand, BrandExportParams, BrandFormData, BrandListParams, BrandOption } from './types'
+import { useApiClient } from '@/lib/api/api-client-client';
+import { ValidationError } from '@/lib/api/api-errors';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import type {
+  Brand,
+  BrandExportParams,
+  BrandFormData,
+  BrandListParams,
+  BrandOption,
+} from './types';
 
 export const brandKeys = {
-  all: ["brands"] as const,
-  lists: () => [...brandKeys.all, "list"] as const,
+  all: ['brands'] as const,
+  lists: () => [...brandKeys.all, 'list'] as const,
   list: (filters?: Record<string, unknown>) => [...brandKeys.lists(), filters] as const,
-  details: () => [...brandKeys.all, "detail"] as const,
+  details: () => [...brandKeys.all, 'detail'] as const,
   detail: (id: number) => [...brandKeys.details(), id] as const,
-  options: () => [...brandKeys.all, "options"] as const,
-  template: () => [...brandKeys.all, "template"] as const,
+  options: () => [...brandKeys.all, 'options'] as const,
+  template: () => [...brandKeys.all, 'template'] as const,
 };
 
-const BASE_PATH = '/brands'
+const BASE_PATH = '/brands';
 
 export function useBrands(params?: BrandListParams) {
   const { api, sessionStatus } = useApiClient();
@@ -29,11 +35,11 @@ export function useBrands(params?: BrandListParams) {
       );
       return response;
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -45,7 +51,7 @@ export function useOptionBrands() {
       const response = await api.get<BrandOption[]>(`${BASE_PATH}/options`);
       return response.data ?? [];
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
 }
 
@@ -57,11 +63,11 @@ export function useBrand(id: number) {
       const response = await api.get<Brand>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
-    enabled: !!id && sessionStatus !== "loading",
+    enabled: !!id && sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -145,9 +151,7 @@ export function useDeleteBrand() {
   return useMutation({
     mutationFn: async (id: number) => {
       const response = await api.delete(`${BASE_PATH}/${id}`);
-      if (!response.success) {
-        throw new Error(response.message);
-      }
+      if (!response.success) throw new Error(response.message);
       return response;
     },
     onSuccess: (response) => {
@@ -205,9 +209,7 @@ export function useBulkDestroyBrands() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.delete(`${BASE_PATH}/bulk-destroy`, {
-        body: JSON.stringify({ ids }),
-      });
+      const response = await api.post(`${BASE_PATH}/bulk-destroy`, { ids });
       if (!response.success) throw new Error(response.message);
       return response;
     },

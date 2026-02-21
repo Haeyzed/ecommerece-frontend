@@ -1,40 +1,43 @@
-"use client";
+'use client';
 
-import { useApiClient } from "@/lib/api/api-client-client";
-import { ValidationError } from "@/lib/api/api-errors";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import type { Unit, UnitExportParams, UnitFormData, UnitListParams, UnitOption } from './types'
+import { useApiClient } from '@/lib/api/api-client-client';
+import { ValidationError } from '@/lib/api/api-errors';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import type {
+  Unit,
+  UnitExportParams,
+  UnitFormData,
+  UnitListParams,
+  UnitOption,
+} from './types';
 
 export const unitKeys = {
-  all: ["units"] as const,
-  lists: () => [...unitKeys.all, "list"] as const,
+  all: ['units'] as const,
+  lists: () => [...unitKeys.all, 'list'] as const,
   list: (filters?: Record<string, unknown>) => [...unitKeys.lists(), filters] as const,
-  details: () => [...unitKeys.all, "detail"] as const,
+  details: () => [...unitKeys.all, 'detail'] as const,
   detail: (id: number) => [...unitKeys.details(), id] as const,
-  options: () => [...unitKeys.all, "options"] as const,
-  baseUnits: () => [...unitKeys.all, "base-units"] as const,
-  template: () => [...unitKeys.all, "template"] as const,
+  options: () => [...unitKeys.all, 'options'] as const,
+  baseUnits: () => [...unitKeys.all, 'base-units'] as const,
+  template: () => [...unitKeys.all, 'template'] as const,
 };
 
-const BASE_PATH = '/units'
+const BASE_PATH = '/units';
 
 export function useUnits(params?: UnitListParams) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
     queryKey: unitKeys.list(params),
     queryFn: async () => {
-      const response = await api.get<Unit[]>(
-        BASE_PATH,
-        { params }
-      );
+      const response = await api.get<Unit[]>(BASE_PATH, { params });
       return response;
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -46,7 +49,7 @@ export function useOptionUnits() {
       const response = await api.get<UnitOption[]>(`${BASE_PATH}/options`);
       return response.data ?? [];
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
 }
 
@@ -58,7 +61,7 @@ export function useBaseUnits() {
       const response = await api.get<UnitOption[]>(`${BASE_PATH}/base-units`);
       return response.data || [];
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
 }
 
@@ -70,11 +73,11 @@ export function useUnit(id: number) {
       const response = await api.get<Unit>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
-    enabled: !!id && sessionStatus !== "loading",
+    enabled: !!id && sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -84,22 +87,18 @@ export function useCreateUnit() {
 
   return useMutation({
     mutationFn: async (data: UnitFormData) => {
-      const formData = new FormData();
+      const payload: Record<string, unknown> = {
+        name: data.name,
+        code: data.code,
+        is_active: data.is_active ?? true,
+      };
+      if (data.base_unit !== undefined) payload.base_unit = data.base_unit;
+      if (data.operator !== undefined) payload.operator = data.operator;
+      if (data.operation_value !== undefined) payload.operation_value = data.operation_value;
 
-      formData.append("name", data.name);
-      formData.append("code", data.code);
-      if (data.base_unit !== undefined) {
-        formData.append("base_unit", data.base_unit ? data.base_unit.toString() : "");
-        if (data.operator !== undefined) formData.append("operator", data.operator || "");
-        if (data.operation_value !== undefined) formData.append("operation_value", data.operation_value ? data.operation_value.toString() : "");
-      }
-      if (data.is_active !== undefined) formData.append("is_active", data.is_active ? "1" : "0");
-
-      const response = await api.post<{ data: Unit }>(BASE_PATH, formData);
+      const response = await api.post<{ data: Unit }>(BASE_PATH, payload);
       if (!response.success) {
-        if (response.errors) {
-          throw new ValidationError(response.message, response.errors);
-        }
+        if (response.errors) throw new ValidationError(response.message, response.errors);
         throw new Error(response.message);
       }
       return response;
@@ -120,23 +119,17 @@ export function useUpdateUnit() {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<UnitFormData> }) => {
-      const formData = new FormData();
-      formData.append("_method", "PUT");
+      const payload: Record<string, unknown> = {};
+      if (data.name !== undefined) payload.name = data.name;
+      if (data.code !== undefined) payload.code = data.code;
+      if (data.base_unit !== undefined) payload.base_unit = data.base_unit;
+      if (data.operator !== undefined) payload.operator = data.operator;
+      if (data.operation_value !== undefined) payload.operation_value = data.operation_value;
+      if (data.is_active !== undefined) payload.is_active = data.is_active;
 
-      if (data.name) formData.append("name", data.name);
-      if (data.code) formData.append("code", data.code);
-      if (data.base_unit !== undefined) {
-        formData.append("base_unit", data.base_unit ? data.base_unit.toString() : "");
-        if (data.operator !== undefined) formData.append("operator", data.operator || "");
-        if (data.operation_value !== undefined) formData.append("operation_value", data.operation_value ? data.operation_value.toString() : "");
-      }
-      if (data.is_active !== undefined) formData.append("is_active", data.is_active ? "1" : "0");
-
-      const response = await api.post<{ data: Unit }>(`${BASE_PATH}/${id}`, formData);
+      const response = await api.put<{ data: Unit }>(`${BASE_PATH}/${id}`, payload);
       if (!response.success) {
-        if (response.errors) {
-          throw new ValidationError(response.message, response.errors);
-        }
+        if (response.errors) throw new ValidationError(response.message, response.errors);
         throw new Error(response.message);
       }
       return { id, message: response.message };
@@ -159,9 +152,7 @@ export function useDeleteUnit() {
   return useMutation({
     mutationFn: async (id: number) => {
       const response = await api.delete(`${BASE_PATH}/${id}`);
-      if (!response.success) {
-        throw new Error(response.message);
-      }
+      if (!response.success) throw new Error(response.message);
       return response;
     },
     onSuccess: (response) => {
@@ -177,6 +168,7 @@ export function useDeleteUnit() {
 export function useBulkActivateUnits() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
@@ -217,11 +209,10 @@ export function useBulkDeactivateUnits() {
 export function useBulkDestroyUnits() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.delete(`${BASE_PATH}/bulk-destroy`, {
-        body: JSON.stringify({ ids }),
-      });
+      const response = await api.post(`${BASE_PATH}/bulk-destroy`, { ids });
       if (!response.success) throw new Error(response.message);
       return response;
     },
@@ -236,6 +227,7 @@ export function useBulkDestroyUnits() {
 export function useUnitsImport() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (file: File) => {
       const form = new FormData();

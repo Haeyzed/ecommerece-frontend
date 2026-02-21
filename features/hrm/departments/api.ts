@@ -1,39 +1,42 @@
-"use client";
+'use client';
 
-import { useApiClient } from "@/lib/api/api-client-client";
-import { ValidationError } from "@/lib/api/api-errors";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import type { Department, DepartmentExportParams, DepartmentFormData, DepartmentListParams, DepartmentOption } from './types'
+import { useApiClient } from '@/lib/api/api-client-client';
+import { ValidationError } from '@/lib/api/api-errors';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import type {
+  Department,
+  DepartmentExportParams,
+  DepartmentFormData,
+  DepartmentListParams,
+  DepartmentOption,
+} from './types';
 
 export const departmentKeys = {
-  all: ["departments"] as const,
-  lists: () => [...departmentKeys.all, "list"] as const,
+  all: ['departments'] as const,
+  lists: () => [...departmentKeys.all, 'list'] as const,
   list: (filters?: Record<string, unknown>) => [...departmentKeys.lists(), filters] as const,
-  details: () => [...departmentKeys.all, "detail"] as const,
+  details: () => [...departmentKeys.all, 'detail'] as const,
   detail: (id: number) => [...departmentKeys.details(), id] as const,
-  options: () => [...departmentKeys.all, "options"] as const,
-  template: () => [...departmentKeys.all, "template"] as const,
+  options: () => [...departmentKeys.all, 'options'] as const,
+  template: () => [...departmentKeys.all, 'template'] as const,
 };
 
-const BASE_PATH = '/departments'
+const BASE_PATH = '/departments';
 
 export function useDepartments(params?: DepartmentListParams) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
     queryKey: departmentKeys.list(params),
     queryFn: async () => {
-      const response = await api.get<Department[]>(
-        BASE_PATH,
-        { params }
-      );
+      const response = await api.get<Department[]>(BASE_PATH, { params });
       return response;
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -45,7 +48,7 @@ export function useOptionDepartments() {
       const response = await api.get<DepartmentOption[]>(`${BASE_PATH}/options`);
       return response.data ?? [];
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
 }
 
@@ -57,11 +60,11 @@ export function useDepartment(id: number) {
       const response = await api.get<Department>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
-    enabled: !!id && sessionStatus !== "loading",
+    enabled: !!id && sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -71,16 +74,14 @@ export function useCreateDepartment() {
 
   return useMutation({
     mutationFn: async (data: DepartmentFormData) => {
-      const formData = new FormData();
+      const payload: Record<string, unknown> = {
+        name: data.name,
+        is_active: data.is_active ?? true,
+      };
 
-      formData.append("name", data.name);
-      if (data.is_active !== undefined) formData.append("is_active", data.is_active ? "1" : "0");
-
-      const response = await api.post<{ data: Department }>(BASE_PATH, formData);
+      const response = await api.post<{ data: Department }>(BASE_PATH, payload);
       if (!response.success) {
-        if (response.errors) {
-          throw new ValidationError(response.message, response.errors);
-        }
+        if (response.errors) throw new ValidationError(response.message, response.errors);
         throw new Error(response.message);
       }
       return response;
@@ -101,17 +102,13 @@ export function useUpdateDepartment() {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<DepartmentFormData> }) => {
-      const formData = new FormData();
-      formData.append("_method", "PUT");
+      const payload: Record<string, unknown> = {};
+      if (data.name !== undefined) payload.name = data.name;
+      if (data.is_active !== undefined) payload.is_active = data.is_active;
 
-      if (data.name) formData.append("name", data.name);
-      if (data.is_active !== undefined) formData.append("is_active", data.is_active ? "1" : "0");
-
-      const response = await api.post<{ data: Department }>(`${BASE_PATH}/${id}`, formData);
+      const response = await api.put<{ data: Department }>(`${BASE_PATH}/${id}`, payload);
       if (!response.success) {
-        if (response.errors) {
-          throw new ValidationError(response.message, response.errors);
-        }
+        if (response.errors) throw new ValidationError(response.message, response.errors);
         throw new Error(response.message);
       }
       return { id, message: response.message };
@@ -134,9 +131,7 @@ export function useDeleteDepartment() {
   return useMutation({
     mutationFn: async (id: number) => {
       const response = await api.delete(`${BASE_PATH}/${id}`);
-      if (!response.success) {
-        throw new Error(response.message);
-      }
+      if (!response.success) throw new Error(response.message);
       return response;
     },
     onSuccess: (response) => {
@@ -152,6 +147,7 @@ export function useDeleteDepartment() {
 export function useBulkActivateDepartments() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
@@ -172,6 +168,7 @@ export function useBulkActivateDepartments() {
 export function useBulkDeactivateDepartments() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ deactivated_count: number }>(
@@ -194,9 +191,7 @@ export function useBulkDestroyDepartments() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.delete(`${BASE_PATH}/bulk-destroy`, {
-        body: JSON.stringify({ ids }),
-      });
+      const response = await api.post(`${BASE_PATH}/bulk-destroy`, { ids });
       if (!response.success) throw new Error(response.message);
       return response;
     },

@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { useApiClient } from "@/lib/api/api-client-client";
-import { useQuery } from "@tanstack/react-query";
-import type { Language, LanguageListParams, LanguageOption } from "./types";
+import { useApiClient } from '@/lib/api/api-client-client';
+import { useQuery } from '@tanstack/react-query';
+import type { Language, LanguageListParams, LanguageOption } from './types';
 
 export const languageKeys = {
-  all: ["languages"] as const,
-  lists: () => [...languageKeys.all, "list"] as const,
+  all: ['languages'] as const,
+  lists: () => [...languageKeys.all, 'list'] as const,
   list: (filters?: Record<string, unknown>) => [...languageKeys.lists(), filters] as const,
-  details: () => [...languageKeys.all, "detail"] as const,
+  details: () => [...languageKeys.all, 'detail'] as const,
   detail: (id: number) => [...languageKeys.details(), id] as const,
-  options: () => [...languageKeys.all, "options"] as const,
+  options: () => [...languageKeys.all, 'options'] as const,
 };
 
-const BASE_PATH = '/languages'
+const BASE_PATH = '/languages';
 
 export function useLanguages(params?: LanguageListParams) {
   const { api, sessionStatus } = useApiClient();
@@ -23,11 +23,11 @@ export function useLanguages(params?: LanguageListParams) {
       const response = await api.get<Language[]>(BASE_PATH, { params });
       return response;
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -39,7 +39,7 @@ export function useOptionLanguages() {
       const response = await api.get<LanguageOption[]>(`${BASE_PATH}/options`);
       return response.data ?? [];
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
 }
 
@@ -51,10 +51,10 @@ export function useLanguage(id: number) {
       const response = await api.get<Language>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
-    enabled: !!id && sessionStatus !== "loading",
+    enabled: !!id && sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }

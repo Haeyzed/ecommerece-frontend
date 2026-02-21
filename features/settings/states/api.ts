@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { useApiClient } from "@/lib/api/api-client-client";
-import { useQuery } from "@tanstack/react-query";
-import type { State, StateListParams, StateOption } from "./types";
+import { useApiClient } from '@/lib/api/api-client-client';
+import { useQuery } from '@tanstack/react-query';
+import type { State, StateListParams, StateOption } from './types';
 
 export const stateKeys = {
-  all: ["states"] as const,
-  lists: () => [...stateKeys.all, "list"] as const,
+  all: ['states'] as const,
+  lists: () => [...stateKeys.all, 'list'] as const,
   list: (filters?: Record<string, unknown>) => [...stateKeys.lists(), filters] as const,
-  details: () => [...stateKeys.all, "detail"] as const,
+  details: () => [...stateKeys.all, 'detail'] as const,
   detail: (id: number) => [...stateKeys.details(), id] as const,
-  options: () => [...stateKeys.all, "options"] as const,
-  cities: (stateId: number) => [...stateKeys.all, "cities", stateId] as const,
+  options: () => [...stateKeys.all, 'options'] as const,
+  cities: (stateId: number) => [...stateKeys.all, 'cities', stateId] as const,
 };
 
-const BASE_PATH = '/states'
+const BASE_PATH = '/states';
 
 export function useStates(params?: StateListParams) {
   const { api, sessionStatus } = useApiClient();
@@ -24,11 +24,11 @@ export function useStates(params?: StateListParams) {
       const response = await api.get<State[]>(BASE_PATH, { params });
       return response;
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -40,7 +40,7 @@ export function useOptionStates() {
       const response = await api.get<StateOption[]>(`${BASE_PATH}/options`);
       return response.data ?? [];
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
 }
 
@@ -52,11 +52,11 @@ export function useStateDetail(id: number) {
       const response = await api.get<State>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
-    enabled: !!id && sessionStatus !== "loading",
+    enabled: !!id && sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -72,6 +72,6 @@ export function useCitiesByState(stateId: number | null) {
       );
       return response.data ?? [];
     },
-    enabled: !!stateId && sessionStatus !== "loading",
+    enabled: !!stateId && sessionStatus !== 'loading',
   });
 }

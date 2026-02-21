@@ -1,39 +1,42 @@
-"use client";
+'use client';
 
-import { useApiClient } from "@/lib/api/api-client-client";
-import { ValidationError } from "@/lib/api/api-errors";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import type { Tax, TaxExportParams, TaxFormData, TaxListParams, TaxOption } from './types'
+import { useApiClient } from '@/lib/api/api-client-client';
+import { ValidationError } from '@/lib/api/api-errors';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import type {
+  Tax,
+  TaxExportParams,
+  TaxFormData,
+  TaxListParams,
+  TaxOption,
+} from './types';
 
 export const taxKeys = {
-  all: ["taxes"] as const,
-  lists: () => [...taxKeys.all, "list"] as const,
+  all: ['taxes'] as const,
+  lists: () => [...taxKeys.all, 'list'] as const,
   list: (filters?: Record<string, unknown>) => [...taxKeys.lists(), filters] as const,
-  details: () => [...taxKeys.all, "detail"] as const,
+  details: () => [...taxKeys.all, 'detail'] as const,
   detail: (id: number) => [...taxKeys.details(), id] as const,
-  options: () => [...taxKeys.all, "options"] as const,
-  template: () => [...taxKeys.all, "template"] as const,
+  options: () => [...taxKeys.all, 'options'] as const,
+  template: () => [...taxKeys.all, 'template'] as const,
 };
 
-const BASE_PATH = '/taxes'
+const BASE_PATH = '/taxes';
 
 export function useTaxes(params?: TaxListParams) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
     queryKey: taxKeys.list(params),
     queryFn: async () => {
-      const response = await api.get<Tax[]>(
-        BASE_PATH,
-        { params }
-      );
+      const response = await api.get<Tax[]>(BASE_PATH, { params });
       return response;
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -45,7 +48,7 @@ export function useOptionTaxes() {
       const response = await api.get<TaxOption[]>(`${BASE_PATH}/options`);
       return response.data ?? [];
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
 }
 
@@ -57,11 +60,11 @@ export function useTax(id: number) {
       const response = await api.get<Tax>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
-    enabled: !!id && sessionStatus !== "loading",
+    enabled: !!id && sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -71,20 +74,16 @@ export function useCreateTax() {
 
   return useMutation({
     mutationFn: async (data: TaxFormData) => {
-      const formData = new FormData();
+      const payload: Record<string, unknown> = {
+        name: data.name,
+        rate: data.rate,
+        is_active: data.is_active ?? true,
+      };
+      if (data.woocommerce_tax_id != null) payload.woocommerce_tax_id = data.woocommerce_tax_id;
 
-      formData.append("name", data.name);
-      formData.append("rate", data.rate.toString());
-      if (data.woocommerce_tax_id) {
-        formData.append("woocommerce_tax_id", data.woocommerce_tax_id.toString());
-      }
-      if (data.is_active !== undefined) formData.append("is_active", data.is_active ? "1" : "0");
-
-      const response = await api.post<{ data: Tax }>(BASE_PATH, formData);
+      const response = await api.post<{ data: Tax }>(BASE_PATH, payload);
       if (!response.success) {
-        if (response.errors) {
-          throw new ValidationError(response.message, response.errors);
-        }
+        if (response.errors) throw new ValidationError(response.message, response.errors);
         throw new Error(response.message);
       }
       return response;
@@ -105,19 +104,15 @@ export function useUpdateTax() {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<TaxFormData> }) => {
-      const formData = new FormData();
-      formData.append("_method", "PUT");
+      const payload: Record<string, unknown> = {};
+      if (data.name !== undefined) payload.name = data.name;
+      if (data.rate !== undefined) payload.rate = data.rate;
+      if (data.woocommerce_tax_id !== undefined) payload.woocommerce_tax_id = data.woocommerce_tax_id;
+      if (data.is_active !== undefined) payload.is_active = data.is_active;
 
-      if (data.name) formData.append("name", data.name);
-      if (data.rate !== undefined) formData.append("rate", data.rate.toString());
-      if (data.woocommerce_tax_id !== undefined) formData.append("woocommerce_tax_id", data.woocommerce_tax_id ? data.woocommerce_tax_id.toString() : "");
-      if (data.is_active !== undefined) formData.append("is_active", data.is_active ? "1" : "0");
-
-      const response = await api.post<{ data: Tax }>(`${BASE_PATH}/${id}`, formData);
+      const response = await api.put<{ data: Tax }>(`${BASE_PATH}/${id}`, payload);
       if (!response.success) {
-        if (response.errors) {
-          throw new ValidationError(response.message, response.errors);
-        }
+        if (response.errors) throw new ValidationError(response.message, response.errors);
         throw new Error(response.message);
       }
       return { id, message: response.message };
@@ -140,9 +135,7 @@ export function useDeleteTax() {
   return useMutation({
     mutationFn: async (id: number) => {
       const response = await api.delete(`${BASE_PATH}/${id}`);
-      if (!response.success) {
-        throw new Error(response.message);
-      }
+      if (!response.success) throw new Error(response.message);
       return response;
     },
     onSuccess: (response) => {
@@ -200,9 +193,7 @@ export function useBulkDestroyTaxes() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.delete(`${BASE_PATH}/bulk-destroy`, {
-        body: JSON.stringify({ ids }),
-      });
+      const response = await api.post(`${BASE_PATH}/bulk-destroy`, { ids });
       if (!response.success) throw new Error(response.message);
       return response;
     },

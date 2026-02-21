@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { useApiClient } from "@/lib/api/api-client-client";
-import { useQuery } from "@tanstack/react-query";
-import type { Country, CountryListParams, CountryOption } from "./types";
+import { useApiClient } from '@/lib/api/api-client-client';
+import { useQuery } from '@tanstack/react-query';
+import type { Country, CountryListParams, CountryOption } from './types';
 
 export const countryKeys = {
-  all: ["countries"] as const,
-  lists: () => [...countryKeys.all, "list"] as const,
+  all: ['countries'] as const,
+  lists: () => [...countryKeys.all, 'list'] as const,
   list: (filters?: Record<string, unknown>) => [...countryKeys.lists(), filters] as const,
-  details: () => [...countryKeys.all, "detail"] as const,
+  details: () => [...countryKeys.all, 'detail'] as const,
   detail: (id: number) => [...countryKeys.details(), id] as const,
-  options: () => [...countryKeys.all, "options"] as const,
-  states: (countryId: number) => [...countryKeys.all, "states", countryId] as const,
+  options: () => [...countryKeys.all, 'options'] as const,
+  states: (countryId: number) => [...countryKeys.all, 'states', countryId] as const,
 };
 
-const BASE_PATH = '/countries'
+const BASE_PATH = '/countries';
 
 export function useCountries(params?: CountryListParams) {
   const { api, sessionStatus } = useApiClient();
@@ -24,11 +24,11 @@ export function useCountries(params?: CountryListParams) {
       const response = await api.get<Country[]>(BASE_PATH, { params });
       return response;
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -40,7 +40,7 @@ export function useOptionCountries() {
       const response = await api.get<CountryOption[]>(`${BASE_PATH}/options`);
       return response.data ?? [];
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
 }
 
@@ -52,11 +52,11 @@ export function useCountry(id: number) {
       const response = await api.get<Country>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
-    enabled: !!id && sessionStatus !== "loading",
+    enabled: !!id && sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -70,6 +70,6 @@ export function useStatesByCountry(countryId: number | null) {
       );
       return response.data ?? [];
     },
-    enabled: !!countryId && sessionStatus !== "loading",
+    enabled: !!countryId && sessionStatus !== 'loading',
   });
 }

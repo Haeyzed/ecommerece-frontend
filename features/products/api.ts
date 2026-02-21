@@ -3,20 +3,19 @@
  * Using TanStack Query for server state management
  */
 
-"use client";
+'use client';
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useApiClient } from "@/lib/api/api-client-client";
-import type { Product, ProductFormData } from "./types";
-import type { PaginationMeta } from "@/lib/api/api-types";
-import { ValidationError } from "@/lib/api/api-errors";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useApiClient } from '@/lib/api/api-client-client';
+import { ValidationError } from '@/lib/api/api-errors';
+import type { PaginationMeta } from '@/lib/api/api-types';
+import type { Product, ProductFormData } from './types';
 
-// Query keys
 export const productKeys = {
-  all: ["products"] as const,
-  lists: () => [...productKeys.all, "list"] as const,
+  all: ['products'] as const,
+  lists: () => [...productKeys.all, 'list'] as const,
   list: (filters?: Record<string, unknown>) => [...productKeys.lists(), filters] as const,
-  details: () => [...productKeys.all, "detail"] as const,
+  details: () => [...productKeys.all, 'detail'] as const,
   detail: (id: number) => [...productKeys.details(), id] as const,
 };
 
@@ -38,9 +37,9 @@ export function useProducts(params?: {
       );
       return response;
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
-  return { ...query, isSessionLoading: sessionStatus === "loading" };
+  return { ...query, isSessionLoading: sessionStatus === 'loading' };
 }
 
 /**
@@ -54,9 +53,9 @@ export function useProduct(id: number) {
       const response = await api.get<Product>(`/products/${id}`);
       return response.data ?? null;
     },
-    enabled: !!id && sessionStatus !== "loading",
+    enabled: !!id && sessionStatus !== 'loading',
   });
-  return { ...query, isSessionLoading: sessionStatus === "loading" };
+  return { ...query, isSessionLoading: sessionStatus === 'loading' };
 }
 
 /**
@@ -120,9 +119,7 @@ export function useDeleteProduct() {
   return useMutation({
     mutationFn: async (id: number) => {
       const response = await api.delete(`/products/${id}`);
-      if (!response.success) {
-        throw new Error(response.message);
-      }
+      if (!response.success) throw new Error(response.message);
       return response;
     },
     onSuccess: () => {

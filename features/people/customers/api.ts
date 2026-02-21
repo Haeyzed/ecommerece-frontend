@@ -255,9 +255,7 @@ export function useBulkDestroyCustomers() {
 
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.delete(`${BASE_PATH}/bulk-destroy`, {
-        body: JSON.stringify({ ids }),
-      })
+      const response = await api.post(`${BASE_PATH}/bulk-destroy`, { ids })
       if (!response.success) throw new Error(response.message)
       return response
     },

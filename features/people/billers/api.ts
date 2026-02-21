@@ -1,22 +1,28 @@
-"use client";
+'use client';
 
-import { useApiClient } from "@/lib/api/api-client-client";
-import { ValidationError } from "@/lib/api/api-errors";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import type { Biller, BillerExportParams, BillerFormData, BillerListParams, BillerOption } from "./types";
+import { useApiClient } from '@/lib/api/api-client-client';
+import { ValidationError } from '@/lib/api/api-errors';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import type {
+  Biller,
+  BillerExportParams,
+  BillerFormData,
+  BillerListParams,
+  BillerOption,
+} from './types';
 
 export const billerKeys = {
-  all: ["billers"] as const,
-  lists: () => [...billerKeys.all, "list"] as const,
+  all: ['billers'] as const,
+  lists: () => [...billerKeys.all, 'list'] as const,
   list: (filters?: Record<string, unknown>) => [...billerKeys.lists(), filters] as const,
-  details: () => [...billerKeys.all, "detail"] as const,
+  details: () => [...billerKeys.all, 'detail'] as const,
   detail: (id: number) => [...billerKeys.details(), id] as const,
-  options: () => [...billerKeys.all, "options"] as const,
-  template: () => [...billerKeys.all, "template"] as const,
+  options: () => [...billerKeys.all, 'options'] as const,
+  template: () => [...billerKeys.all, 'template'] as const,
 };
 
-const BASE_PATH = '/billers'
+const BASE_PATH = '/billers';
 
 export function useBillers(params?: BillerListParams) {
   const { api, sessionStatus } = useApiClient();
@@ -29,11 +35,11 @@ export function useBillers(params?: BillerListParams) {
       );
       return response;
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -45,7 +51,7 @@ export function useOptionBillers() {
       const response = await api.get<BillerOption[]>(`${BASE_PATH}/options`);
       return response.data ?? [];
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
 }
 
@@ -57,11 +63,11 @@ export function useBiller(id: number) {
       const response = await api.get<Biller>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
-    enabled: !!id && sessionStatus !== "loading",
+    enabled: !!id && sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -158,9 +164,7 @@ export function useDeleteBiller() {
   return useMutation({
     mutationFn: async (id: number) => {
       const response = await api.delete(`${BASE_PATH}/${id}`);
-      if (!response.success) {
-        throw new Error(response.message);
-      }
+      if (!response.success) throw new Error(response.message);
       return response;
     },
     onSuccess: (response) => {
@@ -218,9 +222,7 @@ export function useBulkDestroyBillers() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.delete(`${BASE_PATH}/bulk-destroy`, {
-        body: JSON.stringify({ ids }),
-      });
+      const response = await api.post(`${BASE_PATH}/bulk-destroy`, { ids });
       if (!response.success) throw new Error(response.message);
       return response;
     },

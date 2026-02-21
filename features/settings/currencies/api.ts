@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { useApiClient } from "@/lib/api/api-client-client";
-import { useQuery } from "@tanstack/react-query";
-import type { Currency, CurrencyListParams, CurrencyOption } from "./types";
+import { useApiClient } from '@/lib/api/api-client-client';
+import { useQuery } from '@tanstack/react-query';
+import type { Currency, CurrencyListParams, CurrencyOption } from './types';
 
 export const currencyKeys = {
-  all: ["currencies"] as const,
-  lists: () => [...currencyKeys.all, "list"] as const,
+  all: ['currencies'] as const,
+  lists: () => [...currencyKeys.all, 'list'] as const,
   list: (filters?: Record<string, unknown>) => [...currencyKeys.lists(), filters] as const,
-  details: () => [...currencyKeys.all, "detail"] as const,
+  details: () => [...currencyKeys.all, 'detail'] as const,
   detail: (id: number) => [...currencyKeys.details(), id] as const,
-  options: () => [...currencyKeys.all, "options"] as const,
+  options: () => [...currencyKeys.all, 'options'] as const,
 };
 
-const BASE_PATH = '/currencies'
+const BASE_PATH = '/currencies';
 
 export function useCurrencies(params?: CurrencyListParams) {
   const { api, sessionStatus } = useApiClient();
@@ -23,11 +23,11 @@ export function useCurrencies(params?: CurrencyListParams) {
       const response = await api.get<Currency[]>(BASE_PATH, { params });
       return response;
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -39,7 +39,7 @@ export function useOptionCurrencies() {
       const response = await api.get<CurrencyOption[]>(`${BASE_PATH}/options`);
       return response.data ?? [];
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
 }
 
@@ -51,10 +51,10 @@ export function useCurrency(id: number) {
       const response = await api.get<Currency>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
-    enabled: !!id && sessionStatus !== "loading",
+    enabled: !!id && sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }

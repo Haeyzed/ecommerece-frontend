@@ -1,19 +1,25 @@
-"use client";
+'use client';
 
-import { useApiClient } from "@/lib/api/api-client-client";
-import { ValidationError } from "@/lib/api/api-errors";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import type { Category, CategoryFormData, CategoryOption, CategoryExportParams, CategoryListParams } from './types'
+import { useApiClient } from '@/lib/api/api-client-client';
+import { ValidationError } from '@/lib/api/api-errors';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import type {
+  Category,
+  CategoryExportParams,
+  CategoryFormData,
+  CategoryListParams,
+  CategoryOption,
+} from './types';
 
 export const categoryKeys = {
-  all: ["categories"] as const,
-  lists: () => [...categoryKeys.all, "list"] as const,
+  all: ['categories'] as const,
+  lists: () => [...categoryKeys.all, 'list'] as const,
   list: (filters?: Record<string, unknown>) => [...categoryKeys.lists(), filters] as const,
-  details: () => [...categoryKeys.all, "detail"] as const,
+  details: () => [...categoryKeys.all, 'detail'] as const,
   detail: (id: number) => [...categoryKeys.details(), id] as const,
-  options: () => [...categoryKeys.all, "options"] as const,
-  template: () => [...categoryKeys.all, "template"] as const,
+  options: () => [...categoryKeys.all, 'options'] as const,
+  template: () => [...categoryKeys.all, 'template'] as const,
 };
 
 const BASE_PATH = '/categories';
@@ -29,11 +35,11 @@ export function useCategories(params?: CategoryListParams) {
       );
       return response;
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -45,7 +51,7 @@ export function useOptionCategories() {
       const response = await api.get<CategoryOption[]>(`${BASE_PATH}/options`);
       return response.data ?? [];
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
 }
 
@@ -57,11 +63,11 @@ export function useCategory(id: number) {
       const response = await api.get<Category>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
-    enabled: !!id && sessionStatus !== "loading",
+    enabled: !!id && sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -195,9 +201,7 @@ export function useDeleteCategory() {
   return useMutation({
     mutationFn: async (id: number) => {
       const response = await api.delete(`${BASE_PATH}/${id}`);
-      if (!response.success) {
-        throw new Error(response.message);
-      }
+      if (!response.success) throw new Error(response.message);
       return response;
     },
     onSuccess: (response) => {
@@ -336,9 +340,7 @@ export function useBulkDestroyCategories() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.delete(`${BASE_PATH}/bulk-destroy`, {
-        body: JSON.stringify({ ids }),
-      });
+      const response = await api.post(`${BASE_PATH}/bulk-destroy`, { ids });
       if (!response.success) throw new Error(response.message);
       return response;
     },

@@ -1,29 +1,29 @@
-"use client";
+'use client';
 
-import { useApiClient } from "@/lib/api/api-client-client";
-import { ValidationError } from "@/lib/api/api-errors";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import type { CustomerGroupFormData } from "./schemas";
+import { useApiClient } from '@/lib/api/api-client-client';
+import { ValidationError } from '@/lib/api/api-errors';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import type { CustomerGroupFormData } from './schemas';
 import type {
   CustomerGroup,
   CustomerGroupExportParams,
   CustomerGroupListParams,
   CustomerGroupOption,
-} from "./types";
+} from './types';
 
 export const customerGroupKeys = {
-  all: ["customer-groups"] as const,
-  lists: () => [...customerGroupKeys.all, "list"] as const,
+  all: ['customer-groups'] as const,
+  lists: () => [...customerGroupKeys.all, 'list'] as const,
   list: (filters?: Record<string, unknown>) =>
     [...customerGroupKeys.lists(), filters] as const,
-  details: () => [...customerGroupKeys.all, "detail"] as const,
+  details: () => [...customerGroupKeys.all, 'detail'] as const,
   detail: (id: number) => [...customerGroupKeys.details(), id] as const,
-  options: () => [...customerGroupKeys.all, "options"] as const,
-  template: () => [...customerGroupKeys.all, "template"] as const,
+  options: () => [...customerGroupKeys.all, 'options'] as const,
+  template: () => [...customerGroupKeys.all, 'template'] as const,
 };
 
-const BASE_PATH = "/customer-groups";
+const BASE_PATH = '/customer-groups';
 
 export function useCustomerGroups(params?: CustomerGroupListParams) {
   const { api, sessionStatus } = useApiClient();
@@ -33,11 +33,11 @@ export function useCustomerGroups(params?: CustomerGroupListParams) {
       const response = await api.get<CustomerGroup[]>(BASE_PATH, { params });
       return response;
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -51,7 +51,7 @@ export function useOptionCustomerGroups() {
       );
       return response.data ?? [];
     },
-    enabled: sessionStatus !== "loading",
+    enabled: sessionStatus !== 'loading',
   });
 }
 
@@ -63,11 +63,11 @@ export function useCustomerGroup(id: number) {
       const response = await api.get<CustomerGroup>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
-    enabled: !!id && sessionStatus !== "loading",
+    enabled: !!id && sessionStatus !== 'loading',
   });
   return {
     ...query,
-    isSessionLoading: sessionStatus === "loading",
+    isSessionLoading: sessionStatus === 'loading',
   };
 }
 
@@ -77,16 +77,15 @@ export function useCreateCustomerGroup() {
 
   return useMutation({
     mutationFn: async (data: CustomerGroupFormData) => {
-      const payload = {
+      const payload: Record<string, unknown> = {
         name: data.name,
         percentage: data.percentage ?? 0,
         is_active: data.is_active ?? true,
       };
+
       const response = await api.post<{ data: CustomerGroup }>(BASE_PATH, payload);
       if (!response.success) {
-        if (response.errors) {
-          throw new ValidationError(response.message, response.errors);
-        }
+        if (response.errors) throw new ValidationError(response.message, response.errors);
         throw new Error(response.message);
       }
       return response;
@@ -106,26 +105,15 @@ export function useUpdateCustomerGroup() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
-      id,
-      data,
-    }: {
-      id: number;
-      data: Partial<CustomerGroupFormData>;
-    }) => {
-      const payload = {
-        name: data.name,
-        percentage: data.percentage,
-        is_active: data.is_active,
-      };
-      const response = await api.put<{ data: CustomerGroup }>(
-        `${BASE_PATH}/${id}`,
-        payload
-      );
+    mutationFn: async ({ id, data }: { id: number; data: Partial<CustomerGroupFormData> }) => {
+      const payload: Record<string, unknown> = {};
+      if (data.name !== undefined) payload.name = data.name;
+      if (data.percentage !== undefined) payload.percentage = data.percentage;
+      if (data.is_active !== undefined) payload.is_active = data.is_active;
+
+      const response = await api.put<{ data: CustomerGroup }>(`${BASE_PATH}/${id}`, payload);
       if (!response.success) {
-        if (response.errors) {
-          throw new ValidationError(response.message, response.errors);
-        }
+        if (response.errors) throw new ValidationError(response.message, response.errors);
         throw new Error(response.message);
       }
       return { id, message: response.message };
@@ -148,9 +136,7 @@ export function useDeleteCustomerGroup() {
   return useMutation({
     mutationFn: async (id: number) => {
       const response = await api.delete(`${BASE_PATH}/${id}`);
-      if (!response.success) {
-        throw new Error(response.message);
-      }
+      if (!response.success) throw new Error(response.message);
       return response;
     },
     onSuccess: (response) => {

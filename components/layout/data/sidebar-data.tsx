@@ -637,8 +637,8 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
               url: "/settings/tables",
             },
             {
-              title: "Customer Group",
-              url: "/settings/customer-group",
+              title: "Customer Groups",
+              url: "/settings/customer-groups",
               permissions: ["view customer groups"],
             },
             {

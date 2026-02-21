@@ -12,6 +12,7 @@
  * @module lib/api/api-client
  */
 
+import { AUTH_REDIRECT_MESSAGE_KEY } from "@/lib/auth/constants";
 import type {
   ApiResponse,
   NormalizedApiResponse,
@@ -171,8 +172,12 @@ class ApiClient {
 
     switch (response.status) {
       case 401:
-        // Trigger sign out in client context if available
         if (typeof window !== "undefined") {
+          try {
+            sessionStorage.setItem(AUTH_REDIRECT_MESSAGE_KEY, message);
+          } catch {
+            // ignore
+          }
           try {
             const { signOut } = await import("next-auth/react");
             signOut({ redirect: true, callbackUrl: "/login" });

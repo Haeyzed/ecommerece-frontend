@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
 import { AuthLayout } from '@/components/layout/auth-layout'
 import {
   Card,
@@ -12,8 +12,22 @@ import {
 } from '@/components/ui/card'
 import { LoginForm } from '@/features/auth'
 import { Spinner } from '@/components/ui/spinner'
+import { toast } from 'sonner'
+import { AUTH_REDIRECT_MESSAGE_KEY } from '@/lib/auth/constants'
 
 export default function LoginPage() {
+  useEffect(() => {
+    try {
+      const message = sessionStorage.getItem(AUTH_REDIRECT_MESSAGE_KEY)
+      if (message) {
+        sessionStorage.removeItem(AUTH_REDIRECT_MESSAGE_KEY)
+        toast.error(message)
+      }
+    } catch {
+      // ignore
+    }
+  }, [])
+
   return (
     <AuthLayout>
       <Card className='gap-4'>

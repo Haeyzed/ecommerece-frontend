@@ -5,12 +5,14 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useApiClient } from '@/lib/api/api-client-client';
 import { UnauthorizedError, ValidationError } from '@/lib/api/api-errors';
+import { toast } from 'sonner';
 import type {
   AuthResponse,
   AuthUser,
   ForgotPasswordData,
   LockScreenData,
   LoginData,
+  RefreshTokenResponse,
   RegisterData,
   ResetPasswordData,
 } from './types';
@@ -33,7 +35,7 @@ export function useAuth() {
   return useQuery({
     queryKey: authKeys.user(),
     queryFn: async () => {
-      const response = await api.get<AuthUser>(`${BASE_PATH}/me`);
+      const response = await api.get<AuthUser>(`${BASE_PATH}/user`);
 
       if (!response.success || !response.data) {
         throw new Error(response.message ?? 'Failed to fetch user');
@@ -152,6 +154,7 @@ export function useUnlock() {
       router.refresh();
     },
     onError: (error) => {
+      toast.error(error instanceof Error ? error.message : 'Unlock failed');
       if (error instanceof UnauthorizedError) {
         router.push('/login');
         router.refresh();
@@ -268,6 +271,33 @@ export function useResendVerification() {
       }
 
       return response;
+    },
+  });
+}
+
+export function useRefreshToken() {
+  const { api } = useApiClient();
+  const { update: updateSession } = useSession();
+
+  return useMutation<RefreshTokenResponse, Error, boolean>({
+    mutationFn: async (revokeOldToken = false) => {
+      const response = await api.post<RefreshTokenResponse>(
+        `${BASE_PATH}/refresh-token`,
+        { revoke_old_token: revokeOldToken },
+        { skipAuth: false }
+      );
+
+      if (!response.success || !response.data) {
+        throw new Error(response.message ?? 'Failed to refresh token');
+      }
+
+      return response.data;
+    },
+    onSuccess: async (data) => {
+      await updateSession({ user: { token: data.token } });
+    },
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : 'Failed to refresh token');
     },
   });
 }

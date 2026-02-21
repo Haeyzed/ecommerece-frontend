@@ -28,6 +28,14 @@ export interface AuthUser {
     user: AuthUser;
     token: string;
   }
+
+  /**
+   * Payload returned when the auth token is refreshed.
+   */
+  export interface RefreshTokenResponse {
+    user: AuthUser;
+    token: string;
+  }
   
   /**
    * Payload required for user authentication.

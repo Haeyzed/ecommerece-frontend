@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
+import EmojiPicker from 'emoji-picker-react' // Added Import
 
 import {
   useCreateCountry,
@@ -40,6 +41,11 @@ import {
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Spinner } from '@/components/ui/spinner'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover' // Added Import
 
 type CountriesActionDialogProps = {
   currentRow?: Country
@@ -315,9 +321,41 @@ function CountryForm({ form, onSubmit, id, className }: CountryFormProps) {
             control={form.control}
             name='emoji'
             render={({ field, fieldState }) => (
-              <Field data-invalid={!!fieldState.error}>
+              <Field data-invalid={!!fieldState.error} className="flex flex-col gap-2">
                 <FieldLabel htmlFor='country-emoji'>Emoji</FieldLabel>
-                <Input id='country-emoji' placeholder='🇺🇸' autoComplete='off' {...field} value={field.value ?? ''} />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      id="country-emoji"
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal h-10",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value ? (
+                        <span className="text-xl">{field.value}</span>
+                      ) : (
+                        <span>Pick an emoji</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <EmojiPicker
+                      onEmojiClick={(emojiData) => {
+                        // 1. Update the Emoji field
+                        field.onChange(emojiData.emoji);
+
+                        // 2. Automatically generate and update the Unicode field!
+                        const unicode = emojiData.unified
+                          .split('-')
+                          .map((u) => `U+${u.toUpperCase()}`)
+                          .join(' ');
+                        form.setValue('emojiU', unicode, { shouldValidate: true });
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}

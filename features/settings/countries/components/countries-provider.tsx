@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type Country } from '../types'
 
-type CountriesDialogType = 'view'
+type CountriesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
 
 type CountriesContextType = {
   open: CountriesDialogType | null
@@ -27,9 +27,11 @@ export function CountriesProvider({ children }: { children: React.ReactNode }) {
 }
 
 export const useCountries = () => {
-  const ctx = React.useContext(CountriesContext)
-  if (!ctx) {
-    throw new Error('useCountries has to be used within <CountriesProvider>')
+  const countriesContext = React.useContext(CountriesContext)
+
+  if (!countriesContext) {
+    throw new Error('useCountries has to be used within <CountriesContext>')
   }
-  return ctx
+
+  return countriesContext
 }

@@ -32,12 +32,18 @@ export function CountriesClient() {
             <div>
               <h2 className='text-2xl font-bold tracking-tight'>Countries List</h2>
               <p className='text-muted-foreground'>
-                View World reference countries.
+                Manage your countries and their visibility here.
               </p>
             </div>
             <CountriesPrimaryButtons />
           </div>
-          <Suspense fallback={<Spinner />}>
+          <Suspense
+            fallback={
+              <div className="flex flex-1 items-center justify-center min-h-[400px]">
+                <Spinner className="size-6" />
+              </div>
+            }
+          >
             <CountriesTable />
           </Suspense>
         </Main>

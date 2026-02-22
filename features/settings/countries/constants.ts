@@ -1,2 +1,6 @@
-export const COUNTRY_LIST_TITLE = "Countries List";
-export const COUNTRY_LIST_DESCRIPTION = "View World reference countries.";
+import { CountryActiveStatus } from '@/features/settings/countries/types'
+
+export const statusTypes = new Map<CountryActiveStatus, string>([
+  ['active', 'bg-teal-100/30 text-teal-900 dark:text-teal-200 border-teal-200'],
+  ['inactive', 'bg-neutral-300/40 border-neutral-300'],
+]);

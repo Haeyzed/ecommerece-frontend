@@ -32,7 +32,7 @@ import {
   DrawerTitle,
 } from '@/components/ui/drawer'
 import {
-  Field,
+  Field, FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -235,7 +235,12 @@ function WarehouseForm({ form, onSubmit, id, className }: WarehouseFormProps) {
           name='is_active'
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error} className='flex flex-row items-center justify-between rounded-md border p-4'>
-              <FieldLabel htmlFor='warehouse-active'>Active Status</FieldLabel>
+              <div className='space-y-0.5'>
+                <FieldLabel htmlFor='warehouse-active'>Active Status</FieldLabel>
+                <FieldDescription>
+                  Disabling this will hide the warehouse from the system.
+                </FieldDescription>
+              </div>
               <Switch id='warehouse-active' checked={!!field.value} onCheckedChange={field.onChange} />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>

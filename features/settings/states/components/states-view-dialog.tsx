@@ -21,6 +21,7 @@ import { Separator } from '@/components/ui/separator'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { cn } from '@/lib/utils'
 import { type State } from '../types'
+import { Map } from '@/components/ui/map'
 
 type StatesViewDialogProps = {
   currentRow?: State
@@ -87,6 +88,10 @@ interface StateViewProps {
 }
 
 function StateView({ className, currentRow }: StateViewProps) {
+  const lat = parseFloat(currentRow.latitude || '')
+  const lng = parseFloat(currentRow.longitude || '')
+  const hasCoordinates = !isNaN(lat) && !isNaN(lng)
+
   return (
     <div className={cn('space-y-6', className)}>
       <div className='space-y-1'>
@@ -124,6 +129,12 @@ function StateView({ className, currentRow }: StateViewProps) {
           <div className='text-sm tabular-nums'>{currentRow.longitude || '-'}</div>
         </div>
       </div>
+
+      {hasCoordinates && (
+        <div className='h-[200px] w-full rounded-md border overflow-hidden relative'>
+          <Map lat={lat} lng={lng} zoom={6} />
+        </div>
+      )}
 
       <Separator />
 

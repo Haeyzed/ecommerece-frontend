@@ -25,6 +25,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { CheckmarkCircle02Icon, MultiplicationSignIcon } from '@hugeicons/core-free-icons'
 import { statusTypes } from '../constants'
 import { type Country } from '../types'
+import { Map } from '@/components/ui/map'
 
 type CountriesViewDialogProps = {
   currentRow?: Country
@@ -95,6 +96,10 @@ function CountryView({ className, currentRow }: CountryViewProps) {
   const StatusIcon = currentRow.status === 1 ? CheckmarkCircle02Icon : MultiplicationSignIcon
   const statusBadgeColor = statusTypes.get(status)
 
+  const lat = parseFloat(currentRow.latitude || '')
+  const lng = parseFloat(currentRow.longitude || '')
+  const hasCoordinates = !isNaN(lat) && !isNaN(lng)
+
   return (
     <div className={cn('space-y-6', className)}>
       <div className='flex items-center gap-4'>
@@ -156,6 +161,12 @@ function CountryView({ className, currentRow }: CountryViewProps) {
           <div className='text-sm tabular-nums'>{currentRow.longitude || '-'}</div>
         </div>
       </div>
+
+      {hasCoordinates && (
+        <div className='h-[200px] w-full rounded-md border overflow-hidden relative'>
+          <Map lat={lat} lng={lng} zoom={4} />
+        </div>
+      )}
 
       <div className='space-y-2'>
         <div className='text-sm font-medium text-muted-foreground'>Status</div>

@@ -662,7 +662,7 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "General Setting",
               url: "/settings/general",
-              permissions: ["view general settings"],
+              permissions: ["manage general settings"],
             },
             {
               title: "Mail Setting",

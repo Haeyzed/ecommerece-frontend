@@ -127,7 +127,7 @@ export function CountriesActionDialog({
 
   if (isDesktop) {
     return (
-      <Dialog open={open} onOpenChange={handleOpenChange}>
+      <Dialog open={open} onOpenChange={handleOpenChange} modal={false}>
         <DialogContent className='sm:max-w-lg'>
           <DialogHeader className='text-start'>
             <DialogTitle>{isEdit ? 'Edit Country' : 'Add New Country'}</DialogTitle>
@@ -159,7 +159,7 @@ export function CountriesActionDialog({
   }
 
   return (
-    <Drawer open={open} onOpenChange={handleOpenChange}>
+    <Drawer open={open} onOpenChange={handleOpenChange} modal={false}>
       <DrawerContent>
         <DrawerHeader className='text-left'>
           <DrawerTitle>{isEdit ? 'Edit Country' : 'Add New Country'}</DrawerTitle>
@@ -203,7 +203,6 @@ interface CountryFormProps {
 function CountryForm({ form, onSubmit, id, className }: CountryFormProps) {
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false)
 
-  // Helper to accurately generate Unicode strings dynamically from a raw emoji
   const getUnicodeFromEmoji = (emoji: string) => {
     return Array.from(emoji)
       .map((char) => `U+${char.codePointAt(0)?.toString(16).toUpperCase()}`)

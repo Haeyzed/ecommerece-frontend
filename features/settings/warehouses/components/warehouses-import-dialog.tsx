@@ -162,7 +162,9 @@ export function WarehousesImportDialog({
           </ul>
           <div className='font-medium mt-3'>Optional Fields:</div>
           <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>rate</code> - Warehouse rate (percentage)</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>phone</code> - Warehouse phone</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>email</code> - Warehouse email</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>address</code> - Warehouse address</li>
           </ul>
         </div>
         <Controller

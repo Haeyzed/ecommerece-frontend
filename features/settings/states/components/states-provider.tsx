@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
-import type { State } from '../types'
+import { type State } from '../types'
 
-type StatesDialogType = 'view'
+type StatesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
 
 type StatesContextType = {
   open: StatesDialogType | null
@@ -27,9 +27,11 @@ export function StatesProvider({ children }: { children: React.ReactNode }) {
 }
 
 export const useStates = () => {
-  const ctx = React.useContext(StatesContext)
-  if (!ctx) {
-    throw new Error('useStates has to be used within <StatesProvider>')
+  const statesContext = React.useContext(StatesContext)
+
+  if (!statesContext) {
+    throw new Error('useStates has to be used within <StatesContext>')
   }
-  return ctx
+
+  return statesContext
 }

@@ -1,22 +1,54 @@
-'use client'
+"use client"
 
-import type { ColumnDef } from '@tanstack/react-table'
+import { type ColumnDef } from '@tanstack/react-table'
 import { cn } from '@/lib/utils'
+import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
-import type { State } from '../types'
+import { type State } from '../types'
 import { DataTableRowActions } from './data-table-row-actions'
 
 export const statesColumns: ColumnDef<State>[] = [
   {
-    accessorKey: 'name',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label='Select all'
+        className='translate-y-[2px]'
+      />
+    ),
+    meta: {
+      className: cn('max-md:sticky start-0 z-10 rounded-tl-[inherit]'),
+    },
     cell: ({ row }) => (
-      <div className="flex items-center gap-3 ps-3">
-        <div className="flex size-10 items-center justify-center rounded-md bg-muted">
-          <span className="text-xs font-medium">{row.original.name.charAt(0).toUpperCase()}</span>
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label='Select row'
+        className='translate-y-[2px]'
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: 'name',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Name' />
+    ),
+    cell: ({ row }) => (
+      <div className='flex items-center gap-3 ps-3'>
+        <div className='flex size-10 items-center justify-center rounded-md bg-muted'>
+          <span className='text-xs font-medium'>
+            {row.original.name.charAt(0).toUpperCase()}
+          </span>
         </div>
-        <LongText className="max-w-36">{row.getValue('name')}</LongText>
+        <LongText className='max-w-36'>{row.getValue('name')}</LongText>
       </div>
     ),
     meta: {
@@ -28,23 +60,43 @@ export const statesColumns: ColumnDef<State>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'state_code',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Code" />,
-    cell: ({ row }) => <span className="font-mono text-sm">{row.original.state_code ?? '-'}</span>,
-    meta: { className: 'w-20' },
-  },
-  {
-    accessorKey: 'country',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Country" />,
+    accessorKey: 'country_id',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Country' />
+    ),
     cell: ({ row }) => (
-      <LongText className="max-w-32">{row.original.country?.name ?? '-'}</LongText>
+      <span className='font-medium'>{row.original.country?.name || '-'}</span>
     ),
     meta: { className: 'w-32' },
   },
   {
+    accessorKey: 'code',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Code' />
+    ),
+    cell: ({ row }) => (
+      <span>{row.original.code || '-'}</span>
+    ),
+    meta: { className: 'w-24' },
+  },
+  {
+    accessorKey: 'state_code',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='State Code' />
+    ),
+    cell: ({ row }) => (
+      <span>{row.original.state_code || '-'}</span>
+    ),
+    meta: { className: 'w-24' },
+  },
+  {
     accessorKey: 'type',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Type" />,
-    cell: ({ row }) => <span className="text-sm">{row.original.type ?? '-'}</span>,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Type' />
+    ),
+    cell: ({ row }) => (
+      <span className='capitalize'>{row.original.type || '-'}</span>
+    ),
     meta: { className: 'w-24' },
   },
   {

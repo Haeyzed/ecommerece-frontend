@@ -5,8 +5,8 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { type Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { DataTableFacetedFilter } from './faceted-filter'
-import { DataTableTableViewOptions } from './view-options'
+import { DataTableFacetedFilter } from './data-table-faceted-filter'
+import { DataTableTableViewOptions } from './data-table-view-options'
 
 type DataTableToolbarProps<TData> = {
   table: Table<TData>

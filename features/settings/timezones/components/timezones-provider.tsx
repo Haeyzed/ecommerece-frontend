@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
-import type { Timezone } from '../types'
+import { type Timezone } from '../types'
 
-type TimezonesDialogType = 'view'
+type TimezonesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
 
 type TimezonesContextType = {
   open: TimezonesDialogType | null
@@ -27,9 +27,11 @@ export function TimezonesProvider({ children }: { children: React.ReactNode }) {
 }
 
 export const useTimezones = () => {
-  const ctx = React.useContext(TimezonesContext)
-  if (!ctx) {
-    throw new Error('useTimezones has to be used within <TimezonesProvider>')
+  const timezonesContext = React.useContext(TimezonesContext)
+
+  if (!timezonesContext) {
+    throw new Error('useTimezones has to be used within <TimezonesContext>')
   }
-  return ctx
+
+  return timezonesContext
 }

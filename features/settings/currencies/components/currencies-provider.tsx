@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
-import type { Currency } from '../types'
+import { type Currency } from '../types'
 
-type CurrenciesDialogType = 'view'
+type CurrenciesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
 
 type CurrenciesContextType = {
   open: CurrenciesDialogType | null
@@ -27,9 +27,11 @@ export function CurrenciesProvider({ children }: { children: React.ReactNode }) 
 }
 
 export const useCurrencies = () => {
-  const ctx = React.useContext(CurrenciesContext)
-  if (!ctx) {
-    throw new Error('useCurrencies has to be used within <CurrenciesProvider>')
+  const currenciesContext = React.useContext(CurrenciesContext)
+
+  if (!currenciesContext) {
+    throw new Error('useCurrencies has to be used within <CurrenciesContext>')
   }
-  return ctx
+
+  return currenciesContext
 }

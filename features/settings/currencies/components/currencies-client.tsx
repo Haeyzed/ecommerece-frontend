@@ -8,8 +8,10 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { Spinner } from '@/components/ui/spinner'
-import { CurrenciesDialogs, CurrenciesPrimaryButtons, CurrenciesProvider, CurrenciesTable } from '@/features/settings/currencies'
-import { CURRENCY_LIST_DESCRIPTION, CURRENCY_LIST_TITLE } from '@/features/settings/currencies/constants'
+import { CurrenciesDialogs } from '@/features/settings/currencies/components/currencies-dialogs'
+import { CurrenciesPrimaryButtons } from '@/features/settings/currencies/components/currencies-primary-buttons'
+import { CurrenciesProvider } from '@/features/settings/currencies/components/currencies-provider'
+import { CurrenciesTable } from '@/features/settings/currencies/components/currencies-table'
 import { Suspense } from 'react'
 
 export function CurrenciesClient() {
@@ -28,8 +30,10 @@ export function CurrenciesClient() {
         <Main className="flex flex-1 flex-col gap-4 sm:gap-6">
           <div className="flex flex-wrap items-end justify-between gap-2">
             <div>
-              <h2 className="text-2xl font-bold tracking-tight">{CURRENCY_LIST_TITLE}</h2>
-              <p className="text-muted-foreground">{CURRENCY_LIST_DESCRIPTION}</p>
+              <h2 className='text-2xl font-bold tracking-tight'>Currencies List</h2>
+              <p className='text-muted-foreground'>
+                View World reference currencies.
+              </p>
             </div>
             <CurrenciesPrimaryButtons />
           </div>

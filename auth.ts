@@ -104,5 +104,3 @@ declare module "next-auth/jwt" {
     user_permissions?: string[];
   }
 }
-
-// JWT type augmentation handled via session callback

@@ -1,18 +1,5 @@
 'use client'
 
-/**
- * WarehousesDeleteDialog
- *
- * A confirmation dialog for deleting a single warehouse.
- * Requires the user to type the warehouse name to confirm the destructive action.
- *
- * @component
- * @param {Object} props - The component props
- * @param {boolean} props.open - Controls visibility
- * @param {function} props.onOpenChange - Callback for visibility changes
- * @param {Warehouse} props.currentRow - The warehouse selected for deletion
- */
-
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Alert02Icon } from '@hugeicons/core-free-icons'
@@ -20,22 +7,27 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { useDeleteWarehouse } from '@/features/settings/warehouses/api'
-import { type Warehouse } from '@/features/settings/warehouses/types'
+import { useDeleteWarehouse } from '../api'
+import { type Warehouse } from '../types'
+import { useAuthSession } from '@/features/auth/api'
 
-type WarehousesDeleteDialogProps = {
+type WarehouseDeleteDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   currentRow: Warehouse
 }
 
 export function WarehousesDeleteDialog({
-  open,
-  onOpenChange,
-  currentRow,
-}: WarehousesDeleteDialogProps) {
+                                    open,
+                                    onOpenChange,
+                                    currentRow,
+                                  }: WarehouseDeleteDialogProps) {
   const [value, setValue] = useState('')
   const { mutate: deleteWarehouse, isPending } = useDeleteWarehouse()
+  const { data: session } = useAuthSession()
+  const userPermissions = session?.user?.user_permissions || []
+  const canDelete = userPermissions.includes('delete warehouses')
+  if (!canDelete) return null
 
   const handleDelete = () => {
     if (value.trim() !== currentRow.name) return
@@ -44,7 +36,7 @@ export function WarehousesDeleteDialog({
       onSuccess: () => {
         onOpenChange(false)
         setValue('')
-      },
+      }
     })
   }
 

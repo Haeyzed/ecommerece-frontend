@@ -11,12 +11,10 @@ export function WarehousesPrimaryButtons() {
   const { setOpen } = useWarehouses()
   const { data: session } = useAuthSession()
   const isMobile = useMediaQuery('(max-width: 767px)')
-
   const userPermissions = session?.user?.user_permissions || []
-  const canImport = userPermissions.includes('warehouses-import')
-  const canExport = userPermissions.includes('warehouses-export')
-  const canCreate = userPermissions.includes('warehouses-create')
-
+  const canImport = userPermissions.includes('import warehouses')
+  const canExport = userPermissions.includes('export warehouses')
+  const canCreate = userPermissions.includes('create warehouses')
   if (!canImport && !canExport && !canCreate) return null
 
   return (

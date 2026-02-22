@@ -18,9 +18,9 @@ import {
 import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
 import {
   useBulkActivateWarehouses,
-  useBulkDeactivateWarehouses,
-} from '@/features/settings/warehouses/api'
-import { type Warehouse } from '@/features/settings/warehouses/types'
+  useBulkDeactivateWarehouses
+} from '../api'
+import { type Warehouse } from '../types'
 import { WarehousesExportDialog } from './warehouses-export-dialog'
 import { WarehousesMultiDeleteDialog } from './warehouses-multi-delete-dialog'
 import { useAuthSession } from '@/features/auth/api'
@@ -30,26 +30,37 @@ type DataTableBulkActionsProps<TData> = {
   table: Table<TData>
 }
 
-export function DataTableBulkActions<TData>({ table }: DataTableBulkActionsProps<TData>) {
+export function DataTableBulkActions<TData>({
+                                              table,
+                                            }: DataTableBulkActionsProps<TData>) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showExportDialog, setShowExportDialog] = useState(false)
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map((row) => (row.original as Warehouse).id)
+
   const { mutate: activateWarehouses, isPending: isActivating } = useBulkActivateWarehouses()
   const { mutate: deactivateWarehouses, isPending: isDeactivating } = useBulkDeactivateWarehouses()
+
   const { data: session } = useAuthSession()
-  const userPermissions = session?.user?.user_permissions ?? []
-  const canUpdate = userPermissions.includes('warehouses-update')
-  const canDelete = userPermissions.includes('warehouses-delete')
-  const canExport = userPermissions.includes('warehouses-export')
+  const userPermissions = session?.user?.user_permissions || []
+
+  const canUpdate = userPermissions.includes('update warehouses')
+  const canDelete = userPermissions.includes('delete warehouses')
+  const canExport = userPermissions.includes('export warehouses')
+
   if (!canUpdate && !canDelete && !canExport) return null
+
   const isBusy = isActivating || isDeactivating
 
   const handleBulkStatusChange = (status: 'active' | 'inactive') => {
     if (status === 'active') {
-      activateWarehouses(selectedIds, { onSuccess: () => table.resetRowSelection() })
+      activateWarehouses(selectedIds, {
+        onSuccess: () => table.resetRowSelection(),
+      })
     } else {
-      deactivateWarehouses(selectedIds, { onSuccess: () => table.resetRowSelection() })
+      deactivateWarehouses(selectedIds, {
+        onSuccess: () => table.resetRowSelection(),
+      })
     }
   }
 

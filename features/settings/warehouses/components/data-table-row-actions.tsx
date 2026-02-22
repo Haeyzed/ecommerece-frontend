@@ -28,13 +28,10 @@ type DataTableRowActionsProps = {
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const { setOpen, setCurrentRow } = useWarehouses()
   const { data: session } = useAuthSession()
-
   const userPermissions = session?.user?.user_permissions || []
-
-  const canView = userPermissions.includes('warehouses-index')
-  const canUpdate = userPermissions.includes('warehouses-update')
-  const canDelete = userPermissions.includes('warehouses-delete')
-
+  const canView = userPermissions.includes('view warehouses')
+  const canUpdate = userPermissions.includes('update warehouses')
+  const canDelete = userPermissions.includes('delete warehouses')
   if (!canView && !canUpdate && !canDelete) return null
 
   return (

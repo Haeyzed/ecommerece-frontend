@@ -27,9 +27,11 @@ export function WarehousesProvider({ children }: { children: React.ReactNode }) 
 }
 
 export const useWarehouses = () => {
-  const ctx = React.useContext(WarehousesContext)
-  if (!ctx) {
-    throw new Error('useWarehouses has to be used within <WarehousesProvider>')
+  const warehousesContext = React.useContext(WarehousesContext)
+
+  if (!warehousesContext) {
+    throw new Error('useWarehouses has to be used within <WarehousesContext>')
   }
-  return ctx
+
+  return warehousesContext
 }

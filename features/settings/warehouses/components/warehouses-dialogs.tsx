@@ -11,15 +11,13 @@ import { useAuthSession } from '@/features/auth/api'
 export function WarehousesDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useWarehouses()
   const { data: session } = useAuthSession()
-
-  const userPermissions = session?.user?.user_permissions ?? []
-
-  const canCreate = userPermissions.includes('warehouses-create')
-  const canImport = userPermissions.includes('warehouses-import')
-  const canExport = userPermissions.includes('warehouses-export')
-  const canUpdate = userPermissions.includes('warehouses-update')
-  const canDelete = userPermissions.includes('warehouses-delete')
-  const canView = userPermissions.includes('warehouses-index')
+  const userPermissions = session?.user?.user_permissions || []
+  const canCreate = userPermissions.includes('create warehouses')
+  const canImport = userPermissions.includes('import warehouses')
+  const canExport = userPermissions.includes('export warehouses')
+  const canUpdate = userPermissions.includes('update warehouses')
+  const canDelete = userPermissions.includes('delete warehouses')
+  const canView = userPermissions.includes('view warehouses')
 
   return (
     <>
@@ -27,7 +25,9 @@ export function WarehousesDialogs() {
         <WarehousesActionDialog
           key='warehouse-add'
           open={open === 'add'}
-          onOpenChange={() => setOpen('add')}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) setOpen(null)
+          }}
         />
       )}
 
@@ -35,7 +35,9 @@ export function WarehousesDialogs() {
         <WarehousesImportDialog
           key='warehouse-import'
           open={open === 'import'}
-          onOpenChange={() => setOpen('import')}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) setOpen(null)
+          }}
         />
       )}
 
@@ -54,9 +56,13 @@ export function WarehousesDialogs() {
             <WarehousesActionDialog
               key={`warehouse-edit-${currentRow.id}`}
               open={open === 'edit'}
-              onOpenChange={() => {
-                setOpen('edit')
-                setTimeout(() => setCurrentRow(null), 500)
+              onOpenChange={(isOpen) => {
+                if (!isOpen) {
+                  setOpen(null)
+                  setTimeout(() => {
+                    setCurrentRow(null)
+                  }, 500)
+                }
               }}
               currentRow={currentRow}
             />
@@ -66,9 +72,13 @@ export function WarehousesDialogs() {
             <WarehousesViewDialog
               key={`warehouse-view-${currentRow.id}`}
               open={open === 'view'}
-              onOpenChange={() => {
-                setOpen('view')
-                setTimeout(() => setCurrentRow(null), 500)
+              onOpenChange={(isOpen) => {
+                if (!isOpen) {
+                  setOpen(null)
+                  setTimeout(() => {
+                    setCurrentRow(null)
+                  }, 500)
+                }
               }}
               currentRow={currentRow}
             />
@@ -78,9 +88,13 @@ export function WarehousesDialogs() {
             <WarehousesDeleteDialog
               key={`warehouse-delete-${currentRow.id}`}
               open={open === 'delete'}
-              onOpenChange={() => {
-                setOpen('delete')
-                setTimeout(() => setCurrentRow(null), 500)
+              onOpenChange={(isOpen) => {
+                if (!isOpen) {
+                  setOpen(null)
+                  setTimeout(() => {
+                    setCurrentRow(null)
+                  }, 500)
+                }
               }}
               currentRow={currentRow}
             />

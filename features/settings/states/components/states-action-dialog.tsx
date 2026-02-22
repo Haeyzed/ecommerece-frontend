@@ -47,6 +47,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Map } from '@/components/ui/map'
 
 type StatesActionDialogProps = {
   currentRow?: State
@@ -187,6 +188,10 @@ interface StateFormProps {
 
 function StateForm({ form, onSubmit, id, className }: StateFormProps) {
   const { data: countries = [], isLoading: isLoadingCountries } = useOptionCountries();
+  const [latValue, lngValue] = form.watch(['latitude', 'longitude']);
+  const lat = parseFloat(latValue || '');
+  const lng = parseFloat(lngValue || '');
+  const hasCoordinates = !isNaN(lat) && !isNaN(lng);
 
   return (
     <form
@@ -311,6 +316,11 @@ function StateForm({ form, onSubmit, id, className }: StateFormProps) {
             )}
           />
         </div>
+        {hasCoordinates && (
+          <div className='h-[200px] w-full rounded-md border overflow-hidden relative'>
+            <Map lat={lat} lng={lng} zoom={6} />
+          </div>
+        )}
       </FieldGroup>
     </form>
   )

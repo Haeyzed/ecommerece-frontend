@@ -348,7 +348,7 @@ function CountryForm({ form, onSubmit, id, className }: CountryFormProps) {
                     />
                   </PopoverTrigger>
 
-                  <PopoverContent className="w-fit p-0 border-none shadow-none" align="start">
+                  <PopoverContent align="start">
                     <EmojiPicker
                       className="h-[342px] border rounded-lg shadow-xl"
                       onEmojiSelect={({ emoji }) => {

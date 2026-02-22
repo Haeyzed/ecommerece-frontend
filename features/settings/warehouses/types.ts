@@ -7,6 +7,7 @@ export interface Warehouse {
   number_of_products?: number;
   stock_quantity?: number;
   is_active: boolean;
+  active_status: WarehouseActiveStatus;
   created_at: string | null;
   updated_at: string | null;
 }

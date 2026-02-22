@@ -55,7 +55,7 @@ export function WarehousesTable() {
     const page = pagination.pageIndex + 1
     const perPage = pagination.pageSize
     const nameFilter = columnFilters.find((f) => f.id === 'name')
-    const statusFilter = columnFilters.find((f) => f.id === 'status')
+    const statusFilter = columnFilters.find((f) => f.id === 'active_status')
     let statusValue: string | undefined = undefined
     if (statusFilter?.value && Array.isArray(statusFilter.value)) {
       if (statusFilter.value.length === 1) {

@@ -1,10 +1,5 @@
-/**
- * Customer group schemas
- *
- * Zod validation for customer group forms. Mirrors backend CustomerGroupRequest.
- */
-
 import { z } from 'zod'
+import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
 export const customerGroupSchema = z.object({
   name: z.string().min(1, 'Name is required').max(255, 'Name is too long'),
@@ -17,8 +12,19 @@ export type CustomerGroupFormData = z.infer<typeof customerGroupSchema>
 export const customerGroupImportSchema = z.object({
   file: z
     .array(z.custom<File>())
-    .min(1, 'Please select a file to import')
-    .max(1, 'Please select only one file'),
+    .min(1, "Please select a file to import")
+    .max(1, "Please select only one file")
+    .refine((files) => {
+      return files?.[0]?.size <= MAX_FILE_SIZE;
+    }, `Max file size is 5MB.`)
+    .refine((files) => {
+      const file = files?.[0];
+      if (!file) return false;
+      const isValidMime = CSV_MIME_TYPES.includes(file.type);
+      const isValidExtension = file.name.toLowerCase().endsWith(".csv");
+
+      return isValidMime || isValidExtension;
+    }, "Only .csv files are allowed"),
 })
 
 export type CustomerGroupImportFormData = z.infer<typeof customerGroupImportSchema>

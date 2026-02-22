@@ -1,8 +1,8 @@
 'use client'
 
+import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
-import EmojiPicker from 'emoji-picker-react'
 
 import {
   useCreateCountry,
@@ -46,7 +46,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { Map } from '@/components/ui/map'
+
+// Import local Emoji Picker components
+import {
+  EmojiPicker,
+  EmojiPickerSearch,
+  EmojiPickerContent,
+  EmojiPickerFooter,
+} from "@/components/ui/emoji-picker"
 
 type CountriesActionDialogProps = {
   currentRow?: Country
@@ -194,10 +201,15 @@ interface CountryFormProps {
 }
 
 function CountryForm({ form, onSubmit, id, className }: CountryFormProps) {
-  const [latValue, lngValue] = form.watch(['latitude', 'longitude']);
-  const lat = parseFloat(latValue || '');
-  const lng = parseFloat(lngValue || '');
-  const hasCoordinates = !isNaN(lat) && !isNaN(lng);
+  const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false)
+
+  // Helper to accurately generate Unicode strings dynamically from a raw emoji
+  const getUnicodeFromEmoji = (emoji: string) => {
+    return Array.from(emoji)
+      .map((char) => `U+${char.codePointAt(0)?.toString(16).toUpperCase()}`)
+      .join(' ')
+  }
+
   return (
     <form
       id={id}
@@ -321,12 +333,6 @@ function CountryForm({ form, onSubmit, id, className }: CountryFormProps) {
           />
         </div>
 
-        {hasCoordinates && (
-          <div className='h-[200px] w-full rounded-md border overflow-hidden relative'>
-            <Map lat={lat} lng={lng} zoom={6} />
-          </div>
-        )}
-
         <div className="grid grid-cols-2 gap-4">
           <Controller
             control={form.control}
@@ -334,13 +340,13 @@ function CountryForm({ form, onSubmit, id, className }: CountryFormProps) {
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error} className="flex flex-col gap-2">
                 <FieldLabel htmlFor='country-emoji'>Emoji</FieldLabel>
-                <Popover>
+                <Popover open={isEmojiPickerOpen} onOpenChange={setIsEmojiPickerOpen}>
                   <PopoverTrigger asChild>
                     <Button
                       id="country-emoji"
                       variant="outline"
                       className={cn(
-                        "w-full justify-start text-left font-normal h-10",
+                        "w-full justify-start text-left font-normal",
                         !field.value && "text-muted-foreground"
                       )}
                     >
@@ -351,20 +357,24 @@ function CountryForm({ form, onSubmit, id, className }: CountryFormProps) {
                       )}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <EmojiPicker
-                      onEmojiClick={(emojiData) => {
-                        // 1. Update the Emoji field
-                        field.onChange(emojiData.emoji);
 
-                        // 2. Automatically generate and update the Unicode field!
-                        const unicode = emojiData.unified
-                          .split('-')
-                          .map((u) => `U+${u.toUpperCase()}`)
-                          .join(' ');
-                        form.setValue('emojiU', unicode, { shouldValidate: true });
+                  <PopoverContent className="w-fit p-0 border-none shadow-none" align="start">
+                    <EmojiPicker
+                      className="h-[342px] border rounded-lg shadow-xl"
+                      onEmojiSelect={({ emoji }) => {
+                        field.onChange(emoji);
+                        setIsEmojiPickerOpen(false);
+
+                        if (emoji) {
+                          const unicode = getUnicodeFromEmoji(emoji);
+                          form.setValue('emojiU', unicode, { shouldValidate: true });
+                        }
                       }}
-                    />
+                    >
+                      <EmojiPickerSearch />
+                      <EmojiPickerContent />
+                      <EmojiPickerFooter />
+                    </EmojiPicker>
                   </PopoverContent>
                 </Popover>
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}

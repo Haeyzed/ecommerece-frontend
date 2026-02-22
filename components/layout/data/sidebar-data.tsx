@@ -657,26 +657,27 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "Backup Database",
               url: "/settings/backup",
+              permissions: ["backup database"],
             },
             {
               title: "General Setting",
               url: "/settings/general",
-              permissions: ["view general setting"],
+              permissions: ["view general settings"],
             },
             {
               title: "Mail Setting",
               url: "/settings/mail",
-              permissions: ["view mail setting"],
+              permissions: ["manage mail settings"],
             },
             {
               title: "Reward Point Setting",
               url: "/settings/reward-point",
-              permissions: ["view reward point setting"],
+              permissions: ["manage reward point settings"],
             },
             {
               title: "SMS Setting",
               url: "/settings/sms",
-              permissions: ["view sms setting"],
+              permissions: ["manage sms settings"],
             },
             {
               title: "Payment Gateways",
@@ -686,17 +687,17 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
             {
               title: "POS Settings",
               url: "/settings/pos",
-              permissions: ["view pos setting"],
+              permissions: ["manage pos settings"],
             },
             {
               title: "HRM Setting",
               url: "/settings/hrm",
-              permissions: ["view hrm setting"],
+              permissions: ["manage hrm settings"],
             },
             {
               title: "Barcode Settings",
               url: "/settings/barcode",
-              permissions: ["view barcode setting"],
+              permissions: ["manage barcode settings"],
             },
           ],
         },

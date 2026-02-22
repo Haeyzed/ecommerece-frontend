@@ -55,14 +55,16 @@ export function ConfirmDialog(props: ConfirmDialogProps) {
   if (isDesktop) {
     return (
       <AlertDialog {...actions}>
-        <AlertDialogContent className={cn(className && className)}>
+        <AlertDialogContent className={cn('w-full sm:max-w-lg', className)}>
           <AlertDialogHeader className='text-start'>
             <AlertDialogTitle>{title}</AlertDialogTitle>
             <AlertDialogDescription asChild>
-              <div>{desc}</div>
+              <div className='w-full'>{desc}</div>
             </AlertDialogDescription>
           </AlertDialogHeader>
-          {children}
+
+          {children && <div className='w-full'>{children}</div>}
+
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isLoading}>
               {cancelBtnText ?? 'Cancel'}
@@ -89,33 +91,35 @@ export function ConfirmDialog(props: ConfirmDialogProps) {
 
   return (
     <Drawer {...actions}>
-      <DrawerContent className={cn(className && className)}>
+      <DrawerContent className={cn('w-full', className)}>
         <DrawerHeader className='text-left'>
           <DrawerTitle>{title}</DrawerTitle>
           <DrawerDescription asChild>
-            <div>{desc}</div>
+            <div className='w-full'>{desc}</div>
           </DrawerDescription>
         </DrawerHeader>
-        
-        {children && <div className="px-4">{children}</div>}
-        
+
+        {children && <div className="px-4 w-full">{children}</div>}
+
         <DrawerFooter className='pt-2'>
+          {/* Added w-full to buttons to ensure they span the mobile drawer */}
           <Button
+            className='w-full'
             variant={destructive ? 'destructive' : 'default'}
             onClick={handleConfirm}
             disabled={disabled || isLoading}
           >
             {isLoading ? (
-                <>
-                  <Spinner className="mr-2 size-4" />
-                  Loading...
-                </>
-              ) : (
-                <>{confirmText ?? 'Continue'}</>
-              )}
+              <>
+                <Spinner className="mr-2 size-4" />
+                Loading...
+              </>
+            ) : (
+              <>{confirmText ?? 'Continue'}</>
+            )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline' disabled={isLoading}>
+            <Button className='w-full' variant='outline' disabled={isLoading}>
               {cancelBtnText ?? 'Cancel'}
             </Button>
           </DrawerClose>

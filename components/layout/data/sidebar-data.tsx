@@ -698,11 +698,6 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
               url: "/settings/barcode",
               permissions: ["view barcode setting"],
             },
-            {
-              title: "Languages",
-              url: "/settings/languages",
-              permissions: ["view languages"],
-            },
           ],
         },
         {

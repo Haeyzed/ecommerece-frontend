@@ -338,24 +338,14 @@ function CountryForm({ form, onSubmit, id, className }: CountryFormProps) {
             control={form.control}
             name='emoji'
             render={({ field, fieldState }) => (
-              <Field data-invalid={!!fieldState.error} className="flex flex-col gap-2">
+              <Field data-invalid={!!fieldState.error}>
                 <FieldLabel htmlFor='country-emoji'>Emoji</FieldLabel>
                 <Popover open={isEmojiPickerOpen} onOpenChange={setIsEmojiPickerOpen}>
                   <PopoverTrigger asChild>
-                    <Button
+                    <Input
                       id="country-emoji"
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        <span className="text-xl">{field.value}</span>
-                      ) : (
-                        <span>Pick an emoji</span>
-                      )}
-                    </Button>
+                      value={field.value ? field.value : ''}
+                    />
                   </PopoverTrigger>
 
                   <PopoverContent className="w-fit p-0 border-none shadow-none" align="start">

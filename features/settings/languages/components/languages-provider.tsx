@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
-import type { Language } from '../types'
+import { type Language } from '../types'
 
-type LanguagesDialogType = 'view'
+type LanguagesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
 
 type LanguagesContextType = {
   open: LanguagesDialogType | null
@@ -27,9 +27,11 @@ export function LanguagesProvider({ children }: { children: React.ReactNode }) {
 }
 
 export const useLanguages = () => {
-  const ctx = React.useContext(LanguagesContext)
-  if (!ctx) {
-    throw new Error('useLanguages has to be used within <LanguagesProvider>')
+  const languagesContext = React.useContext(LanguagesContext)
+
+  if (!languagesContext) {
+    throw new Error('useLanguages has to be used within <LanguagesContext>')
   }
-  return ctx
+
+  return languagesContext
 }

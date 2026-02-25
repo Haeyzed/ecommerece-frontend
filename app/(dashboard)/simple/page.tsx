@@ -8,6 +8,7 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Main } from '@/components/layout/main'
 import { Suspense } from 'react'
 import { Spinner } from '@/components/ui/spinner'
+import { DateTimePicker } from '@/components/date-time-picker'
 
 export default function Page() {
   return (
@@ -40,7 +41,8 @@ export default function Page() {
             }
           >
 
-            <SimpleEditor />
+            <DateTimePicker/>
+            {/*<SimpleEditor />*/}
           </Suspense>
         </Main>
     </AuthenticatedLayout>

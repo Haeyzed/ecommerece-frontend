@@ -83,7 +83,6 @@ export function DepartmentsExportDialog({
     },
   })
 
-  // Watch top-level values safely so the UI knows when they update
   const method = form.watch('method')
   const startDate = form.watch('start_date')
   const endDate = form.watch('end_date')

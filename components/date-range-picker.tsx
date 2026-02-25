@@ -1,7 +1,15 @@
 'use client'
 
 import * as React from 'react'
-import { format } from 'date-fns'
+import {
+  format,
+  subDays,
+  startOfMonth,
+  endOfMonth,
+  subMonths,
+  startOfYear,
+  endOfYear
+} from 'date-fns'
 import { type DateRange } from 'react-day-picker'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { CalendarIcon } from '@hugeicons/core-free-icons'
@@ -29,11 +37,49 @@ export function DateRangePicker({
                                   error,
                                   className
                                 }: DateRangePickerProps) {
-  // Use media query to make it responsive
+  const [isOpen, setIsOpen] = React.useState(false)
   const isDesktop = useMediaQuery('(min-width: 768px)')
 
+  // Pre-calculate common date ranges
+  const today = new Date()
+  const presets = [
+    {
+      label: "Today",
+      range: { from: today, to: today }
+    },
+    {
+      label: "Yesterday",
+      range: { from: subDays(today, 1), to: subDays(today, 1) }
+    },
+    {
+      label: "Last 7 days",
+      range: { from: subDays(today, 6), to: today }
+    },
+    {
+      label: "Last 30 days",
+      range: { from: subDays(today, 29), to: today }
+    },
+    {
+      label: "This Month",
+      range: { from: startOfMonth(today), to: endOfMonth(today) }
+    },
+    {
+      label: "Last Month",
+      range: { from: startOfMonth(subMonths(today, 1)), to: endOfMonth(subMonths(today, 1)) }
+    },
+    {
+      label: "This Year",
+      range: { from: startOfYear(today), to: endOfYear(today) }
+    }
+  ]
+
+  const handlePresetClick = (range: DateRange) => {
+    if (onChange) onChange(range)
+    setIsOpen(false) // Auto-close popover after picking a preset
+  }
+
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button
           id="date"
@@ -49,32 +95,57 @@ export function DateRangePicker({
           <HugeiconsIcon
             icon={CalendarIcon}
             strokeWidth={2}
-            className="mr-2 size-4"
+            className="mr-2 size-4 shrink-0"
           />
-          {value?.from ? (
-            value.to ? (
-              <>
-                {format(value.from, 'LLL dd, y')} -{' '}
-                {format(value.to, 'LLL dd, y')}
-              </>
+          <span className="truncate">
+            {value?.from ? (
+              value.to ? (
+                <>
+                  {format(value.from, 'LLL dd, y')} -{' '}
+                  {format(value.to, 'LLL dd, y')}
+                </>
+              ) : (
+                format(value.from, 'LLL dd, y')
+              )
             ) : (
-              format(value.from, 'LLL dd, y')
-            )
-          ) : (
-            <span>{placeholder}</span>
-          )}
+              <span>{placeholder}</span>
+            )}
+          </span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          mode="range"
-          defaultMonth={value?.from}
-          selected={value}
-          onSelect={onChange}
-          // Responsive configuration here:
-          numberOfMonths={isDesktop ? 2 : 1}
-          initialFocus
-        />
+
+      <PopoverContent className="w-auto p-0 shadow-lg" align="start">
+        <div className="flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x">
+          {/* Quick Select Sidebar */}
+          <div className="flex flex-col gap-1 p-3 sm:w-40 bg-muted/20">
+            <span className="text-xs font-semibold text-muted-foreground mb-1 px-2 uppercase tracking-wider">
+              Quick Select
+            </span>
+            {presets.map((preset) => (
+              <Button
+                key={preset.label}
+                variant="ghost"
+                size="sm"
+                onClick={() => handlePresetClick(preset.range)}
+                className="justify-start font-normal"
+              >
+                {preset.label}
+              </Button>
+            ))}
+          </div>
+
+          {/* Calendar Area */}
+          <div className="p-1">
+            <Calendar
+              mode="range"
+              defaultMonth={value?.from}
+              selected={value}
+              onSelect={onChange}
+              numberOfMonths={isDesktop ? 2 : 1}
+              initialFocus
+            />
+          </div>
+        </div>
       </PopoverContent>
     </Popover>
   )

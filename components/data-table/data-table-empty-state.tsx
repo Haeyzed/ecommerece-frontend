@@ -32,12 +32,12 @@ type DataTableEmptyStateProps = {
 }
 
 export function DataTableEmptyState({
-  title,
-  description,
-  primaryAction,
-  secondaryAction,
-  learnMoreLink,
-}: DataTableEmptyStateProps) {
+                                      title,
+                                      description,
+                                      primaryAction,
+                                      secondaryAction,
+                                      learnMoreLink,
+                                    }: DataTableEmptyStateProps) {
   return (
     <Empty>
       <EmptyHeader>
@@ -46,21 +46,32 @@ export function DataTableEmptyState({
       </EmptyHeader>
       {(primaryAction ?? secondaryAction ?? learnMoreLink) && (
         <EmptyContent>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex w-full flex-col items-center justify-center gap-2 sm:flex-row sm:gap-3">
             {primaryAction && (
-              <Button onClick={primaryAction.onClick}>
+              <Button
+                className="w-full sm:w-auto"
+                onClick={primaryAction.onClick}
+              >
                 {primaryAction.icon}
                 <span>{primaryAction.label}</span>
               </Button>
             )}
             {secondaryAction && (
-              <Button variant="outline" onClick={secondaryAction.onClick}>
+              <Button
+                variant="outline"
+                className="w-full sm:w-auto"
+                onClick={secondaryAction.onClick}
+              >
                 {secondaryAction.icon}
                 <span>{secondaryAction.label}</span>
               </Button>
             )}
             {learnMoreLink && (
-              <Button variant="link" asChild className="text-muted-foreground">
+              <Button
+                variant="link"
+                asChild
+                className="w-full text-muted-foreground sm:w-auto"
+              >
                 <a href={learnMoreLink.href}>
                   {learnMoreLink.label}{' '}
                   <HugeiconsIcon icon={ArrowUpRight01Icon} strokeWidth={2} />
@@ -73,4 +84,3 @@ export function DataTableEmptyState({
     </Empty>
   )
 }
-

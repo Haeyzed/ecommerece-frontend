@@ -8,7 +8,8 @@ import {
   endOfMonth,
   subMonths,
   startOfYear,
-  endOfYear
+  endOfYear,
+  isSameDay // Added this import
 } from 'date-fns'
 import { type DateRange } from 'react-day-picker'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -40,7 +41,6 @@ export function DateRangePicker({
   const [isOpen, setIsOpen] = React.useState(false)
   const isDesktop = useMediaQuery('(min-width: 768px)')
 
-  // Pre-calculate common date ranges
   const today = new Date()
   const presets = [
     {
@@ -75,7 +75,13 @@ export function DateRangePicker({
 
   const handlePresetClick = (range: DateRange) => {
     if (onChange) onChange(range)
-    setIsOpen(false) // Auto-close popover after picking a preset
+    // Removed setIsOpen(false) so the popover stays open as requested
+  }
+
+  // Helper to check if a preset is currently selected
+  const checkIsActive = (presetRange: DateRange) => {
+    if (!value?.from || !value?.to || !presetRange.from || !presetRange.to) return false;
+    return isSameDay(value.from, presetRange.from) && isSameDay(value.to, presetRange.to);
   }
 
   return (
@@ -121,17 +127,24 @@ export function DateRangePicker({
             <span className="text-xs font-semibold text-muted-foreground mb-1 px-2 uppercase tracking-wider">
               Quick Select
             </span>
-            {presets.map((preset) => (
-              <Button
-                key={preset.label}
-                variant="ghost"
-                size="sm"
-                onClick={() => handlePresetClick(preset.range)}
-                className="justify-start font-normal"
-              >
-                {preset.label}
-              </Button>
-            ))}
+            {presets.map((preset) => {
+              const isActive = checkIsActive(preset.range)
+              return (
+                <Button
+                  key={preset.label}
+                  // Dynamically switch to "default" if active
+                  variant={isActive ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => handlePresetClick(preset.range)}
+                  className={cn(
+                    "justify-start font-normal transition-all",
+                    isActive && "font-medium"
+                  )}
+                >
+                  {preset.label}
+                </Button>
+              )
+            })}
           </div>
 
           {/* Calendar Area */}
@@ -143,6 +156,10 @@ export function DateRangePicker({
               onSelect={onChange}
               numberOfMonths={isDesktop ? 2 : 1}
               initialFocus
+              // Added these 3 properties to enable the Month/Year dropdown selects!
+              captionLayout="dropdown"
+              fromYear={1990}
+              toYear={today.getFullYear() + 10}
             />
           </div>
         </div>

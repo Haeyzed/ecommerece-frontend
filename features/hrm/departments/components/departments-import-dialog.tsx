@@ -245,7 +245,6 @@ export function DepartmentsImportDialog({
               </DialogDescription>
             </DialogHeader>
 
-            {/* FIXED: Render variable here instead of component tag */}
             {importFormContent}
 
             <DialogFooter className='gap-y-2'>

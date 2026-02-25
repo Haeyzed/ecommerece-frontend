@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
+import { useMediaQuery } from '@/hooks/use-media-query'
 
 interface DateRangePickerProps {
   value?: DateRange
@@ -17,6 +18,7 @@ interface DateRangePickerProps {
   placeholder?: string
   disabled?: boolean
   error?: string
+  className?: string
 }
 
 export function DateRangePicker({
@@ -24,50 +26,56 @@ export function DateRangePicker({
                                   onChange,
                                   placeholder = "Pick a date range",
                                   disabled,
-                                  error
+                                  error,
+                                  className
                                 }: DateRangePickerProps) {
+  // Use media query to make it responsive
+  const isDesktop = useMediaQuery('(min-width: 768px)')
+
   return (
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            id="date"
-            variant="outline"
-            disabled={disabled}
-            className={cn(
-              "justify-start text-left font-normal px-2.5",
-              !value && "text-muted-foreground",
-              error && "border-destructive"
-            )}
-          >
-            <HugeiconsIcon
-              icon={CalendarIcon}
-              strokeWidth={2}
-              className="mr-2 size-4"
-            />
-            {value?.from ? (
-              value.to ? (
-                <>
-                  {format(value.from, 'LLL dd, y')} -{' '}
-                  {format(value.to, 'LLL dd, y')}
-                </>
-              ) : (
-                format(value.from, 'LLL dd, y')
-              )
-            ) : (
-              <span>{placeholder}</span>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            mode="range"
-            defaultMonth={value?.from}
-            selected={value}
-            onSelect={onChange}
-            numberOfMonths={2}
-            initialFocus
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          id="date"
+          variant="outline"
+          disabled={disabled}
+          className={cn(
+            "justify-start text-left font-normal px-2.5",
+            !value && "text-muted-foreground",
+            error && "border-destructive",
+            className
+          )}
+        >
+          <HugeiconsIcon
+            icon={CalendarIcon}
+            strokeWidth={2}
+            className="mr-2 size-4"
           />
-        </PopoverContent>
-      </Popover>
+          {value?.from ? (
+            value.to ? (
+              <>
+                {format(value.from, 'LLL dd, y')} -{' '}
+                {format(value.to, 'LLL dd, y')}
+              </>
+            ) : (
+              format(value.from, 'LLL dd, y')
+            )
+          ) : (
+            <span>{placeholder}</span>
+          )}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <Calendar
+          mode="range"
+          defaultMonth={value?.from}
+          selected={value}
+          onSelect={onChange}
+          // Responsive configuration here:
+          numberOfMonths={isDesktop ? 2 : 1}
+          initialFocus
+        />
+      </PopoverContent>
+    </Popover>
   )
 }

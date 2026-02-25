@@ -1,5 +1,8 @@
 "use client"
 
+import { useState, useMemo, useEffect } from 'react'
+import { format } from 'date-fns'
+import { type DateRange } from 'react-day-picker'
 import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
 import {
   Table,
@@ -22,8 +25,8 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
-import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+
 import { usePaginatedDepartments } from '@/features/hrm/departments'
 import {
   DepartmentsEmptyState,
@@ -35,6 +38,9 @@ export function DepartmentsTable() {
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [sorting, setSorting] = useState<SortingState>([])
+
+  // Date Range State
+  const [dateRange, setDateRange] = useState<DateRange | undefined>()
 
   const {
     columnFilters,
@@ -56,6 +62,7 @@ export function DepartmentsTable() {
     const perPage = pagination.pageSize
     const nameFilter = columnFilters.find((f) => f.id === 'name')
     const statusFilter = columnFilters.find((f) => f.id === 'status')
+
     let statusValue: string | undefined = undefined
     if (statusFilter?.value && Array.isArray(statusFilter.value)) {
       if (statusFilter.value.length === 1) {
@@ -67,9 +74,11 @@ export function DepartmentsTable() {
       page,
       per_page: perPage,
       search: nameFilter?.value as string | undefined,
-      status: statusValue, 
+      status: statusValue,
+      start_date: dateRange?.from ? format(dateRange.from, 'yyyy-MM-dd') : undefined,
+      end_date: dateRange?.to ? format(dateRange.to, 'yyyy-MM-dd') : undefined,
     }
-  }, [pagination, columnFilters])
+  }, [pagination, columnFilters, dateRange])
 
   const { data, isLoading, error } = usePaginatedDepartments(apiParams)
 
@@ -78,7 +87,6 @@ export function DepartmentsTable() {
     return Math.ceil((data.meta.total || 0) / (data.meta.per_page || 10))
   }, [data?.meta])
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: data?.data || [],
     columns,
@@ -111,28 +119,24 @@ export function DepartmentsTable() {
   }, [pageCount, ensurePageInRange])
 
   if (error) {
-    return (
-      toast.error(error.message)
-    )
+    return toast.error(error.message)
   }
 
   const hasData = data?.meta?.total && data.meta.total > 0
-  const isFiltered = !!apiParams.search || !!apiParams.status
+  const isFiltered = !!apiParams.search || !!apiParams.status || !!apiParams.start_date
   if (!isLoading && !hasData && !isFiltered) {
     return <DepartmentsEmptyState />
   }
 
   return (
-    <div
-      className={cn(
-        'max-sm:has-[div[role="toolbar"]]:mb-16',
-        'flex flex-1 flex-col gap-4'
-      )}
-    >
+    <div className={cn('max-sm:has-[div[role="toolbar"]]:mb-16', 'flex flex-1 flex-col gap-4')}>
       <DataTableToolbar
         table={table}
         searchPlaceholder='Filter departments...'
         searchKey='name'
+        dateRange={dateRange}
+        onDateRangeChange={setDateRange}
+        onReset={() => setDateRange(undefined)}
         filters={[
           {
             columnId: 'active_status',
@@ -144,6 +148,8 @@ export function DepartmentsTable() {
           },
         ]}
       />
+
+      {/* ... [Table rendering code remains completely identical] ... */}
       <div className='overflow-hidden rounded-md border'>
         <Table>
           <TableHeader>
@@ -163,9 +169,9 @@ export function DepartmentsTable() {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   )
                 })}

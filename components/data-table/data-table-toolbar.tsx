@@ -3,15 +3,20 @@
 import { CancelIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from "@hugeicons/react"
 import { type Table } from '@tanstack/react-table'
+import { type DateRange } from 'react-day-picker'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { DataTableFacetedFilter } from './data-table-faceted-filter'
 import { DataTableTableViewOptions } from './data-table-view-options'
+import { DateRangePicker } from '@/components/date-range-picker'
 
 type DataTableToolbarProps<TData> = {
   table: Table<TData>
   searchPlaceholder?: string
   searchKey?: string
+  dateRange?: DateRange
+  onDateRangeChange?: (range: DateRange | undefined) => void
+  onReset?: () => void
   filters?: {
     columnId: string
     title: string
@@ -24,13 +29,18 @@ type DataTableToolbarProps<TData> = {
 }
 
 export function DataTableToolbar<TData>({
-  table,
-  searchPlaceholder = 'Filter...',
-  searchKey,
-  filters = [],
-}: DataTableToolbarProps<TData>) {
+                                          table,
+                                          searchPlaceholder = 'Filter...',
+                                          searchKey,
+                                          dateRange,
+                                          onDateRangeChange,
+                                          onReset,
+                                          filters = [],
+                                        }: DataTableToolbarProps<TData>) {
   const isFiltered =
-    table.getState().columnFilters.length > 0 || table.getState().globalFilter
+    table.getState().columnFilters.length > 0 ||
+    table.getState().globalFilter ||
+    !!dateRange?.from
 
   return (
     <div className='flex items-center justify-between'>
@@ -44,16 +54,26 @@ export function DataTableToolbar<TData>({
             onChange={(event) =>
               table.getColumn(searchKey)?.setFilterValue(event.target.value)
             }
-            className='h-8 w-[150px] lg:w-[250px]'
+            className='h-8 w-full sm:w-[150px] lg:w-[250px]'
           />
         ) : (
           <Input
             placeholder={searchPlaceholder}
             value={table.getState().globalFilter ?? ''}
             onChange={(event) => table.setGlobalFilter(event.target.value)}
-            className='h-8 w-[150px] lg:w-[250px]'
+            className='h-8 w-full sm:w-[150px] lg:w-[250px]'
           />
         )}
+
+        {/* Render Date Range Picker */}
+        {onDateRangeChange && (
+          <DateRangePicker
+            value={dateRange}
+            onChange={onDateRangeChange}
+            className="h-8 w-full sm:w-fit"
+          />
+        )}
+
         <div className='flex gap-x-2'>
           {filters.map((filter) => {
             const column = table.getColumn(filter.columnId)
@@ -68,12 +88,14 @@ export function DataTableToolbar<TData>({
             )
           })}
         </div>
+
         {isFiltered && (
           <Button
             variant='ghost'
             onClick={() => {
               table.resetColumnFilters()
               table.setGlobalFilter('')
+              if (onReset) onReset()
             }}
             className='h-8 px-2 lg:px-3'
           >
@@ -86,4 +108,3 @@ export function DataTableToolbar<TData>({
     </div>
   )
 }
-

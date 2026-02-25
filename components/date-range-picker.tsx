@@ -9,7 +9,7 @@ import {
   subMonths,
   startOfYear,
   endOfYear,
-  isSameDay // Added this import
+  isSameDay
 } from 'date-fns'
 import { type DateRange } from 'react-day-picker'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -132,7 +132,6 @@ export function DateRangePicker({
               return (
                 <Button
                   key={preset.label}
-                  // Dynamically switch to "default" if active
                   variant={isActive ? "default" : "ghost"}
                   size="sm"
                   onClick={() => handlePresetClick(preset.range)}
@@ -156,7 +155,6 @@ export function DateRangePicker({
               onSelect={onChange}
               numberOfMonths={isDesktop ? 2 : 1}
               initialFocus
-              // Added these 3 properties to enable the Month/Year dropdown selects!
               captionLayout="dropdown"
               fromYear={1990}
               toYear={today.getFullYear() + 10}

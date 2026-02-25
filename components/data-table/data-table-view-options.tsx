@@ -17,8 +17,8 @@ type DataTableViewOptionsProps<TData> = {
 }
 
 export function DataTableTableViewOptions<TData>({
-  table,
-}: DataTableViewOptionsProps<TData>) {
+                                                   table,
+                                                 }: DataTableViewOptionsProps<TData>) {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
@@ -48,7 +48,7 @@ export function DataTableTableViewOptions<TData>({
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
               >
-                {column.id}
+                {column.id.replace(/[_-]/g, ' ')}
               </DropdownMenuCheckboxItem>
             )
           })}
@@ -56,4 +56,3 @@ export function DataTableTableViewOptions<TData>({
     </DropdownMenu>
   )
 }
-

@@ -7,7 +7,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { useDeleteDepartment } from '../api'
+import { useDeleteDepartment } from '@/features/hrm/departments'
 import { type Department } from '../types'
 import { useAuthSession } from '@/features/auth/api' 
 

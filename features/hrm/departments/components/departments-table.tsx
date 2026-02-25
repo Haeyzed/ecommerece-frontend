@@ -24,7 +24,7 @@ import {
 } from '@tanstack/react-table'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { useDepartments } from '../api'
+import { usePaginatedDepartments } from '@/features/hrm/departments'
 import {
   DepartmentsEmptyState,
   DataTableBulkActions,
@@ -71,7 +71,7 @@ export function DepartmentsTable() {
     }
   }, [pagination, columnFilters])
 
-  const { data, isLoading, error } = useDepartments(apiParams)
+  const { data, isLoading, error } = usePaginatedDepartments(apiParams)
 
   const pageCount = useMemo(() => {
     if (!data?.meta) return 0

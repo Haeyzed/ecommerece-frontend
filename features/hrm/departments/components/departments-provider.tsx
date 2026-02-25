@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
-import { type Department } from '../types'
+import { type Department } from '@/features/hrm/departments'
 
 type DepartmentsDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
 

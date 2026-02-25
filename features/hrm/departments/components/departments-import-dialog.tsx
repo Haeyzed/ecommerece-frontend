@@ -12,9 +12,9 @@ import {
   CancelCircleIcon
 } from '@hugeicons/core-free-icons'
 
-import { useDepartmentsImport, useDepartmentsTemplateDownload } from '@/features/hrm/departments/api'
-import { departmentImportSchema, type DepartmentImportFormData } from '@/features/hrm/departments/schemas'
-import { DepartmentsCsvPreviewDialog } from './departments-csv-preview-dialog'
+import { useDepartmentsImport, useDepartmentsTemplateDownload } from '@/features/hrm/departments'
+import { departmentImportSchema, type DepartmentImportFormData } from '@/features/hrm/departments'
+import { DepartmentsCsvPreviewDialog } from '@/features/hrm/departments'
 
 import { Button } from '@/components/ui/button'
 import {

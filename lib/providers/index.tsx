@@ -14,6 +14,7 @@ import { ActiveThemeProvider } from "./active-theme-provider";
 import { LayoutProvider } from "./layout-provider";
 import { SearchProvider } from "./search-provider";
 import { LockScreenProvider } from "./lockscreen-provider";
+import { TooltipProvider } from '@/components/ui/tooltip'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -26,7 +27,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
                 <LayoutProvider>
                   <SearchProvider>
                     <LockScreenProvider>
-                      {children}
+                      <TooltipProvider>
+                        {children}
+                      </TooltipProvider>
                     </LockScreenProvider>
                   </SearchProvider>
                 </LayoutProvider>

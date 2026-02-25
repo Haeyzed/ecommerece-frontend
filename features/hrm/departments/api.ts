@@ -1,16 +1,16 @@
 'use client';
 
-import { useApiClient } from '@/lib/api/api-client-client';
-import { ValidationError } from '@/lib/api/api-errors';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { useApiClient } from '@/lib/api/api-client-client'
+import { ValidationError } from '@/lib/api/api-errors'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import type {
   Department,
   DepartmentExportParams,
-  DepartmentFormData,
+  DepartmentFormBody,
   DepartmentListParams,
   DepartmentOption,
-} from './types';
+} from './types'
 
 export const departmentKeys = {
   all: ['departments'] as const,
@@ -24,13 +24,16 @@ export const departmentKeys = {
 
 const BASE_PATH = '/departments';
 
-export function useDepartments(params?: DepartmentListParams) {
+// ==============================================================================
+// QUERIES (READ)
+// ==============================================================================
+
+export function usePaginatedDepartments(params?: DepartmentListParams) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
     queryKey: departmentKeys.list(params),
     queryFn: async () => {
-      const response = await api.get<Department[]>(BASE_PATH, { params });
-      return response;
+      return await api.get<Department[]>(BASE_PATH, { params });
     },
     enabled: sessionStatus !== 'loading',
   });
@@ -68,16 +71,20 @@ export function useDepartment(id: number) {
   };
 }
 
+// ==============================================================================
+// MUTATIONS (CREATE, UPDATE, DELETE)
+// ==============================================================================
+
 export function useCreateDepartment() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: DepartmentFormData) => {
+    mutationFn: async (data: DepartmentFormBody) => {
       const payload: Record<string, unknown> = {
         name: data.name,
-        is_active: data.is_active ?? true,
       };
+      if (data.is_active !== undefined && data.is_active !== null) payload.is_active = data.is_active;
 
       const response = await api.post<{ data: Department }>(BASE_PATH, payload);
       if (!response.success) {
@@ -101,7 +108,7 @@ export function useUpdateDepartment() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<DepartmentFormData> }) => {
+    mutationFn: async ({ id, data }: { id: number; data: Partial<DepartmentFormBody> }) => {
       const payload: Record<string, unknown> = {};
       if (data.name !== undefined) payload.name = data.name;
       if (data.is_active !== undefined) payload.is_active = data.is_active;
@@ -144,13 +151,16 @@ export function useDeleteDepartment() {
   });
 }
 
+// ==============================================================================
+// BULK MUTATIONS
+// ==============================================================================
+
 export function useBulkActivateDepartments() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.patch<{ activated_count: number }>(
+      const response = await api.post<{ activated_count: number }>(
         `${BASE_PATH}/bulk-activate`,
         { ids }
       );
@@ -168,10 +178,9 @@ export function useBulkActivateDepartments() {
 export function useBulkDeactivateDepartments() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.patch<{ deactivated_count: number }>(
+      const response = await api.post<{ deactivated_count: number }>(
         `${BASE_PATH}/bulk-deactivate`,
         { ids }
       );
@@ -189,6 +198,7 @@ export function useBulkDeactivateDepartments() {
 export function useBulkDestroyDepartments() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (ids: number[]) => {
       const response = await api.post(`${BASE_PATH}/bulk-destroy`, { ids });
@@ -203,13 +213,18 @@ export function useBulkDestroyDepartments() {
   });
 }
 
+// ==============================================================================
+// IMPORT & EXPORT
+// ==============================================================================
+
 export function useDepartmentsImport() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (file: File) => {
       const form = new FormData();
-      form.append("file", file);
+      form.append('file', file);
       const response = await api.post(`${BASE_PATH}/import`, form);
       if (!response.success) throw new Error(response.message);
       return response;
@@ -227,13 +242,12 @@ export function useDepartmentsExport() {
 
   return useMutation({
     mutationFn: async (params: DepartmentExportParams) => {
-      if (params.method === "download") {
+      if (params.method === 'download') {
         const blob = await api.postBlob(`${BASE_PATH}/export`, params);
         const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
+        const link = document.createElement('a');
         link.href = url;
-        const fileName = `departments-export-${Date.now()}.${params.format === "pdf" ? "pdf" : "xlsx"}`;
-        link.download = fileName;
+        link.download = `departments-export-${Date.now()}.${params.format === 'pdf' ? 'pdf' : 'xlsx'}`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -254,6 +268,7 @@ export function useDepartmentsExport() {
 
 export function useDepartmentsTemplateDownload() {
   const { api } = useApiClient();
+
   return useMutation({
     mutationFn: async () => {
       const blob = await api.getBlob(`${BASE_PATH}/download`);

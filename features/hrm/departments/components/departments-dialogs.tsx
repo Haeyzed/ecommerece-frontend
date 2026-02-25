@@ -1,9 +1,9 @@
 'use client'
 
-import { DepartmentsActionDialog } from './departments-action-dialog'
-import { DepartmentsDeleteDialog } from './departments-delete-dialog'
-import { DepartmentsExportDialog } from './departments-export-dialog'
-import { DepartmentsImportDialog } from './departments-import-dialog'
+import { DepartmentsActionDialog } from '@/features/hrm/departments'
+import { DepartmentsDeleteDialog } from '@/features/hrm/departments'
+import { DepartmentsExportDialog } from '@/features/hrm/departments'
+import { DepartmentsImportDialog } from '@/features/hrm/departments'
 import { DepartmentsViewDialog } from './departments-view-dialog'
 import { useDepartments } from './departments-provider'
 import { useAuthSession } from '@/features/auth/api'

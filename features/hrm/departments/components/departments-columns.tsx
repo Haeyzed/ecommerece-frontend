@@ -6,8 +6,8 @@ import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
-import { statusTypes } from '../constants'
-import { type Department } from '../types'
+import { statusTypes } from '@/features/hrm/departments'
+import { type Department } from '@/features/hrm/departments'
 import { DataTableRowActions } from './data-table-row-actions'
 
 export const departmentsColumns: ColumnDef<Department>[] = [

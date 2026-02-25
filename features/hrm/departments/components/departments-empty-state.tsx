@@ -3,7 +3,7 @@
 import { DataTableEmptyState } from '@/components/data-table'
 import { HugeiconsIcon } from "@hugeicons/react"
 import { PlusSignIcon, Download01Icon } from "@hugeicons/core-free-icons"
-import { useDepartments } from './departments-provider'
+import { useDepartments } from '@/features/hrm/departments'
 
 export function DepartmentsEmptyState() {
   const { setOpen } = useDepartments()

@@ -6,8 +6,8 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { Upload01Icon } from '@hugeicons/core-free-icons'
 import { format } from 'date-fns'
 
-import { useDepartmentsExport } from '@/features/hrm/departments/api'
-import { departmentExportSchema, type DepartmentExportFormData } from '@/features/hrm/departments/schemas'
+import { useDepartmentsExport } from '@/features/hrm/departments'
+import { departmentExportSchema, type DepartmentExportFormData } from '@/features/hrm/departments'
 
 import { Button } from '@/components/ui/button'
 import {

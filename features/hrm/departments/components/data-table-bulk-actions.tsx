@@ -21,8 +21,8 @@ import {
   useBulkDeactivateDepartments 
 } from '../api'
 import { type Department } from '../types'
-import { DepartmentsExportDialog } from './departments-export-dialog'
-import { DepartmentsMultiDeleteDialog } from './departments-multi-delete-dialog'
+import { DepartmentsExportDialog } from '@/features/hrm/departments'
+import { DepartmentsMultiDeleteDialog } from '@/features/hrm/departments'
 import { useAuthSession } from '@/features/auth/api'
 import { Spinner } from '@/components/ui/spinner'
 

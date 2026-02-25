@@ -4,7 +4,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { FileImportIcon, PlusSignIcon, Upload01Icon } from '@hugeicons/core-free-icons'
 import { Button } from '@/components/ui/button'
 import { useMediaQuery } from '@/hooks/use-media-query'
-import { useDepartments } from './departments-provider'
+import { useDepartments } from '@/features/hrm/departments'
 import { useAuthSession } from '@/features/auth/api'
 
 export function DepartmentsPrimaryButtons() {

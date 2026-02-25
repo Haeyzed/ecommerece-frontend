@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { type Department } from '../types'
-import { useDepartments } from './departments-provider'
+import { useDepartments } from '@/features/hrm/departments'
 import { useAuthSession } from '@/features/auth/api'
 
 type DataTableRowActionsProps = {

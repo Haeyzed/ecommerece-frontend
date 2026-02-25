@@ -21,8 +21,8 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { cn } from '@/lib/utils'
-import { statusTypes } from '../constants'
-import { Department } from '../types'
+import { statusTypes } from '@/features/hrm/departments'
+import { type Department } from '@/features/hrm/departments'
 
 type DepartmentsViewDialogProps = {
   currentRow?: Department

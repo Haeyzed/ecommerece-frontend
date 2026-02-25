@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ecommerece-frontend.iml" filepath="$PROJECT_DIR$/.idea/ecommerece-frontend.iml" />
-      <module fileurl="file://$USER_HOME$/Herd/quick-mart-api/.idea/quick-mart-api.iml" filepath="$USER_HOME$/Herd/quick-mart-api/.idea/quick-mart-api.iml" />
     </modules>
   </component>
 </project>

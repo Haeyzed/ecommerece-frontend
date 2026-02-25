@@ -65,7 +65,6 @@ export function DataTableToolbar<TData>({
           />
         )}
 
-        {/* Render Date Range Picker */}
         {onDateRangeChange && (
           <DateRangePicker
             value={dateRange}

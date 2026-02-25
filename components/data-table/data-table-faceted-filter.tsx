@@ -34,10 +34,10 @@ type DataTableFacetedFilterProps<TData, TValue> = {
 }
 
 export function DataTableFacetedFilter<TData, TValue>({
-  column,
-  title,
-  options,
-}: DataTableFacetedFilterProps<TData, TValue>) {
+                                                        column,
+                                                        title,
+                                                        options,
+                                                      }: DataTableFacetedFilterProps<TData, TValue>) {
   const facets = column?.getFacetedUniqueValues()
   const selectedValues = new Set(column?.getFilterValue() as string[])
 
@@ -45,7 +45,7 @@ export function DataTableFacetedFilter<TData, TValue>({
     <Popover>
       <PopoverTrigger asChild>
         <Button variant='outline' size='sm' className='h-8 border-dashed'>
-          <HugeiconsIcon icon={AddCircleIcon} className='size-4' />
+          <HugeiconsIcon icon={AddCircleIcon} className='mr-2 h-4 w-4' />
           {title}
           {selectedValues?.size > 0 && (
             <>
@@ -107,7 +107,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                   >
                     <div
                       className={cn(
-                        'flex size-4 items-center justify-center rounded-sm border border-primary',
+                        'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
                         isSelected
                           ? 'bg-primary text-primary-foreground'
                           : 'opacity-50 [&_svg]:invisible'
@@ -116,11 +116,14 @@ export function DataTableFacetedFilter<TData, TValue>({
                       <HugeiconsIcon icon={Check} className={cn('h-4 w-4 text-background')} />
                     </div>
                     {option.icon && (
-                      <option.icon className='size-4 text-muted-foreground' />
+                      <option.icon className='mr-2 h-4 w-4 text-muted-foreground' />
                     )}
-                    <span>{option.label}</span>
+
+                    {/* ADDED flex-1 right here so the label takes up the space! */}
+                    <span className="flex-1">{option.label}</span>
+
                     {facets?.get(option.value) && (
-                      <span className='ms-auto flex h-4 w-4 items-center justify-center font-mono text-xs'>
+                      <span className='ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs'>
                         {facets.get(option.value)}
                       </span>
                     )}
@@ -147,4 +150,3 @@ export function DataTableFacetedFilter<TData, TValue>({
     </Popover>
   )
 }
-

@@ -102,7 +102,6 @@ export function ConfirmDialog(props: ConfirmDialogProps) {
         {children && <div className="px-4 w-full">{children}</div>}
 
         <DrawerFooter className='pt-2'>
-          {/* Added w-full to buttons to ensure they span the mobile drawer */}
           <Button
             className='w-full'
             variant={destructive ? 'destructive' : 'default'}

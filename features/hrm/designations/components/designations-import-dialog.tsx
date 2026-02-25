@@ -60,9 +60,9 @@ type DesignationsImportDialogProps = {
 }
 
 export function DesignationsImportDialog({
-                                    open,
-                                    onOpenChange,
-                                  }: DesignationsImportDialogProps) {
+                                           open,
+                                           onOpenChange,
+                                         }: DesignationsImportDialogProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)")
   const { mutate: importDesignations, isPending } = useDesignationsImport()
   const { mutate: downloadTemplate, isPending: isDownloading } = useDesignationsTemplateDownload()
@@ -129,7 +129,7 @@ export function DesignationsImportDialog({
     onOpenChange(value)
   }
 
-  const ImportContent = () => (
+  const importFormContent = (
     <form id='import-form' onSubmit={form.handleSubmit(handlePreview)} className="grid gap-4 py-4">
       <div className="flex justify-end">
         <Button
@@ -158,17 +158,18 @@ export function DesignationsImportDialog({
         <div className='space-y-2 rounded-md border bg-muted/50 p-3 text-sm'>
           <div className='font-medium'>Required Fields:</div>
           <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>name*</code> - Designation name (required)</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>name*</code> - Designation name</li>
           </ul>
           <div className='font-medium mt-3'>Optional Fields:</div>
           <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>is_active</code> - Designation active status</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>department_id</code> - Parent Department ID</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>is_active</code> (1 or 0)</li>
           </ul>
         </div>
         <Controller
           control={form.control}
           name='file'
-          render={({ field: { value, onChange, ...fieldProps }, fieldState }) => (
+          render={({ field: { value, onChange }, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
               <FieldLabel htmlFor='import-file'>Upload File</FieldLabel>
 
@@ -245,7 +246,7 @@ export function DesignationsImportDialog({
               </DialogDescription>
             </DialogHeader>
 
-            <ImportContent />
+            {importFormContent}
 
             <DialogFooter className='gap-y-2'>
               <Button variant='outline' onClick={() => handleOpenChange(false)}>
@@ -269,7 +270,8 @@ export function DesignationsImportDialog({
             </DrawerHeader>
 
             <div className="no-scrollbar overflow-y-auto px-4">
-              <ImportContent />
+              {/* Replaced <ImportContent /> with the variable */}
+              {importFormContent}
             </div>
 
             <DrawerFooter>

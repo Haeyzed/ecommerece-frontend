@@ -60,9 +60,9 @@ type DepartmentsImportDialogProps = {
 }
 
 export function DepartmentsImportDialog({
-                                    open,
-                                    onOpenChange,
-                                  }: DepartmentsImportDialogProps) {
+                                          open,
+                                          onOpenChange,
+                                        }: DepartmentsImportDialogProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)")
   const { mutate: importDepartments, isPending } = useDepartmentsImport()
   const { mutate: downloadTemplate, isPending: isDownloading } = useDepartmentsTemplateDownload()
@@ -129,7 +129,7 @@ export function DepartmentsImportDialog({
     onOpenChange(value)
   }
 
-  const ImportContent = () => (
+  const importFormContent = (
     <form id='import-form' onSubmit={form.handleSubmit(handlePreview)} className="grid gap-4 py-4">
       <div className="flex justify-end">
         <Button
@@ -168,7 +168,7 @@ export function DepartmentsImportDialog({
         <Controller
           control={form.control}
           name='file'
-          render={({ field: { value, onChange, ...fieldProps }, fieldState }) => (
+          render={({ field: { value, onChange }, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
               <FieldLabel htmlFor='import-file'>Upload File</FieldLabel>
 
@@ -245,7 +245,8 @@ export function DepartmentsImportDialog({
               </DialogDescription>
             </DialogHeader>
 
-            <ImportContent />
+            {/* FIXED: Render variable here instead of component tag */}
+            {importFormContent}
 
             <DialogFooter className='gap-y-2'>
               <Button variant='outline' onClick={() => handleOpenChange(false)}>
@@ -269,7 +270,7 @@ export function DepartmentsImportDialog({
             </DrawerHeader>
 
             <div className="no-scrollbar overflow-y-auto px-4">
-              <ImportContent />
+              {importFormContent}
             </div>
 
             <DrawerFooter>

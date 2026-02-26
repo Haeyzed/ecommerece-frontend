@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  CheckmarkCircle02Icon,
-  Delete02Icon,
+import { 
+  CheckmarkCircle02Icon, 
+  Delete02Icon, 
   UnavailableIcon,
   Upload01Icon,
 } from '@hugeicons/core-free-icons'
@@ -16,13 +16,13 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
-import {
-  useBulkActivateLeaveTypes,
-  useBulkDeactivateLeaveTypes
-} from '@/features/hrm/leave-types/api'
-import { type LeaveType } from '@/features/hrm/leave-types/types'
-import { LeaveTypesExportDialog } from '@/features/hrm/leave-types'
-import { LeaveTypesMultiDeleteDialog } from '@/features/hrm/leave-types'
+import { 
+  useBulkActivateDesignations, 
+  useBulkDeactivateDesignations 
+} from '@/features/hrm/designations'
+import { type Designation } from '@/features/hrm/designations'
+import { DesignationsExportDialog } from '@/features/hrm/designations'
+import { DesignationsMultiDeleteDialog } from '@/features/hrm/designations'
 import { useAuthSession } from '@/features/auth/api'
 import { Spinner } from '@/components/ui/spinner'
 
@@ -31,22 +31,22 @@ type DataTableBulkActionsProps<TData> = {
 }
 
 export function DataTableBulkActions<TData>({
-                                              table,
-                                            }: DataTableBulkActionsProps<TData>) {
+  table,
+}: DataTableBulkActionsProps<TData>) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showExportDialog, setShowExportDialog] = useState(false)
   const selectedRows = table.getFilteredSelectedRowModel().rows
-  const selectedIds = selectedRows.map((row) => (row.original as LeaveType).id)
+  const selectedIds = selectedRows.map((row) => (row.original as Designation).id)
 
-  const { mutate: activateLeaveTypes, isPending: isActivating } = useBulkActivateLeaveTypes()
-  const { mutate: deactivateLeaveTypes, isPending: isDeactivating } = useBulkDeactivateLeaveTypes()
+  const { mutate: activateDesignations, isPending: isActivating } = useBulkActivateDesignations()
+  const { mutate: deactivateDesignations, isPending: isDeactivating } = useBulkDeactivateDesignations()
 
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
 
-  const canUpdate = userPermissions.includes('update leave types')
-  const canDelete = userPermissions.includes('delete leave types')
-  const canExport = userPermissions.includes('export leave types')
+  const canUpdate = userPermissions.includes('update designations')
+  const canDelete = userPermissions.includes('delete designations')
+  const canExport = userPermissions.includes('export designations')
 
   if (!canUpdate && !canDelete && !canExport) return null
 
@@ -54,11 +54,11 @@ export function DataTableBulkActions<TData>({
 
   const handleBulkStatusChange = (status: 'active' | 'inactive') => {
     if (status === 'active') {
-      activateLeaveTypes(selectedIds, {
+      activateDesignations(selectedIds, {
         onSuccess: () => table.resetRowSelection(),
       })
     } else {
-      deactivateLeaveTypes(selectedIds, {
+      deactivateDesignations(selectedIds, {
         onSuccess: () => table.resetRowSelection(),
       })
     }
@@ -66,7 +66,7 @@ export function DataTableBulkActions<TData>({
 
   return (
     <>
-      <BulkActionsToolbar table={table} entityName='leave type'>
+      <BulkActionsToolbar table={table} entityName='designation'>
         {canUpdate && (
           <>
             <Tooltip>
@@ -77,19 +77,19 @@ export function DataTableBulkActions<TData>({
                   onClick={() => handleBulkStatusChange('active')}
                   disabled={isBusy}
                   className='size-8'
-                  aria-label='Activate selected leave types'
-                  title='Activate selected leave types'
+                  aria-label='Activate selected designations'
+                  title='Activate selected designations'
                 >
                   {isActivating ? (
                     <Spinner className='size-4' />
                   ) : (
                     <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
                   )}
-                  <span className='sr-only'>Activate selected leave types</span>
+                  <span className='sr-only'>Activate selected designations</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Activate selected leave types</p>
+                <p>Activate selected designations</p>
               </TooltipContent>
             </Tooltip>
 
@@ -101,19 +101,19 @@ export function DataTableBulkActions<TData>({
                   onClick={() => handleBulkStatusChange('inactive')}
                   disabled={isBusy}
                   className='size-8'
-                  aria-label='Deactivate selected leave types'
-                  title='Deactivate selected leave types'
+                  aria-label='Deactivate selected designations'
+                  title='Deactivate selected designations'
                 >
                   {isDeactivating ? (
                     <Spinner className='size-4' />
                   ) : (
                     <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
                   )}
-                  <span className='sr-only'>Deactivate selected leave types</span>
+                  <span className='sr-only'>Deactivate selected designations</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Deactivate selected leave types</p>
+                <p>Deactivate selected designations</p>
               </TooltipContent>
             </Tooltip>
           </>
@@ -128,15 +128,15 @@ export function DataTableBulkActions<TData>({
                 onClick={() => setShowExportDialog(true)}
                 disabled={isBusy}
                 className='size-8'
-                aria-label='Export selected leave types'
-                title='Export selected leave types'
+                aria-label='Export selected designations'
+                title='Export selected designations'
               >
                 <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} />
-                <span className='sr-only'>Export selected leave types</span>
+                <span className='sr-only'>Export selected designations</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Export selected leave types</p>
+              <p>Export selected designations</p>
             </TooltipContent>
           </Tooltip>
         )}
@@ -150,22 +150,22 @@ export function DataTableBulkActions<TData>({
                 onClick={() => setShowDeleteConfirm(true)}
                 disabled={isBusy}
                 className='size-8'
-                aria-label='Delete selected leave types'
-                title='Delete selected leave types'
+                aria-label='Delete selected designations'
+                title='Delete selected designations'
               >
                 <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} />
-                <span className='sr-only'>Delete selected leave types</span>
+                <span className='sr-only'>Delete selected designations</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Delete selected leave types</p>
+              <p>Delete selected designations</p>
             </TooltipContent>
           </Tooltip>
         )}
       </BulkActionsToolbar>
 
       {canDelete && (
-        <LeaveTypesMultiDeleteDialog
+        <DesignationsMultiDeleteDialog
           table={table}
           open={showDeleteConfirm}
           onOpenChange={setShowDeleteConfirm}
@@ -173,7 +173,7 @@ export function DataTableBulkActions<TData>({
       )}
 
       {canExport && (
-        <LeaveTypesExportDialog
+        <DesignationsExportDialog
           open={showExportDialog}
           onOpenChange={setShowExportDialog}
           ids={selectedIds}

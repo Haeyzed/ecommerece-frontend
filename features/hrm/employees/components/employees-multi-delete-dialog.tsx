@@ -3,40 +3,49 @@
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Alert02Icon } from '@hugeicons/core-free-icons'
+import { type Table } from '@tanstack/react-table'
+import { toast } from 'sonner'
+import { useBulkDestroyDesignations } from '@/features/hrm/designations'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { useDeleteLeaveType } from '@/features/hrm/leave-types/api'
-import { type LeaveType } from '../types'
+import { type Designation } from '@/features/hrm/designations'
 import { useAuthSession } from '@/features/auth/api'
 
-type LeaveTypesDeleteDialogProps = {
+type DesignationsMultiDeleteDialogProps<TData> = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  currentRow: LeaveType
+  table: Table<TData>
 }
 
-export function LeaveTypesDeleteDialog({
-                                         open,
-                                         onOpenChange,
-                                         currentRow,
-                                       }: LeaveTypesDeleteDialogProps) {
+const CONFIRM_WORD = 'DELETE'
+
+export function EmployeesMultiDeleteDialog<TData>({
+  open,
+  onOpenChange,
+  table,
+}: DesignationsMultiDeleteDialogProps<TData>) {
   const [value, setValue] = useState('')
-  const { mutate: deleteLeaveType, isPending } = useDeleteLeaveType()
+  const selectedRows = table.getFilteredSelectedRowModel().rows
+  const selectedIds = selectedRows.map(row => (row.original as Designation).id)
+  const { mutate: bulkDestroy, isPending } = useBulkDestroyDesignations()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canDelete = userPermissions.includes('delete leave types')
-
+  const canDelete = userPermissions.includes('delete designations')
   if (!canDelete) return null
 
   const handleDelete = () => {
-    if (value.trim() !== currentRow.name) return
+    if (value.trim() !== CONFIRM_WORD) {
+      toast.error(`Please type "${CONFIRM_WORD}" to confirm.`)
+      return
+    }
 
-    deleteLeaveType(currentRow.id, {
+    bulkDestroy(selectedIds, {
       onSuccess: () => {
         onOpenChange(false)
         setValue('')
+        table.resetRowSelection()
       }
     })
   }
@@ -46,7 +55,7 @@ export function LeaveTypesDeleteDialog({
       open={open}
       onOpenChange={onOpenChange}
       handleConfirm={handleDelete}
-      disabled={value.trim() !== currentRow.name || isPending}
+      disabled={value.trim() !== CONFIRM_WORD || isPending}
       title={
         <span className='text-destructive'>
           <HugeiconsIcon
@@ -55,25 +64,23 @@ export function LeaveTypesDeleteDialog({
             size={18}
             strokeWidth={2}
           />{' '}
-          Delete Leave Type
+          Delete {selectedRows.length}{' '}
+          {selectedRows.length > 1 ? 'designations' : 'designation'}
         </span>
       }
       desc={
         <div className='space-y-4'>
           <p className='mb-2'>
-            Are you sure you want to delete{' '}
-            <span className='font-bold'>{currentRow.name}</span>?
-            <br />
-            This action will permanently remove the leave type from the system.
-            This cannot be undone.
+            Are you sure you want to delete the selected designations? <br />
+            This action cannot be undone.
           </p>
 
-          <Label className='my-2'>
-            Leave Type Name:
+          <Label className='my-4 flex flex-col items-start gap-1.5'>
+            <span className=''>Confirm by typing "{CONFIRM_WORD}":</span>
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder='Enter leave type name to confirm deletion.'
+              placeholder={`Type "${CONFIRM_WORD}" to confirm.`}
             />
           </Label>
 

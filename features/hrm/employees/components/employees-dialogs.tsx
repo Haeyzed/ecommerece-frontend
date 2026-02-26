@@ -1,30 +1,29 @@
 'use client'
 
-import { LeaveTypesActionDialog } from '@/features/hrm/leave-types'
-import { LeaveTypesDeleteDialog } from '@/features/hrm/leave-types'
-import { LeaveTypesExportDialog } from '@/features/hrm/leave-types'
-import { LeaveTypesImportDialog } from '@/features/hrm/leave-types'
-import { LeaveTypesViewDialog } from './leave-types-view-dialog'
-import { useLeaveTypes } from './leave-types-provider'
+import { DesignationsActionDialog } from '@/features/hrm/designations'
+import { DesignationsDeleteDialog } from '@/features/hrm/designations'
+import { DesignationsExportDialog } from '@/features/hrm/designations'
+import { DesignationsImportDialog } from '@/features/hrm/designations'
+import { DesignationsViewDialog } from '@/features/hrm/designations'
+import { useDesignations } from '@/features/hrm/designations'
 import { useAuthSession } from '@/features/auth/api'
 
-export function LeaveTypesDialogs() {
-  const { open, setOpen, currentRow, setCurrentRow } = useLeaveTypes()
+export function EmployeesDialogs() {
+  const { open, setOpen, currentRow, setCurrentRow } = useDesignations()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-
-  const canCreate = userPermissions.includes('create leave types')
-  const canImport = userPermissions.includes('import leave types')
-  const canExport = userPermissions.includes('export leave types')
-  const canUpdate = userPermissions.includes('update leave types')
-  const canDelete = userPermissions.includes('delete leave types')
-  const canView = userPermissions.includes('view leave types')
+  const canCreate = userPermissions.includes('create designations')
+  const canImport = userPermissions.includes('import designations')
+  const canExport = userPermissions.includes('export designations')
+  const canUpdate = userPermissions.includes('update designations')
+  const canDelete = userPermissions.includes('delete designations')
+  const canView = userPermissions.includes('view designations')
 
   return (
     <>
       {canCreate && (
-        <LeaveTypesActionDialog
-          key='leave-type-add'
+        <DesignationsActionDialog
+          key='designation-add'
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -33,8 +32,8 @@ export function LeaveTypesDialogs() {
       )}
 
       {canImport && (
-        <LeaveTypesImportDialog
-          key='leave-type-import'
+        <DesignationsImportDialog
+          key='designation-import'
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -43,8 +42,8 @@ export function LeaveTypesDialogs() {
       )}
 
       {canExport && (
-        <LeaveTypesExportDialog
-          key='leave-type-export'
+        <DesignationsExportDialog
+          key='designation-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}
@@ -54,8 +53,8 @@ export function LeaveTypesDialogs() {
       {currentRow && (
         <>
           {canUpdate && (
-            <LeaveTypesActionDialog
-              key={`leave-type-edit-${currentRow.id}`}
+            <DesignationsActionDialog
+              key={`designation-edit-${currentRow.id}`}
               open={open === 'edit'}
               onOpenChange={(isOpen) => {
                 if (!isOpen) {
@@ -68,10 +67,10 @@ export function LeaveTypesDialogs() {
               currentRow={currentRow}
             />
           )}
-
+          
           {canView && (
-            <LeaveTypesViewDialog
-              key={`leave-type-view-${currentRow.id}`}
+            <DesignationsViewDialog
+              key={`designation-view-${currentRow.id}`}
               open={open === 'view'}
               onOpenChange={(isOpen) => {
                 if (!isOpen) {
@@ -86,8 +85,8 @@ export function LeaveTypesDialogs() {
           )}
 
           {canDelete && (
-            <LeaveTypesDeleteDialog
-              key={`leave-type-delete-${currentRow.id}`}
+            <DesignationsDeleteDialog
+              key={`designation-delete-${currentRow.id}`}
               open={open === 'delete'}
               onOpenChange={(isOpen) => {
                 if (!isOpen) {

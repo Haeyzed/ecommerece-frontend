@@ -1,9 +1,9 @@
 'use client'
 
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  Delete02Icon,
-  MoreHorizontalIcon,
+import { 
+  Delete02Icon, 
+  MoreHorizontalIcon, 
   PencilEdit02Icon,
   ViewIcon,
 } from '@hugeicons/core-free-icons'
@@ -17,22 +17,21 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { type LeaveType } from '@/features/hrm/leave-types/types'
-import { useLeaveTypes } from '@/features/hrm/leave-types/components/leave-types-provider'
+import { type Designation } from '@/features/hrm/designations'
+import { useDesignations } from '@/features/hrm/designations'
 import { useAuthSession } from '@/features/auth/api'
 
 type DataTableRowActionsProps = {
-  row: Row<LeaveType>
+  row: Row<Designation>
 }
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
-  const { setOpen, setCurrentRow } = useLeaveTypes()
+  const { setOpen, setCurrentRow } = useDesignations()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canView = userPermissions.includes('view leave types')
-  const canUpdate = userPermissions.includes('update leave types')
-  const canDelete = userPermissions.includes('delete leave types')
-
+  const canView = userPermissions.includes('view designations')
+  const canUpdate = userPermissions.includes('update designations')
+  const canDelete = userPermissions.includes('delete designations')
   if (!canView && !canUpdate && !canDelete) return null
 
   return (
@@ -63,7 +62,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
             {(canUpdate || canDelete) && <DropdownMenuSeparator />}
           </>
         )}
-
+        
         {canUpdate && (
           <>
             <DropdownMenuItem
@@ -80,7 +79,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
             {canDelete && <DropdownMenuSeparator />}
           </>
         )}
-
+        
         {canDelete && (
           <DropdownMenuItem
             onClick={() => {

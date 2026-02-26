@@ -7,33 +7,32 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { useDeleteLeaveType } from '@/features/hrm/leave-types/api'
-import { type LeaveType } from '../types'
-import { useAuthSession } from '@/features/auth/api'
+import { useDeleteDesignation } from '@/features/hrm/designations'
+import { type Designation } from '../types'
+import { useAuthSession } from '@/features/auth/api' 
 
-type LeaveTypesDeleteDialogProps = {
+type DesignationsDeleteDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  currentRow: LeaveType
+  currentRow: Designation
 }
 
-export function LeaveTypesDeleteDialog({
-                                         open,
-                                         onOpenChange,
-                                         currentRow,
-                                       }: LeaveTypesDeleteDialogProps) {
+export function EmployeesDeleteDialog({
+  open,
+  onOpenChange,
+  currentRow,
+}: DesignationsDeleteDialogProps) {
   const [value, setValue] = useState('')
-  const { mutate: deleteLeaveType, isPending } = useDeleteLeaveType()
+  const { mutate: deleteDesignation, isPending } = useDeleteDesignation()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canDelete = userPermissions.includes('delete leave types')
-
+  const canDelete = userPermissions.includes('delete designations')
   if (!canDelete) return null
 
   const handleDelete = () => {
     if (value.trim() !== currentRow.name) return
 
-    deleteLeaveType(currentRow.id, {
+    deleteDesignation(currentRow.id, {
       onSuccess: () => {
         onOpenChange(false)
         setValue('')
@@ -55,7 +54,7 @@ export function LeaveTypesDeleteDialog({
             size={18}
             strokeWidth={2}
           />{' '}
-          Delete Leave Type
+          Delete Designation
         </span>
       }
       desc={
@@ -64,16 +63,16 @@ export function LeaveTypesDeleteDialog({
             Are you sure you want to delete{' '}
             <span className='font-bold'>{currentRow.name}</span>?
             <br />
-            This action will permanently remove the leave type from the system.
+            This action will permanently remove the designation from the system. 
             This cannot be undone.
           </p>
 
           <Label className='my-2'>
-            Leave Type Name:
+            Designation Name:
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder='Enter leave type name to confirm deletion.'
+              placeholder='Enter designation name to confirm deletion.'
             />
           </Label>
 

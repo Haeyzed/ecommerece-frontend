@@ -32,7 +32,7 @@ export function LeaveTypesMultiDeleteDialog<TData>({
   const { mutate: bulkDestroy, isPending } = useBulkDestroyLeaveTypes()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canDelete = userPermissions.includes('delete leave_types')
+  const canDelete = userPermissions.includes('delete leave types')
 
   if (!canDelete) return null
 

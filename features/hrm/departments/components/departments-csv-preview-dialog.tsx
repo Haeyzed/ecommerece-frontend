@@ -40,16 +40,16 @@ type DepartmentsCsvPreviewDialogProps = {
 }
 
 export function DepartmentsCsvPreviewDialog({
-  open,
-  onOpenChange,
-  data,
-  onConfirm,
-  isPending,
-}: DepartmentsCsvPreviewDialogProps) {
+                                              open,
+                                              onOpenChange,
+                                              data,
+                                              onConfirm,
+                                              isPending,
+                                            }: DepartmentsCsvPreviewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const headers = data.length > 0 ? Object.keys(data[0]) : []
 
-  const PreviewContent = () => (
+  const previewContent = (
     <div className='rounded-md border'>
       <Table>
         <TableHeader>
@@ -95,7 +95,7 @@ export function DepartmentsCsvPreviewDialog({
           </DialogHeader>
 
           <div className='max-h-[60vh] overflow-y-auto py-2'>
-            <PreviewContent />
+            {previewContent}
           </div>
 
           <DialogFooter>
@@ -132,7 +132,7 @@ export function DepartmentsCsvPreviewDialog({
         </DrawerHeader>
 
         <div className='no-scrollbar max-h-[70vh] overflow-y-auto px-4'>
-          <PreviewContent />
+          {previewContent}
         </div>
 
         <DrawerFooter>

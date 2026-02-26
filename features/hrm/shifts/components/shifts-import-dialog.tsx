@@ -12,9 +12,9 @@ import {
   CancelCircleIcon
 } from '@hugeicons/core-free-icons'
 
-import { useDesignationsImport, useDesignationsTemplateDownload } from '@/features/hrm/designations'
-import { designationImportSchema, type DesignationImportFormData } from '@/features/hrm/designations'
-import { DesignationsCsvPreviewDialog } from '@/features/hrm/designations'
+import { useShiftsImport, useShiftsTemplateDownload } from '@/features/hrm/shifts'
+import { shiftImportSchema, type ShiftImportFormData } from '@/features/hrm/shifts'
+import { ShiftsCsvPreviewDialog } from '@/features/hrm/shifts'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -54,7 +54,7 @@ import {
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { Spinner } from '@/components/ui/spinner'
 
-type DesignationsImportDialogProps = {
+type ShiftsImportDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -62,16 +62,16 @@ type DesignationsImportDialogProps = {
 export function ShiftsImportDialog({
                                            open,
                                            onOpenChange,
-                                         }: DesignationsImportDialogProps) {
+                                         }: ShiftsImportDialogProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)")
-  const { mutate: importDesignations, isPending } = useDesignationsImport()
-  const { mutate: downloadTemplate, isPending: isDownloading } = useDesignationsTemplateDownload()
+  const { mutate: importShifts, isPending } = useShiftsImport()
+  const { mutate: downloadTemplate, isPending: isDownloading } = useShiftsTemplateDownload()
 
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewData, setPreviewData] = useState<any[]>([])
 
-  const form = useForm<DesignationImportFormData>({
-    resolver: zodResolver(designationImportSchema),
+  const form = useForm<ShiftImportFormData>({
+    resolver: zodResolver(shiftImportSchema),
     defaultValues: {
       file: [],
     },
@@ -90,7 +90,7 @@ export function ShiftsImportDialog({
     })
   }
 
-  const handlePreview = (data: DesignationImportFormData) => {
+  const handlePreview = (data: ShiftImportFormData) => {
     const file = data.file[0]
     if (file) {
       const reader = new FileReader()
@@ -107,7 +107,7 @@ export function ShiftsImportDialog({
   const handleConfirmImport = () => {
     const file = form.getValues().file[0]
     if (file) {
-      importDesignations(file, {
+      importShifts(file, {
         onSuccess: () => {
           setPreviewOpen(false)
           handleOpenChange(false)
@@ -158,7 +158,7 @@ export function ShiftsImportDialog({
         <div className='space-y-2 rounded-md border bg-muted/50 p-3 text-sm'>
           <div className='font-medium'>Required Fields:</div>
           <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>name*</code> - Designation name</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>name*</code> - Shift name</li>
           </ul>
           <div className='font-medium mt-3'>Optional Fields:</div>
           <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
@@ -224,7 +224,7 @@ export function ShiftsImportDialog({
               </FileUpload>
 
               <FieldDescription>
-                Upload the file containing your designation data.
+                Upload the file containing your shift data.
               </FieldDescription>
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -240,9 +240,9 @@ export function ShiftsImportDialog({
         <Dialog open={open} onOpenChange={handleOpenChange}>
           <DialogContent className='sm:max-w-md'>
             <DialogHeader className='text-start'>
-              <DialogTitle>Import Designations</DialogTitle>
+              <DialogTitle>Import Shifts</DialogTitle>
               <DialogDescription>
-                Bulk create designations by uploading a CSV or Excel file.
+                Bulk create shifts by uploading a CSV or Excel file.
               </DialogDescription>
             </DialogHeader>
 
@@ -263,14 +263,13 @@ export function ShiftsImportDialog({
         <Drawer open={open} onOpenChange={handleOpenChange}>
           <DrawerContent>
             <DrawerHeader className="text-left">
-              <DrawerTitle>Import Designations</DrawerTitle>
+              <DrawerTitle>Import Shifts</DrawerTitle>
               <DrawerDescription>
-                Bulk create designations by uploading a CSV or Excel file.
+                Bulk create shifts by uploading a CSV or Excel file.
               </DrawerDescription>
             </DrawerHeader>
 
             <div className="no-scrollbar overflow-y-auto px-4">
-              {/* Replaced <ImportContent /> with the variable */}
               {importFormContent}
             </div>
 
@@ -287,7 +286,7 @@ export function ShiftsImportDialog({
         </Drawer>
       )}
 
-      <DesignationsCsvPreviewDialog
+      <ShiftsCsvPreviewDialog
         open={previewOpen}
         onOpenChange={setPreviewOpen}
         data={previewData}

@@ -12,9 +12,9 @@ import {
   CancelCircleIcon
 } from '@hugeicons/core-free-icons'
 
-import { useRolesImport, useRolesTemplateDownload } from '@/features/hrm/roles/api'
-import { roleImportSchema, type RoleImportFormData } from '@/features/hrm/roles/schemas'
-import { RolesCsvPreviewDialog } from '@/features/hrm/roles'
+import { useRolesImport, useRolesTemplateDownload } from '@/features/settings/acl/roles/api'
+import { roleImportSchema, type RoleImportFormData } from '@/features/settings/acl/roles/schemas'
+import { RolesCsvPreviewDialog } from '@/features/settings/acl/roles'
 
 import { Button } from '@/components/ui/button'
 import {

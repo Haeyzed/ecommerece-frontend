@@ -19,10 +19,10 @@ import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-ta
 import {
   useBulkActivateRoles,
   useBulkDeactivateRoles
-} from '@/features/hrm/roles/api'
-import { type Role } from '@/features/hrm/roles/types'
-import { RolesExportDialog } from '@/features/hrm/roles'
-import { RolesMultiDeleteDialog } from '@/features/hrm/roles'
+} from '@/features/settings/acl/roles/api'
+import { type Role } from '@/features/settings/acl/roles/types'
+import { RolesExportDialog } from '@/features/settings/acl/roles'
+import { RolesMultiDeleteDialog } from '@/features/settings/acl/roles'
 import { useAuthSession } from '@/features/auth/api'
 import { Spinner } from '@/components/ui/spinner'
 

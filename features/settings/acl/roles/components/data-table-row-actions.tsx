@@ -17,8 +17,8 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { type Role } from '@/features/hrm/roles/types'
-import { useRoles } from '@/features/hrm/roles/components/roles-provider'
+import { type Role } from '@/features/settings/acl/roles/types'
+import { useRoles } from '@/features/settings/acl/roles/components/roles-provider'
 import { useAuthSession } from '@/features/auth/api'
 
 type DataTableRowActionsProps = {

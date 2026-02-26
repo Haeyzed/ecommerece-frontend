@@ -1,5 +1,8 @@
 "use client"
 
+import { useState, useMemo, useEffect } from 'react'
+import { format } from 'date-fns'
+import { type DateRange } from 'react-day-picker'
 import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
 import {
   Table,
@@ -22,9 +25,9 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
-import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { useHolidays } from '../api'
+
+import { usePaginatedHolidays } from '@/features/hrm/holidays/api'
 import {
   HolidaysEmptyState,
   DataTableBulkActions,
@@ -35,6 +38,9 @@ export function HolidaysTable() {
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [sorting, setSorting] = useState<SortingState>([])
+
+  // Date Range State
+  const [dateRange, setDateRange] = useState<DateRange | undefined>()
 
   const {
     columnFilters,
@@ -47,7 +53,7 @@ export function HolidaysTable() {
     globalFilter: { enabled: false },
     columnFilters: [
       { columnId: 'note', searchKey: 'search', type: 'string' },
-      { columnId: 'approval_status', searchKey: 'is_approved', type: 'array' },
+      { columnId: 'approve_status', searchKey: 'status', type: 'array' },
     ],
   })
 
@@ -55,29 +61,32 @@ export function HolidaysTable() {
     const page = pagination.pageIndex + 1
     const perPage = pagination.pageSize
     const searchFilter = columnFilters.find((f) => f.id === 'note')
-    const approvalFilter = columnFilters.find((f) => f.id === 'approval_status')
-    let isApproved: boolean | undefined
-    if (approvalFilter?.value && Array.isArray(approvalFilter.value)) {
-      if (approvalFilter.value.includes('approved')) isApproved = true
-      else if (approvalFilter.value.includes('pending')) isApproved = false
+    const statusFilter = columnFilters.find((f) => f.id === 'approve_status')
+
+    let statusValue: string | undefined = undefined
+    if (statusFilter?.value && Array.isArray(statusFilter.value)) {
+      if (statusFilter.value.length === 1) {
+        statusValue = statusFilter.value[0]
+      }
     }
 
     return {
       page,
       per_page: perPage,
       search: searchFilter?.value as string | undefined,
-      is_approved: isApproved,
+      is_approved: statusValue === 'approved' ? true : statusValue === 'unapproved' ? false : undefined,
+      start_date: dateRange?.from ? format(dateRange.from, 'yyyy-MM-dd') : undefined,
+      end_date: dateRange?.to ? format(dateRange.to, 'yyyy-MM-dd') : undefined,
     }
-  }, [pagination, columnFilters])
+  }, [pagination, columnFilters, dateRange])
 
-  const { data, isLoading, error } = useHolidays(apiParams)
+  const { data, isLoading, error } = usePaginatedHolidays(apiParams)
 
   const pageCount = useMemo(() => {
     if (!data?.meta) return 0
     return Math.ceil((data.meta.total || 0) / (data.meta.per_page || 10))
   }, [data?.meta])
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: data?.data || [],
     columns,
@@ -110,36 +119,31 @@ export function HolidaysTable() {
   }, [pageCount, ensurePageInRange])
 
   if (error) {
-    return (
-      toast.error(error.message)
-    )
+    return toast.error(error.message)
   }
 
   const hasData = data?.meta?.total && data.meta.total > 0
-  const isFiltered =
-    !!apiParams.search || apiParams.is_approved !== undefined
+  const isFiltered = !!apiParams.search || !!apiParams.is_approved || !!apiParams.start_date
   if (!isLoading && !hasData && !isFiltered) {
     return <HolidaysEmptyState />
   }
 
   return (
-    <div
-      className={cn(
-        'max-sm:has-[div[role="toolbar"]]:mb-16',
-        'flex flex-1 flex-col gap-4'
-      )}
-    >
+    <div className={cn('max-sm:has-[div[role="toolbar"]]:mb-16', 'flex flex-1 flex-col gap-4')}>
       <DataTableToolbar
         table={table}
-        searchPlaceholder="Filter by note..."
-        searchKey="note"
+        searchPlaceholder='Filter by note...'
+        searchKey='note'
+        dateRange={dateRange}
+        onDateRangeChange={setDateRange}
+        onReset={() => setDateRange(undefined)}
         filters={[
           {
-            columnId: 'approval_status',
+            columnId: 'approve_status',
             title: 'Status',
             options: [
               { label: 'Approved', value: 'approved' },
-              { label: 'Pending', value: 'pending' },
+              { label: 'Unapproved', value: 'unapproved' },
             ],
           },
         ]}
@@ -163,9 +167,9 @@ export function HolidaysTable() {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   )
                 })}

@@ -5,12 +5,12 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { Alert02Icon } from '@hugeicons/core-free-icons'
 import { type Table } from '@tanstack/react-table'
 import { toast } from 'sonner'
-import { useBulkDestroyHolidays } from '../api'
+import { useBulkDestroyHolidays } from '@/features/hrm/holidays/api'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { type Holiday } from '../types'
+import { type Holiday } from '@/features/hrm/holidays/types'
 import { useAuthSession } from '@/features/auth/api'
 
 type HolidaysMultiDeleteDialogProps<TData> = {
@@ -22,10 +22,10 @@ type HolidaysMultiDeleteDialogProps<TData> = {
 const CONFIRM_WORD = 'DELETE'
 
 export function HolidaysMultiDeleteDialog<TData>({
-  open,
-  onOpenChange,
-  table,
-}: HolidaysMultiDeleteDialogProps<TData>) {
+                                                   open,
+                                                   onOpenChange,
+                                                   table,
+                                                 }: HolidaysMultiDeleteDialogProps<TData>) {
   const [value, setValue] = useState('')
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map(row => (row.original as Holiday).id)

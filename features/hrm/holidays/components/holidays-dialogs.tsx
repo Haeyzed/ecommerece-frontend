@@ -1,9 +1,9 @@
 'use client'
 
-import { HolidaysActionDialog } from './holidays-action-dialog'
-import { HolidaysDeleteDialog } from './holidays-delete-dialog'
-import { HolidaysExportDialog } from './holidays-export-dialog'
-import { HolidaysImportDialog } from './holidays-import-dialog'
+import { HolidaysActionDialog } from '@/features/hrm/holidays'
+import { HolidaysDeleteDialog } from '@/features/hrm/holidays'
+import { HolidaysExportDialog } from '@/features/hrm/holidays'
+import { HolidaysImportDialog } from '@/features/hrm/holidays'
 import { HolidaysViewDialog } from './holidays-view-dialog'
 import { useHolidays } from './holidays-provider'
 import { useAuthSession } from '@/features/auth/api'
@@ -12,6 +12,7 @@ export function HolidaysDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useHolidays()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
+
   const canCreate = userPermissions.includes('create holidays')
   const canImport = userPermissions.includes('import holidays')
   const canExport = userPermissions.includes('export holidays')
@@ -67,7 +68,7 @@ export function HolidaysDialogs() {
               currentRow={currentRow}
             />
           )}
-          
+
           {canView && (
             <HolidaysViewDialog
               key={`holiday-view-${currentRow.id}`}

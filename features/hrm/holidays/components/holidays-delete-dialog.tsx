@@ -7,9 +7,9 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { useDeleteHoliday } from '../api'
+import { useDeleteHoliday } from '@/features/hrm/holidays/api'
 import { type Holiday } from '../types'
-import { useAuthSession } from '@/features/auth/api' 
+import { useAuthSession } from '@/features/auth/api'
 
 type HolidaysDeleteDialogProps = {
   open: boolean
@@ -17,19 +17,20 @@ type HolidaysDeleteDialogProps = {
   currentRow: Holiday
 }
 
+const CONFIRM_WORD = 'DELETE'
+
 export function HolidaysDeleteDialog({
-  open,
-  onOpenChange,
-  currentRow,
-}: HolidaysDeleteDialogProps) {
+                                       open,
+                                       onOpenChange,
+                                       currentRow,
+                                     }: HolidaysDeleteDialogProps) {
   const [value, setValue] = useState('')
   const { mutate: deleteHoliday, isPending } = useDeleteHoliday()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
   const canDelete = userPermissions.includes('delete holidays')
-  if (!canDelete) return null
 
-  const CONFIRM_WORD = 'DELETE'
+  if (!canDelete) return null
 
   const handleDelete = () => {
     if (value.trim() !== CONFIRM_WORD) return
@@ -41,11 +42,6 @@ export function HolidaysDeleteDialog({
       }
     })
   }
-
-  const periodLabel =
-    currentRow.from_date && currentRow.to_date
-      ? `${currentRow.from_date} to ${currentRow.to_date}`
-      : 'this leave request'
 
   return (
     <ConfirmDialog
@@ -67,15 +63,16 @@ export function HolidaysDeleteDialog({
       desc={
         <div className='space-y-4'>
           <p className='mb-2'>
-            Are you sure you want to delete the leave request{' '}
-            <span className='font-bold'>{periodLabel}</span>?
+            Are you sure you want to delete this holiday?
             <br />
-            This action will permanently remove the holiday from the system. This
-            cannot be undone.
+            <strong>Date:</strong> {currentRow.from_date} to {currentRow.to_date}
+            <br />
+            This action will permanently remove the holiday from the system.
+            This cannot be undone.
           </p>
 
           <Label className='my-2'>
-            Type &quot;{CONFIRM_WORD}&quot; to confirm:
+            Confirm Deletion:
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}

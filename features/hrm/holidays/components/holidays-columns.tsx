@@ -1,18 +1,15 @@
-'use client';
+"use client"
 
-import type { ColumnDef } from '@tanstack/react-table';
-import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
-import { DataTableColumnHeader } from '@/components/data-table';
-import { LongText } from '@/components/long-text';
-import { approvalStatusTypes } from '../constants';
-import type { Holiday } from '../types';
-import { DataTableRowActions } from './data-table-row-actions';
-
-function approvalStatus(holiday: Holiday): 'approved' | 'pending' {
-  return holiday.is_approved ? 'approved' : 'pending';
-}
+import { type ColumnDef } from '@tanstack/react-table'
+import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
+import { DataTableColumnHeader } from '@/components/data-table'
+import { LongText } from '@/components/long-text'
+import { statusTypes } from '@/features/hrm/holidays/constants'
+import { type Holiday } from '@/features/hrm/holidays/types'
+import { DataTableRowActions } from './data-table-row-actions'
+import { format } from 'date-fns'
 
 export const holidaysColumns: ColumnDef<Holiday>[] = [
   {
@@ -24,8 +21,8 @@ export const holidaysColumns: ColumnDef<Holiday>[] = [
           (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
+        aria-label='Select all'
+        className='translate-y-[2px]'
       />
     ),
     meta: {
@@ -35,96 +32,90 @@ export const holidaysColumns: ColumnDef<Holiday>[] = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
+        aria-label='Select row'
+        className='translate-y-[2px]'
       />
     ),
     enableSorting: false,
     enableHiding: false,
   },
   {
-    accessorKey: 'from_date',
+    accessorKey: 'note',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="From" />
+      <DataTableColumnHeader column={column} title='Note / Reason' />
     ),
-    cell: ({ row }) => {
-      const v = row.getValue('from_date') as string | null;
-      return (
-        <div className="flex items-center gap-3 ps-3">
-          {v ? new Date(v).toLocaleDateString() : '—'}
-        </div>
-      );
-    },
+    cell: ({ row }) => (
+      <div className='flex items-center gap-3 ps-3'>
+        <LongText className='max-w-40 font-medium'>{row.getValue('note') || '-'}</LongText>
+      </div>
+    ),
     meta: {
       className: cn(
         'drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]',
         'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none'
       ),
     },
+    enableHiding: false,
+  },
+  {
+    accessorKey: 'from_date',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='From Date' />
+    ),
+    cell: ({ row }) => (
+      <div className="font-mono text-sm">{row.original.from_date ? format(new Date(row.original.from_date), 'MMM dd, yyyy') : '-'}</div>
+    ),
   },
   {
     accessorKey: 'to_date',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="To" />
-    ),
-    cell: ({ row }) => {
-      const v = row.getValue('to_date') as string | null;
-      return (
-        <div className="flex items-center gap-3">
-          {v ? new Date(v).toLocaleDateString() : '—'}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: 'note',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Note" />
+      <DataTableColumnHeader column={column} title='To Date' />
     ),
     cell: ({ row }) => (
-      <div className="flex items-center gap-3">
-        <LongText className="max-w-36">{row.getValue('note') ?? '—'}</LongText>
-      </div>
+      <div className="font-mono text-sm">{row.original.to_date ? format(new Date(row.original.to_date), 'MMM dd, yyyy') : '-'}</div>
     ),
   },
   {
-    id: 'user',
-    header: () => <span>Assignee</span>,
+    accessorKey: 'region',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Region' />
+    ),
+    cell: ({ row }) => (
+      <span>{row.original.region || 'Global'}</span>
+    ),
+  },
+  {
+    accessorKey: 'recurring',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Recurring' />
+    ),
     cell: ({ row }) => {
-      const user = row.original.user;
+      const isRecurring = row.original.recurring
       return (
-        <div className="flex items-center gap-3">
-          {user ? (
-            <div className="flex flex-col">
-              <span className="font-medium">{user.name}</span>
-              <span className="text-xs text-muted-foreground">{user.email}</span>
-            </div>
-          ) : (
-            '—'
-          )}
-        </div>
-      );
+        <Badge variant={isRecurring ? 'default' : 'secondary'} className='font-normal'>
+          {isRecurring ? 'Yes' : 'No'}
+        </Badge>
+      )
     },
   },
   {
-    id: 'approval_status',
-    accessorFn: (row) => (row.is_approved ? 'approved' : 'pending'),
+    accessorKey: 'approve_status',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title='Status' />
     ),
     cell: ({ row }) => {
-      const status = approvalStatus(row.original);
-      const statusBadgeColor = approvalStatusTypes.get(status);
+      const status = row.original.approve_status
+      const statusBadgeColor = statusTypes.get(status)
       return (
-        <div className="flex justify-center">
-          <Badge variant="outline" className={cn('capitalize', statusBadgeColor)}>
+        <div className='flex justify-start'>
+          <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
             {status}
           </Badge>
         </div>
-      );
+      )
     },
     filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
+      return value.includes(row.getValue(id))
     },
   },
   {
@@ -134,4 +125,4 @@ export const holidaysColumns: ColumnDef<Holiday>[] = [
       className: cn('max-md:sticky end-0 z-10 rounded-tr-[inherit]'),
     },
   },
-];
+]

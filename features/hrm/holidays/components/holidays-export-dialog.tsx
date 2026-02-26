@@ -51,13 +51,12 @@ import { DateRangePicker } from '@/components/date-range-picker'
 
 const AVAILABLE_COLUMNS = [
   { value: 'id', label: 'ID' },
-  { value: 'user_id', label: 'User ID' },
   { value: 'from_date', label: 'From Date' },
   { value: 'to_date', label: 'To Date' },
-  { value: 'note', label: 'Note' },
-  { value: 'is_approved', label: 'Approved' },
-  { value: 'recurring', label: 'Recurring' },
+  { value: 'note', label: 'Note / Reason' },
   { value: 'region', label: 'Region' },
+  { value: 'recurring', label: 'Recurring' },
+  { value: 'is_approved', label: 'Approval Status' },
   { value: 'created_at', label: 'Date Created' },
   { value: 'updated_at', label: 'Last Updated' },
 ] as const
@@ -69,10 +68,10 @@ type HolidaysExportDialogProps = {
 }
 
 export function HolidaysExportDialog({
-                                    open,
-                                    onOpenChange,
-                                    ids = [],
-                                  }: HolidaysExportDialogProps) {
+                                       open,
+                                       onOpenChange,
+                                       ids = [],
+                                     }: HolidaysExportDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: exportHolidays, isPending } = useHolidaysExport()
   const { api } = useApiClient()
@@ -89,6 +88,8 @@ export function HolidaysExportDialog({
   })
 
   const method = form.watch('method')
+  const startDate = form.watch('start_date')
+  const endDate = form.watch('end_date')
 
   const { data: usersResponse, isLoading: isLoadingUsers } = useQuery({
     queryKey: ['users', 'list'],
@@ -131,28 +132,30 @@ export function HolidaysExportDialog({
     form.setValue('columns', [])
   }
 
-  const ExportContent = () => (
+  const exportFormContent = (
     <form id="export-form" onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
       <FieldGroup>
         <Controller
           control={form.control}
           name="start_date"
-          render={({ field, fieldState }) => (
-            <Field className={"grid gap-1.5 w-full"}>
+          render={({ fieldState }) => (
+            <Field className="grid gap-1.5 w-full">
               <FieldLabel>Date Range</FieldLabel>
               <DateRangePicker
                 value={{
-                  from: form.watch('start_date') ? new Date(form.watch('start_date')!) : undefined,
-                  to: form.watch('end_date') ? new Date(form.watch('end_date')!) : undefined,
+                  from: startDate ? new Date(startDate) : undefined,
+                  to: endDate ? new Date(endDate) : undefined,
                 }}
                 onChange={(range) => {
                   form.setValue(
                     'start_date',
-                    range?.from ? format(range.from, 'yyyy-MM-dd') : undefined
+                    range?.from ? format(range.from, 'yyyy-MM-dd') : undefined,
+                    { shouldValidate: true, shouldDirty: true }
                   )
                   form.setValue(
                     'end_date',
-                    range?.to ? format(range.to, 'yyyy-MM-dd') : undefined
+                    range?.to ? format(range.to, 'yyyy-MM-dd') : undefined,
+                    { shouldValidate: true, shouldDirty: true }
                   )
                 }}
               />
@@ -315,7 +318,7 @@ export function HolidaysExportDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <ExportContent />
+          {exportFormContent}
 
           <DialogFooter className="gap-y-2">
             <Button variant="outline" onClick={() => handleOpenChange(false)}>
@@ -355,7 +358,7 @@ export function HolidaysExportDialog({
         </DrawerHeader>
 
         <div className="no-scrollbar overflow-y-auto px-4">
-          <ExportContent />
+          {exportFormContent}
         </div>
 
         <DrawerFooter>

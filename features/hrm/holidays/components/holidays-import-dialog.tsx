@@ -14,7 +14,7 @@ import {
 
 import { useHolidaysImport, useHolidaysTemplateDownload } from '@/features/hrm/holidays/api'
 import { holidayImportSchema, type HolidayImportFormData } from '@/features/hrm/holidays/schemas'
-import { HolidaysCsvPreviewDialog } from './holidays-csv-preview-dialog'
+import { HolidaysCsvPreviewDialog } from '@/features/hrm/holidays'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -60,9 +60,9 @@ type HolidaysImportDialogProps = {
 }
 
 export function HolidaysImportDialog({
-                                    open,
-                                    onOpenChange,
-                                  }: HolidaysImportDialogProps) {
+                                       open,
+                                       onOpenChange,
+                                     }: HolidaysImportDialogProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)")
   const { mutate: importHolidays, isPending } = useHolidaysImport()
   const { mutate: downloadTemplate, isPending: isDownloading } = useHolidaysTemplateDownload()
@@ -129,7 +129,7 @@ export function HolidaysImportDialog({
     onOpenChange(value)
   }
 
-  const ImportContent = () => (
+  const importFormContent = (
     <form id='import-form' onSubmit={form.handleSubmit(handlePreview)} className="grid gap-4 py-4">
       <div className="flex justify-end">
         <Button
@@ -158,11 +158,15 @@ export function HolidaysImportDialog({
         <div className='space-y-2 rounded-md border bg-muted/50 p-3 text-sm'>
           <div className='font-medium'>Required Fields:</div>
           <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>name*</code> - Holiday name (required)</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>from_date*</code> - YYYY-MM-DD</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>to_date*</code> - YYYY-MM-DD</li>
           </ul>
           <div className='font-medium mt-3'>Optional Fields:</div>
           <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>is_active</code> - Holiday active status</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>note</code> - Reason / name for the holiday</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>region</code> - Specific region if applicable</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>recurring</code> - Boolean (1 or 0)</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>is_approved</code> - Boolean (1 or 0)</li>
           </ul>
         </div>
         <Controller
@@ -223,7 +227,7 @@ export function HolidaysImportDialog({
               </FileUpload>
 
               <FieldDescription>
-                Upload the file containing your holiday data.
+                Upload the file containing your holidays data.
               </FieldDescription>
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -245,7 +249,7 @@ export function HolidaysImportDialog({
               </DialogDescription>
             </DialogHeader>
 
-            <ImportContent />
+            {importFormContent}
 
             <DialogFooter className='gap-y-2'>
               <Button variant='outline' onClick={() => handleOpenChange(false)}>
@@ -269,7 +273,7 @@ export function HolidaysImportDialog({
             </DrawerHeader>
 
             <div className="no-scrollbar overflow-y-auto px-4">
-              <ImportContent />
+              {importFormContent}
             </div>
 
             <DrawerFooter>

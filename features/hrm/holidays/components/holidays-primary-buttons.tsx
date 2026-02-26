@@ -4,7 +4,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { FileImportIcon, PlusSignIcon, Upload01Icon } from '@hugeicons/core-free-icons'
 import { Button } from '@/components/ui/button'
 import { useMediaQuery } from '@/hooks/use-media-query'
-import { useHolidays } from './holidays-provider'
+import { useHolidays } from '@/features/hrm/holidays/components/holidays-provider'
 import { useAuthSession } from '@/features/auth/api'
 
 export function HolidaysPrimaryButtons() {

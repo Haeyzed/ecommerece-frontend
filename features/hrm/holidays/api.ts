@@ -1,16 +1,16 @@
 'use client';
 
-import { useApiClient } from '@/lib/api/api-client-client';
-import { ValidationError } from '@/lib/api/api-errors';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { useApiClient } from '@/lib/api/api-client-client'
+import { ValidationError } from '@/lib/api/api-errors'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import type {
   Holiday,
   HolidayExportParams,
-  HolidayFormData,
+  HolidayFormBody,
   HolidayListParams,
   HolidayOption,
-} from './types';
+} from './types'
 
 export const holidayKeys = {
   all: ['holidays'] as const,
@@ -24,13 +24,16 @@ export const holidayKeys = {
 
 const BASE_PATH = '/holidays';
 
-export function useHolidays(params?: HolidayListParams) {
+// ==============================================================================
+// QUERIES (READ)
+// ==============================================================================
+
+export function usePaginatedHolidays(params?: HolidayListParams) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
     queryKey: holidayKeys.list(params),
     queryFn: async () => {
-      const response = await api.get<Holiday[]>(BASE_PATH, { params });
-      return response;
+      return await api.get<Holiday[]>(BASE_PATH, { params });
     },
     enabled: sessionStatus !== 'loading',
   });
@@ -68,21 +71,25 @@ export function useHoliday(id: number) {
   };
 }
 
+// ==============================================================================
+// MUTATIONS (CREATE, UPDATE, DELETE)
+// ==============================================================================
+
 export function useCreateHoliday() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: HolidayFormData) => {
+    mutationFn: async (data: HolidayFormBody) => {
       const payload: Record<string, unknown> = {
         from_date: data.from_date,
         to_date: data.to_date,
-        note: data.note ?? null,
-        is_approved: data.is_approved ?? null,
-        recurring: data.recurring ?? null,
-        region: data.region ?? null,
       };
-      if (data.user_id != null) payload.user_id = data.user_id;
+
+      if (data.note !== undefined) payload.note = data.note;
+      if (data.region !== undefined) payload.region = data.region;
+      if (data.recurring !== undefined && data.recurring !== null) payload.recurring = data.recurring;
+      if (data.is_approved !== undefined && data.is_approved !== null) payload.is_approved = data.is_approved;
 
       const response = await api.post<{ data: Holiday }>(BASE_PATH, payload);
       if (!response.success) {
@@ -106,15 +113,15 @@ export function useUpdateHoliday() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<HolidayFormData> }) => {
+    mutationFn: async ({ id, data }: { id: number; data: Partial<HolidayFormBody> }) => {
       const payload: Record<string, unknown> = {};
-      if (data.user_id !== undefined) payload.user_id = data.user_id;
+
       if (data.from_date !== undefined) payload.from_date = data.from_date;
       if (data.to_date !== undefined) payload.to_date = data.to_date;
       if (data.note !== undefined) payload.note = data.note;
-      if (data.is_approved !== undefined) payload.is_approved = data.is_approved;
-      if (data.recurring !== undefined) payload.recurring = data.recurring;
       if (data.region !== undefined) payload.region = data.region;
+      if (data.recurring !== undefined) payload.recurring = data.recurring;
+      if (data.is_approved !== undefined) payload.is_approved = data.is_approved;
 
       const response = await api.put<{ data: Holiday }>(`${BASE_PATH}/${id}`, payload);
       if (!response.success) {
@@ -154,13 +161,19 @@ export function useDeleteHoliday() {
   });
 }
 
-export function useApproveHoliday() {
+// ==============================================================================
+// BULK MUTATIONS
+// ==============================================================================
+
+export function useBulkApproveHolidays() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async (id: number) => {
-      const response = await api.post<{ data: Holiday }>(`${BASE_PATH}/${id}/approve`);
+    mutationFn: async (ids: number[]) => {
+      const response = await api.post<{ approved_count: number }>(
+        `${BASE_PATH}/bulk-approve`,
+        { ids }
+      );
       if (!response.success) throw new Error(response.message);
       return response;
     },
@@ -168,9 +181,27 @@ export function useApproveHoliday() {
       queryClient.invalidateQueries({ queryKey: holidayKeys.lists() });
       toast.success(response.message);
     },
-    onError: (error) => {
-      toast.error(error.message);
+    onError: (error) => toast.error(error.message),
+  });
+}
+
+export function useBulkUnapproveHolidays() {
+  const { api } = useApiClient();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (ids: number[]) => {
+      const response = await api.post<{ unapproved_count: number }>(
+        `${BASE_PATH}/bulk-unapprove`,
+        { ids }
+      );
+      if (!response.success) throw new Error(response.message);
+      return response;
     },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: holidayKeys.lists() });
+      toast.success(response.message);
+    },
+    onError: (error) => toast.error(error.message),
   });
 }
 
@@ -188,11 +219,13 @@ export function useBulkDestroyHolidays() {
       queryClient.invalidateQueries({ queryKey: holidayKeys.lists() });
       toast.success(response.message);
     },
-    onError: (error) => {
-      toast.error(error.message);
-    },
+    onError: (error) => toast.error(error.message),
   });
 }
+
+// ==============================================================================
+// IMPORT & EXPORT
+// ==============================================================================
 
 export function useHolidaysImport() {
   const { api } = useApiClient();
@@ -210,9 +243,7 @@ export function useHolidaysImport() {
       queryClient.invalidateQueries({ queryKey: holidayKeys.lists() });
       toast.success(response.message);
     },
-    onError: (error) => {
-      toast.error(error.message);
-    },
+    onError: (error) => toast.error(error.message),
   });
 }
 
@@ -226,13 +257,12 @@ export function useHolidaysExport() {
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        const fileName = `holidays-export-${Date.now()}.${params.format === 'pdf' ? 'pdf' : 'xlsx'}`;
-        link.download = fileName;
+        link.download = `holidays-export-${Date.now()}.${params.format === 'pdf' ? 'pdf' : 'xlsx'}`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
-        return { message: 'Export downloaded successfully' };
+        return { message: "Export downloaded successfully" };
       }
 
       const response = await api.post(`${BASE_PATH}/export`, params);
@@ -242,9 +272,7 @@ export function useHolidaysExport() {
     onSuccess: (response) => {
       toast.success(response.message);
     },
-    onError: (error) => {
-      toast.error(error.message);
-    },
+    onError: (error) => toast.error(error.message),
   });
 }
 
@@ -255,20 +283,18 @@ export function useHolidaysTemplateDownload() {
     mutationFn: async () => {
       const blob = await api.getBlob(`${BASE_PATH}/download`);
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      link.download = 'holidays-sample.csv';
+      link.download = `holidays-sample.csv`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-      return { message: 'Sample template downloaded' };
+      return { message: "Sample template downloaded" };
     },
     onSuccess: (response) => {
       toast.success(response.message);
     },
-    onError: (error) => {
-      toast.error(error.message);
-    },
+    onError: (error) => toast.error(error.message),
   });
 }

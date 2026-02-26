@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
-import { type Holiday } from '../types'
+import { type Holiday } from '@/features/hrm/holidays/types'
 
 type HolidaysDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
 
@@ -27,11 +27,11 @@ export function HolidaysProvider({ children }: { children: React.ReactNode }) {
 }
 
 export const useHolidays = () => {
-  const holidaysContext = React.useContext(HolidaysContext)
+  const context = React.useContext(HolidaysContext)
 
-  if (!holidaysContext) {
-    throw new Error('useHolidays has to be used within <HolidaysContext>')
+  if (!context) {
+    throw new Error('useHolidays has to be used within <HolidaysProvider>')
   }
 
-  return holidaysContext
+  return context
 }

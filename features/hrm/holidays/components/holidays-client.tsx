@@ -8,10 +8,10 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { Spinner } from '@/components/ui/spinner'
-import { HolidaysDialogs } from '@/features/hrm/holidays/components/holidays-dialogs'
-import { HolidaysPrimaryButtons } from '@/features/hrm/holidays/components/holidays-primary-buttons'
-import { HolidaysProvider } from '@/features/hrm/holidays/components/holidays-provider'
-import { HolidaysTable } from '@/features/hrm/holidays/components/holidays-table'
+import { HolidaysDialogs } from '@/features/hrm/holidays'
+import { HolidaysPrimaryButtons } from '@/features/hrm/holidays'
+import { HolidaysProvider } from '@/features/hrm/holidays'
+import { HolidaysTable } from '@/features/hrm/holidays'
 import { Suspense } from 'react'
 
 export function HolidaysClient() {
@@ -30,9 +30,9 @@ export function HolidaysClient() {
         <Main className='flex flex-1 flex-col gap-4 sm:gap-6'>
           <div className='flex flex-wrap items-end justify-between gap-2'>
             <div>
-              <h2 className='text-2xl font-bold tracking-tight'>Holidays List</h2>
+              <h2 className='text-2xl font-bold tracking-tight'>Holidays</h2>
               <p className='text-muted-foreground'>
-                Manage your holidays and their visibility here.
+                Manage organizational holidays, regions, and dates here.
               </p>
             </div>
             <HolidaysPrimaryButtons />

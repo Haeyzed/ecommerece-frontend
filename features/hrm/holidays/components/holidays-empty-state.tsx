@@ -3,7 +3,7 @@
 import { DataTableEmptyState } from '@/components/data-table'
 import { HugeiconsIcon } from "@hugeicons/react"
 import { PlusSignIcon, Download01Icon } from "@hugeicons/core-free-icons"
-import { useHolidays } from './holidays-provider'
+import { useHolidays } from '@/features/hrm/holidays'
 
 export function HolidaysEmptyState() {
   const { setOpen } = useHolidays()
@@ -11,7 +11,7 @@ export function HolidaysEmptyState() {
   return (
     <DataTableEmptyState
       title="No holidays yet"
-      description="You haven't created any holidays yet. Get started by creating your first holiday."
+      description="You haven't added any holidays yet. Get started by creating your first holiday record."
       primaryAction={{
         label: "Add Holiday",
         onClick: () => setOpen('add'),

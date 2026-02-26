@@ -300,6 +300,16 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
               permissions: ["view shifts"],
             },
             {
+              title: "Leaves",
+              url: "/hrm/leaves",
+              permissions: ["view leaves"],
+            },
+            {
+              title: "Leave Types",
+              url: "/hrm/leave-types",
+              permissions: ["view leave types"],
+            },
+            {
               title: "Employee",
               url: "/hrm/employees",
               permissions: ["view employees"],

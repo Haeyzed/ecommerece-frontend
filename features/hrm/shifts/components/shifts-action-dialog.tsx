@@ -109,6 +109,7 @@ function TimePickerWrapper({ value, onChange }: { value: string, onChange: (val:
           onRightFocus={() => periodRef.current?.focus()}
         />
       </div>
+      <span className="mb-2 text-muted-foreground font-bold">{' '}</span>
       <div className="grid gap-1 text-center">
         <Label htmlFor="period" className="text-xs">
           Period

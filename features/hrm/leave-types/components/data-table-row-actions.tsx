@@ -29,9 +29,10 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const { setOpen, setCurrentRow } = useLeaveTypes()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canView = userPermissions.includes('view leave types')
-  const canUpdate = userPermissions.includes('update leave types')
-  const canDelete = userPermissions.includes('delete leave types')
+  const canView = userPermissions.includes('view leave_types')
+  const canUpdate = userPermissions.includes('update leave_types')
+  const canDelete = userPermissions.includes('delete leave_types')
+
   if (!canView && !canUpdate && !canDelete) return null
 
   return (

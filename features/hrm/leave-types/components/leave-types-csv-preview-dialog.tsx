@@ -49,6 +49,7 @@ export function LeaveTypesCsvPreviewDialog({
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const headers = data.length > 0 ? Object.keys(data[0]) : []
 
+  // JSX Variable for content prevents ESLint remount/re-render bugs
   const previewContent = (
     <div className='rounded-md border'>
       <Table>

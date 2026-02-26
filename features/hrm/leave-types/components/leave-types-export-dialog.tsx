@@ -131,6 +131,7 @@ export function LeaveTypesExportDialog({
     form.setValue('columns', [])
   }
 
+  // Use a JSX variable to prevent nested component ESLint render errors
   const exportFormContent = (
     <form id="export-form" onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
       <FieldGroup>

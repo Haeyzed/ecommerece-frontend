@@ -106,16 +106,12 @@ export function LeaveTypesActionDialog({
             <DialogTitle>{isEdit ? 'Edit Leave Type' : 'Add New Leave Type'}</DialogTitle>
             <DialogDescription>
               {isEdit ? 'Update the leave type details here. ' : 'Create a new leave type here. '}
-              Click save when you&apos;re done.
+              Click save when you're done.
             </DialogDescription>
           </DialogHeader>
 
           <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
-            <LeaveTypeForm
-              form={form}
-              onSubmit={onSubmit}
-              id='leave-type-form'
-            />
+            <LeaveTypeForm form={form} onSubmit={onSubmit} id='leave-type-form' />
           </div>
 
           <DialogFooter>
@@ -142,16 +138,12 @@ export function LeaveTypesActionDialog({
           <DrawerTitle>{isEdit ? 'Edit Leave Type' : 'Add New Leave Type'}</DrawerTitle>
           <DrawerDescription>
             {isEdit ? 'Update the leave type details here. ' : 'Create a new leave type here. '}
-            Click save when you&apos;re done.
+            Click save when you're done.
           </DrawerDescription>
         </DrawerHeader>
 
         <div className='no-scrollbar overflow-y-auto px-4'>
-          <LeaveTypeForm
-            form={form}
-            onSubmit={onSubmit}
-            id='leave-type-form'
-          />
+          <LeaveTypeForm form={form} onSubmit={onSubmit} id='leave-type-form' />
         </div>
 
         <DrawerFooter>
@@ -197,7 +189,7 @@ function LeaveTypeForm({ form, onSubmit, id, className }: LeaveTypeFormProps) {
               <FieldLabel htmlFor='leave-type-name'>Name <span className="text-destructive">*</span></FieldLabel>
               <Input
                 id='leave-type-name'
-                placeholder='e.g. Annual Leave'
+                placeholder='e.g. Annual Leave, Sick Leave'
                 autoComplete='off'
                 {...field}
               />

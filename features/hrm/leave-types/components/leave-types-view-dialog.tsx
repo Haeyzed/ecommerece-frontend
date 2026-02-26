@@ -37,6 +37,7 @@ export function LeaveTypesViewDialog({
                                      }: LeaveTypesViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   if (!currentRow) return null
+
   const handleOpenChange = (value: boolean) => {
     onOpenChange(value)
   }
@@ -44,7 +45,7 @@ export function LeaveTypesViewDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className='sm:max-w-lg'>
+        <DialogContent className='sm:max-w-md'>
           <DialogHeader className='text-start'>
             <DialogTitle>Leave Type Details</DialogTitle>
             <DialogDescription>
@@ -68,7 +69,7 @@ export function LeaveTypesViewDialog({
           <DrawerDescription>View detailed information about this leave type below.</DrawerDescription>
         </DrawerHeader>
 
-        <div className='max-h-[80vh] overflow-y-auto px-4'>
+        <div className='no-scrollbar max-h-[80vh] overflow-y-auto px-4'>
           <LeaveTypesView currentRow={currentRow} />
         </div>
 
@@ -88,7 +89,7 @@ interface LeaveTypesViewProps {
 }
 
 function LeaveTypesView({ className, currentRow }: LeaveTypesViewProps) {
-  const status = currentRow.is_active ? 'active' : 'inactive'
+  const status = currentRow.active_status || (currentRow.is_active ? 'active' : 'inactive')
   const statusBadgeColor = statusTypes.get(status)
 
   return (

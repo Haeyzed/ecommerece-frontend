@@ -33,11 +33,14 @@ import {
   DataTableBulkActions,
   leaveTypesColumns as columns
 } from '@/features/hrm/leave-types'
+import { DateRangePicker } from '@/components/date-range-picker'
 
 export function LeaveTypesTable() {
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [sorting, setSorting] = useState<SortingState>([])
+
+  // Date Range State
   const [dateRange, setDateRange] = useState<DateRange | undefined>()
 
   const {
@@ -51,7 +54,7 @@ export function LeaveTypesTable() {
     globalFilter: { enabled: false },
     columnFilters: [
       { columnId: 'name', searchKey: 'search', type: 'string' },
-      { columnId: 'status', searchKey: 'status', type: 'array' },
+      { columnId: 'active_status', searchKey: 'status', type: 'array' },
     ],
   })
 
@@ -59,7 +62,7 @@ export function LeaveTypesTable() {
     const page = pagination.pageIndex + 1
     const perPage = pagination.pageSize
     const nameFilter = columnFilters.find((f) => f.id === 'name')
-    const statusFilter = columnFilters.find((f) => f.id === 'status')
+    const statusFilter = columnFilters.find((f) => f.id === 'active_status')
 
     let statusValue: string | undefined = undefined
     if (statusFilter?.value && Array.isArray(statusFilter.value)) {
@@ -72,7 +75,7 @@ export function LeaveTypesTable() {
       page,
       per_page: perPage,
       search: nameFilter?.value as string | undefined,
-      status: statusValue,
+      is_active: statusValue === 'active' ? true : statusValue === 'inactive' ? false : undefined,
       start_date: dateRange?.from ? format(dateRange.from, 'yyyy-MM-dd') : undefined,
       end_date: dateRange?.to ? format(dateRange.to, 'yyyy-MM-dd') : undefined,
     }
@@ -121,7 +124,7 @@ export function LeaveTypesTable() {
   }
 
   const hasData = data?.meta?.total && data.meta.total > 0
-  const isFiltered = !!apiParams.search || !!apiParams.status || !!apiParams.start_date
+  const isFiltered = !!apiParams.search || !!apiParams.is_active || !!apiParams.start_date
   if (!isLoading && !hasData && !isFiltered) {
     return <LeaveTypesEmptyState />
   }
@@ -130,7 +133,7 @@ export function LeaveTypesTable() {
     <div className={cn('max-sm:has-[div[role="toolbar"]]:mb-16', 'flex flex-1 flex-col gap-4')}>
       <DataTableToolbar
         table={table}
-        searchPlaceholder='Filter leave types...'
+        searchPlaceholder='Filter by name...'
         searchKey='name'
         dateRange={dateRange}
         onDateRangeChange={setDateRange}
@@ -146,7 +149,6 @@ export function LeaveTypesTable() {
           },
         ]}
       />
-
       <div className='overflow-hidden rounded-md border'>
         <Table>
           <TableHeader>

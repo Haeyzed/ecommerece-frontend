@@ -44,9 +44,9 @@ export function DataTableBulkActions<TData>({
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
 
-  const canUpdate = userPermissions.includes('update leave types')
-  const canDelete = userPermissions.includes('delete leave types')
-  const canExport = userPermissions.includes('export leave types')
+  const canUpdate = userPermissions.includes('update leave_types')
+  const canDelete = userPermissions.includes('delete leave_types')
+  const canExport = userPermissions.includes('export leave_types')
 
   if (!canUpdate && !canDelete && !canExport) return null
 

@@ -13,12 +13,12 @@ export function LeaveTypesDialogs() {
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
 
-  const canCreate = userPermissions.includes('create leave types')
-  const canImport = userPermissions.includes('import leave types')
-  const canExport = userPermissions.includes('export leave types')
-  const canUpdate = userPermissions.includes('update leave types')
-  const canDelete = userPermissions.includes('delete leave types')
-  const canView = userPermissions.includes('view leave types')
+  const canCreate = userPermissions.includes('create leave_types')
+  const canImport = userPermissions.includes('import leave_types')
+  const canExport = userPermissions.includes('export leave_types')
+  const canUpdate = userPermissions.includes('update leave_types')
+  const canDelete = userPermissions.includes('delete leave_types')
+  const canView = userPermissions.includes('view leave_types')
 
   return (
     <>

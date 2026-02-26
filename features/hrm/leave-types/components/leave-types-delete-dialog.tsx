@@ -26,7 +26,8 @@ export function LeaveTypesDeleteDialog({
   const { mutate: deleteLeaveType, isPending } = useDeleteLeaveType()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canDelete = userPermissions.includes('delete leave types')
+  const canDelete = userPermissions.includes('delete leave_types')
+
   if (!canDelete) return null
 
   const handleDelete = () => {

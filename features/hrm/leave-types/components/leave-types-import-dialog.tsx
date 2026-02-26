@@ -129,6 +129,7 @@ export function LeaveTypesImportDialog({
     onOpenChange(value)
   }
 
+  // Pre-rendered JSX variable to prevent ESLint "Component in render" errors
   const importFormContent = (
     <form id='import-form' onSubmit={form.handleSubmit(handlePreview)} className="grid gap-4 py-4">
       <div className="flex justify-end">
@@ -159,9 +160,9 @@ export function LeaveTypesImportDialog({
           <div className='font-medium'>Required Fields:</div>
           <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
             <li><code className='rounded bg-background px-1 py-0.5 text-xs'>name*</code> - Leave type name</li>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>annual_quota*</code> - Allowed days per year</li>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>carry_forward_limit*</code> - Carry over days limit</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>annual_quota*</code> - Numeric value</li>
             <li><code className='rounded bg-background px-1 py-0.5 text-xs'>encashable*</code> - Boolean (1 or 0)</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>carry_forward_limit*</code> - Numeric value</li>
           </ul>
           <div className='font-medium mt-3'>Optional Fields:</div>
           <ul className='list-disc list-inside space-y-1 text-muted-foreground'>

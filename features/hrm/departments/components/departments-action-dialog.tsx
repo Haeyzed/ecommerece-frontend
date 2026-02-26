@@ -191,7 +191,7 @@ function DepartmentForm({ form, onSubmit, id, className }: DepartmentFormProps) 
               <FieldLabel htmlFor='department-name'>Name <span className="text-destructive">*</span></FieldLabel>
               <Input
                 id='department-name'
-                placeholder='Department name (e.g. Sales)'
+                placeholder='e.g. Accounting'
                 autoComplete='off'
                 {...field}
               />

@@ -191,7 +191,7 @@ function DesignationForm({ form, onSubmit, id, className }: DesignationFormProps
               <FieldLabel htmlFor='designation-name'>Name <span className="text-destructive">*</span></FieldLabel>
               <Input
                 id='designation-name'
-                placeholder='Designation name (e.g. Sales)'
+                placeholder='e.g. Software Engineer'
                 autoComplete='off'
                 {...field}
               />

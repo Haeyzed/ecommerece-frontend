@@ -3,49 +3,40 @@
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Alert02Icon } from '@hugeicons/core-free-icons'
-import { type Table } from '@tanstack/react-table'
-import { toast } from 'sonner'
-import { useBulkDestroyDesignations } from '@/features/hrm/designations'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { type Designation } from '@/features/hrm/designations'
+import { useDeleteShift } from '@/features/hrm/shifts'
+import { type Shift } from '../types'
 import { useAuthSession } from '@/features/auth/api'
 
-type DesignationsMultiDeleteDialogProps<TData> = {
+type ShiftsDeleteDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  table: Table<TData>
+  currentRow: Shift
 }
 
-const CONFIRM_WORD = 'DELETE'
-
-export function DesignationsMultiDeleteDialog<TData>({
-  open,
-  onOpenChange,
-  table,
-}: DesignationsMultiDeleteDialogProps<TData>) {
+export function ShiftsDeleteDialog({
+                                     open,
+                                     onOpenChange,
+                                     currentRow,
+                                   }: ShiftsDeleteDialogProps) {
   const [value, setValue] = useState('')
-  const selectedRows = table.getFilteredSelectedRowModel().rows
-  const selectedIds = selectedRows.map(row => (row.original as Designation).id)
-  const { mutate: bulkDestroy, isPending } = useBulkDestroyDesignations()
+  const { mutate: deleteShift, isPending } = useDeleteShift()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canDelete = userPermissions.includes('delete designations')
+  const canDelete = userPermissions.includes('delete shifts')
+
   if (!canDelete) return null
 
   const handleDelete = () => {
-    if (value.trim() !== CONFIRM_WORD) {
-      toast.error(`Please type "${CONFIRM_WORD}" to confirm.`)
-      return
-    }
+    if (value.trim() !== currentRow.name) return
 
-    bulkDestroy(selectedIds, {
+    deleteShift(currentRow.id, {
       onSuccess: () => {
         onOpenChange(false)
         setValue('')
-        table.resetRowSelection()
       }
     })
   }
@@ -55,7 +46,7 @@ export function DesignationsMultiDeleteDialog<TData>({
       open={open}
       onOpenChange={onOpenChange}
       handleConfirm={handleDelete}
-      disabled={value.trim() !== CONFIRM_WORD || isPending}
+      disabled={value.trim() !== currentRow.name || isPending}
       title={
         <span className='text-destructive'>
           <HugeiconsIcon
@@ -64,23 +55,25 @@ export function DesignationsMultiDeleteDialog<TData>({
             size={18}
             strokeWidth={2}
           />{' '}
-          Delete {selectedRows.length}{' '}
-          {selectedRows.length > 1 ? 'designations' : 'designation'}
+          Delete Shift
         </span>
       }
       desc={
         <div className='space-y-4'>
           <p className='mb-2'>
-            Are you sure you want to delete the selected designations? <br />
-            This action cannot be undone.
+            Are you sure you want to delete{' '}
+            <span className='font-bold'>{currentRow.name}</span>?
+            <br />
+            This action will permanently remove the shift from the system.
+            This cannot be undone.
           </p>
 
-          <Label className='my-4 flex flex-col items-start gap-1.5'>
-            <span className=''>Confirm by typing "{CONFIRM_WORD}":</span>
+          <Label className='my-2'>
+            Shift Name:
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder={`Type "${CONFIRM_WORD}" to confirm.`}
+              placeholder='Enter shift name to confirm deletion.'
             />
           </Label>
 

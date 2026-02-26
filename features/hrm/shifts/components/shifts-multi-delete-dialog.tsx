@@ -5,15 +5,15 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { Alert02Icon } from '@hugeicons/core-free-icons'
 import { type Table } from '@tanstack/react-table'
 import { toast } from 'sonner'
-import { useBulkDestroyDesignations } from '@/features/hrm/designations'
+import { useBulkDestroyShifts } from '@/features/hrm/shifts'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { type Designation } from '@/features/hrm/designations'
+import { type Shift } from '@/features/hrm/shifts'
 import { useAuthSession } from '@/features/auth/api'
 
-type DesignationsMultiDeleteDialogProps<TData> = {
+type ShiftsMultiDeleteDialogProps<TData> = {
   open: boolean
   onOpenChange: (open: boolean) => void
   table: Table<TData>
@@ -21,18 +21,18 @@ type DesignationsMultiDeleteDialogProps<TData> = {
 
 const CONFIRM_WORD = 'DELETE'
 
-export function DesignationsMultiDeleteDialog<TData>({
-  open,
-  onOpenChange,
-  table,
-}: DesignationsMultiDeleteDialogProps<TData>) {
+export function ShiftsMultiDeleteDialog<TData>({
+                                                 open,
+                                                 onOpenChange,
+                                                 table,
+                                               }: ShiftsMultiDeleteDialogProps<TData>) {
   const [value, setValue] = useState('')
   const selectedRows = table.getFilteredSelectedRowModel().rows
-  const selectedIds = selectedRows.map(row => (row.original as Designation).id)
-  const { mutate: bulkDestroy, isPending } = useBulkDestroyDesignations()
+  const selectedIds = selectedRows.map(row => (row.original as Shift).id)
+  const { mutate: bulkDestroy, isPending } = useBulkDestroyShifts()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canDelete = userPermissions.includes('delete designations')
+  const canDelete = userPermissions.includes('delete shifts')
   if (!canDelete) return null
 
   const handleDelete = () => {
@@ -65,13 +65,13 @@ export function DesignationsMultiDeleteDialog<TData>({
             strokeWidth={2}
           />{' '}
           Delete {selectedRows.length}{' '}
-          {selectedRows.length > 1 ? 'designations' : 'designation'}
+          {selectedRows.length > 1 ? 'shifts' : 'shift'}
         </span>
       }
       desc={
         <div className='space-y-4'>
           <p className='mb-2'>
-            Are you sure you want to delete the selected designations? <br />
+            Are you sure you want to delete the selected shifts? <br />
             This action cannot be undone.
           </p>
 

@@ -1,9 +1,9 @@
 'use client'
 
 import { HugeiconsIcon } from '@hugeicons/react'
-import { 
-  Delete02Icon, 
-  MoreHorizontalIcon, 
+import {
+  Delete02Icon,
+  MoreHorizontalIcon,
   PencilEdit02Icon,
   ViewIcon,
 } from '@hugeicons/core-free-icons'
@@ -17,21 +17,22 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { type Department } from '@/features/hrm/departments'
-import { useDepartments } from '@/features/hrm/departments'
+import { type Shift } from '@/features/hrm/shifts'
+import { useShifts } from '@/features/hrm/shifts'
 import { useAuthSession } from '@/features/auth/api'
 
 type DataTableRowActionsProps = {
-  row: Row<Department>
+  row: Row<Shift>
 }
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
-  const { setOpen, setCurrentRow } = useDepartments()
+  const { setOpen, setCurrentRow } = useShifts()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canView = userPermissions.includes('view departments')
-  const canUpdate = userPermissions.includes('update departments')
-  const canDelete = userPermissions.includes('delete departments')
+  const canView = userPermissions.includes('view shifts')
+  const canUpdate = userPermissions.includes('update shifts')
+  const canDelete = userPermissions.includes('delete shifts')
+
   if (!canView && !canUpdate && !canDelete) return null
 
   return (
@@ -62,7 +63,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
             {(canUpdate || canDelete) && <DropdownMenuSeparator />}
           </>
         )}
-        
+
         {canUpdate && (
           <>
             <DropdownMenuItem
@@ -79,7 +80,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
             {canDelete && <DropdownMenuSeparator />}
           </>
         )}
-        
+
         {canDelete && (
           <DropdownMenuItem
             onClick={() => {

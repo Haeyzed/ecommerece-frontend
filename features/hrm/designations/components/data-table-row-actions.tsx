@@ -17,7 +17,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { type Designation } from '../types'
+import { type Designation } from '@/features/hrm/designations'
 import { useDesignations } from '@/features/hrm/designations'
 import { useAuthSession } from '@/features/auth/api'
 

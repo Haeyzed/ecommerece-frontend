@@ -4,8 +4,8 @@ import { DesignationsActionDialog } from '@/features/hrm/designations'
 import { DesignationsDeleteDialog } from '@/features/hrm/designations'
 import { DesignationsExportDialog } from '@/features/hrm/designations'
 import { DesignationsImportDialog } from '@/features/hrm/designations'
-import { DesignationsViewDialog } from './designations-view-dialog'
-import { useDesignations } from './designations-provider'
+import { DesignationsViewDialog } from '@/features/hrm/designations'
+import { useDesignations } from '@/features/hrm/designations'
 import { useAuthSession } from '@/features/auth/api'
 
 export function DesignationsDialogs() {

@@ -46,6 +46,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { TimePickerInput } from "@/components/time-picker-input"
 import { TimePeriodSelect } from "@/components/period-select"
 import { Period } from "@/lib/utils/time-picker-utils"
+import { Label } from '@/components/ui/label'
 
 function TimePickerWrapper({ value, onChange }: { value: string, onChange: (val: string) => void }) {
   const [period, setPeriod] = React.useState<Period>("AM");
@@ -81,6 +82,9 @@ function TimePickerWrapper({ value, onChange }: { value: string, onChange: (val:
   return (
     <div className="flex items-end gap-2">
       <div className="grid gap-1 text-center">
+        <Label htmlFor="hours" className="text-xs">
+          Hours
+        </Label>
         <TimePickerInput
           picker="12hours"
           period={period}
@@ -92,6 +96,9 @@ function TimePickerWrapper({ value, onChange }: { value: string, onChange: (val:
       </div>
       <span className="mb-2 text-muted-foreground font-bold">:</span>
       <div className="grid gap-1 text-center">
+        <Label htmlFor="minutes" className="text-xs">
+          Minutes
+        </Label>
         <TimePickerInput
           picker="minutes"
           id="minutes12"
@@ -103,6 +110,9 @@ function TimePickerWrapper({ value, onChange }: { value: string, onChange: (val:
         />
       </div>
       <div className="grid gap-1 text-center">
+        <Label htmlFor="period" className="text-xs">
+          Period
+        </Label>
         <TimePeriodSelect
           period={period}
           setPeriod={setPeriod}
@@ -276,7 +286,6 @@ function ShiftForm({ form, onSubmit, id, className }: ShiftFormProps) {
           )}
         />
 
-        <div className="grid grid-cols-2 gap-4">
           <Controller
             control={form.control}
             name='start_time'
@@ -300,9 +309,7 @@ function ShiftForm({ form, onSubmit, id, className }: ShiftFormProps) {
               </Field>
             )}
           />
-        </div>
 
-        <div className="grid grid-cols-3 gap-4">
           <Controller
             control={form.control}
             name='grace_in'
@@ -357,7 +364,6 @@ function ShiftForm({ form, onSubmit, id, className }: ShiftFormProps) {
               </Field>
             )}
           />
-        </div>
 
         <Controller
           control={form.control}

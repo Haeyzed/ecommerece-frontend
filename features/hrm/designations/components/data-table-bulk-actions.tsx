@@ -19,8 +19,8 @@ import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-ta
 import { 
   useBulkActivateDesignations, 
   useBulkDeactivateDesignations 
-} from '../api'
-import { type Designation } from '../types'
+} from '@/features/hrm/designations'
+import { type Designation } from '@/features/hrm/designations'
 import { DesignationsExportDialog } from '@/features/hrm/designations'
 import { DesignationsMultiDeleteDialog } from '@/features/hrm/designations'
 import { useAuthSession } from '@/features/auth/api'

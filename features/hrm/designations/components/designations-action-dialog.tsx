@@ -6,9 +6,9 @@ import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 import {
   useCreateDesignation,
   useUpdateDesignation
-} from '@/features/hrm/designations/api'
-import { designationSchema, type DesignationFormData } from '@/features/hrm/designations/schemas'
-import { type Designation } from '../types'
+} from '@/features/hrm/designations'
+import { designationSchema, type DesignationFormData } from '@/features/hrm/designations'
+import { type Designation } from '@/features/hrm/designations'
 
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { cn } from '@/lib/utils'

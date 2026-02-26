@@ -34,9 +34,9 @@ export function LockScreenContent() {
   const user = session?.user
     ? {
         name: session.user.name ?? "User",
-        avatar: session.user.avatar_url ?? "/avatars/shadcn.png",
+        image: session.user.image_url ?? "/avatars/shadcn.png",
       }
-    : { name: "User", avatar: "/avatars/shadcn.png" }
+    : { name: "User", image: "/avatars/shadcn.png" }
 
   const initials = user.name
     .split(" ")
@@ -61,7 +61,7 @@ export function LockScreenContent() {
         <CardHeader className="text-center">
           <div className="mx-auto mb-3 flex justify-center">
             <Avatar className="size-16">
-              <AvatarImage src={user.avatar} alt={user.name} />
+              <AvatarImage src={user.image} alt={user.name} />
               <AvatarFallback className="text-lg">{initials}</AvatarFallback>
             </Avatar>
           </div>

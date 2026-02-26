@@ -23,12 +23,12 @@ export function AppSidebar() {
     ? {
         name: session.user.name || 'User',
         email: session.user.email || 'No email',
-        avatar: session.user.avatar_url || '/avatars/shadcn.png',
+        image: session.user.image_url || '/avatars/shadcn.png',
       }
     : {
         name: 'User',
         email: 'No email',
-        avatar: '/avatars/shadcn.png',
+        image: '/avatars/shadcn.png',
       }
 
   return (

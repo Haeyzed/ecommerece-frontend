@@ -590,8 +590,14 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
               url: "/settings/invoice",
             },
             {
-              title: "Role Permission",
-              url: "/settings/role-permission",
+              title: "Roles",
+              url: "/settings/roles",
+              permissions: ["view roles"]
+            },
+            {
+              title: "Permissions",
+              url: "/settings/permissions",
+              permissions: ["view permissions"]
             },
             {
               title: "SMS Template",

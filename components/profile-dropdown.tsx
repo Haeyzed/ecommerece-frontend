@@ -25,12 +25,12 @@ export function ProfileDropdown() {
     ? {
         name: session.user.name || 'User',
         email: session.user.email || 'No email',
-        avatar: session.user.avatar_url || '/avatars/shadcn.png',
+        image: session.user.image_url || '/avatars/shadcn.png',
       }
     : {
         name: 'User',
         email: 'No email',
-        avatar: '/avatars/shadcn.png',
+        image: '/avatars/shadcn.png',
       }
   
   const initials = user.name
@@ -46,7 +46,7 @@ export function ProfileDropdown() {
         <DropdownMenuTrigger asChild>
           <Button variant='ghost' className='relative h-8 w-8 rounded-full'>
             <Avatar className='h-8 w-8'>
-              <AvatarImage src={user.avatar} alt={user.name} />
+              <AvatarImage src={user.image} alt={user.name} />
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
           </Button>

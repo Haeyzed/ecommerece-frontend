@@ -1,15 +1,5 @@
 "use client"
 
-/**
- * categoriesColumns
- *
- * Defines the column definitions for the TanStack React Table used in the categories module.
- * It maps data properties to table columns and defines custom cell renderers for
- * badges, images, and actions.
- *
- * @constant
- */
-
 import { type ColumnDef } from '@tanstack/react-table'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
@@ -19,7 +9,6 @@ import { LongText } from '@/components/long-text'
 import { statusTypes, featuredTypes, syncTypes } from '../constants'
 import { type Category } from '../types'
 import { DataTableRowActions } from './data-table-row-actions'
-import { HugeiconsIcon } from '@hugeicons/react'
 import { ImageZoomCell } from '@/components/image-zoom'
 
 export const categoriesColumns: ColumnDef<Category>[] = [

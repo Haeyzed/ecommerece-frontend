@@ -34,13 +34,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           );
 
           if (response.success && response.data) {
-            const userData = response.data.user as AuthUser & { avatar_url?: string | null };
+            const userData = response.data.user as AuthUser & { image_url?: string | null };
             return {
               id: String(response.data.user.id),
               name: response.data.user.name,
               email: response.data.user.email,
               token: response.data.token,
-              avatar_url: userData.avatar_url ?? null,
+              image_url: userData.image_url ?? null,
               user_permissions: userData.user_permissions || [],
             };
           }
@@ -83,7 +83,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 declare module "next-auth" {
   interface User {
     token?: string;
-    avatar_url?: string | null;
+    image_url?: string | null;
     user_permissions?: string[];
   }
 
@@ -92,7 +92,7 @@ declare module "next-auth" {
       id: string;
       name: string;
       email: string;
-      avatar_url?: string | null;
+      image_url?: string | null;
       token?: string;
       user_permissions: string[];
     };

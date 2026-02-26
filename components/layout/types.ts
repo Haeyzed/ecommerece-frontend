@@ -3,7 +3,7 @@ import { type ElementType } from 'react'
 type User = {
   name: string
   email: string
-  avatar: string
+  image: string
 }
 
 type Team = {

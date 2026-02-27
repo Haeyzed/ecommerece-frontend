@@ -30,7 +30,7 @@ export const useLeaveTypes = () => {
   const context = React.useContext(LeaveTypesContext)
 
   if (!context) {
-    throw new Error('useLeaveTypes has to be used within <LeaveTypesProvider>')
+    throw new Error('useLeaveTypes has to be used within <LeavesProvider>')
   }
 
   return context

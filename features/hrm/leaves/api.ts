@@ -5,31 +5,29 @@ import { ValidationError } from '@/lib/api/api-errors'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import type {
-  LeaveType,
-  LeaveTypeExportParams,
-  LeaveTypeFormBody,
-  LeaveTypeListParams,
-  LeaveTypeOption,
+  Leave,
+  LeaveExportParams,
+  LeaveFormBody,
+  LeaveListParams,
 } from './types'
 
-export const leaveTypeKeys = {
-  all: ['leave-types'] as const,
-  lists: () => [...leaveTypeKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...leaveTypeKeys.lists(), filters] as const,
-  details: () => [...leaveTypeKeys.all, 'detail'] as const,
-  detail: (id: number) => [...leaveTypeKeys.details(), id] as const,
-  options: () => [...leaveTypeKeys.all, 'options'] as const,
-  template: () => [...leaveTypeKeys.all, 'template'] as const,
+export const leaveKeys = {
+  all: ['leaves'] as const,
+  lists: () => [...leaveKeys.all, 'list'] as const,
+  list: (filters?: Record<string, unknown>) => [...leaveKeys.lists(), filters] as const,
+  details: () => [...leaveKeys.all, 'detail'] as const,
+  detail: (id: number) => [...leaveKeys.details(), id] as const,
+  template: () => [...leaveKeys.all, 'template'] as const,
 };
 
-const BASE_PATH = '/leave-types';
+const BASE_PATH = '/leaves';
 
-export function usePaginatedLeaveTypes(params?: LeaveTypeListParams) {
+export function usePaginatedLeaves(params?: LeaveListParams) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
-    queryKey: leaveTypeKeys.list(params),
+    queryKey: leaveKeys.list(params),
     queryFn: async () => {
-      return await api.get<LeaveType[]>(BASE_PATH, { params });
+      return await api.get<Leave[]>(BASE_PATH, { params });
     },
     enabled: sessionStatus !== 'loading',
   });
@@ -39,24 +37,12 @@ export function usePaginatedLeaveTypes(params?: LeaveTypeListParams) {
   };
 }
 
-export function useOptionLeaveTypes() {
-  const { api, sessionStatus } = useApiClient();
-  return useQuery({
-    queryKey: leaveTypeKeys.options(),
-    queryFn: async () => {
-      const response = await api.get<LeaveTypeOption[]>(`${BASE_PATH}/options`);
-      return response.data ?? [];
-    },
-    enabled: sessionStatus !== 'loading',
-  });
-}
-
-export function useLeaveType(id: number) {
+export function useLeave(id: number) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
-    queryKey: leaveTypeKeys.detail(id),
+    queryKey: leaveKeys.detail(id),
     queryFn: async () => {
-      const response = await api.get<LeaveType>(`${BASE_PATH}/${id}`);
+      const response = await api.get<Leave>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
     enabled: !!id && sessionStatus !== 'loading',
@@ -67,24 +53,24 @@ export function useLeaveType(id: number) {
   };
 }
 
-export function useCreateLeaveType() {
+export function useCreateLeave() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: LeaveTypeFormBody) => {
+    mutationFn: async (data: LeaveFormBody) => {
       const payload: Record<string, unknown> = {
-        name: data.name,
-        annual_quota: data.annual_quota,
-        encashable: data.encashable,
-        carry_forward_limit: data.carry_forward_limit,
+        employee_id: data.employee_id,
+        leave_type_id: data.leave_type_id,
+        start_date: data.start_date,
+        end_date: data.end_date,
       };
 
-      if (data.is_active !== undefined && data.is_active !== null) {
-        payload.is_active = data.is_active;
+      if (data.status !== undefined && data.status !== null) {
+        payload.status = data.status;
       }
 
-      const response = await api.post<{ data: LeaveType }>(BASE_PATH, payload);
+      const response = await api.post<{ data: Leave }>(BASE_PATH, payload);
       if (!response.success) {
         if (response.errors) throw new ValidationError(response.message, response.errors);
         throw new Error(response.message);
@@ -92,7 +78,7 @@ export function useCreateLeaveType() {
       return response;
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: leaveTypeKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: leaveKeys.lists() });
       toast.success(response.message);
     },
     onError: (error) => {
@@ -101,21 +87,21 @@ export function useCreateLeaveType() {
   });
 }
 
-export function useUpdateLeaveType() {
+export function useUpdateLeave() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<LeaveTypeFormBody> }) => {
+    mutationFn: async ({ id, data }: { id: number; data: Partial<LeaveFormBody> }) => {
       const payload: Record<string, unknown> = {};
 
-      if (data.name !== undefined) payload.name = data.name;
-      if (data.annual_quota !== undefined) payload.annual_quota = data.annual_quota;
-      if (data.encashable !== undefined) payload.encashable = data.encashable;
-      if (data.carry_forward_limit !== undefined) payload.carry_forward_limit = data.carry_forward_limit;
-      if (data.is_active !== undefined) payload.is_active = data.is_active;
+      if (data.employee_id !== undefined) payload.employee_id = data.employee_id;
+      if (data.leave_type_id !== undefined) payload.leave_type_id = data.leave_type_id;
+      if (data.start_date !== undefined) payload.start_date = data.start_date;
+      if (data.end_date !== undefined) payload.end_date = data.end_date;
+      if (data.status !== undefined) payload.status = data.status;
 
-      const response = await api.put<{ data: LeaveType }>(`${BASE_PATH}/${id}`, payload);
+      const response = await api.put<{ data: Leave }>(`${BASE_PATH}/${id}`, payload);
       if (!response.success) {
         if (response.errors) throw new ValidationError(response.message, response.errors);
         throw new Error(response.message);
@@ -123,8 +109,8 @@ export function useUpdateLeaveType() {
       return { id, message: response.message };
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: leaveTypeKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: leaveTypeKeys.detail(data.id) });
+      queryClient.invalidateQueries({ queryKey: leaveKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: leaveKeys.detail(data.id) });
       toast.success(data.message);
     },
     onError: (error) => {
@@ -133,7 +119,7 @@ export function useUpdateLeaveType() {
   });
 }
 
-export function useDeleteLeaveType() {
+export function useDeleteLeave() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
 
@@ -144,7 +130,7 @@ export function useDeleteLeaveType() {
       return response;
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: leaveTypeKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: leaveKeys.lists() });
       toast.success(response.message);
     },
     onError: (error) => {
@@ -153,47 +139,47 @@ export function useDeleteLeaveType() {
   });
 }
 
-export function useBulkActivateLeaveTypes() {
+export function useBulkApproveLeaves() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.post<{ activated_count: number }>(
-        `${BASE_PATH}/bulk-activate`,
+      const response = await api.post<{ approved_count: number }>(
+        `${BASE_PATH}/bulk-approve`,
         { ids }
       );
       if (!response.success) throw new Error(response.message);
       return response;
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: leaveTypeKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: leaveKeys.lists() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
   });
 }
 
-export function useBulkDeactivateLeaveTypes() {
+export function useBulkRejectLeaves() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.post<{ deactivated_count: number }>(
-        `${BASE_PATH}/bulk-deactivate`,
+      const response = await api.post<{ rejected_count: number }>(
+        `${BASE_PATH}/bulk-reject`,
         { ids }
       );
       if (!response.success) throw new Error(response.message);
       return response;
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: leaveTypeKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: leaveKeys.lists() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
   });
 }
 
-export function useBulkDestroyLeaveTypes() {
+export function useBulkDestroyLeaves() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
 
@@ -204,14 +190,14 @@ export function useBulkDestroyLeaveTypes() {
       return response;
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: leaveTypeKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: leaveKeys.lists() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
   });
 }
 
-export function useLeaveTypesImport() {
+export function useLeavesImport() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
 
@@ -224,24 +210,24 @@ export function useLeaveTypesImport() {
       return response;
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: leaveTypeKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: leaveKeys.lists() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
   });
 }
 
-export function useLeaveTypesExport() {
+export function useLeavesExport() {
   const { api } = useApiClient();
 
   return useMutation({
-    mutationFn: async (params: LeaveTypeExportParams) => {
+    mutationFn: async (params: LeaveExportParams) => {
       if (params.method === 'download') {
         const blob = await api.postBlob(`${BASE_PATH}/export`, params);
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `leave-types-export-${Date.now()}.${params.format === 'pdf' ? 'pdf' : 'xlsx'}`;
+        link.download = `leaves-export-${Date.now()}.${params.format === 'pdf' ? 'pdf' : 'xlsx'}`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -260,7 +246,7 @@ export function useLeaveTypesExport() {
   });
 }
 
-export function useLeaveTypesTemplateDownload() {
+export function useLeavesTemplateDownload() {
   const { api } = useApiClient();
 
   return useMutation({
@@ -269,7 +255,7 @@ export function useLeaveTypesTemplateDownload() {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `leave-types-sample.csv`;
+      link.download = `leaves-sample.csv`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

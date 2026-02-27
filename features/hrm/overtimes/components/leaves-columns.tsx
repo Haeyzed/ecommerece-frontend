@@ -8,7 +8,7 @@ import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
 import { leaveStatusStyles } from '@/features/hrm/leaves/constants'
 import { type Leave } from '@/features/hrm/leaves/types'
-import { DataTableRowActions } from '@/features/hrm/leaves'
+import { DataTableRowActions } from './data-table-row-actions'
 
 export const leavesColumns: ColumnDef<Leave>[] = [
   {

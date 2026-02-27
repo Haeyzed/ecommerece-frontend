@@ -586,6 +586,10 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
               url: "/settings/printers",
             },
             {
+              title: "Id Card Settings",
+              url: "/settings/id-card",
+            },
+            {
               title: "Invoice Settings",
               url: "/settings/invoice",
             },

@@ -133,8 +133,8 @@ export function EmployeesActionDialog({
         user: currentRow.user ? {
           username: currentRow.user.username ?? '',
           password: '',
-          roles: currentRow.user.roles || [],
-          permissions: currentRow.user.permissions || [],
+          roles: currentRow.user.roles?.map((r) => r.id) || [],
+          permissions: currentRow.user.permissions?.map((p) => p.id) || [],
         } : undefined,
         image: [],
       }

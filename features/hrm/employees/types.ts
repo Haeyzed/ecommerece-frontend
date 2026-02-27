@@ -7,6 +7,11 @@ export interface EmployeeSalesTarget {
   percent: number;
 }
 
+export interface RolePermission {
+  id: number;
+  name: string;
+}
+
 export interface EmployeeUser {
   id?: number;
   name: string;
@@ -15,8 +20,8 @@ export interface EmployeeUser {
   phone_number: string | null;
   password?: string;
   is_active?: boolean;
-  roles?: number[];
-  permissions?: number[];
+  roles?: RolePermission[];
+  permissions?: RolePermission[];
 }
 
 export interface EmployeeDepartment {

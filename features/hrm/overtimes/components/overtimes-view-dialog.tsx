@@ -21,20 +21,20 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { cn } from '@/lib/utils'
-import { leaveStatusStyles } from '@/features/hrm/leaves/constants'
-import { type Leave } from '@/features/hrm/leaves/types'
+import { overtimeStatusStyles } from '@/features/hrm/overtimes/constants'
+import { type Overtime } from '@/features/hrm/overtimes/types'
 
-type LeavesViewDialogProps = {
-  currentRow?: Leave
+type OvertimesViewDialogProps = {
+  currentRow?: Overtime
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-export function LeavesViewDialog({
-                                   currentRow,
-                                   open,
-                                   onOpenChange,
-                                 }: LeavesViewDialogProps) {
+export function OvertimesViewDialog({
+                                      currentRow,
+                                      open,
+                                      onOpenChange,
+                                    }: OvertimesViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   if (!currentRow) return null
 
@@ -47,14 +47,14 @@ export function LeavesViewDialog({
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className='sm:max-w-md'>
           <DialogHeader className='text-start'>
-            <DialogTitle>Leave Request Details</DialogTitle>
+            <DialogTitle>Overtime Record Details</DialogTitle>
             <DialogDescription>
-              View detailed information about this leave request below.
+              View detailed information about this overtime record below.
             </DialogDescription>
           </DialogHeader>
 
           <div className='max-h-[70vh] overflow-y-auto py-1 pe-2'>
-            <LeavesView currentRow={currentRow} />
+            <OvertimesView currentRow={currentRow} />
           </div>
         </DialogContent>
       </Dialog>
@@ -65,12 +65,12 @@ export function LeavesViewDialog({
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
         <DrawerHeader className='text-left'>
-          <DrawerTitle>Leave Request Details</DrawerTitle>
-          <DrawerDescription>View detailed information about this leave request below.</DrawerDescription>
+          <DrawerTitle>Overtime Record Details</DrawerTitle>
+          <DrawerDescription>View detailed information about this overtime record below.</DrawerDescription>
         </DrawerHeader>
 
         <div className='no-scrollbar max-h-[80vh] overflow-y-auto px-4'>
-          <LeavesView currentRow={currentRow} />
+          <OvertimesView currentRow={currentRow} />
         </div>
 
         <DrawerFooter>
@@ -83,13 +83,13 @@ export function LeavesViewDialog({
   )
 }
 
-interface LeavesViewProps {
+interface OvertimesViewProps {
   className?: string
-  currentRow: Leave
+  currentRow: Overtime
 }
 
-function LeavesView({ className, currentRow }: LeavesViewProps) {
-  const statusBadgeColor = leaveStatusStyles.get(currentRow.status) || 'bg-neutral-100'
+function OvertimesView({ className, currentRow }: OvertimesViewProps) {
+  const statusBadgeColor = overtimeStatusStyles.get(currentRow.status) || 'bg-neutral-100'
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -97,7 +97,7 @@ function LeavesView({ className, currentRow }: LeavesViewProps) {
         <div className='space-y-1'>
           <div className='text-xl font-semibold'>{currentRow.employee?.name || `Emp #${currentRow.employee_id}`}</div>
           <div className='text-sm text-muted-foreground'>
-            Leave Type: <span className='font-medium'>{currentRow.leave_type?.name || `Type #${currentRow.leave_type_id}`}</span>
+            Date: <span className='font-mono font-medium'>{currentRow.date}</span>
           </div>
         </div>
         <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
@@ -109,20 +109,20 @@ function LeavesView({ className, currentRow }: LeavesViewProps) {
 
       <div className='grid grid-cols-2 gap-4'>
         <div className='space-y-2'>
-          <div className='text-sm font-medium text-muted-foreground'>Start Date</div>
-          <div className='text-sm font-medium font-mono'>{currentRow.start_date}</div>
+          <div className='text-sm font-medium text-muted-foreground'>Hours</div>
+          <div className='text-sm font-medium font-mono'>{currentRow.hours} h</div>
         </div>
         <div className='space-y-2'>
-          <div className='text-sm font-medium text-muted-foreground'>End Date</div>
-          <div className='text-sm font-medium font-mono'>{currentRow.end_date}</div>
+          <div className='text-sm font-medium text-muted-foreground'>Rate</div>
+          <div className='text-sm font-medium font-mono'>${Number(currentRow.rate).toFixed(2)}</div>
         </div>
         <div className='space-y-2'>
-          <div className='text-sm font-medium text-muted-foreground'>Total Days</div>
-          <div className='text-sm font-medium'>{currentRow.days} days</div>
+          <div className='text-sm font-medium text-muted-foreground'>Total Amount</div>
+          <div className='text-sm font-medium font-mono'>${Number(currentRow.amount).toFixed(2)}</div>
         </div>
         <div className='space-y-2'>
           <div className='text-sm font-medium text-muted-foreground'>Approver</div>
-          <div className='text-sm font-medium'>{currentRow.approver_name || '-'}</div>
+          <div className='text-sm font-medium'>{currentRow.approver?.name || '-'}</div>
         </div>
       </div>
 

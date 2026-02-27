@@ -17,12 +17,12 @@ import {
 } from '@/components/ui/tooltip'
 import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
 import {
-  useBulkApproveLeaves,
-  useBulkRejectLeaves
-} from '@/features/hrm/leaves/api'
-import { type Leave } from '@/features/hrm/leaves/types'
-import { LeavesExportDialog } from '@/features/hrm/leaves'
-import { LeavesMultiDeleteDialog } from '@/features/hrm/leaves'
+  useBulkApproveOvertimes,
+  useBulkRejectOvertimes
+} from '@/features/hrm/overtimes/api'
+import { type Overtime } from '@/features/hrm/overtimes/types'
+import { OvertimesExportDialog } from '@/features/hrm/overtimes'
+import { OvertimesMultiDeleteDialog } from '@/features/hrm/overtimes'
 import { useAuthSession } from '@/features/auth/api'
 import { Spinner } from '@/components/ui/spinner'
 
@@ -36,17 +36,17 @@ export function DataTableBulkActions<TData>({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showExportDialog, setShowExportDialog] = useState(false)
   const selectedRows = table.getFilteredSelectedRowModel().rows
-  const selectedIds = selectedRows.map((row) => (row.original as Leave).id)
+  const selectedIds = selectedRows.map((row) => (row.original as Overtime).id)
 
-  const { mutate: approveLeaves, isPending: isApproving } = useBulkApproveLeaves()
-  const { mutate: rejectLeaves, isPending: isRejecting } = useBulkRejectLeaves()
+  const { mutate: approveOvertimes, isPending: isApproving } = useBulkApproveOvertimes()
+  const { mutate: rejectOvertimes, isPending: isRejecting } = useBulkRejectOvertimes()
 
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
 
-  const canApproveReject = userPermissions.includes('update leaves')
-  const canDelete = userPermissions.includes('delete leaves')
-  const canExport = userPermissions.includes('export leaves')
+  const canApproveReject = userPermissions.includes('update overtimes')
+  const canDelete = userPermissions.includes('delete overtimes')
+  const canExport = userPermissions.includes('export overtimes')
 
   if (!canApproveReject && !canDelete && !canExport) return null
 
@@ -54,15 +54,15 @@ export function DataTableBulkActions<TData>({
 
   const handleBulkStatusChange = (status: 'Approved' | 'Rejected') => {
     if (status === 'Approved') {
-      approveLeaves(selectedIds, { onSuccess: () => table.resetRowSelection() })
+      approveOvertimes(selectedIds, { onSuccess: () => table.resetRowSelection() })
     } else {
-      rejectLeaves(selectedIds, { onSuccess: () => table.resetRowSelection() })
+      rejectOvertimes(selectedIds, { onSuccess: () => table.resetRowSelection() })
     }
   }
 
   return (
     <>
-      <BulkActionsToolbar table={table} entityName='leave'>
+      <BulkActionsToolbar table={table} entityName='overtime'>
         {canApproveReject && (
           <>
             <Tooltip>
@@ -73,7 +73,7 @@ export function DataTableBulkActions<TData>({
                   onClick={() => handleBulkStatusChange('Approved')}
                   disabled={isBusy}
                   className='size-8 text-teal-600 hover:text-teal-700 hover:bg-teal-50'
-                  aria-label='Approve selected leaves'
+                  aria-label='Approve selected overtimes'
                 >
                   {isApproving ? (
                     <Spinner className='size-4' />
@@ -93,7 +93,7 @@ export function DataTableBulkActions<TData>({
                   onClick={() => handleBulkStatusChange('Rejected')}
                   disabled={isBusy}
                   className='size-8 text-destructive hover:text-destructive/90 hover:bg-destructive/10'
-                  aria-label='Reject selected leaves'
+                  aria-label='Reject selected overtimes'
                 >
                   {isRejecting ? (
                     <Spinner className='size-4' />
@@ -116,7 +116,7 @@ export function DataTableBulkActions<TData>({
                 onClick={() => setShowExportDialog(true)}
                 disabled={isBusy}
                 className='size-8'
-                aria-label='Export selected leaves'
+                aria-label='Export selected overtimes'
               >
                 <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} />
               </Button>
@@ -134,7 +134,7 @@ export function DataTableBulkActions<TData>({
                 onClick={() => setShowDeleteConfirm(true)}
                 disabled={isBusy}
                 className='size-8'
-                aria-label='Delete selected leaves'
+                aria-label='Delete selected overtimes'
               >
                 <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} />
               </Button>
@@ -145,7 +145,7 @@ export function DataTableBulkActions<TData>({
       </BulkActionsToolbar>
 
       {canDelete && (
-        <LeavesMultiDeleteDialog
+        <OvertimesMultiDeleteDialog
           table={table}
           open={showDeleteConfirm}
           onOpenChange={setShowDeleteConfirm}
@@ -153,7 +153,7 @@ export function DataTableBulkActions<TData>({
       )}
 
       {canExport && (
-        <LeavesExportDialog
+        <OvertimesExportDialog
           open={showExportDialog}
           onOpenChange={setShowExportDialog}
           ids={selectedIds}

@@ -1,51 +1,49 @@
-export type LeaveStatus = 'pending' | 'approved' | 'rejected';
-
-export interface LeaveType {
-  id: number;
-  name: string;
-}
+export type OvertimeStatus = 'pending' | 'approved' | 'rejected';
 
 export interface Employee {
   id: number;
   name: string;
 }
 
-export interface Leave {
+export interface Approver {
+  id: number;
+  name: string;
+}
+
+export interface Overtime {
   id: number;
   employee_id: number;
   employee?: Employee;
-  leave_type_id: number;
-  leave_type?: LeaveType;
-  start_date: string;
-  end_date: string;
-  days: number;
-  status: LeaveStatus;
-  approver_id: number | null;
-  approver_name: string | null;
+  date: string;
+  hours: number;
+  rate: number;
+  amount: number;
+  status: OvertimeStatus;
+  approved_by: number | null;
+  approver?: Approver;
   created_at: string | null;
   updated_at: string | null;
 }
 
-export type LeaveFormBody = {
+export interface OvertimeFormBody {
   employee_id: number;
-  leave_type_id: number;
-  start_date: string;
-  end_date: string;
-  status?: LeaveStatus;
+  date: string;
+  hours: number;
+  rate: number;
+  status?: OvertimeStatus;
 }
 
-export type LeaveListParams = {
+export type OvertimeListParams = {
   page?: number;
   per_page?: number;
   search?: string;
-  status?: LeaveStatus;
+  status?: OvertimeStatus;
   employee_id?: number;
-  leave_type_id?: number;
   start_date?: string;
   end_date?: string;
 };
 
-export type LeaveExportParams = {
+export type OvertimeExportParams = {
   ids?: number[];
   format: "excel" | "pdf";
   method: "download" | "email";

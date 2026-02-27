@@ -24,10 +24,6 @@ export const shiftKeys = {
 
 const BASE_PATH = '/shifts';
 
-// ==============================================================================
-// QUERIES (READ)
-// ==============================================================================
-
 export function usePaginatedShifts(params?: ShiftListParams) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
@@ -70,10 +66,6 @@ export function useShift(id: number) {
     isSessionLoading: sessionStatus === 'loading',
   };
 }
-
-// ==============================================================================
-// MUTATIONS (CREATE, UPDATE, DELETE)
-// ==============================================================================
 
 export function useCreateShift() {
   const { api } = useApiClient();
@@ -165,10 +157,6 @@ export function useDeleteShift() {
   });
 }
 
-// ==============================================================================
-// BULK MUTATIONS
-// ==============================================================================
-
 export function useBulkActivateShifts() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
@@ -226,10 +214,6 @@ export function useBulkDestroyShifts() {
     onError: (error) => toast.error(error.message),
   });
 }
-
-// ==============================================================================
-// IMPORT & EXPORT
-// ==============================================================================
 
 export function useShiftsImport() {
   const { api } = useApiClient();

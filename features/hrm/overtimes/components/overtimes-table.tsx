@@ -27,16 +27,16 @@ import {
 } from '@tanstack/react-table'
 import { toast } from 'sonner'
 
-import { usePaginatedLeaves } from '@/features/hrm/leaves/api'
+import { usePaginatedOvertimes } from '@/features/hrm/overtimes/api'
 import {
-  LeavesEmptyState,
+  OvertimesEmptyState,
   DataTableBulkActions,
-  leavesColumns as columns
-} from '@/features/hrm/leaves'
+  overtimesColumns as columns
+} from '@/features/hrm/overtimes'
 import { useOptionEmployees } from '@/features/hrm/employees/api'
-import { useOptionLeaveTypes } from '@/features/hrm/leave-types/api'
+import { DateRangePicker } from '@/components/date-range-picker'
 
-export function LeavesTable() {
+export function OvertimesTable() {
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [sorting, setSorting] = useState<SortingState>([])
@@ -44,7 +44,6 @@ export function LeavesTable() {
   const [dateRange, setDateRange] = useState<DateRange | undefined>()
 
   const { data: optionEmployees } = useOptionEmployees()
-  const { data: optionLeaveTypes } = useOptionLeaveTypes()
 
   const {
     columnFilters,
@@ -58,7 +57,6 @@ export function LeavesTable() {
     columnFilters: [
       { columnId: 'status', searchKey: 'status', type: 'array' },
       { columnId: 'employee_id', searchKey: 'employee_id', type: 'string' },
-      { columnId: 'leave_type_id', searchKey: 'leave_type_id', type: 'string' },
     ],
   })
 
@@ -67,7 +65,6 @@ export function LeavesTable() {
     const perPage = pagination.pageSize
     const statusFilter = columnFilters.find((f) => f.id === 'status')
     const employeeFilter = columnFilters.find((f) => f.id === 'employee_id')
-    const leaveTypeFilter = columnFilters.find((f) => f.id === 'leave_type_id')
 
     let statusValue: string | undefined = undefined
     if (statusFilter?.value && Array.isArray(statusFilter.value)) {
@@ -81,13 +78,12 @@ export function LeavesTable() {
       per_page: perPage,
       status: statusValue as any,
       employee_id: employeeFilter?.value ? Number(employeeFilter.value) : undefined,
-      leave_type_id: leaveTypeFilter?.value ? Number(leaveTypeFilter.value) : undefined,
       start_date: dateRange?.from ? format(dateRange.from, 'yyyy-MM-dd') : undefined,
       end_date: dateRange?.to ? format(dateRange.to, 'yyyy-MM-dd') : undefined,
     }
   }, [pagination, columnFilters, dateRange])
 
-  const { data, isLoading, error } = usePaginatedLeaves(apiParams)
+  const { data, isLoading, error } = usePaginatedOvertimes(apiParams)
 
   const pageCount = useMemo(() => {
     if (!data?.meta) return 0
@@ -130,10 +126,10 @@ export function LeavesTable() {
   }
 
   const hasData = data?.meta?.total && data.meta.total > 0
-  const isFiltered = !!apiParams.status || !!apiParams.employee_id || !!apiParams.leave_type_id || !!apiParams.start_date
+  const isFiltered = !!apiParams.status || !!apiParams.employee_id || !!apiParams.start_date
 
   if (!isLoading && !hasData && !isFiltered) {
-    return <LeavesEmptyState />
+    return <OvertimesEmptyState />
   }
 
   return (
@@ -148,20 +144,15 @@ export function LeavesTable() {
             columnId: 'status',
             title: 'Status',
             options: [
-              { label: 'Pending', value: 'Pending' },
-              { label: 'Approved', value: 'Approved' },
-              { label: 'Rejected', value: 'Rejected' },
+              { label: 'Pending', value: 'pending' },
+              { label: 'Approved', value: 'approved' },
+              { label: 'Rejected', value: 'rejected' },
             ],
           },
           {
             columnId: 'employee_id',
             title: 'Employee',
             options: optionEmployees?.map(emp => ({ label: emp.label, value: emp.value.toString() })) || [],
-          },
-          {
-            columnId: 'leave_type_id',
-            title: 'Leave Type',
-            options: optionLeaveTypes?.map(type => ({ label: type.label, value: type.value.toString() })) || [],
           }
         ]}
       />

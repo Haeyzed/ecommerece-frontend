@@ -6,8 +6,8 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { Upload01Icon } from '@hugeicons/core-free-icons'
 import { format } from 'date-fns'
 
-import { useLeavesExport } from '@/features/hrm/leaves/api'
-import { leaveExportSchema, type LeaveExportFormData } from '@/features/hrm/leaves/schemas'
+import { useOvertimesExport } from '@/features/hrm/overtimes/api'
+import { overtimeExportSchema, type OvertimeExportFormData } from '@/features/hrm/overtimes/schemas'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -52,35 +52,35 @@ import { DateRangePicker } from '@/components/date-range-picker'
 const AVAILABLE_COLUMNS = [
   { value: 'id', label: 'ID' },
   { value: 'employee_name', label: 'Employee Name' },
-  { value: 'leave_type_name', label: 'Leave Type' },
-  { value: 'start_date', label: 'Start Date' },
-  { value: 'end_date', label: 'End Date' },
-  { value: 'days', label: 'Days' },
+  { value: 'date', label: 'Date' },
+  { value: 'hours', label: 'Hours' },
+  { value: 'rate', label: 'Rate' },
+  { value: 'amount', label: 'Amount' },
   { value: 'status', label: 'Status' },
   { value: 'created_at', label: 'Date Created' },
 ] as const
 
-type LeavesExportDialogProps = {
+type OvertimesExportDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   ids?: number[]
 }
 
-export function LeavesExportDialog({
-                                     open,
-                                     onOpenChange,
-                                     ids = [],
-                                   }: LeavesExportDialogProps) {
+export function OvertimesExportDialog({
+                                        open,
+                                        onOpenChange,
+                                        ids = [],
+                                      }: OvertimesExportDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
-  const { mutate: exportLeaves, isPending } = useLeavesExport()
+  const { mutate: exportOvertimes, isPending } = useOvertimesExport()
   const { api } = useApiClient()
 
-  const form = useForm<LeaveExportFormData>({
-    resolver: zodResolver(leaveExportSchema),
+  const form = useForm<OvertimeExportFormData>({
+    resolver: zodResolver(overtimeExportSchema),
     defaultValues: {
       format: 'excel',
       method: 'download',
-      columns: ['id', 'employee_name', 'leave_type_name', 'start_date', 'end_date', 'status'],
+      columns: ['id', 'employee_name', 'date', 'hours', 'rate', 'amount', 'status'],
       start_date: undefined,
       end_date: undefined,
     },
@@ -106,8 +106,8 @@ export function LeavesExportDialog({
     onOpenChange(value)
   }
 
-  const onSubmit = (data: LeaveExportFormData) => {
-    exportLeaves(
+  const onSubmit = (data: OvertimeExportFormData) => {
+    exportOvertimes(
       {
         ids: ids.length > 0 ? ids : undefined,
         format: data.format,
@@ -311,9 +311,9 @@ export function LeavesExportDialog({
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader className="text-start">
-            <DialogTitle>Export Leaves</DialogTitle>
+            <DialogTitle>Export Overtimes</DialogTitle>
             <DialogDescription>
-              Select export format, method, and columns. {ids.length > 0 && `${ids.length} leave(s) selected.`}
+              Select export format, method, and columns. {ids.length > 0 && `${ids.length} record(s) selected.`}
             </DialogDescription>
           </DialogHeader>
 
@@ -350,9 +350,9 @@ export function LeavesExportDialog({
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
         <DrawerHeader className="text-left">
-          <DrawerTitle>Export Leaves</DrawerTitle>
+          <DrawerTitle>Export Overtimes</DrawerTitle>
           <DrawerDescription>
-            Select export format, method, and columns. {ids.length > 0 && `${ids.length} leave(s) selected.`}
+            Select export format, method, and columns. {ids.length > 0 && `${ids.length} record(s) selected.`}
           </DrawerDescription>
         </DrawerHeader>
 

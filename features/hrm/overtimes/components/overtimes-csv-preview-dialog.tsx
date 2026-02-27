@@ -31,7 +31,7 @@ import { useMediaQuery } from '@/hooks/use-media-query'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { CheckmarkCircle02Icon } from '@hugeicons/core-free-icons'
 
-type LeavesCsvPreviewDialogProps = {
+type OvertimesCsvPreviewDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   data: any[]
@@ -39,17 +39,16 @@ type LeavesCsvPreviewDialogProps = {
   isPending: boolean
 }
 
-export function LeavesCsvPreviewDialog({
-                                             open,
-                                             onOpenChange,
-                                             data,
-                                             onConfirm,
-                                             isPending,
-                                           }: LeavesCsvPreviewDialogProps) {
+export function OvertimesCsvPreviewDialog({
+                                            open,
+                                            onOpenChange,
+                                            data,
+                                            onConfirm,
+                                            isPending,
+                                          }: OvertimesCsvPreviewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const headers = data.length > 0 ? Object.keys(data[0]) : []
 
-  // JSX Variable for content prevents ESLint remount/re-render bugs
   const previewContent = (
     <div className='rounded-md border'>
       <Table>
@@ -89,9 +88,9 @@ export function LeavesCsvPreviewDialog({
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className='sm:max-w-4xl'>
           <DialogHeader className='text-start'>
-            <DialogTitle>Preview Import Leaves Data</DialogTitle>
+            <DialogTitle>Preview Import Overtimes Data</DialogTitle>
             <DialogDescription>
-              Review the leaves data before importing. Showing first 5 rows of {data.length} entries.
+              Review the overtimes data before importing. Showing first 5 rows of {data.length} entries.
             </DialogDescription>
           </DialogHeader>
 
@@ -126,9 +125,9 @@ export function LeavesCsvPreviewDialog({
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent>
         <DrawerHeader className='text-left'>
-          <DrawerTitle>Preview Import Leaves Data</DrawerTitle>
+          <DrawerTitle>Preview Import Overtimes Data</DrawerTitle>
           <DrawerDescription>
-            Review the leaves data before importing. Showing first 5 rows of {data.length} entries.
+            Review the overtimes data before importing. Showing first 5 rows of {data.length} entries.
           </DrawerDescription>
         </DrawerHeader>
 

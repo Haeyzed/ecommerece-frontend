@@ -30,7 +30,7 @@ export const useLeaves = () => {
   const context = React.useContext(LeavesContext)
 
   if (!context) {
-    throw new Error('useLeaves has to be used within <LeavesProvider>')
+    throw new Error('useLeaves has to be used within <OvertimesProvider>')
   }
 
   return context

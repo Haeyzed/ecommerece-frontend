@@ -12,9 +12,9 @@ import {
   CancelCircleIcon
 } from '@hugeicons/core-free-icons'
 
-import { useLeavesImport, useLeavesTemplateDownload } from '@/features/hrm/leaves/api'
-import { leaveImportSchema, type LeaveImportFormData } from '@/features/hrm/leaves'
-import { LeavesCsvPreviewDialog } from '@/features/hrm/leaves'
+import { useOvertimesImport, useOvertimesTemplateDownload } from '@/features/hrm/overtimes/api'
+import { overtimeImportSchema, type OvertimeImportFormData } from '@/features/hrm/overtimes/schemas'
+import { OvertimesCsvPreviewDialog } from '@/features/hrm/overtimes'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -54,26 +54,26 @@ import {
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { Spinner } from '@/components/ui/spinner'
 
-type LeavesImportDialogProps = {
+type OvertimesImportDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-export function LeavesImportDialog({
-                                     open,
-                                     onOpenChange,
-                                   }: LeavesImportDialogProps) {
+export function OvertimesImportDialog({
+                                        open,
+                                        onOpenChange,
+                                      }: OvertimesImportDialogProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)")
-  const { mutate: importLeaves, isPending } = useLeavesImport()
-  const { mutate: downloadTemplate, isPending: isDownloading } = useLeavesTemplateDownload()
+  const { mutate: importOvertimes, isPending } = useOvertimesImport()
+  const { mutate: downloadTemplate, isPending: isDownloading } = useOvertimesTemplateDownload()
 
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewData, setPreviewData] = useState<any[]>([])
 
-  const form = useForm<LeaveImportFormData>({
-    resolver: zodResolver(leaveImportSchema),
+  const form = useForm<OvertimeImportFormData>({
+    resolver: zodResolver(overtimeImportSchema),
     defaultValues: {
-      file: [] as File[],
+      file: [],
     },
   })
 
@@ -89,7 +89,7 @@ export function LeavesImportDialog({
     })
   }
 
-  const handlePreview = (data: LeaveImportFormData) => {
+  const handlePreview = (data: OvertimeImportFormData) => {
     const file = data.file[0]
     if (file) {
       const reader = new FileReader()
@@ -106,7 +106,7 @@ export function LeavesImportDialog({
   const handleConfirmImport = () => {
     const file = form.getValues().file[0]
     if (file) {
-      importLeaves(file, {
+      importOvertimes(file, {
         onSuccess: () => {
           setPreviewOpen(false)
           handleOpenChange(false)
@@ -158,9 +158,9 @@ export function LeavesImportDialog({
           <div className='font-medium'>Required Fields:</div>
           <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
             <li><code className='rounded bg-background px-1 py-0.5 text-xs'>employee_id*</code> - The Employee ID</li>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>leave_type_id*</code> - The Leave Type ID</li>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>start_date*</code> - YYYY-MM-DD</li>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>end_date*</code> - YYYY-MM-DD</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>date*</code> - YYYY-MM-DD</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>hours*</code> - Number of hours</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>rate*</code> - Hourly rate</li>
           </ul>
           <div className='font-medium mt-3'>Optional Fields:</div>
           <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
@@ -225,7 +225,7 @@ export function LeavesImportDialog({
               </FileUpload>
 
               <FieldDescription>
-                Upload the file containing your leave requests data.
+                Upload the file containing your overtime data.
               </FieldDescription>
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -241,9 +241,9 @@ export function LeavesImportDialog({
         <Dialog open={open} onOpenChange={handleOpenChange}>
           <DialogContent className='sm:max-w-md'>
             <DialogHeader className='text-start'>
-              <DialogTitle>Import Leaves</DialogTitle>
+              <DialogTitle>Import Overtimes</DialogTitle>
               <DialogDescription>
-                Bulk create leave requests by uploading a CSV or Excel file.
+                Bulk create overtimes by uploading a CSV or Excel file.
               </DialogDescription>
             </DialogHeader>
 
@@ -264,9 +264,9 @@ export function LeavesImportDialog({
         <Drawer open={open} onOpenChange={handleOpenChange}>
           <DrawerContent>
             <DrawerHeader className="text-left">
-              <DrawerTitle>Import Leaves</DrawerTitle>
+              <DrawerTitle>Import Overtimes</DrawerTitle>
               <DrawerDescription>
-                Bulk create leave requests by uploading a CSV or Excel file.
+                Bulk create overtimes by uploading a CSV or Excel file.
               </DrawerDescription>
             </DrawerHeader>
 
@@ -287,7 +287,7 @@ export function LeavesImportDialog({
         </Drawer>
       )}
 
-      <LeavesCsvPreviewDialog
+      <OvertimesCsvPreviewDialog
         open={previewOpen}
         onOpenChange={setPreviewOpen}
         data={previewData}

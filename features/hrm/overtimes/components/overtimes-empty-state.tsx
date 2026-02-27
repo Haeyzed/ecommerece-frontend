@@ -3,22 +3,22 @@
 import { DataTableEmptyState } from '@/components/data-table'
 import { HugeiconsIcon } from "@hugeicons/react"
 import { PlusSignIcon, Download01Icon } from "@hugeicons/core-free-icons"
-import { useLeaves } from '@/features/hrm/leaves'
+import { useOvertimes } from '@/features/hrm/overtimes'
 
-export function LeavesEmptyState() {
-  const { setOpen } = useLeaves()
+export function OvertimesEmptyState() {
+  const { setOpen } = useOvertimes()
 
   return (
     <DataTableEmptyState
-      title="No leave requests yet"
-      description="You haven't recorded any employee leaves yet. Get started by adding a new leave request."
+      title="No overtime records yet"
+      description="You haven't recorded any employee overtimes yet. Get started by adding a new overtime record."
       primaryAction={{
-        label: "Add Leave",
+        label: "Add Overtime",
         onClick: () => setOpen('add'),
         icon: <HugeiconsIcon icon={PlusSignIcon} className="size-4 mr-2" />,
       }}
       secondaryAction={{
-        label: "Import Leaves",
+        label: "Import Overtimes",
         onClick: () => setOpen('import'),
         icon: <HugeiconsIcon icon={Download01Icon} className="size-4 mr-2" />,
       }}

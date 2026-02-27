@@ -6,18 +6,18 @@ import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 import { format } from 'date-fns'
 
 import {
-  useCreateLeave,
-  useUpdateLeave
-} from '@/features/hrm/leaves/api'
-import { leaveSchema, type LeaveFormData } from '@/features/hrm/leaves/schemas'
-import { type Leave } from '../types'
+  useCreateOvertime,
+  useUpdateOvertime
+} from '@/features/hrm/overtimes/api'
+import { overtimeSchema, type OvertimeFormData } from '@/features/hrm/overtimes/schemas'
+import { type Overtime } from '../types'
 import { useOptionEmployees } from '@/features/hrm/employees/api'
-import { useOptionLeaveTypes } from '@/features/hrm/leave-types/api'
 
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { cn } from '@/lib/utils'
 
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Dialog,
   DialogContent,
@@ -42,7 +42,7 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Spinner } from '@/components/ui/spinner'
-import { DateRangePicker } from '@/components/date-range-picker'
+import { DatePicker } from '@/components/date-picker'
 import {
   Combobox,
   ComboboxContent,
@@ -59,43 +59,43 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-type LeavesActionDialogProps = {
-  currentRow?: Leave
+type OvertimesActionDialogProps = {
+  currentRow?: Overtime
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-export function LeavesActionDialog({
-                                     currentRow,
-                                     open,
-                                     onOpenChange,
-                                   }: LeavesActionDialogProps) {
+export function OvertimesActionDialog({
+                                        currentRow,
+                                        open,
+                                        onOpenChange,
+                                      }: OvertimesActionDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const isEdit = !!currentRow
-  const { mutate: createLeave, isPending: isCreating } = useCreateLeave()
-  const { mutate: updateLeave, isPending: isUpdating } = useUpdateLeave()
+  const { mutate: createOvertime, isPending: isCreating } = useCreateOvertime()
+  const { mutate: updateOvertime, isPending: isUpdating } = useUpdateOvertime()
   const isLoading = isCreating || isUpdating
 
-  const form = useForm<LeaveFormData>({
-    resolver: zodResolver(leaveSchema),
+  const form = useForm<OvertimeFormData>({
+    resolver: zodResolver(overtimeSchema),
     defaultValues: isEdit && currentRow
       ? {
         employee_id: currentRow.employee_id,
-        leave_type_id: currentRow.leave_type_id,
-        start_date: currentRow.start_date,
-        end_date: currentRow.end_date,
+        date: currentRow.date,
+        hours: currentRow.hours,
+        rate: currentRow.rate,
         status: currentRow.status,
       }
       : {
         employee_id: 0,
-        leave_type_id: 0,
-        start_date: format(new Date(), 'yyyy-MM-dd'),
-        end_date: format(new Date(), 'yyyy-MM-dd'),
+        date: format(new Date(), 'yyyy-MM-dd'),
+        hours: 0,
+        rate: 0,
         status: 'pending',
       },
   })
 
-  const onSubmit = (values: LeaveFormData) => {
+  const onSubmit = (values: OvertimeFormData) => {
     const options = {
       onSuccess: () => {
         form.reset()
@@ -104,9 +104,9 @@ export function LeavesActionDialog({
     }
 
     if (isEdit && currentRow) {
-      updateLeave({ id: currentRow.id, data: values }, options)
+      updateOvertime({ id: currentRow.id, data: values }, options)
     } else {
-      createLeave(values, options)
+      createOvertime(values, options)
     }
   }
 
@@ -120,19 +120,19 @@ export function LeavesActionDialog({
       <Dialog open={open} onOpenChange={handleOpenChange} modal={false}>
         <DialogContent className='sm:max-w-lg'>
           <DialogHeader className='text-start'>
-            <DialogTitle>{isEdit ? 'Edit Leave' : 'Add New Leave'}</DialogTitle>
+            <DialogTitle>{isEdit ? 'Edit Overtime' : 'Add New Overtime'}</DialogTitle>
             <DialogDescription>
-              {isEdit ? 'Update the leave details here. ' : 'Create a new leave request here. '}
+              {isEdit ? 'Update the overtime details here. ' : 'Create a new overtime record here. '}
               Click save when you're done.
             </DialogDescription>
           </DialogHeader>
 
           <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
-            <LeaveForm form={form} onSubmit={onSubmit} id='leave-form' />
+            <OvertimeForm form={form} onSubmit={onSubmit} id='overtime-form' />
           </div>
 
           <DialogFooter>
-            <Button type='submit' form='leave-form' disabled={isLoading}>
+            <Button type='submit' form='overtime-form' disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Spinner className='mr-2 size-4' />
@@ -152,19 +152,19 @@ export function LeavesActionDialog({
     <Drawer open={open} onOpenChange={handleOpenChange} modal={false}>
       <DrawerContent>
         <DrawerHeader className='text-left'>
-          <DrawerTitle>{isEdit ? 'Edit Leave' : 'Add New Leave'}</DrawerTitle>
+          <DrawerTitle>{isEdit ? 'Edit Overtime' : 'Add New Overtime'}</DrawerTitle>
           <DrawerDescription>
-            {isEdit ? 'Update the leave details here. ' : 'Create a new leave request here. '}
+            {isEdit ? 'Update the overtime details here. ' : 'Create a new overtime record here. '}
             Click save when you're done.
           </DrawerDescription>
         </DrawerHeader>
 
         <div className='no-scrollbar overflow-y-auto px-4'>
-          <LeaveForm form={form} onSubmit={onSubmit} id='leave-form' />
+          <OvertimeForm form={form} onSubmit={onSubmit} id='overtime-form' />
         </div>
 
         <DrawerFooter>
-          <Button type='submit' form='leave-form' disabled={isLoading}>
+          <Button type='submit' form='overtime-form' disabled={isLoading}>
             {isLoading ? (
               <>
                 <Spinner className='mr-2 size-4' />
@@ -183,19 +183,15 @@ export function LeavesActionDialog({
   )
 }
 
-interface LeaveFormProps {
-  form: UseFormReturn<LeaveFormData>
-  onSubmit: (data: LeaveFormData) => void
+interface OvertimeFormProps {
+  form: UseFormReturn<OvertimeFormData>
+  onSubmit: (data: OvertimeFormData) => void
   id: string
   className?: string
 }
 
-function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
+function OvertimeForm({ form, onSubmit, id, className }: OvertimeFormProps) {
   const { data: optionEmployees } = useOptionEmployees()
-  const { data: optionLeaveTypes } = useOptionLeaveTypes()
-
-  const startDate = form.watch('start_date')
-  const endDate = form.watch('end_date')
 
   return (
     <form
@@ -211,7 +207,7 @@ function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
           name='employee_id'
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error} className="flex flex-col">
-              <FieldLabel htmlFor='leave-employee-id'>Employee <span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel htmlFor='overtime-employee-id'>Employee <span className="text-destructive">*</span></FieldLabel>
               <Combobox
                 items={optionEmployees || []}
                 itemToStringLabel={(item) => item.label}
@@ -222,8 +218,8 @@ function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
                 isItemEqualToValue={(a, b) => Number(a?.value) === Number(b?.value)}
               >
                 <ComboboxInput
-                  id="leave-employee-id"
-                  name="leave-employee-id"
+                  id="overtime-employee-id"
+                  name="overtime-employee-id"
                   placeholder="Select employee..."
                 />
                 <ComboboxContent>
@@ -242,60 +238,69 @@ function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
           )}
         />
 
-        {/* Leave Type Selection */}
+        {/* Date */}
         <Controller
           control={form.control}
-          name='leave_type_id'
+          name='date'
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error} className="flex flex-col">
-              <FieldLabel htmlFor='leave-type-id'>Leave Type <span className="text-destructive">*</span></FieldLabel>
-              <Combobox
-                items={optionLeaveTypes || []}
-                itemToStringLabel={(item) => item.label}
-                value={(optionLeaveTypes || []).find((p) => Number(p.value) === field.value) ?? null}
-                onValueChange={(item) => {
-                  field.onChange(item?.value ? Number(item.value) : 0)
-                }}
-                isItemEqualToValue={(a, b) => Number(a?.value) === Number(b?.value)}
-              >
-                <ComboboxInput
-                  id="leave-type-id"
-                  name="leave-type-id"
-                  placeholder="Select leave type..."
-                />
-                <ComboboxContent>
-                  <ComboboxEmpty>No leave type found.</ComboboxEmpty>
-                  <ComboboxList>
-                    {(item) => (
-                      <ComboboxItem key={item.value} value={item}>
-                        {item.label}
-                      </ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
+              <FieldLabel>Date <span className="text-destructive">*</span></FieldLabel>
+              <DatePicker
+                value={field.value ? new Date(field.value) : undefined}
+                onChange={(date) => field.onChange(date ? format(date, 'yyyy-MM-dd') : '')}
+                placeholder="Pick a date"
+                error={fieldState.error?.message}
+              />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
 
-        <Field data-invalid={!!form.formState.errors.start_date || !!form.formState.errors.end_date} className="flex flex-col">
-          <FieldLabel>Date Range <span className="text-destructive">*</span></FieldLabel>
-          <DateRangePicker
-            value={{
-              from: startDate ? new Date(startDate) : undefined,
-              to: endDate ? new Date(endDate) : undefined,
-            }}
-            onChange={(range) => {
-              form.setValue('start_date', range?.from ? format(range.from, 'yyyy-MM-dd') : '', { shouldValidate: true })
-              form.setValue('end_date', range?.to ? format(range.to, 'yyyy-MM-dd') : '', { shouldValidate: true })
-            }}
-            className="w-full"
+        <div className="grid grid-cols-2 gap-4">
+          {/* Hours */}
+          <Controller
+            control={form.control}
+            name='hours'
+            render={({ field, fieldState }) => (
+              <Field data-invalid={!!fieldState.error}>
+                <FieldLabel htmlFor='overtime-hours'>Hours <span className="text-destructive">*</span></FieldLabel>
+                <Input
+                  id='overtime-hours'
+                  type="number"
+                  step="0.5"
+                  min="0"
+                  placeholder="e.g. 2.5"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
           />
-          {form.formState.errors.start_date && <FieldError errors={[form.formState.errors.start_date]} />}
-          {form.formState.errors.end_date && <FieldError errors={[form.formState.errors.end_date]} />}
-        </Field>
 
+          {/* Rate */}
+          <Controller
+            control={form.control}
+            name='rate'
+            render={({ field, fieldState }) => (
+              <Field data-invalid={!!fieldState.error}>
+                <FieldLabel htmlFor='overtime-rate'>Rate <span className="text-destructive">*</span></FieldLabel>
+                <Input
+                  id='overtime-rate'
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="e.g. 15.50"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+        </div>
+
+        {/* Status */}
         <Controller
           control={form.control}
           name="status"
@@ -319,6 +324,7 @@ function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
             </Field>
           )}
         />
+
       </FieldGroup>
     </form>
   )

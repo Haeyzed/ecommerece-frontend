@@ -17,22 +17,22 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { type Leave } from '@/features/hrm/leaves/types'
-import { useLeaves } from '@/features/hrm/leaves/components/leaves-provider'
+import { type Overtime } from '@/features/hrm/overtimes/types'
+import { useOvertimes } from '@/features/hrm/overtimes/components/overtimes-provider'
 import { useAuthSession } from '@/features/auth/api'
 
 type DataTableRowActionsProps = {
-  row: Row<Leave>
+  row: Row<Overtime>
 }
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
-  const { setOpen, setCurrentRow } = useLeaves()
+  const { setOpen, setCurrentRow } = useOvertimes()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
 
-  const canView = userPermissions.includes('view leaves')
-  const canUpdate = userPermissions.includes('update leaves')
-  const canDelete = userPermissions.includes('delete leaves')
+  const canView = userPermissions.includes('view overtimes')
+  const canUpdate = userPermissions.includes('update overtimes')
+  const canDelete = userPermissions.includes('delete overtimes')
 
   if (!canView && !canUpdate && !canDelete) return null
 

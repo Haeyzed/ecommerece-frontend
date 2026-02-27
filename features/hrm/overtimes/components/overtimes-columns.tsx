@@ -6,11 +6,11 @@ import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
-import { leaveStatusStyles } from '@/features/hrm/leaves/constants'
-import { type Leave } from '@/features/hrm/leaves/types'
+import { overtimeStatusStyles } from '@/features/hrm/overtimes/constants'
+import { type Overtime } from '@/features/hrm/overtimes/types'
 import { DataTableRowActions } from './data-table-row-actions'
 
-export const leavesColumns: ColumnDef<Leave>[] = [
+export const overtimesColumns: ColumnDef<Overtime>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -57,39 +57,39 @@ export const leavesColumns: ColumnDef<Leave>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'leave_type',
+    accessorKey: 'date',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Leave Type' />
+      <DataTableColumnHeader column={column} title='Date' />
     ),
     cell: ({ row }) => (
-      <span>{row.original.leave_type?.name || `Type #${row.original.leave_type_id}`}</span>
+      <span className="font-mono text-muted-foreground">{row.original.date}</span>
     ),
   },
   {
-    accessorKey: 'start_date',
+    accessorKey: 'hours',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Start Date' />
+      <DataTableColumnHeader column={column} title='Hours' />
     ),
     cell: ({ row }) => (
-      <span className="font-mono text-muted-foreground">{row.original.start_date}</span>
+      <div className="font-mono">{row.original.hours} h</div>
     ),
   },
   {
-    accessorKey: 'end_date',
+    accessorKey: 'rate',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='End Date' />
+      <DataTableColumnHeader column={column} title='Rate' />
     ),
     cell: ({ row }) => (
-      <span className="font-mono text-muted-foreground">{row.original.end_date}</span>
+      <div className="font-mono">${Number(row.original.rate).toFixed(2)}</div>
     ),
   },
   {
-    accessorKey: 'days',
+    accessorKey: 'amount',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Days' />
+      <DataTableColumnHeader column={column} title='Amount' />
     ),
     cell: ({ row }) => (
-      <Badge variant="secondary" className="font-mono">{row.original.days}</Badge>
+      <Badge variant="secondary" className="font-mono">${Number(row.original.amount).toFixed(2)}</Badge>
     ),
   },
   {
@@ -99,7 +99,7 @@ export const leavesColumns: ColumnDef<Leave>[] = [
     ),
     cell: ({ row }) => {
       const { status } = row.original
-      const statusBadgeColor = leaveStatusStyles.get(status) || 'bg-neutral-100/50'
+      const statusBadgeColor = overtimeStatusStyles.get(status) || 'bg-neutral-100/50'
       return (
         <div className='flex justify-start'>
           <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>

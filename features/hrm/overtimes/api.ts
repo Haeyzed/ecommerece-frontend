@@ -5,29 +5,29 @@ import { ValidationError } from '@/lib/api/api-errors'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import type {
-  Leave,
-  LeaveExportParams,
-  LeaveFormBody,
-  LeaveListParams,
+  Overtime,
+  OvertimeExportParams,
+  OvertimeFormBody,
+  OvertimeListParams,
 } from './types'
 
-export const leaveKeys = {
-  all: ['leaves'] as const,
-  lists: () => [...leaveKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...leaveKeys.lists(), filters] as const,
-  details: () => [...leaveKeys.all, 'detail'] as const,
-  detail: (id: number) => [...leaveKeys.details(), id] as const,
-  template: () => [...leaveKeys.all, 'template'] as const,
+export const overtimeKeys = {
+  all: ['overtimes'] as const,
+  lists: () => [...overtimeKeys.all, 'list'] as const,
+  list: (filters?: Record<string, unknown>) => [...overtimeKeys.lists(), filters] as const,
+  details: () => [...overtimeKeys.all, 'detail'] as const,
+  detail: (id: number) => [...overtimeKeys.details(), id] as const,
+  template: () => [...overtimeKeys.all, 'template'] as const,
 };
 
-const BASE_PATH = '/leaves';
+const BASE_PATH = '/overtimes';
 
-export function usePaginatedLeaves(params?: LeaveListParams) {
+export function usePaginatedOvertimes(params?: OvertimeListParams) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
-    queryKey: leaveKeys.list(params),
+    queryKey: overtimeKeys.list(params),
     queryFn: async () => {
-      return await api.get<Leave[]>(BASE_PATH, { params });
+      return await api.get<Overtime[]>(BASE_PATH, { params });
     },
     enabled: sessionStatus !== 'loading',
   });
@@ -37,12 +37,12 @@ export function usePaginatedLeaves(params?: LeaveListParams) {
   };
 }
 
-export function useLeave(id: number) {
+export function useOvertime(id: number) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
-    queryKey: leaveKeys.detail(id),
+    queryKey: overtimeKeys.detail(id),
     queryFn: async () => {
-      const response = await api.get<Leave>(`${BASE_PATH}/${id}`);
+      const response = await api.get<Overtime>(`${BASE_PATH}/${id}`);
       return response.data ?? null;
     },
     enabled: !!id && sessionStatus !== 'loading',
@@ -53,24 +53,24 @@ export function useLeave(id: number) {
   };
 }
 
-export function useCreateLeave() {
+export function useCreateOvertime() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: LeaveFormBody) => {
+    mutationFn: async (data: OvertimeFormBody) => {
       const payload: Record<string, unknown> = {
         employee_id: data.employee_id,
-        leave_type_id: data.leave_type_id,
-        start_date: data.start_date,
-        end_date: data.end_date,
+        date: data.date,
+        hours: data.hours,
+        rate: data.rate,
       };
 
       if (data.status !== undefined && data.status !== null) {
         payload.status = data.status;
       }
 
-      const response = await api.post<{ data: Leave }>(BASE_PATH, payload);
+      const response = await api.post<{ data: Overtime }>(BASE_PATH, payload);
       if (!response.success) {
         if (response.errors) throw new ValidationError(response.message, response.errors);
         throw new Error(response.message);
@@ -78,7 +78,7 @@ export function useCreateLeave() {
       return response;
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: leaveKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: overtimeKeys.lists() });
       toast.success(response.message);
     },
     onError: (error) => {
@@ -87,21 +87,21 @@ export function useCreateLeave() {
   });
 }
 
-export function useUpdateLeave() {
+export function useUpdateOvertime() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<LeaveFormBody> }) => {
+    mutationFn: async ({ id, data }: { id: number; data: Partial<OvertimeFormBody> }) => {
       const payload: Record<string, unknown> = {};
 
       if (data.employee_id !== undefined) payload.employee_id = data.employee_id;
-      if (data.leave_type_id !== undefined) payload.leave_type_id = data.leave_type_id;
-      if (data.start_date !== undefined) payload.start_date = data.start_date;
-      if (data.end_date !== undefined) payload.end_date = data.end_date;
+      if (data.date !== undefined) payload.date = data.date;
+      if (data.hours !== undefined) payload.hours = data.hours;
+      if (data.rate !== undefined) payload.rate = data.rate;
       if (data.status !== undefined) payload.status = data.status;
 
-      const response = await api.put<{ data: Leave }>(`${BASE_PATH}/${id}`, payload);
+      const response = await api.put<{ data: Overtime }>(`${BASE_PATH}/${id}`, payload);
       if (!response.success) {
         if (response.errors) throw new ValidationError(response.message, response.errors);
         throw new Error(response.message);
@@ -109,8 +109,8 @@ export function useUpdateLeave() {
       return { id, message: response.message };
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: leaveKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: leaveKeys.detail(data.id) });
+      queryClient.invalidateQueries({ queryKey: overtimeKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: overtimeKeys.detail(data.id) });
       toast.success(data.message);
     },
     onError: (error) => {
@@ -119,7 +119,7 @@ export function useUpdateLeave() {
   });
 }
 
-export function useDeleteLeave() {
+export function useDeleteOvertime() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
 
@@ -130,7 +130,7 @@ export function useDeleteLeave() {
       return response;
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: leaveKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: overtimeKeys.lists() });
       toast.success(response.message);
     },
     onError: (error) => {
@@ -139,7 +139,7 @@ export function useDeleteLeave() {
   });
 }
 
-export function useBulkApproveLeaves() {
+export function useBulkApproveOvertimes() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
   return useMutation({
@@ -152,14 +152,14 @@ export function useBulkApproveLeaves() {
       return response;
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: leaveKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: overtimeKeys.lists() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
   });
 }
 
-export function useBulkRejectLeaves() {
+export function useBulkRejectOvertimes() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
   return useMutation({
@@ -172,14 +172,14 @@ export function useBulkRejectLeaves() {
       return response;
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: leaveKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: overtimeKeys.lists() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
   });
 }
 
-export function useBulkDestroyLeaves() {
+export function useBulkDestroyOvertimes() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
 
@@ -190,14 +190,14 @@ export function useBulkDestroyLeaves() {
       return response;
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: leaveKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: overtimeKeys.lists() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
   });
 }
 
-export function useLeavesImport() {
+export function useOvertimesImport() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
 
@@ -210,24 +210,24 @@ export function useLeavesImport() {
       return response;
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: leaveKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: overtimeKeys.lists() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
   });
 }
 
-export function useLeavesExport() {
+export function useOvertimesExport() {
   const { api } = useApiClient();
 
   return useMutation({
-    mutationFn: async (params: LeaveExportParams) => {
+    mutationFn: async (params: OvertimeExportParams) => {
       if (params.method === 'download') {
         const blob = await api.postBlob(`${BASE_PATH}/export`, params);
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `leaves-export-${Date.now()}.${params.format === 'pdf' ? 'pdf' : 'xlsx'}`;
+        link.download = `overtimes-export-${Date.now()}.${params.format === 'pdf' ? 'pdf' : 'xlsx'}`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -246,7 +246,7 @@ export function useLeavesExport() {
   });
 }
 
-export function useLeavesTemplateDownload() {
+export function useOvertimesTemplateDownload() {
   const { api } = useApiClient();
 
   return useMutation({
@@ -255,7 +255,7 @@ export function useLeavesTemplateDownload() {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `leaves-sample.csv`;
+      link.download = `overtimes-sample.csv`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

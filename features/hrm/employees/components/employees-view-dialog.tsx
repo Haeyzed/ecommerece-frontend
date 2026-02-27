@@ -309,16 +309,6 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
               <div className='flex items-center justify-between'>
                 <div className='text-sm font-medium'>Assigned Roles ({filteredRoles.length})</div>
                 <div className="flex items-center gap-2">
-                  <div className="relative w-48">
-                    <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      type="text"
-                      placeholder="Search roles..."
-                      className="pl-8 h-9"
-                      value={rolesSearchQuery}
-                      onChange={(e) => setRolesSearchQuery(e.target.value)}
-                    />
-                  </div>
                   {filteredRoles.length > ITEM_LIMIT && (
                     <Button
                       variant="link"
@@ -329,6 +319,16 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
                       {showAllRoles ? 'Show less' : `Show all ${filteredRoles.length}`}
                     </Button>
                   )}
+                  <div className="relative w-48">
+                    <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="text"
+                      placeholder="Search roles..."
+                      className="pl-8 h-9"
+                      value={rolesSearchQuery}
+                      onChange={(e) => setRolesSearchQuery(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -356,16 +356,6 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
               <div className='flex items-center justify-between'>
                 <div className='text-sm font-medium'>Direct Permissions ({filteredPermissions.length})</div>
                 <div className="flex items-center gap-2">
-                  <div className="relative w-48">
-                    <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      type="text"
-                      placeholder="Search permissions..."
-                      className="pl-8 h-9"
-                      value={permissionsSearchQuery}
-                      onChange={(e) => setPermissionsSearchQuery(e.target.value)}
-                    />
-                  </div>
                   {filteredPermissions.length > ITEM_LIMIT && (
                     <Button
                       variant="link"
@@ -376,6 +366,16 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
                       {showAllPermissions ? 'Show less' : `Show all ${filteredPermissions.length}`}
                     </Button>
                   )}
+                  <div className="relative w-48">
+                    <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="text"
+                      placeholder="Search permissions..."
+                      className="pl-8 h-9"
+                      value={permissionsSearchQuery}
+                      onChange={(e) => setPermissionsSearchQuery(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
 

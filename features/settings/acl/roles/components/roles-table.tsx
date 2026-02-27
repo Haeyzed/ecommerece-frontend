@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, Fragment } from 'react'
 import { format } from 'date-fns'
 import { type DateRange } from 'react-day-picker'
 import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
@@ -23,7 +23,7 @@ import {
   getFacetedUniqueValues,
   getFilteredRowModel,
   getSortedRowModel,
-  useReactTable
+  useReactTable, type ExpandedState,
 } from '@tanstack/react-table'
 import { toast } from 'sonner'
 
@@ -31,13 +31,15 @@ import { usePaginatedRoles } from '@/features/settings/acl/roles/api'
 import {
   RolesEmptyState,
   DataTableBulkActions,
-  rolesColumns as columns
+  rolesColumns as columns, Role, RoleExpandedContent,
 } from '@/features/settings/acl/roles'
+import { type Audit, AuditLogExpandedContent } from '@/features/reports/audit-log'
 
 export function RolesTable() {
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [sorting, setSorting] = useState<SortingState>([])
+  const [expanded, setExpanded] = useState<ExpandedState>({})
 
   const [dateRange, setDateRange] = useState<DateRange | undefined>()
 
@@ -96,6 +98,7 @@ export function RolesTable() {
       rowSelection,
       columnFilters,
       columnVisibility,
+      expanded
     },
     enableRowSelection: true,
     manualPagination: true,
@@ -182,6 +185,7 @@ export function RolesTable() {
             <TableBody>
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
+                  <Fragment key={row.id}>
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
@@ -203,6 +207,17 @@ export function RolesTable() {
                       </TableCell>
                     ))}
                   </TableRow>
+                    {row.getIsExpanded() && (
+                      <TableRow className="bg-muted/30 hover:bg-muted/30">
+                        <TableCell
+                          colSpan={columns.length}
+                          className="p-4"
+                        >
+                          <RoleExpandedContent role={row.original as Role} />
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </Fragment>
                 ))
               ) : (
                 <TableRow>

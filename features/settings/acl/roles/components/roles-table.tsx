@@ -33,14 +33,12 @@ import {
   DataTableBulkActions,
   rolesColumns as columns, Role, RoleExpandedContent,
 } from '@/features/settings/acl/roles'
-import { type Audit, AuditLogExpandedContent } from '@/features/reports/audit-log'
 
 export function RolesTable() {
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [sorting, setSorting] = useState<SortingState>([])
   const [expanded, setExpanded] = useState<ExpandedState>({})
-
   const [dateRange, setDateRange] = useState<DateRange | undefined>()
 
   const {

@@ -1,8 +1,10 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { SearchIcon } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -99,18 +101,54 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
 
   const [showAllRoles, setShowAllRoles] = useState(false)
   const [showAllPermissions, setShowAllPermissions] = useState(false)
+  const [rolesSearchQuery, setRolesSearchQuery] = useState('')
+  const [permissionsSearchQuery, setPermissionsSearchQuery] = useState('')
 
-  // Fetch options to map IDs back to names if the API only returns IDs
   const { data: rolesOptions = [] } = useOptionRoles()
   const { data: permissionsOptions = [] } = useOptionPermissions()
 
   const ITEM_LIMIT = 30
 
-  const rolesList = currentRow.user?.roles || []
-  const visibleRoles = showAllRoles ? rolesList : rolesList.slice(0, ITEM_LIMIT)
+  // -------------------------
+  // Roles Formatting & Filtering
+  // -------------------------
+  const formattedRoles = useMemo(() => {
+    const rawRoles = currentRow.user?.roles || []
+    return rawRoles.map((roleItem: any) => {
+      const isObject = typeof roleItem === 'object' && roleItem !== null
+      const id = isObject ? roleItem.id : roleItem
+      const name = isObject ? roleItem.name : (rolesOptions.find((r) => r.value === id)?.label || `Role #${id}`)
+      return { id, name }
+    })
+  }, [currentRow.user?.roles, rolesOptions])
 
-  const permissionsList = currentRow.user?.permissions || []
-  const visiblePermissions = showAllPermissions ? permissionsList : permissionsList.slice(0, ITEM_LIMIT)
+  const filteredRoles = useMemo(() => {
+    if (!rolesSearchQuery) return formattedRoles
+    return formattedRoles.filter(r => r.name.toLowerCase().includes(rolesSearchQuery.toLowerCase()))
+  }, [formattedRoles, rolesSearchQuery])
+
+  const visibleRoles = showAllRoles ? filteredRoles : filteredRoles.slice(0, ITEM_LIMIT)
+
+  // -------------------------
+  // Permissions Formatting & Filtering
+  // -------------------------
+  const formattedPermissions = useMemo(() => {
+    const rawPerms = currentRow.user?.permissions || []
+    return rawPerms.map((permItem: any) => {
+      const isObject = typeof permItem === 'object' && permItem !== null
+      const id = isObject ? permItem.id : permItem
+      const name = isObject ? permItem.name : (permissionsOptions.find((p) => p.value === id)?.label || `Permission #${id}`)
+      return { id, name }
+    })
+  }, [currentRow.user?.permissions, permissionsOptions])
+
+  const filteredPermissions = useMemo(() => {
+    if (!permissionsSearchQuery) return formattedPermissions
+    return formattedPermissions.filter(p => p.name.toLowerCase().includes(permissionsSearchQuery.toLowerCase()))
+  }, [formattedPermissions, permissionsSearchQuery])
+
+  const visiblePermissions = showAllPermissions ? filteredPermissions : filteredPermissions.slice(0, ITEM_LIMIT)
+
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -249,7 +287,7 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
 
       {currentRow.user && (
         <>
-          <div className='space-y-4'>
+          <div className='space-y-6'>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">System Access</h4>
             <div className='grid grid-cols-2 gap-4'>
               <div className='space-y-2'>
@@ -266,72 +304,96 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
               </div>
             </div>
 
-            <div className='space-y-4 pt-2'>
-              <div className='space-y-2'>
-                <div className='flex items-center justify-between'>
-                  <div className='text-sm font-medium text-muted-foreground'>Assigned Roles ({rolesList.length})</div>
-                  {rolesList.length > ITEM_LIMIT && (
+            {/* Roles Section */}
+            <div className='space-y-3 pt-2'>
+              <div className='flex items-center justify-between'>
+                <div className='text-sm font-medium'>Assigned Roles ({filteredRoles.length})</div>
+                <div className="flex items-center gap-2">
+                  <div className="relative w-48">
+                    <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="text"
+                      placeholder="Search roles..."
+                      className="pl-8 h-9"
+                      value={rolesSearchQuery}
+                      onChange={(e) => setRolesSearchQuery(e.target.value)}
+                    />
+                  </div>
+                  {filteredRoles.length > ITEM_LIMIT && (
                     <Button
                       variant="link"
                       size="sm"
                       onClick={() => setShowAllRoles(!showAllRoles)}
-                      className="h-auto p-0"
+                      className="h-auto p-0 ml-2"
                     >
-                      {showAllRoles ? 'Show less' : `Show all ${rolesList.length}`}
+                      {showAllRoles ? 'Show less' : `Show all ${filteredRoles.length}`}
                     </Button>
                   )}
                 </div>
-                {rolesList.length > 0 ? (
-                  <div className="flex flex-wrap gap-2">
-                    {visibleRoles.map((roleItem: any) => {
-                      const isObject = typeof roleItem === 'object' && roleItem !== null;
-                      const id = isObject ? roleItem.id : roleItem;
-                      const name = isObject ? roleItem.name : (rolesOptions.find((r) => r.value === id)?.label || `Role #${id}`);
-
-                      return (
-                        <Badge key={`role-${id}`} variant="secondary">
-                          {name}
-                        </Badge>
-                      )
-                    })}
-                  </div>
-                ) : (
-                  <span className="text-sm text-muted-foreground italic">No roles assigned.</span>
-                )}
               </div>
 
-              <div className='space-y-2 pt-2'>
-                <div className='flex items-center justify-between'>
-                  <div className='text-sm font-medium text-muted-foreground'>Direct Permissions ({permissionsList.length})</div>
-                  {permissionsList.length > ITEM_LIMIT && (
+              {formattedRoles.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {visibleRoles.length > 0 ? (
+                    visibleRoles.map((role) => (
+                      <Badge key={`role-${role.id}`} variant="secondary">
+                        {role.name}
+                      </Badge>
+                    ))
+                  ) : (
+                    <span className="text-sm text-muted-foreground italic">No roles match your search.</span>
+                  )}
+                </div>
+              ) : (
+                <span className="text-sm text-muted-foreground italic">No roles assigned.</span>
+              )}
+            </div>
+
+            <Separator className="my-2" />
+
+            {/* Permissions Section */}
+            <div className='space-y-3'>
+              <div className='flex items-center justify-between'>
+                <div className='text-sm font-medium'>Direct Permissions ({filteredPermissions.length})</div>
+                <div className="flex items-center gap-2">
+                  <div className="relative w-48">
+                    <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="text"
+                      placeholder="Search permissions..."
+                      className="pl-8 h-9"
+                      value={permissionsSearchQuery}
+                      onChange={(e) => setPermissionsSearchQuery(e.target.value)}
+                    />
+                  </div>
+                  {filteredPermissions.length > ITEM_LIMIT && (
                     <Button
                       variant="link"
                       size="sm"
                       onClick={() => setShowAllPermissions(!showAllPermissions)}
-                      className="h-auto p-0"
+                      className="h-auto p-0 ml-2"
                     >
-                      {showAllPermissions ? 'Show less' : `Show all ${permissionsList.length}`}
+                      {showAllPermissions ? 'Show less' : `Show all ${filteredPermissions.length}`}
                     </Button>
                   )}
                 </div>
-                {permissionsList.length > 0 ? (
-                  <div className="flex flex-wrap gap-2">
-                    {visiblePermissions.map((permItem: any) => {
-                      const isObject = typeof permItem === 'object' && permItem !== null;
-                      const id = isObject ? permItem.id : permItem;
-                      const name = isObject ? permItem.name : (permissionsOptions.find((p) => p.value === id)?.label || `Permission #${id}`);
-
-                      return (
-                        <Badge key={`perm-${id}`} variant="outline">
-                          {name}
-                        </Badge>
-                      )
-                    })}
-                  </div>
-                ) : (
-                  <span className="text-sm text-muted-foreground italic">No direct permissions assigned.</span>
-                )}
               </div>
+
+              {formattedPermissions.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {visiblePermissions.length > 0 ? (
+                    visiblePermissions.map((perm) => (
+                      <Badge key={`perm-${perm.id}`} variant="outline">
+                        {perm.name}
+                      </Badge>
+                    ))
+                  ) : (
+                    <span className="text-sm text-muted-foreground italic">No permissions match your search.</span>
+                  )}
+                </div>
+              ) : (
+                <span className="text-sm text-muted-foreground italic">No direct permissions assigned.</span>
+              )}
             </div>
           </div>
           <Separator />

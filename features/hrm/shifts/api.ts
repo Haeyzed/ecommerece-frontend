@@ -95,6 +95,7 @@ export function useCreateShift() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: shiftKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: shiftKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => {
@@ -129,6 +130,7 @@ export function useUpdateShift() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: shiftKeys.lists() });
       queryClient.invalidateQueries({ queryKey: shiftKeys.detail(data.id) });
+      queryClient.invalidateQueries({ queryKey: shiftKeys.options() });
       toast.success(data.message);
     },
     onError: (error) => {
@@ -149,6 +151,7 @@ export function useDeleteShift() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: shiftKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: shiftKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => {
@@ -171,6 +174,7 @@ export function useBulkActivateShifts() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: shiftKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: shiftKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
@@ -191,6 +195,7 @@ export function useBulkDeactivateShifts() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: shiftKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: shiftKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
@@ -209,6 +214,7 @@ export function useBulkDestroyShifts() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: shiftKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: shiftKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
@@ -229,6 +235,7 @@ export function useShiftsImport() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: shiftKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: shiftKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),

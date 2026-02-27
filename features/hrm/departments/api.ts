@@ -95,6 +95,7 @@ export function useCreateDepartment() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: departmentKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: departmentKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => {
@@ -123,6 +124,7 @@ export function useUpdateDepartment() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: departmentKeys.lists() });
       queryClient.invalidateQueries({ queryKey: departmentKeys.detail(data.id) });
+      queryClient.invalidateQueries({ queryKey: departmentKeys.options() });
       toast.success(data.message);
     },
     onError: (error) => {
@@ -143,6 +145,7 @@ export function useDeleteDepartment() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: departmentKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: departmentKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => {
@@ -169,6 +172,7 @@ export function useBulkActivateDepartments() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: departmentKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: departmentKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
@@ -189,6 +193,7 @@ export function useBulkDeactivateDepartments() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: departmentKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: departmentKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
@@ -207,6 +212,7 @@ export function useBulkDestroyDepartments() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: departmentKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: departmentKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
@@ -231,6 +237,7 @@ export function useDepartmentsImport() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: departmentKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: departmentKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),

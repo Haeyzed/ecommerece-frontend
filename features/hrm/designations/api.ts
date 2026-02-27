@@ -95,6 +95,7 @@ export function useCreateDesignation() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: designationKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: designationKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => {
@@ -123,6 +124,7 @@ export function useUpdateDesignation() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: designationKeys.lists() });
       queryClient.invalidateQueries({ queryKey: designationKeys.detail(data.id) });
+      queryClient.invalidateQueries({ queryKey: designationKeys.options() });
       toast.success(data.message);
     },
     onError: (error) => {
@@ -143,6 +145,7 @@ export function useDeleteDesignation() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: designationKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: designationKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => {
@@ -169,6 +172,7 @@ export function useBulkActivateDesignations() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: designationKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: designationKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
@@ -189,6 +193,7 @@ export function useBulkDeactivateDesignations() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: designationKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: designationKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
@@ -207,6 +212,7 @@ export function useBulkDestroyDesignations() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: designationKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: designationKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),
@@ -231,6 +237,7 @@ export function useDesignationsImport() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: designationKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: designationKeys.options() });
       toast.success(response.message);
     },
     onError: (error) => toast.error(error.message),

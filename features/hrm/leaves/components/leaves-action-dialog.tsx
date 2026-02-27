@@ -42,7 +42,7 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Spinner } from '@/components/ui/spinner'
-import { DatePicker } from '@/components/date-picker'
+import { DateRangePicker } from '@/components/date-range-picker'
 import {
   Combobox,
   ComboboxContent,
@@ -91,7 +91,7 @@ export function LeavesActionDialog({
         leave_type_id: 0,
         start_date: format(new Date(), 'yyyy-MM-dd'),
         end_date: format(new Date(), 'yyyy-MM-dd'),
-        status: 'Pending',
+        status: 'pending',
       },
   })
 
@@ -194,6 +194,9 @@ function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
   const { data: optionEmployees } = useOptionEmployees()
   const { data: optionLeaveTypes } = useOptionLeaveTypes()
 
+  const startDate = form.watch('start_date')
+  const endDate = form.watch('end_date')
+
   return (
     <form
       id={id}
@@ -201,6 +204,8 @@ function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
       className={cn('space-y-4', className)}
     >
       <FieldGroup>
+
+        {/* Employee Selection */}
         <Controller
           control={form.control}
           name='employee_id'
@@ -237,6 +242,7 @@ function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
           )}
         />
 
+        {/* Leave Type Selection */}
         <Controller
           control={form.control}
           name='leave_type_id'
@@ -273,40 +279,22 @@ function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
           )}
         />
 
-        <Controller
-          control={form.control}
-          name='start_date'
-          render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error} className="flex flex-col">
-              <FieldLabel>Start Date <span className="text-destructive">*</span></FieldLabel>
-              <DatePicker
-                value={field.value ? new Date(field.value) : undefined}
-                onChange={(date) => field.onChange(date ? format(date, 'yyyy-MM-dd') : '')}
-                placeholder="Pick a start date"
-                error={fieldState.error?.message}
-              />
-              {fieldState.error && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
-        {/* End Date */}
-        <Controller
-          control={form.control}
-          name='end_date'
-          render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error} className="flex flex-col">
-              <FieldLabel>End Date <span className="text-destructive">*</span></FieldLabel>
-              <DatePicker
-                value={field.value ? new Date(field.value) : undefined}
-                onChange={(date) => field.onChange(date ? format(date, 'yyyy-MM-dd') : '')}
-                placeholder="Pick an end date"
-                error={fieldState.error?.message}
-              />
-              {fieldState.error && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+        <Field data-invalid={!!form.formState.errors.start_date || !!form.formState.errors.end_date} className="flex flex-col">
+          <FieldLabel>Date Range <span className="text-destructive">*</span></FieldLabel>
+          <DateRangePicker
+            value={{
+              from: startDate ? new Date(startDate) : undefined,
+              to: endDate ? new Date(endDate) : undefined,
+            }}
+            onChange={(range) => {
+              form.setValue('start_date', range?.from ? format(range.from, 'yyyy-MM-dd') : '', { shouldValidate: true })
+              form.setValue('end_date', range?.to ? format(range.to, 'yyyy-MM-dd') : '', { shouldValidate: true })
+            }}
+            className="w-full"
+          />
+          {form.formState.errors.start_date && <FieldError errors={[form.formState.errors.start_date]} />}
+          {form.formState.errors.end_date && <FieldError errors={[form.formState.errors.end_date]} />}
+        </Field>
 
         <Controller
           control={form.control}
@@ -322,9 +310,9 @@ function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Pending">Pending</SelectItem>
-                  <SelectItem value="Approved">Approved</SelectItem>
-                  <SelectItem value="Rejected">Rejected</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="approved">Approved</SelectItem>
+                  <SelectItem value="rejected">Rejected</SelectItem>
                 </SelectContent>
               </Select>
               {fieldState.error && <FieldError errors={[fieldState.error]} />}

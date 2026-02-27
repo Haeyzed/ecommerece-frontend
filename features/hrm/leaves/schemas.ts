@@ -6,7 +6,7 @@ export const leaveSchema = z.object({
   leave_type_id: z.number().min(1, "Leave type is required"),
   start_date: z.string().min(1, "Start date is required"),
   end_date: z.string().min(1, "End date is required"),
-  status: z.enum(['Pending', 'Approved', 'Rejected']).optional(),
+  status: z.enum(['pending', 'approved', 'rejected']).optional(),
 }).refine((data) => new Date(data.end_date) >= new Date(data.start_date), {
   message: "End date must be after or equal to start date",
   path: ["end_date"],

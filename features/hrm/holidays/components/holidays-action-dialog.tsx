@@ -242,14 +242,13 @@ function HolidayForm({ form, onSubmit, id, className }: HolidayFormProps) {
           )}
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Controller
             control={form.control}
             name='recurring'
             render={({ field, fieldState }) => (
               <Field
                 data-invalid={!!fieldState.error}
-                className='flex flex-col justify-between rounded-md border p-4 space-y-3'
+                className='flex flex-row items-center justify-between rounded-md border p-4'
               >
                 <div className='space-y-0.5'>
                   <FieldLabel htmlFor='holiday-recurring'>Recurring Annually</FieldLabel>
@@ -273,7 +272,7 @@ function HolidayForm({ form, onSubmit, id, className }: HolidayFormProps) {
             render={({ field, fieldState }) => (
               <Field
                 data-invalid={!!fieldState.error}
-                className='flex flex-col justify-between rounded-md border p-4 space-y-3'
+                className='flex flex-row items-center justify-between rounded-md border p-4'
               >
                 <div className='space-y-0.5'>
                   <FieldLabel htmlFor='holiday-approved'>Approved Status</FieldLabel>
@@ -290,7 +289,6 @@ function HolidayForm({ form, onSubmit, id, className }: HolidayFormProps) {
               </Field>
             )}
           />
-        </div>
       </FieldGroup>
     </form>
   )

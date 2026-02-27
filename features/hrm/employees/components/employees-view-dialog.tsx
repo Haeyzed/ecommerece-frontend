@@ -129,9 +129,6 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
 
   const visibleRoles = showAllRoles ? filteredRoles : filteredRoles.slice(0, ITEM_LIMIT)
 
-  // -------------------------
-  // Permissions Formatting & Filtering
-  // -------------------------
   const formattedPermissions = useMemo(() => {
     const rawPerms = currentRow.user?.permissions || []
     return rawPerms.map((permItem: any) => {

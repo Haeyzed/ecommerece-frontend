@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useMemo } from 'react'
 import { type ColumnDef } from '@tanstack/react-table'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
@@ -9,22 +10,71 @@ import { LongText } from '@/components/long-text'
 import { statusTypes } from '@/features/settings/acl/roles/constants'
 import { type Role } from '@/features/settings/acl/roles/types'
 import { DataTableRowActions } from './data-table-row-actions'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { SearchIcon } from 'lucide-react'
 
 export function RoleExpandedContent({ role }: { role: Role }) {
-  if (!role.permissions || role.permissions.length === 0) {
+  const [searchQuery, setSearchQuery] = useState('')
+  const [showAll, setShowAll] = useState(false)
+  const ITEM_LIMIT = 30
+
+  const permissions = useMemo(() => role.permissions || [], [role.permissions])
+
+  const filteredPermissions = useMemo(() => {
+    if (!searchQuery) return permissions
+    return permissions.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
+  }, [permissions, searchQuery])
+
+  const visiblePermissions = showAll ? filteredPermissions : filteredPermissions.slice(0, ITEM_LIMIT)
+
+  if (permissions.length === 0) {
     return <span className="text-sm text-muted-foreground p-4 block">No permissions assigned to this role.</span>
   }
 
   return (
-    <div className="p-4 space-y-3">
-      <p className="text-sm font-semibold text-muted-foreground">Assigned Permissions</p>
-      <div className="flex flex-wrap gap-2">
-        {role.permissions.map((p) => (
-          <Badge key={p.id} variant="secondary" className="font-normal">
-            {p.name}
-          </Badge>
-        ))}
+    <div className="p-4 space-y-3 bg-muted/10 border-b">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-semibold text-muted-foreground">
+          Assigned Permissions ({filteredPermissions.length})
+        </p>
+        <div className="flex items-center gap-2">
+          <div className="relative w-48">
+            <SearchIcon className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search permissions..."
+              className="pl-8 h-8 text-xs"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          {filteredPermissions.length > ITEM_LIMIT && (
+            <Button
+              variant="link"
+              size="sm"
+              onClick={() => setShowAll(!showAll)}
+              className="h-auto p-0 ml-2 text-xs"
+            >
+              {showAll ? 'Show less' : `Show all ${filteredPermissions.length}`}
+            </Button>
+          )}
+        </div>
       </div>
+
+      {filteredPermissions.length > 0 ? (
+        <div className="flex flex-wrap gap-2">
+          {visiblePermissions.map((p) => (
+            <Badge key={p.id} variant="secondary" className="font-normal">
+              {p.name}
+            </Badge>
+          ))}
+        </div>
+      ) : (
+        <span className="text-sm text-muted-foreground italic block pt-1">
+          No permissions match your search.
+        </span>
+      )}
     </div>
   )
 }

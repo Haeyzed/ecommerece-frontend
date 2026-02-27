@@ -37,15 +37,63 @@ export function ShiftsViewDialog({
                                  }: ShiftsViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   if (!currentRow) return null
+
   const handleOpenChange = (value: boolean) => {
     onOpenChange(value)
   }
 
+  if (isDesktop) {
+    return (
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent className='sm:max-w-md'>
+          <DialogHeader className='text-start'>
+            <DialogTitle>Shift Details</DialogTitle>
+            <DialogDescription>
+              View shift information below.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className='max-h-[70vh] overflow-y-auto py-1 pe-2'>
+            <ShiftsView currentRow={currentRow} />
+          </div>
+        </DialogContent>
+      </Dialog>
+    )
+  }
+
+  return (
+    <Drawer open={open} onOpenChange={handleOpenChange}>
+      <DrawerContent>
+        <DrawerHeader className='text-left'>
+          <DrawerTitle>Shift Details</DrawerTitle>
+          <DrawerDescription>View shift information below.</DrawerDescription>
+        </DrawerHeader>
+
+        <div className='no-scrollbar max-h-[80vh] overflow-y-auto px-4'>
+          <ShiftsView currentRow={currentRow} />
+        </div>
+
+        <DrawerFooter>
+          <DrawerClose asChild>
+            <Button variant='outline'>Close</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  )
+}
+
+interface ShiftsViewProps {
+  className?: string
+  currentRow: Shift
+}
+
+function ShiftsView({ className, currentRow }: ShiftsViewProps) {
   const status = currentRow.is_active ? 'active' : 'inactive'
   const statusBadgeColor = statusTypes.get(status)
 
-  const ViewContent = () => (
-    <div className={cn('space-y-6')}>
+  return (
+    <div className={cn('space-y-6', className)}>
       <div className='flex items-center justify-between'>
         <div className='space-y-1'>
           <div className='text-xl font-semibold'>{currentRow.name}</div>
@@ -104,45 +152,5 @@ export function ShiftsViewDialog({
         </div>
       </div>
     </div>
-  )
-
-  if (isDesktop) {
-    return (
-      <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className='sm:max-w-md'>
-          <DialogHeader className='text-start'>
-            <DialogTitle>Shift Details</DialogTitle>
-            <DialogDescription>
-              View shift information below.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-2'>
-            <ViewContent />
-          </div>
-        </DialogContent>
-      </Dialog>
-    )
-  }
-
-  return (
-    <Drawer open={open} onOpenChange={handleOpenChange}>
-      <DrawerContent>
-        <DrawerHeader className='text-left'>
-          <DrawerTitle>Shift Details</DrawerTitle>
-          <DrawerDescription>View shift information below.</DrawerDescription>
-        </DrawerHeader>
-
-        <div className='no-scrollbar max-h-[80vh] overflow-y-auto px-4'>
-          <ViewContent />
-        </div>
-
-        <DrawerFooter>
-          <DrawerClose asChild>
-            <Button variant='outline'>Close</Button>
-          </DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
   )
 }

@@ -25,6 +25,9 @@ import { statusTypes, salesAgentTypes } from '@/features/hrm/employees/constants
 import { type Employee } from '@/features/hrm/employees/types'
 import Image from 'next/image'
 
+import { useOptionRoles } from '@/features/settings/acl/roles/api'
+import { useOptionPermissions } from '@/features/settings/acl/permissions/api'
+
 type EmployeesViewDialogProps = {
   currentRow?: Employee
   open: boolean
@@ -92,6 +95,10 @@ interface EmployeesViewProps {
 function EmployeesView({ className, currentRow }: EmployeesViewProps) {
   const statusBadgeColor = statusTypes.get(currentRow.active_status)
   const salesBadgeColor = salesAgentTypes.get(currentRow.sales_agent)
+
+  // Fetch options to map IDs back to names if the API only returns IDs
+  const { data: rolesOptions = [] } = useOptionRoles()
+  const { data: permissionsOptions = [] } = useOptionPermissions()
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -235,7 +242,7 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
             <div className='grid grid-cols-2 gap-4'>
               <div className='space-y-2'>
                 <div className='text-sm font-medium text-muted-foreground'>Username</div>
-                <div className='text-sm font-medium font-mono'>{currentRow.user.name}</div>
+                <div className='text-sm font-medium font-mono'>{currentRow.user.name || (currentRow.user as any).username}</div>
               </div>
               <div className='space-y-2'>
                 <div className='text-sm font-medium text-muted-foreground'>Account Status</div>
@@ -250,12 +257,30 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
             <div className='space-y-2 pt-2'>
               <div className='text-sm font-medium text-muted-foreground mb-2'>Roles & Permissions</div>
               <div className="flex flex-wrap gap-2">
-                {currentRow.user.roles && currentRow.user.roles.length > 0 && (
-                  <Badge variant="secondary">Has Roles Assigned</Badge>
-                )}
-                {currentRow.user.permissions && currentRow.user.permissions.length > 0 && (
-                  <Badge variant="outline">Has Direct Permissions</Badge>
-                )}
+                {currentRow.user.roles?.map((roleItem: any) => {
+                  const isObject = typeof roleItem === 'object' && roleItem !== null;
+                  const id = isObject ? roleItem.id : roleItem;
+                  const name = isObject ? roleItem.name : (rolesOptions.find((r) => r.value === id)?.label || `Role #${id}`);
+
+                  return (
+                    <Badge key={`role-${id}`} variant="secondary">
+                      {name}
+                    </Badge>
+                  )
+                })}
+
+                {currentRow.user.permissions?.map((permItem: any) => {
+                  const isObject = typeof permItem === 'object' && permItem !== null;
+                  const id = isObject ? permItem.id : permItem;
+                  const name = isObject ? permItem.name : (permissionsOptions.find((p) => p.value === id)?.label || `Permission #${id}`);
+
+                  return (
+                    <Badge key={`perm-${id}`} variant="outline">
+                      {name}
+                    </Badge>
+                  )
+                })}
+
                 {(!currentRow.user.roles?.length && !currentRow.user.permissions?.length) && (
                   <span className="text-sm text-muted-foreground">No roles or permissions assigned.</span>
                 )}

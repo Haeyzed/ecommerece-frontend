@@ -9,6 +9,7 @@ import { LongText } from '@/components/long-text'
 import { statusTypes, salesAgentTypes } from '@/features/hrm/employees/constants'
 import { type Employee } from '@/features/hrm/employees/types'
 import { DataTableRowActions } from './data-table-row-actions'
+import { ImageZoomCell } from '@/components/image-zoom'
 
 export const employeesColumns: ColumnDef<Employee>[] = [
   {
@@ -45,6 +46,18 @@ export const employeesColumns: ColumnDef<Employee>[] = [
     ),
     cell: ({ row }) => (
       <div className='flex items-center gap-3 ps-3'>
+        {row.original.image_url ? (
+          <ImageZoomCell
+            src={row.original.image_url}
+            alt={row.original.name}
+          />
+        ) : (
+          <div className='flex size-10 items-center justify-center rounded-md bg-muted'>
+            <span className='text-xs font-medium'>
+              {row.original.name.charAt(0).toUpperCase()}
+            </span>
+          </div>
+        )}
         <div className="flex flex-col">
           <LongText className='max-w-40 font-semibold'>{row.getValue('name')}</LongText>
           <span className="text-xs text-muted-foreground">{row.original.staff_id}</span>

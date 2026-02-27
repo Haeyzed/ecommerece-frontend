@@ -6,8 +6,8 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { Upload01Icon } from '@hugeicons/core-free-icons'
 import { format } from 'date-fns'
 
-import { useDesignationsExport } from '@/features/hrm/designations/api'
-import { designationExportSchema, type DesignationExportFormData } from '@/features/hrm/designations/schemas'
+import { useEmployeesExport } from '@/features/hrm/employees/api'
+import { employeeExportSchema, type EmployeeExportFormData } from '@/features/hrm/employees/schemas'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -51,33 +51,38 @@ import { DateRangePicker } from '@/components/date-range-picker'
 
 const AVAILABLE_COLUMNS = [
   { value: 'id', label: 'ID' },
+  { value: 'staff_id', label: 'Staff ID' },
   { value: 'name', label: 'Name' },
+  { value: 'email', label: 'Email' },
+  { value: 'phone_number', label: 'Phone Number' },
+  { value: 'basic_salary', label: 'Basic Salary' },
   { value: 'is_active', label: 'Status' },
+  { value: 'is_sale_agent', label: 'Is Sales Agent' },
   { value: 'created_at', label: 'Date Created' },
   { value: 'updated_at', label: 'Last Updated' },
 ] as const
 
-type DesignationsExportDialogProps = {
+type EmployeesExportDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   ids?: number[]
 }
 
 export function EmployeesExportDialog({
-                                          open,
-                                          onOpenChange,
-                                          ids = [],
-                                        }: DesignationsExportDialogProps) {
+                                        open,
+                                        onOpenChange,
+                                        ids = [],
+                                      }: EmployeesExportDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
-  const { mutate: exportDesignations, isPending } = useDesignationsExport()
+  const { mutate: exportEmployees, isPending } = useEmployeesExport()
   const { api } = useApiClient()
 
-  const form = useForm<DesignationExportFormData>({
-    resolver: zodResolver(designationExportSchema),
+  const form = useForm<EmployeeExportFormData>({
+    resolver: zodResolver(employeeExportSchema),
     defaultValues: {
       format: 'excel',
       method: 'download',
-      columns: ['id', 'name', 'is_active'],
+      columns: ['id', 'staff_id', 'name', 'email', 'is_active'],
       start_date: undefined,
       end_date: undefined,
     },
@@ -103,8 +108,8 @@ export function EmployeesExportDialog({
     onOpenChange(value)
   }
 
-  const onSubmit = (data: DesignationExportFormData) => {
-    exportDesignations(
+  const onSubmit = (data: EmployeeExportFormData) => {
+    exportEmployees(
       {
         ids: ids.length > 0 ? ids : undefined,
         format: data.format,
@@ -308,9 +313,9 @@ export function EmployeesExportDialog({
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader className="text-start">
-            <DialogTitle>Export Designations</DialogTitle>
+            <DialogTitle>Export Employees</DialogTitle>
             <DialogDescription>
-              Select export format, method, and columns. {ids.length > 0 && `${ids.length} designation(s) selected.`}
+              Select export format, method, and columns. {ids.length > 0 && `${ids.length} employee(s) selected.`}
             </DialogDescription>
           </DialogHeader>
 
@@ -347,9 +352,9 @@ export function EmployeesExportDialog({
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
         <DrawerHeader className="text-left">
-          <DrawerTitle>Export Designations</DrawerTitle>
+          <DrawerTitle>Export Employees</DrawerTitle>
           <DrawerDescription>
-            Select export format, method, and columns. {ids.length > 0 && `${ids.length} designation(s) selected.`}
+            Select export format, method, and columns. {ids.length > 0 && `${ids.length} employee(s) selected.`}
           </DrawerDescription>
         </DrawerHeader>
 

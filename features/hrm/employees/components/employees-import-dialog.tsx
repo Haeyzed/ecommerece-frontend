@@ -12,9 +12,9 @@ import {
   CancelCircleIcon
 } from '@hugeicons/core-free-icons'
 
-import { useDesignationsImport, useDesignationsTemplateDownload } from '@/features/hrm/designations'
-import { designationImportSchema, type DesignationImportFormData } from '@/features/hrm/designations'
-import { DesignationsCsvPreviewDialog } from '@/features/hrm/designations'
+import { useEmployeesImport, useEmployeesTemplateDownload } from '@/features/hrm/employees/api'
+import { employeeImportSchema, type EmployeeImportFormData } from '@/features/hrm/employees/schemas'
+import { EmployeesCsvPreviewDialog } from '@/features/hrm/employees'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -54,30 +54,29 @@ import {
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { Spinner } from '@/components/ui/spinner'
 
-type DesignationsImportDialogProps = {
+type EmployeesImportDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
 export function EmployeesImportDialog({
-                                           open,
-                                           onOpenChange,
-                                         }: DesignationsImportDialogProps) {
+                                        open,
+                                        onOpenChange,
+                                      }: EmployeesImportDialogProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)")
-  const { mutate: importDesignations, isPending } = useDesignationsImport()
-  const { mutate: downloadTemplate, isPending: isDownloading } = useDesignationsTemplateDownload()
+  const { mutate: importEmployees, isPending } = useEmployeesImport()
+  const { mutate: downloadTemplate, isPending: isDownloading } = useEmployeesTemplateDownload()
 
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewData, setPreviewData] = useState<any[]>([])
 
-  const form = useForm<DesignationImportFormData>({
-    resolver: zodResolver(designationImportSchema),
+  const form = useForm<EmployeeImportFormData>({
+    resolver: zodResolver(employeeImportSchema),
     defaultValues: {
       file: [],
     },
   })
 
-  // Simple CSV Parser for preview
   const parseCSV = (text: string) => {
     const lines = text.split('\n').filter(line => line.trim() !== '')
     const headers = lines[0].split(',').map(h => h.trim())
@@ -90,7 +89,7 @@ export function EmployeesImportDialog({
     })
   }
 
-  const handlePreview = (data: DesignationImportFormData) => {
+  const handlePreview = (data: EmployeeImportFormData) => {
     const file = data.file[0]
     if (file) {
       const reader = new FileReader()
@@ -107,7 +106,7 @@ export function EmployeesImportDialog({
   const handleConfirmImport = () => {
     const file = form.getValues().file[0]
     if (file) {
-      importDesignations(file, {
+      importEmployees(file, {
         onSuccess: () => {
           setPreviewOpen(false)
           handleOpenChange(false)
@@ -158,18 +157,24 @@ export function EmployeesImportDialog({
         <div className='space-y-2 rounded-md border bg-muted/50 p-3 text-sm'>
           <div className='font-medium'>Required Fields:</div>
           <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>name*</code> - Designation name</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>name*</code></li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>staff_id*</code></li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>basic_salary*</code></li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>department_id*</code></li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>designation_id*</code></li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>shift_id*</code></li>
           </ul>
           <div className='font-medium mt-3'>Optional Fields:</div>
           <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>department_id</code> - Parent Department ID</li>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>is_active</code> (1 or 0)</li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>email</code>, <code className='rounded bg-background px-1 py-0.5 text-xs'>phone_number</code>, <code className='rounded bg-background px-1 py-0.5 text-xs'>address</code></li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>country_id</code>, <code className='rounded bg-background px-1 py-0.5 text-xs'>state_id</code>, <code className='rounded bg-background px-1 py-0.5 text-xs'>city_id</code></li>
+            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>is_active</code>, <code className='rounded bg-background px-1 py-0.5 text-xs'>is_sale_agent</code></li>
           </ul>
         </div>
         <Controller
           control={form.control}
           name='file'
-          render={({ field: { value, onChange }, fieldState }) => (
+          render={({ field: { value, onChange, ...fieldProps }, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
               <FieldLabel htmlFor='import-file'>Upload File</FieldLabel>
 
@@ -178,7 +183,7 @@ export function EmployeesImportDialog({
                 onValueChange={onChange}
                 accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
                 maxFiles={1}
-                maxSize={5 * 1024 * 1024} // 5MB
+                maxSize={5 * 1024 * 1024}
                 onFileReject={(_, message) => {
                   form.setError('file', { message })
                 }}
@@ -224,7 +229,7 @@ export function EmployeesImportDialog({
               </FileUpload>
 
               <FieldDescription>
-                Upload the file containing your designation data.
+                Upload the file containing your employees data.
               </FieldDescription>
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -240,9 +245,9 @@ export function EmployeesImportDialog({
         <Dialog open={open} onOpenChange={handleOpenChange}>
           <DialogContent className='sm:max-w-md'>
             <DialogHeader className='text-start'>
-              <DialogTitle>Import Designations</DialogTitle>
+              <DialogTitle>Import Employees</DialogTitle>
               <DialogDescription>
-                Bulk create designations by uploading a CSV or Excel file.
+                Bulk create employees by uploading a CSV or Excel file.
               </DialogDescription>
             </DialogHeader>
 
@@ -263,14 +268,13 @@ export function EmployeesImportDialog({
         <Drawer open={open} onOpenChange={handleOpenChange}>
           <DrawerContent>
             <DrawerHeader className="text-left">
-              <DrawerTitle>Import Designations</DrawerTitle>
+              <DrawerTitle>Import Employees</DrawerTitle>
               <DrawerDescription>
-                Bulk create designations by uploading a CSV or Excel file.
+                Bulk create employees by uploading a CSV or Excel file.
               </DrawerDescription>
             </DrawerHeader>
 
             <div className="no-scrollbar overflow-y-auto px-4">
-              {/* Replaced <ImportContent /> with the variable */}
               {importFormContent}
             </div>
 
@@ -287,7 +291,7 @@ export function EmployeesImportDialog({
         </Drawer>
       )}
 
-      <DesignationsCsvPreviewDialog
+      <EmployeesCsvPreviewDialog
         open={previewOpen}
         onOpenChange={setPreviewOpen}
         data={previewData}

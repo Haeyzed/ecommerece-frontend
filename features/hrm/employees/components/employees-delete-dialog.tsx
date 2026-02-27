@@ -7,32 +7,32 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { useDeleteDesignation } from '@/features/hrm/designations'
-import { type Designation } from '../types'
-import { useAuthSession } from '@/features/auth/api' 
+import { useDeleteEmployee } from '@/features/hrm/employees/api'
+import { type Employee } from '../types'
+import { useAuthSession } from '@/features/auth/api'
 
-type DesignationsDeleteDialogProps = {
+type EmployeesDeleteDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  currentRow: Designation
+  currentRow: Employee
 }
 
 export function EmployeesDeleteDialog({
-  open,
-  onOpenChange,
-  currentRow,
-}: DesignationsDeleteDialogProps) {
+                                        open,
+                                        onOpenChange,
+                                        currentRow,
+                                      }: EmployeesDeleteDialogProps) {
   const [value, setValue] = useState('')
-  const { mutate: deleteDesignation, isPending } = useDeleteDesignation()
+  const { mutate: deleteEmployee, isPending } = useDeleteEmployee()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canDelete = userPermissions.includes('delete designations')
+  const canDelete = userPermissions.includes('delete employees')
   if (!canDelete) return null
 
   const handleDelete = () => {
-    if (value.trim() !== currentRow.name) return
+    if (value.trim() !== currentRow.staff_id) return
 
-    deleteDesignation(currentRow.id, {
+    deleteEmployee(currentRow.id, {
       onSuccess: () => {
         onOpenChange(false)
         setValue('')
@@ -45,7 +45,7 @@ export function EmployeesDeleteDialog({
       open={open}
       onOpenChange={onOpenChange}
       handleConfirm={handleDelete}
-      disabled={value.trim() !== currentRow.name || isPending}
+      disabled={value.trim() !== currentRow.staff_id || isPending}
       title={
         <span className='text-destructive'>
           <HugeiconsIcon
@@ -54,7 +54,7 @@ export function EmployeesDeleteDialog({
             size={18}
             strokeWidth={2}
           />{' '}
-          Delete Designation
+          Delete Employee
         </span>
       }
       desc={
@@ -63,16 +63,16 @@ export function EmployeesDeleteDialog({
             Are you sure you want to delete{' '}
             <span className='font-bold'>{currentRow.name}</span>?
             <br />
-            This action will permanently remove the designation from the system. 
+            This action will permanently remove the employee from the system.
             This cannot be undone.
           </p>
 
           <Label className='my-2'>
-            Designation Name:
+            Employee Staff ID:
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder='Enter designation name to confirm deletion.'
+              placeholder={`Enter Staff ID (${currentRow.staff_id}) to confirm.`}
             />
           </Label>
 

@@ -21,22 +21,24 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { cn } from '@/lib/utils'
-import { statusTypes } from '@/features/hrm/designations'
-import { type Designation } from '@/features/hrm/designations'
+import { statusTypes, salesAgentTypes } from '@/features/hrm/employees/constants'
+import { type Employee } from '@/features/hrm/employees/types'
+import Image from 'next/image'
 
-type DesignationsViewDialogProps = {
-  currentRow?: Designation
+type EmployeesViewDialogProps = {
+  currentRow?: Employee
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
 export function EmployeesViewDialog({
-  currentRow,
-  open,
-  onOpenChange,
-}: DesignationsViewDialogProps) {
+                                      currentRow,
+                                      open,
+                                      onOpenChange,
+                                    }: EmployeesViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   if (!currentRow) return null
+
   const handleOpenChange = (value: boolean) => {
     onOpenChange(value)
   }
@@ -44,18 +46,16 @@ export function EmployeesViewDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className='sm:max-w-lg'>
+        <DialogContent className='sm:max-w-2xl'>
           <DialogHeader className='text-start'>
-            <DialogTitle>Designation Details</DialogTitle>
+            <DialogTitle>Employee Details</DialogTitle>
             <DialogDescription>
-              View designation information below.
+              View detailed information about this employee below.
             </DialogDescription>
           </DialogHeader>
 
           <div className='max-h-[70vh] overflow-y-auto py-1 pe-2'>
-            <DesignationsView
-              currentRow={currentRow}
-            />
+            <EmployeesView currentRow={currentRow} />
           </div>
         </DialogContent>
       </Dialog>
@@ -66,14 +66,12 @@ export function EmployeesViewDialog({
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
         <DrawerHeader className='text-left'>
-          <DrawerTitle>Designation Details</DrawerTitle>
-          <DrawerDescription>View designation information below.</DrawerDescription>
+          <DrawerTitle>Employee Details</DrawerTitle>
+          <DrawerDescription>View detailed information about this employee below.</DrawerDescription>
         </DrawerHeader>
 
-        <div className='max-h-[80vh] overflow-y-auto px-4'>
-          <DesignationsView
-            currentRow={currentRow}
-          />
+        <div className='no-scrollbar max-h-[80vh] overflow-y-auto px-4'>
+          <EmployeesView currentRow={currentRow} />
         </div>
 
         <DrawerFooter>
@@ -86,32 +84,187 @@ export function EmployeesViewDialog({
   )
 }
 
-interface DesignationsViewProps {
+interface EmployeesViewProps {
   className?: string
-  currentRow: Designation
+  currentRow: Employee
 }
 
-function DesignationsView({ className, currentRow }: DesignationsViewProps) {
-  const status = currentRow.is_active ? 'active' : 'inactive'
-  const statusBadgeColor = statusTypes.get(status)
+function EmployeesView({ className, currentRow }: EmployeesViewProps) {
+  const statusBadgeColor = statusTypes.get(currentRow.active_status)
+  const salesBadgeColor = salesAgentTypes.get(currentRow.sales_agent)
 
   return (
     <div className={cn('space-y-6', className)}>
-      <div className='grid grid-cols-2 gap-4'>
-        <div className='space-y-2'>
-          <div className='text-sm font-medium text-muted-foreground'>Name</div>
-          <div className='text-sm font-medium'>{currentRow.name}</div>
+      <div className='flex items-start justify-between'>
+        <div className="flex items-center gap-4">
+          <div className="relative h-16 w-16 overflow-hidden rounded-md bg-muted">
+            {currentRow.image_url ? (
+              <Image
+                src={currentRow.image_url}
+                alt={currentRow.name}
+                fill
+                className="object-cover"
+                unoptimized
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-secondary text-lg font-semibold text-muted-foreground">
+                {currentRow.name.charAt(0).toUpperCase()}
+              </div>
+            )}
+          </div>
+          <div className='space-y-1'>
+            <div className='text-xl font-semibold'>{currentRow.name}</div>
+            <div className='text-sm text-muted-foreground font-mono'>
+              ID: {currentRow.staff_id}
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col gap-2 items-end">
+          <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
+            {currentRow.active_status}
+          </Badge>
+          {currentRow.is_sale_agent && (
+            <Badge variant='outline' className={cn('capitalize', salesBadgeColor)}>
+              Sales Agent
+            </Badge>
+          )}
         </div>
       </div>
 
-      <div className='space-y-2'>
-        <div className='text-sm font-medium text-muted-foreground'>Status</div>
-        <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
-          {status}
-        </Badge>
+      <Separator />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className='space-y-4'>
+          <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Contact & Location</h4>
+          <div className='space-y-2'>
+            <div className='text-sm font-medium text-muted-foreground'>Email</div>
+            <div className='text-sm font-medium'>{currentRow.email || '-'}</div>
+          </div>
+          <div className='space-y-2'>
+            <div className='text-sm font-medium text-muted-foreground'>Phone</div>
+            <div className='text-sm font-medium'>{currentRow.phone_number || '-'}</div>
+          </div>
+          <div className='space-y-2'>
+            <div className='text-sm font-medium text-muted-foreground'>Address</div>
+            <div className='text-sm'>
+              {currentRow.address || '-'}
+              {(currentRow.city || currentRow.state || currentRow.country) && (
+                <div className="text-muted-foreground mt-0.5">
+                  {[currentRow.city?.name, currentRow.state?.name, currentRow.country?.name].filter(Boolean).join(', ')}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className='space-y-4'>
+          <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Work Details</h4>
+          <div className='space-y-2'>
+            <div className='text-sm font-medium text-muted-foreground'>Department</div>
+            <div className='text-sm font-medium'>{currentRow.department?.name || '-'}</div>
+          </div>
+          <div className='space-y-2'>
+            <div className='text-sm font-medium text-muted-foreground'>Designation</div>
+            <div className='text-sm font-medium'>{currentRow.designation?.name || '-'}</div>
+          </div>
+          <div className='space-y-2'>
+            <div className='text-sm font-medium text-muted-foreground'>Shift</div>
+            <div className='text-sm font-medium'>
+              {currentRow.shift ? (
+                <span>{currentRow.shift.name} ({currentRow.shift.start_time} - {currentRow.shift.end_time})</span>
+              ) : '-'}
+            </div>
+          </div>
+          <div className='space-y-2'>
+            <div className='text-sm font-medium text-muted-foreground'>Basic Salary</div>
+            <div className='text-sm font-medium'>${Number(currentRow.basic_salary).toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
+          </div>
+        </div>
       </div>
 
       <Separator />
+
+      {currentRow.is_sale_agent && (
+        <>
+          <div className='space-y-4'>
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Sales Agent Configuration</h4>
+
+            <div className='grid grid-cols-2 gap-4'>
+              <div className='space-y-2'>
+                <div className='text-sm font-medium text-muted-foreground'>Global Commission</div>
+                <div className='text-sm font-medium'>
+                  {currentRow.sale_commission_percent !== null ? `${currentRow.sale_commission_percent}%` : '-'}
+                </div>
+              </div>
+            </div>
+
+            {currentRow.sales_target && currentRow.sales_target.length > 0 && (
+              <div className='space-y-2 pt-2'>
+                <div className='text-sm font-medium text-muted-foreground mb-2'>Tiered Sales Targets</div>
+                <div className="rounded-md border overflow-hidden">
+                  <table className="w-full text-sm">
+                    <thead className="bg-muted/50 text-muted-foreground">
+                    <tr>
+                      <th className="p-2 text-left font-medium">Sales From</th>
+                      <th className="p-2 text-left font-medium">Sales To</th>
+                      <th className="p-2 text-left font-medium">Commission %</th>
+                    </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                    {currentRow.sales_target.map((target, idx) => (
+                      <tr key={idx}>
+                        <td className="p-2 tabular-nums">${Number(target.sales_from).toLocaleString()}</td>
+                        <td className="p-2 tabular-nums">${Number(target.sales_to).toLocaleString()}</td>
+                        <td className="p-2 tabular-nums">{target.percent}%</td>
+                      </tr>
+                    ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+          <Separator />
+        </>
+      )}
+
+      {currentRow.user && (
+        <>
+          <div className='space-y-4'>
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">System Access</h4>
+            <div className='grid grid-cols-2 gap-4'>
+              <div className='space-y-2'>
+                <div className='text-sm font-medium text-muted-foreground'>Username</div>
+                <div className='text-sm font-medium font-mono'>{currentRow.user.name}</div>
+              </div>
+              <div className='space-y-2'>
+                <div className='text-sm font-medium text-muted-foreground'>Account Status</div>
+                <div className='text-sm font-medium'>
+                  <Badge variant={currentRow.user.is_active ? 'default' : 'secondary'}>
+                    {currentRow.user.is_active ? 'Active' : 'Inactive'}
+                  </Badge>
+                </div>
+              </div>
+            </div>
+
+            <div className='space-y-2 pt-2'>
+              <div className='text-sm font-medium text-muted-foreground mb-2'>Roles & Permissions</div>
+              <div className="flex flex-wrap gap-2">
+                {currentRow.user.roles && currentRow.user.roles.length > 0 && (
+                  <Badge variant="secondary">Has Roles Assigned</Badge>
+                )}
+                {currentRow.user.permissions && currentRow.user.permissions.length > 0 && (
+                  <Badge variant="outline">Has Direct Permissions</Badge>
+                )}
+                {(!currentRow.user.roles?.length && !currentRow.user.permissions?.length) && (
+                  <span className="text-sm text-muted-foreground">No roles or permissions assigned.</span>
+                )}
+              </div>
+            </div>
+          </div>
+          <Separator />
+        </>
+      )}
 
       <div className='grid grid-cols-2 gap-4'>
         <div className='space-y-2'>

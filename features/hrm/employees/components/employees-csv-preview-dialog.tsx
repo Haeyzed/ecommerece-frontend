@@ -31,7 +31,7 @@ import { useMediaQuery } from '@/hooks/use-media-query'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { CheckmarkCircle02Icon } from '@hugeicons/core-free-icons'
 
-type DesignationsCsvPreviewDialogProps = {
+type EmployeesCsvPreviewDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   data: any[]
@@ -40,12 +40,12 @@ type DesignationsCsvPreviewDialogProps = {
 }
 
 export function EmployeesCsvPreviewDialog({
-                                               open,
-                                               onOpenChange,
-                                               data,
-                                               onConfirm,
-                                               isPending,
-                                             }: DesignationsCsvPreviewDialogProps) {
+                                            open,
+                                            onOpenChange,
+                                            data,
+                                            onConfirm,
+                                            isPending,
+                                          }: EmployeesCsvPreviewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const headers = data.length > 0 ? Object.keys(data[0]) : []
 
@@ -86,11 +86,11 @@ export function EmployeesCsvPreviewDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className='sm:max-w-3xl'>
+        <DialogContent className='sm:max-w-4xl'>
           <DialogHeader className='text-start'>
-            <DialogTitle>Preview Import Designations Data</DialogTitle>
+            <DialogTitle>Preview Import Employees Data</DialogTitle>
             <DialogDescription>
-              Review the designations data before importing. Showing first 5 rows of {data.length} entries.
+              Review the employees data before importing. Showing first 5 rows of {data.length} entries.
             </DialogDescription>
           </DialogHeader>
 
@@ -125,9 +125,9 @@ export function EmployeesCsvPreviewDialog({
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent>
         <DrawerHeader className='text-left'>
-          <DrawerTitle>Preview Import Designations Data</DrawerTitle>
+          <DrawerTitle>Preview Import Employees Data</DrawerTitle>
           <DrawerDescription>
-            Review the designations data before importing. Showing first 5 rows of {data.length} entries.
+            Review the employees data before importing. Showing first 5 rows of {data.length} entries.
           </DrawerDescription>
         </DrawerHeader>
 

@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { 
-  CheckmarkCircle02Icon, 
-  Delete02Icon, 
+import {
+  CheckmarkCircle02Icon,
+  Delete02Icon,
   UnavailableIcon,
   Upload01Icon,
 } from '@hugeicons/core-free-icons'
@@ -16,13 +16,13 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
-import { 
-  useBulkActivateDesignations, 
-  useBulkDeactivateDesignations 
-} from '@/features/hrm/designations'
-import { type Designation } from '@/features/hrm/designations'
-import { DesignationsExportDialog } from '@/features/hrm/designations'
-import { DesignationsMultiDeleteDialog } from '@/features/hrm/designations'
+import {
+  useBulkActivateEmployees,
+  useBulkDeactivateEmployees
+} from '@/features/hrm/employees/api'
+import { type Employee } from '@/features/hrm/employees/types'
+import { EmployeesExportDialog } from '@/features/hrm/employees'
+import { EmployeesMultiDeleteDialog } from '@/features/hrm/employees'
 import { useAuthSession } from '@/features/auth/api'
 import { Spinner } from '@/components/ui/spinner'
 
@@ -31,22 +31,22 @@ type DataTableBulkActionsProps<TData> = {
 }
 
 export function DataTableBulkActions<TData>({
-  table,
-}: DataTableBulkActionsProps<TData>) {
+                                              table,
+                                            }: DataTableBulkActionsProps<TData>) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showExportDialog, setShowExportDialog] = useState(false)
   const selectedRows = table.getFilteredSelectedRowModel().rows
-  const selectedIds = selectedRows.map((row) => (row.original as Designation).id)
+  const selectedIds = selectedRows.map((row) => (row.original as Employee).id)
 
-  const { mutate: activateDesignations, isPending: isActivating } = useBulkActivateDesignations()
-  const { mutate: deactivateDesignations, isPending: isDeactivating } = useBulkDeactivateDesignations()
+  const { mutate: activateEmployees, isPending: isActivating } = useBulkActivateEmployees()
+  const { mutate: deactivateEmployees, isPending: isDeactivating } = useBulkDeactivateEmployees()
 
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
 
-  const canUpdate = userPermissions.includes('update designations')
-  const canDelete = userPermissions.includes('delete designations')
-  const canExport = userPermissions.includes('export designations')
+  const canUpdate = userPermissions.includes('update employees')
+  const canDelete = userPermissions.includes('delete employees')
+  const canExport = userPermissions.includes('export employees')
 
   if (!canUpdate && !canDelete && !canExport) return null
 
@@ -54,11 +54,11 @@ export function DataTableBulkActions<TData>({
 
   const handleBulkStatusChange = (status: 'active' | 'inactive') => {
     if (status === 'active') {
-      activateDesignations(selectedIds, {
+      activateEmployees(selectedIds, {
         onSuccess: () => table.resetRowSelection(),
       })
     } else {
-      deactivateDesignations(selectedIds, {
+      deactivateEmployees(selectedIds, {
         onSuccess: () => table.resetRowSelection(),
       })
     }
@@ -66,7 +66,7 @@ export function DataTableBulkActions<TData>({
 
   return (
     <>
-      <BulkActionsToolbar table={table} entityName='designation'>
+      <BulkActionsToolbar table={table} entityName='employee'>
         {canUpdate && (
           <>
             <Tooltip>
@@ -77,19 +77,19 @@ export function DataTableBulkActions<TData>({
                   onClick={() => handleBulkStatusChange('active')}
                   disabled={isBusy}
                   className='size-8'
-                  aria-label='Activate selected designations'
-                  title='Activate selected designations'
+                  aria-label='Activate selected employees'
+                  title='Activate selected employees'
                 >
                   {isActivating ? (
                     <Spinner className='size-4' />
                   ) : (
                     <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
                   )}
-                  <span className='sr-only'>Activate selected designations</span>
+                  <span className='sr-only'>Activate selected employees</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Activate selected designations</p>
+                <p>Activate selected employees</p>
               </TooltipContent>
             </Tooltip>
 
@@ -101,19 +101,19 @@ export function DataTableBulkActions<TData>({
                   onClick={() => handleBulkStatusChange('inactive')}
                   disabled={isBusy}
                   className='size-8'
-                  aria-label='Deactivate selected designations'
-                  title='Deactivate selected designations'
+                  aria-label='Deactivate selected employees'
+                  title='Deactivate selected employees'
                 >
                   {isDeactivating ? (
                     <Spinner className='size-4' />
                   ) : (
                     <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
                   )}
-                  <span className='sr-only'>Deactivate selected designations</span>
+                  <span className='sr-only'>Deactivate selected employees</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Deactivate selected designations</p>
+                <p>Deactivate selected employees</p>
               </TooltipContent>
             </Tooltip>
           </>
@@ -128,15 +128,15 @@ export function DataTableBulkActions<TData>({
                 onClick={() => setShowExportDialog(true)}
                 disabled={isBusy}
                 className='size-8'
-                aria-label='Export selected designations'
-                title='Export selected designations'
+                aria-label='Export selected employees'
+                title='Export selected employees'
               >
                 <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} />
-                <span className='sr-only'>Export selected designations</span>
+                <span className='sr-only'>Export selected employees</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Export selected designations</p>
+              <p>Export selected employees</p>
             </TooltipContent>
           </Tooltip>
         )}
@@ -150,22 +150,22 @@ export function DataTableBulkActions<TData>({
                 onClick={() => setShowDeleteConfirm(true)}
                 disabled={isBusy}
                 className='size-8'
-                aria-label='Delete selected designations'
-                title='Delete selected designations'
+                aria-label='Delete selected employees'
+                title='Delete selected employees'
               >
                 <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} />
-                <span className='sr-only'>Delete selected designations</span>
+                <span className='sr-only'>Delete selected employees</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Delete selected designations</p>
+              <p>Delete selected employees</p>
             </TooltipContent>
           </Tooltip>
         )}
       </BulkActionsToolbar>
 
       {canDelete && (
-        <DesignationsMultiDeleteDialog
+        <EmployeesMultiDeleteDialog
           table={table}
           open={showDeleteConfirm}
           onOpenChange={setShowDeleteConfirm}
@@ -173,7 +173,7 @@ export function DataTableBulkActions<TData>({
       )}
 
       {canExport && (
-        <DesignationsExportDialog
+        <EmployeesExportDialog
           open={showExportDialog}
           onOpenChange={setShowExportDialog}
           ids={selectedIds}

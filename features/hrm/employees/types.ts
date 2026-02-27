@@ -11,6 +11,7 @@ export interface EmployeeUser {
   id?: number;
   name: string;
   email: string;
+  username: string;
   phone_number: string | null;
   password?: string;
   is_active?: boolean;
@@ -75,6 +76,7 @@ export interface Employee {
   is_sale_agent: boolean;
   sale_commission_percent: number | null;
   sales_target: EmployeeSalesTarget[];
+  user_id: number | null;
   user?: EmployeeUser | null;
   active_status: EmployeeActiveStatus;
   sales_agent: EmployeeSalesAgentStatus;

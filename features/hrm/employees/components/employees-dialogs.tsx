@@ -1,29 +1,29 @@
 'use client'
 
-import { DesignationsActionDialog } from '@/features/hrm/designations'
-import { DesignationsDeleteDialog } from '@/features/hrm/designations'
-import { DesignationsExportDialog } from '@/features/hrm/designations'
-import { DesignationsImportDialog } from '@/features/hrm/designations'
-import { DesignationsViewDialog } from '@/features/hrm/designations'
-import { useDesignations } from '@/features/hrm/designations'
+import { EmployeesActionDialog } from '@/features/hrm/employees'
+import { EmployeesDeleteDialog } from '@/features/hrm/employees'
+import { EmployeesExportDialog } from '@/features/hrm/employees'
+import { EmployeesImportDialog } from '@/features/hrm/employees'
+import { EmployeesViewDialog } from './employees-view-dialog'
+import { useEmployees } from './employees-provider'
 import { useAuthSession } from '@/features/auth/api'
 
 export function EmployeesDialogs() {
-  const { open, setOpen, currentRow, setCurrentRow } = useDesignations()
+  const { open, setOpen, currentRow, setCurrentRow } = useEmployees()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canCreate = userPermissions.includes('create designations')
-  const canImport = userPermissions.includes('import designations')
-  const canExport = userPermissions.includes('export designations')
-  const canUpdate = userPermissions.includes('update designations')
-  const canDelete = userPermissions.includes('delete designations')
-  const canView = userPermissions.includes('view designations')
+  const canCreate = userPermissions.includes('create employees')
+  const canImport = userPermissions.includes('import employees')
+  const canExport = userPermissions.includes('export employees')
+  const canUpdate = userPermissions.includes('update employees')
+  const canDelete = userPermissions.includes('delete employees')
+  const canView = userPermissions.includes('view employees')
 
   return (
     <>
       {canCreate && (
-        <DesignationsActionDialog
-          key='designation-add'
+        <EmployeesActionDialog
+          key='employee-add'
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -32,8 +32,8 @@ export function EmployeesDialogs() {
       )}
 
       {canImport && (
-        <DesignationsImportDialog
-          key='designation-import'
+        <EmployeesImportDialog
+          key='employee-import'
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -42,8 +42,8 @@ export function EmployeesDialogs() {
       )}
 
       {canExport && (
-        <DesignationsExportDialog
-          key='designation-export'
+        <EmployeesExportDialog
+          key='employee-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}
@@ -53,8 +53,8 @@ export function EmployeesDialogs() {
       {currentRow && (
         <>
           {canUpdate && (
-            <DesignationsActionDialog
-              key={`designation-edit-${currentRow.id}`}
+            <EmployeesActionDialog
+              key={`employee-edit-${currentRow.id}`}
               open={open === 'edit'}
               onOpenChange={(isOpen) => {
                 if (!isOpen) {
@@ -67,10 +67,10 @@ export function EmployeesDialogs() {
               currentRow={currentRow}
             />
           )}
-          
+
           {canView && (
-            <DesignationsViewDialog
-              key={`designation-view-${currentRow.id}`}
+            <EmployeesViewDialog
+              key={`employee-view-${currentRow.id}`}
               open={open === 'view'}
               onOpenChange={(isOpen) => {
                 if (!isOpen) {
@@ -85,8 +85,8 @@ export function EmployeesDialogs() {
           )}
 
           {canDelete && (
-            <DesignationsDeleteDialog
-              key={`designation-delete-${currentRow.id}`}
+            <EmployeesDeleteDialog
+              key={`employee-delete-${currentRow.id}`}
               open={open === 'delete'}
               onOpenChange={(isOpen) => {
                 if (!isOpen) {

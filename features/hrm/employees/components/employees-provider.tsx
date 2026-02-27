@@ -2,36 +2,36 @@
 
 import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
-import { type Designation } from '@/features/hrm/designations'
+import { type Employee } from '@/features/hrm/employees/types'
 
-type DesignationsDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
+type EmployeesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
 
-type DesignationsContextType = {
-  open: DesignationsDialogType | null
-  setOpen: (str: DesignationsDialogType | null) => void
-  currentRow: Designation | null
-  setCurrentRow: React.Dispatch<React.SetStateAction<Designation | null>>
+type EmployeesContextType = {
+  open: EmployeesDialogType | null
+  setOpen: (str: EmployeesDialogType | null) => void
+  currentRow: Employee | null
+  setCurrentRow: React.Dispatch<React.SetStateAction<Employee | null>>
 }
 
-const DesignationsContext = React.createContext<DesignationsContextType | null>(null)
+const EmployeesContext = React.createContext<EmployeesContextType | null>(null)
 
 export function EmployeesProvider({ children }: { children: React.ReactNode }) {
-  const [open, setOpen] = useDialogState<DesignationsDialogType>(null)
-  const [currentRow, setCurrentRow] = useState<Designation | null>(null)
+  const [open, setOpen] = useDialogState<EmployeesDialogType>(null)
+  const [currentRow, setCurrentRow] = useState<Employee | null>(null)
 
   return (
-    <DesignationsContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <EmployeesContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
       {children}
-    </DesignationsContext.Provider>
+    </EmployeesContext.Provider>
   )
 }
 
-export const useDesignations = () => {
-  const designationsContext = React.useContext(DesignationsContext)
+export const useEmployees = () => {
+  const context = React.useContext(EmployeesContext)
 
-  if (!designationsContext) {
-    throw new Error('useDesignations has to be used within <DesignationsContext>')
+  if (!context) {
+    throw new Error('useEmployees has to be used within <EmployeesProvider>')
   }
 
-  return designationsContext
+  return context
 }

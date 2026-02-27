@@ -120,9 +120,9 @@ export function EmployeesActionDialog({
         phone_number: currentRow.phone_number ?? '',
         basic_salary: currentRow.basic_salary,
         address: currentRow.address ?? '',
-        department_id: currentRow.department_id != null ? Number(currentRow.department_id) : undefined,
-        designation_id: currentRow.designation_id != null ? Number(currentRow.designation_id) : undefined,
-        shift_id: currentRow.shift_id != null ? Number(currentRow.shift_id) : undefined,
+        department_id: currentRow.department_id ?? undefined,
+        designation_id: currentRow.designation_id ?? undefined,
+        shift_id: currentRow.shift_id ?? undefined,
         country_id: currentRow.country_id ?? undefined,
         state_id: currentRow.state_id ?? undefined,
         city_id: currentRow.city_id ?? undefined,
@@ -423,8 +423,8 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
                     <Combobox
                       items={optionDepartments || []}
                       itemToStringLabel={(item) => item.label}
-                      value={optionDepartments?.find((p) => p.value === Number(field.value)) ?? null}
-                      onValueChange={(item) => field.onChange(item?.value != null ? Number(item.value) : undefined)}
+                      value={optionDepartments?.find((p) => p.value === field.value) ?? null}
+                      onValueChange={(item) => field.onChange(item?.value ?? null)}
                     >
                       <ComboboxInput id='employee-department' placeholder='Select department...' showClear/>
                       <ComboboxContent>
@@ -458,8 +458,8 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
                     <Combobox
                       items={optionDesignations || []}
                       itemToStringLabel={(item) => item.label}
-                      value={optionDesignations?.find((p) => p.value === Number(field.value)) ?? null}
-                      onValueChange={(item) => field.onChange(item?.value != null ? Number(item.value) : undefined)}
+                      value={optionDesignations?.find((p) => p.value === field.value) ?? null}
+                      onValueChange={(item) => field.onChange(item?.value ?? null)}
                     >
                       <ComboboxInput id='employee-designation' placeholder='Select designation...' showClear/>
                       <ComboboxContent>
@@ -493,8 +493,8 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
                     <Combobox
                       items={optionShifts || []}
                       itemToStringLabel={(item) => item.label}
-                      value={optionShifts?.find((p) => p.value === Number(field.value)) ?? null}
-                      onValueChange={(item) => field.onChange(item?.value != null ? Number(item.value) : undefined)}
+                      value={optionShifts?.find((p) => p.value === field.value) ?? null}
+                      onValueChange={(item) => field.onChange(item?.value ?? null)}
                     >
                       <ComboboxInput id='employee-shift' placeholder='Select shift...' showClear/>
                       <ComboboxContent>

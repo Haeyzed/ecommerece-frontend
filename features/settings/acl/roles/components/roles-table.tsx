@@ -108,6 +108,7 @@ export function RolesTable() {
     getRowCanExpand: () => true,
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
+    onExpandedChange: setExpanded,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),

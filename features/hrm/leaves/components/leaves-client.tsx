@@ -8,6 +8,7 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { Spinner } from '@/components/ui/spinner'
+import { LeavesDialogs } from '@/features/hrm/leaves'
 import { LeavesPrimaryButtons } from '@/features/hrm/leaves'
 import { LeavesProvider } from '@/features/hrm/leaves'
 import { LeavesTable } from '@/features/hrm/leaves'
@@ -31,7 +32,7 @@ export function LeavesClient() {
             <div>
               <h2 className='text-2xl font-bold tracking-tight'>Leaves List</h2>
               <p className='text-muted-foreground'>
-                Manage employee leave requests here.
+                Manage employee leave request.
               </p>
             </div>
             <LeavesPrimaryButtons />
@@ -47,6 +48,7 @@ export function LeavesClient() {
           </Suspense>
         </Main>
 
+        <LeavesDialogs />
       </LeavesProvider>
     </AuthenticatedLayout>
   )

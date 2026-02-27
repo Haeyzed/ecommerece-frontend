@@ -4,8 +4,8 @@ import { LeavesActionDialog } from '@/features/hrm/leaves'
 import { LeavesDeleteDialog } from '@/features/hrm/leaves'
 import { LeavesExportDialog } from '@/features/hrm/leaves'
 import { LeavesImportDialog } from '@/features/hrm/leaves'
-import { LeavesViewDialog } from './leaves-view-dialog'
-import { useLeaves } from './leaves-provider'
+import { LeavesViewDialog } from '@/features/hrm/leaves'
+import { useLeaves } from '@/features/hrm/leaves'
 import { useAuthSession } from '@/features/auth/api'
 
 export function LeavesDialogs() {

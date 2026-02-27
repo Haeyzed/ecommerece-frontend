@@ -201,8 +201,6 @@ function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
       className={cn('space-y-4', className)}
     >
       <FieldGroup>
-
-        {/* Employee Selection */}
         <Controller
           control={form.control}
           name='employee_id'
@@ -239,7 +237,6 @@ function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
           )}
         />
 
-        {/* Leave Type Selection */}
         <Controller
           control={form.control}
           name='leave_type_id'
@@ -276,7 +273,6 @@ function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
           )}
         />
 
-        {/* Start Date */}
         <Controller
           control={form.control}
           name='start_date'
@@ -312,7 +308,6 @@ function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
           )}
         />
 
-        {/* Status */}
         <Controller
           control={form.control}
           name="status"
@@ -327,9 +322,9 @@ function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Pending">Pending</SelectItem>
-                  <SelectItem value="Approved">Approved</SelectItem>
-                  <SelectItem value="Rejected">Rejected</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="approved">Approved</SelectItem>
+                  <SelectItem value="rejected">Rejected</SelectItem>
                 </SelectContent>
               </Select>
               {fieldState.error && <FieldError errors={[fieldState.error]} />}

@@ -621,7 +621,7 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
               )} />
               <Controller control={form.control} name='user.password' render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
-                  <FieldLabel htmlFor='user-password'>Password {isEdit ? '(Leave blank to keep)' : '<span className="text-destructive">*</span>'}</FieldLabel>
+                  <FieldLabel htmlFor='user-password'>Password {isEdit ? '(Leave blank to keep)' : <span className="text-destructive">*</span>}</FieldLabel>
                   <Input id='user-password' type="password" placeholder='Min 8 characters' autoComplete='new-password' {...field} value={field.value || ''} />
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>

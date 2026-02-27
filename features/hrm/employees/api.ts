@@ -77,9 +77,9 @@ export function useCreateEmployee() {
       formData.append("basic_salary", String(data.basic_salary));
       if (data.address) formData.append("address", data.address);
 
-      formData.append("department_id", String(data.department_id));
-      formData.append("designation_id", String(data.designation_id));
-      formData.append("shift_id", String(data.shift_id));
+      if (data.department_id != null) formData.append("department_id", String(data.department_id));
+      if (data.designation_id != null) formData.append("designation_id", String(data.designation_id));
+      if (data.shift_id != null) formData.append("shift_id", String(data.shift_id));
 
       if (data.country_id != null) formData.append("country_id", String(data.country_id));
       if (data.state_id != null) formData.append("state_id", String(data.state_id));

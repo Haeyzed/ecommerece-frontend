@@ -1,6 +1,5 @@
 import { IdCardDesigner } from '@/features/settings/id-card-templates/components/id-card-designer'
 import { AuthenticatedLayout } from '@/components/layout/authenticated-layout'
-import { CitiesDialogs, CitiesPrimaryButtons, CitiesProvider, CitiesTable } from '@/features/settings/cities'
 import { Header } from '@/components/layout/header'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
@@ -35,14 +34,11 @@ export default function IdCardSettingsPage() {
                 Design Employer ID Card.
               </p>
             </div>
-            <CitiesPrimaryButtons />
           </div>
           <Suspense fallback={<Spinner />}>
             <IdCardDesigner />
           </Suspense>
         </Main>
-
-        <CitiesDialogs />
     </AuthenticatedLayout>
   )
 }

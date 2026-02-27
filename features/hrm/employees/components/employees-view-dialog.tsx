@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -96,9 +97,20 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
   const statusBadgeColor = statusTypes.get(currentRow.active_status)
   const salesBadgeColor = salesAgentTypes.get(currentRow.sales_agent)
 
+  const [showAllRoles, setShowAllRoles] = useState(false)
+  const [showAllPermissions, setShowAllPermissions] = useState(false)
+
   // Fetch options to map IDs back to names if the API only returns IDs
   const { data: rolesOptions = [] } = useOptionRoles()
   const { data: permissionsOptions = [] } = useOptionPermissions()
+
+  const ITEM_LIMIT = 30
+
+  const rolesList = currentRow.user?.roles || []
+  const visibleRoles = showAllRoles ? rolesList : rolesList.slice(0, ITEM_LIMIT)
+
+  const permissionsList = currentRow.user?.permissions || []
+  const visiblePermissions = showAllPermissions ? permissionsList : permissionsList.slice(0, ITEM_LIMIT)
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -242,7 +254,7 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
             <div className='grid grid-cols-2 gap-4'>
               <div className='space-y-2'>
                 <div className='text-sm font-medium text-muted-foreground'>Username</div>
-                <div className='text-sm font-medium font-mono'>{currentRow.user.name || (currentRow.user as any).username}</div>
+                <div className='text-sm font-medium font-mono'>{currentRow.user.username || (currentRow.user as any).name}</div>
               </div>
               <div className='space-y-2'>
                 <div className='text-sm font-medium text-muted-foreground'>Account Status</div>
@@ -254,35 +266,70 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
               </div>
             </div>
 
-            <div className='space-y-2 pt-2'>
-              <div className='text-sm font-medium text-muted-foreground mb-2'>Roles & Permissions</div>
-              <div className="flex flex-wrap gap-2">
-                {currentRow.user.roles?.map((roleItem: any) => {
-                  const isObject = typeof roleItem === 'object' && roleItem !== null;
-                  const id = isObject ? roleItem.id : roleItem;
-                  const name = isObject ? roleItem.name : (rolesOptions.find((r) => r.value === id)?.label || `Role #${id}`);
+            <div className='space-y-4 pt-2'>
+              <div className='space-y-2'>
+                <div className='flex items-center justify-between'>
+                  <div className='text-sm font-medium text-muted-foreground'>Assigned Roles ({rolesList.length})</div>
+                  {rolesList.length > ITEM_LIMIT && (
+                    <Button
+                      variant="link"
+                      size="sm"
+                      onClick={() => setShowAllRoles(!showAllRoles)}
+                      className="h-auto p-0"
+                    >
+                      {showAllRoles ? 'Show less' : `Show all ${rolesList.length}`}
+                    </Button>
+                  )}
+                </div>
+                {rolesList.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {visibleRoles.map((roleItem: any) => {
+                      const isObject = typeof roleItem === 'object' && roleItem !== null;
+                      const id = isObject ? roleItem.id : roleItem;
+                      const name = isObject ? roleItem.name : (rolesOptions.find((r) => r.value === id)?.label || `Role #${id}`);
 
-                  return (
-                    <Badge key={`role-${id}`} variant="secondary">
-                      {name}
-                    </Badge>
-                  )
-                })}
+                      return (
+                        <Badge key={`role-${id}`} variant="secondary">
+                          {name}
+                        </Badge>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <span className="text-sm text-muted-foreground italic">No roles assigned.</span>
+                )}
+              </div>
 
-                {currentRow.user.permissions?.map((permItem: any) => {
-                  const isObject = typeof permItem === 'object' && permItem !== null;
-                  const id = isObject ? permItem.id : permItem;
-                  const name = isObject ? permItem.name : (permissionsOptions.find((p) => p.value === id)?.label || `Permission #${id}`);
+              <div className='space-y-2 pt-2'>
+                <div className='flex items-center justify-between'>
+                  <div className='text-sm font-medium text-muted-foreground'>Direct Permissions ({permissionsList.length})</div>
+                  {permissionsList.length > ITEM_LIMIT && (
+                    <Button
+                      variant="link"
+                      size="sm"
+                      onClick={() => setShowAllPermissions(!showAllPermissions)}
+                      className="h-auto p-0"
+                    >
+                      {showAllPermissions ? 'Show less' : `Show all ${permissionsList.length}`}
+                    </Button>
+                  )}
+                </div>
+                {permissionsList.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {visiblePermissions.map((permItem: any) => {
+                      const isObject = typeof permItem === 'object' && permItem !== null;
+                      const id = isObject ? permItem.id : permItem;
+                      const name = isObject ? permItem.name : (permissionsOptions.find((p) => p.value === id)?.label || `Permission #${id}`);
 
-                  return (
-                    <Badge key={`perm-${id}`} variant="outline">
-                      {name}
-                    </Badge>
-                  )
-                })}
-
-                {(!currentRow.user.roles?.length && !currentRow.user.permissions?.length) && (
-                  <span className="text-sm text-muted-foreground">No roles or permissions assigned.</span>
+                      return (
+                        <Badge key={`perm-${id}`} variant="outline">
+                          {name}
+                        </Badge>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <span className="text-sm text-muted-foreground italic">No direct permissions assigned.</span>
                 )}
               </div>
             </div>

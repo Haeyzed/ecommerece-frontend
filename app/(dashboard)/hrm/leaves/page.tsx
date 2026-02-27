@@ -5,7 +5,7 @@ import { hasPermission } from "@/lib/utils/permissions"
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Leave Types | HR Management System",
+  title: "Leave | HR Management System",
   description:
     "Manage company leaves, organize teams, and control leaves structure within the HR management system.",
 };

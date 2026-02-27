@@ -21,6 +21,7 @@ import { useOptionDesignations } from '@/features/hrm/designations/api'
 import { useOptionShifts } from '@/features/hrm/shifts/api'
 import { useOptionRoles } from '@/features/settings/acl/roles/api'
 import { useOptionPermissions } from '@/features/settings/acl/permissions/api'
+import type { RoleOption } from '@/features/settings/acl/roles/types'
 import { useOptionCountries, useStatesByCountry } from '@/features/settings/countries/api'
 import { useCitiesByState } from '@/features/settings/states/api'
 
@@ -130,12 +131,14 @@ export function EmployeesActionDialog({
         sale_commission_percent: currentRow.sale_commission_percent ?? undefined,
         sales_target: currentRow.sales_target || [],
         user_id: currentRow.user_id ?? undefined,
-        user: currentRow.user ? {
-          username: currentRow.user.username ?? '',
-          password: '',
-          roles: currentRow.user.roles?.map((p) => p.id) || [],
-          permissions: currentRow.user.permissions?.map((p) => p.id) || [],
-        } : undefined,
+        user: currentRow.user_id != null
+          ? {
+              username: currentRow.user?.username ?? '',
+              password: '',
+              roles: currentRow.user?.roles?.map((p) => p.id) ?? [],
+              permissions: currentRow.user?.permissions?.map((p) => p.id) ?? [],
+            }
+          : undefined,
         image: [],
       }
       : {
@@ -675,81 +678,113 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
                 )} />
               </div>
 
-              <Controller control={form.control} name="user.roles" render={({ field, fieldState }) => {
-                const selectedItems = field.value
-                  ? field.value.map((id) => rolesOptions.find((opt) => opt.value === id)).filter((opt): opt is { value: number; label: string } => !!opt)
-                  : []
+              <Controller
+                control={form.control}
+                name="user.roles"
+                render={({ field, fieldState }) => {
+                  const selectedItems = field.value
+                    ? field.value
+                      .map((id) => rolesOptions.find((opt) => opt.value === id))
+                      .filter((opt): opt is RoleOption => !!opt)
+                    : []
 
-                return (
-                  <Field data-invalid={!!fieldState.error} className="flex flex-col">
-                    <FieldLabel>Roles</FieldLabel>
-                    <Combobox
-                      multiple
-                      autoHighlight
-                      items={rolesOptions}
-                      itemToStringLabel={(item) => item.label}
-                      value={selectedItems}
-                      onValueChange={(items) => field.onChange(items.map((item) => item.value))}
-                    >
-                      <ComboboxChips ref={rolesAnchor}>
-                        <ComboboxValue>
-                          {(values) => (
-                            <React.Fragment>
-                              {values.map((item: any) => <ComboboxChip key={item.value}>{item.label}</ComboboxChip>)}
-                              <ComboboxChipsInput placeholder="Select roles..." />
-                            </React.Fragment>
-                          )}
-                        </ComboboxValue>
-                      </ComboboxChips>
-                      <ComboboxContent anchor={rolesAnchor}>
-                        <ComboboxEmpty>No roles found.</ComboboxEmpty>
-                        <ComboboxList>
-                          {(item) => <ComboboxItem key={item.value} value={item}>{item.label}</ComboboxItem>}
-                        </ComboboxList>
-                      </ComboboxContent>
-                    </Combobox>
-                    {fieldState.error && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )
-              }} />
+                  return (
+                    <Field data-invalid={!!fieldState.error} className="flex flex-col">
+                      <FieldLabel htmlFor="user-roles">Roles</FieldLabel>
+                      <Combobox
+                        multiple
+                        autoHighlight
+                        items={rolesOptions}
+                        itemToStringLabel={(item) => item.label}
+                        value={selectedItems}
+                        onValueChange={(items) => {
+                          field.onChange(items.map((item) => item.value))
+                        }}
+                        isItemEqualToValue={(a, b) => a?.value === b?.value}
+                      >
+                        <ComboboxChips ref={rolesAnchor} id="user-roles">
+                          <ComboboxValue>
+                            {(values) => (
+                              <React.Fragment>
+                                {values.map((item: RoleOption) => (
+                                  <ComboboxChip key={item.value}>{item.label}</ComboboxChip>
+                                ))}
+                                <ComboboxChipsInput placeholder="Select roles..." />
+                              </React.Fragment>
+                            )}
+                          </ComboboxValue>
+                        </ComboboxChips>
+                        <ComboboxContent anchor={rolesAnchor}>
+                          <ComboboxEmpty>No roles found.</ComboboxEmpty>
+                          <ComboboxList>
+                            {(item) => (
+                              <ComboboxItem key={item.value} value={item}>
+                                {item.label}
+                              </ComboboxItem>
+                            )}
+                          </ComboboxList>
+                        </ComboboxContent>
+                      </Combobox>
+                      <FieldDescription>Select the roles to assign to this user.</FieldDescription>
+                      {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                  )
+                }}
+              />
 
-              <Controller control={form.control} name="user.permissions" render={({ field, fieldState }) => {
-                const selectedItems = field.value
-                  ? field.value.map((id) => permissionsOptions.find((opt) => opt.value === id)).filter((opt): opt is { value: number; label: string } => !!opt)
-                  : []
+              <Controller
+                control={form.control}
+                name="user.permissions"
+                render={({ field, fieldState }) => {
+                  const selectedItems = field.value
+                    ? field.value
+                      .map((id) => permissionsOptions.find((opt) => opt.value === id))
+                      .filter((opt): opt is RoleOption => !!opt)
+                    : []
 
-                return (
-                  <Field data-invalid={!!fieldState.error} className="flex flex-col">
-                    <FieldLabel>Direct Permissions</FieldLabel>
-                    <Combobox
-                      multiple
-                      autoHighlight
-                      items={permissionsOptions}
-                      itemToStringLabel={(item) => item.label}
-                      value={selectedItems}
-                      onValueChange={(items) => field.onChange(items.map((item) => item.value))}
-                    >
-                      <ComboboxChips ref={permsAnchor}>
-                        <ComboboxValue>
-                          {(values) => (
-                            <React.Fragment>
-                              {values.map((item: any) => <ComboboxChip key={item.value}>{item.label}</ComboboxChip>)}
-                              <ComboboxChipsInput placeholder="Select permissions..." />
-                            </React.Fragment>
-                          )}
-                        </ComboboxValue>
-                      </ComboboxChips>
-                      <ComboboxContent anchor={permsAnchor}>
-                        <ComboboxEmpty>No permissions found.</ComboboxEmpty>
-                        <ComboboxList>
-                          {(item) => <ComboboxItem key={item.value} value={item}>{item.label}</ComboboxItem>}
-                        </ComboboxList>
-                      </ComboboxContent>
-                    </Combobox>
-                    {fieldState.error && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )
-              }} />
+                  return (
+                    <Field data-invalid={!!fieldState.error} className="flex flex-col">
+                      <FieldLabel htmlFor="user-permissions">Direct Permissions</FieldLabel>
+                      <Combobox
+                        multiple
+                        autoHighlight
+                        items={permissionsOptions}
+                        itemToStringLabel={(item) => item.label}
+                        value={selectedItems}
+                        onValueChange={(items) => {
+                          field.onChange(items.map((item) => item.value))
+                        }}
+                        isItemEqualToValue={(a, b) => a?.value === b?.value}
+                      >
+                        <ComboboxChips ref={permsAnchor} id="user-permissions">
+                          <ComboboxValue>
+                            {(values) => (
+                              <React.Fragment>
+                                {values.map((item: RoleOption) => (
+                                  <ComboboxChip key={item.value}>{item.label}</ComboboxChip>
+                                ))}
+                                <ComboboxChipsInput placeholder="Select permissions..." />
+                              </React.Fragment>
+                            )}
+                          </ComboboxValue>
+                        </ComboboxChips>
+                        <ComboboxContent anchor={permsAnchor}>
+                          <ComboboxEmpty>No permissions found.</ComboboxEmpty>
+                          <ComboboxList>
+                            {(item) => (
+                              <ComboboxItem key={item.value} value={item}>
+                                {item.label}
+                              </ComboboxItem>
+                            )}
+                          </ComboboxList>
+                        </ComboboxContent>
+                      </Combobox>
+                      <FieldDescription>Select the direct permissions to assign to this user.</FieldDescription>
+                      {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                  )
+                }}
+              />
             </div>
           )}
         </FieldGroup>

@@ -10,8 +10,8 @@ export const employeeSalesTargetSchema = z.object({
 export const employeeUserSchema = z.object({
   username: z.string().min(1).max(255),
   password: z.string().min(8).optional().or(z.literal('')),
-  roles: z.array(z.number()).optional(),
-  permissions: z.array(z.number()).optional(),
+  roles: z.array(z.number()).nullable().optional(),
+  permissions: z.array(z.number()).nullable().optional(),
 });
 
 export const employeeSchema = z.object({

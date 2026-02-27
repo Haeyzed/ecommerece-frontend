@@ -117,7 +117,7 @@ export function LeavesActionDialog({
 
   if (isDesktop) {
     return (
-      <Dialog open={open} onOpenChange={handleOpenChange}>
+      <Dialog open={open} onOpenChange={handleOpenChange} modal={false}>
         <DialogContent className='sm:max-w-lg'>
           <DialogHeader className='text-start'>
             <DialogTitle>{isEdit ? 'Edit Leave' : 'Add New Leave'}</DialogTitle>
@@ -149,7 +149,7 @@ export function LeavesActionDialog({
   }
 
   return (
-    <Drawer open={open} onOpenChange={handleOpenChange}>
+    <Drawer open={open} onOpenChange={handleOpenChange} modal={false}>
       <DrawerContent>
         <DrawerHeader className='text-left'>
           <DrawerTitle>{isEdit ? 'Edit Leave' : 'Add New Leave'}</DrawerTitle>
@@ -322,9 +322,9 @@ function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="approved">Approved</SelectItem>
-                  <SelectItem value="rejected">Rejected</SelectItem>
+                  <SelectItem value="Pending">Pending</SelectItem>
+                  <SelectItem value="Approved">Approved</SelectItem>
+                  <SelectItem value="Rejected">Rejected</SelectItem>
                 </SelectContent>
               </Select>
               {fieldState.error && <FieldError errors={[fieldState.error]} />}

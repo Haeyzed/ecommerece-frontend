@@ -25,7 +25,7 @@ import { useOptionCountries, useStatesByCountry } from '@/features/settings/coun
 import { useCitiesByState } from '@/features/settings/states/api'
 
 import { employeeSchema, type EmployeeFormData } from '@/features/hrm/employees/schemas'
-import { type Employee } from '../types'
+import { type Employee, type RolePermission } from '../types'
 
 import { DepartmentsActionDialog } from '@/features/hrm/departments'
 import { DesignationsActionDialog } from '@/features/hrm/designations'
@@ -677,8 +677,10 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
 
               <Controller control={form.control} name="user.roles" render={({ field, fieldState }) => {
                 const selectedItems = field.value
-                  ? field.value.map((id) => rolesOptions.find((opt) => opt.value === id)).filter((opt): opt is { value: number; label: string } => !!opt)
-                  : []
+                ? field.value
+                  .map((r) => rolesOptions.find((opt) => opt.value === r.id))
+                  .filter((opt): opt is { value: number; label: string } => !!opt)
+                : []
 
                 return (
                   <Field data-invalid={!!fieldState.error} className="flex flex-col">
@@ -689,13 +691,16 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
                       items={rolesOptions}
                       itemToStringLabel={(item) => item.label}
                       value={selectedItems}
-                      onValueChange={(items) => field.onChange(items.map((item) => item.value))}
+                      onValueChange={(items) => {
+                        field.onChange(items.map((item) => item.value))
+                      }}
+                      isItemEqualToValue={(a, b) => a?.value === b?.value}
                     >
                       <ComboboxChips ref={rolesAnchor}>
                         <ComboboxValue>
                           {(values) => (
                             <React.Fragment>
-                              {values.map((item: any) => <ComboboxChip key={item.value}>{item.label}</ComboboxChip>)}
+                              {values.map((item: RolePermission) => <ComboboxChip key={item.value}>{item.label}</ComboboxChip>)}
                               <ComboboxChipsInput placeholder="Select roles..." />
                             </React.Fragment>
                           )}
@@ -715,8 +720,10 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
 
               <Controller control={form.control} name="user.permissions" render={({ field, fieldState }) => {
                 const selectedItems = field.value
-                  ? field.value.map((id) => permissionsOptions.find((opt) => opt.value === id)).filter((opt): opt is { value: number; label: string } => !!opt)
-                  : []
+                ? field.value
+                  .map((p) => permissionsOptions.find((opt) => opt.value === p.id))
+                  .filter((opt): opt is { value: number; label: string } => !!opt)
+                : []
 
                 return (
                   <Field data-invalid={!!fieldState.error} className="flex flex-col">
@@ -727,13 +734,16 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
                       items={permissionsOptions}
                       itemToStringLabel={(item) => item.label}
                       value={selectedItems}
-                      onValueChange={(items) => field.onChange(items.map((item) => item.value))}
+                      onValueChange={(items) => {
+                        field.onChange(items.map((item) => item.value))
+                      }}
+                      isItemEqualToValue={(a, b) => a?.value === b?.value}
                     >
                       <ComboboxChips ref={permsAnchor}>
                         <ComboboxValue>
                           {(values) => (
                             <React.Fragment>
-                              {values.map((item: any) => <ComboboxChip key={item.value}>{item.label}</ComboboxChip>)}
+                              {values.map((item: RolePermission) => <ComboboxChip key={item.value}>{item.label}</ComboboxChip>)}
                               <ComboboxChipsInput placeholder="Select permissions..." />
                             </React.Fragment>
                           )}

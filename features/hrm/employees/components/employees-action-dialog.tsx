@@ -90,6 +90,7 @@ import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { Spinner } from '@/components/ui/spinner'
 import { PhoneInput } from '@/components/ui/phone-input'
+import { PasswordInput } from '@/components/password-input'
 
 type EmployeesActionDialogProps = {
   currentRow?: Employee
@@ -422,7 +423,7 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
                       value={optionDepartments?.find((p) => p.value === field.value) ?? null}
                       onValueChange={(item) => field.onChange(item?.value ?? null)}
                     >
-                      <ComboboxInput id='employee-department' placeholder='Select department...' />
+                      <ComboboxInput id='employee-department' placeholder='Select department...' showClear/>
                       <ComboboxContent>
                         <ComboboxEmpty>No department found.</ComboboxEmpty>
                         <ComboboxList>
@@ -457,7 +458,7 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
                       value={optionDesignations?.find((p) => p.value === field.value) ?? null}
                       onValueChange={(item) => field.onChange(item?.value ?? null)}
                     >
-                      <ComboboxInput id='employee-designation' placeholder='Select designation...' />
+                      <ComboboxInput id='employee-designation' placeholder='Select designation...' showClear/>
                       <ComboboxContent>
                         <ComboboxEmpty>No designation found.</ComboboxEmpty>
                         <ComboboxList>
@@ -492,7 +493,7 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
                       value={optionShifts?.find((p) => p.value === field.value) ?? null}
                       onValueChange={(item) => field.onChange(item?.value ?? null)}
                     >
-                      <ComboboxInput id='employee-shift' placeholder='Select shift...' />
+                      <ComboboxInput id='employee-shift' placeholder='Select shift...' showClear/>
                       <ComboboxContent>
                         <ComboboxEmpty>No shift found.</ComboboxEmpty>
                         <ComboboxList>
@@ -668,7 +669,7 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
                 <Controller control={form.control} name='user.password' render={({ field, fieldState }) => (
                   <Field data-invalid={!!fieldState.error}>
                     <FieldLabel htmlFor='user-password'>Password {isEdit ? '(Leave blank to keep)' : <span className="text-destructive">*</span>}</FieldLabel>
-                    <Input id='user-password' type="password" placeholder='Min 8 characters' autoComplete='new-password' {...field} value={field.value || ''} />
+                    <PasswordInput id='user-password' placeholder='Min 8 characters' autoComplete='new-password' {...field} value={field.value || ''} />
                     {fieldState.error && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )} />

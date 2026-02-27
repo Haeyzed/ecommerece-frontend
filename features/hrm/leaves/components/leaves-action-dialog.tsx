@@ -319,7 +319,6 @@ function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
             </Field>
           )}
         />
-
       </FieldGroup>
     </form>
   )

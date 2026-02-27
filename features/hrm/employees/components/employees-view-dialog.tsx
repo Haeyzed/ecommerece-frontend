@@ -22,6 +22,14 @@ import {
   DrawerTitle,
 } from '@/components/ui/drawer'
 import { Separator } from '@/components/ui/separator'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { cn } from '@/lib/utils'
 import { statusTypes, salesAgentTypes } from '@/features/hrm/employees/constants'
@@ -109,9 +117,6 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
 
   const ITEM_LIMIT = 30
 
-  // -------------------------
-  // Roles Formatting & Filtering
-  // -------------------------
   const formattedRoles = useMemo(() => {
     const rawRoles = currentRow.user?.roles || []
     return rawRoles.map((roleItem: any) => {
@@ -256,24 +261,24 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
               <div className='space-y-2 pt-2'>
                 <div className='text-sm font-medium text-muted-foreground mb-2'>Tiered Sales Targets</div>
                 <div className="rounded-md border overflow-hidden">
-                  <table className="w-full text-sm">
-                    <thead className="bg-muted/50 text-muted-foreground">
-                    <tr>
-                      <th className="p-2 text-left font-medium">Sales From</th>
-                      <th className="p-2 text-left font-medium">Sales To</th>
-                      <th className="p-2 text-left font-medium">Commission %</th>
-                    </tr>
-                    </thead>
-                    <tbody className="divide-y">
-                    {currentRow.sales_target.map((target, idx) => (
-                      <tr key={idx}>
-                        <td className="p-2 tabular-nums">${Number(target.sales_from).toLocaleString()}</td>
-                        <td className="p-2 tabular-nums">${Number(target.sales_to).toLocaleString()}</td>
-                        <td className="p-2 tabular-nums">{target.percent}%</td>
-                      </tr>
-                    ))}
-                    </tbody>
-                  </table>
+                  <Table>
+                    <TableHeader className="bg-muted/50">
+                      <TableRow>
+                        <TableHead>Sales From</TableHead>
+                        <TableHead>Sales To</TableHead>
+                        <TableHead>Commission %</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {currentRow.sales_target.map((target, idx) => (
+                        <TableRow key={idx}>
+                          <TableCell className="tabular-nums">${Number(target.sales_from).toLocaleString()}</TableCell>
+                          <TableCell className="tabular-nums">${Number(target.sales_to).toLocaleString()}</TableCell>
+                          <TableCell className="tabular-nums">{target.percent}%</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </div>
               </div>
             )}

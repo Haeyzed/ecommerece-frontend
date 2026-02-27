@@ -7,6 +7,7 @@ import {
   Delete02Icon,
   UnavailableIcon,
   Upload01Icon,
+  PrinterIcon,
 } from '@hugeicons/core-free-icons'
 import { type Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
@@ -25,6 +26,7 @@ import { EmployeesExportDialog } from '@/features/hrm/employees'
 import { EmployeesMultiDeleteDialog } from '@/features/hrm/employees'
 import { useAuthSession } from '@/features/auth/api'
 import { Spinner } from '@/components/ui/spinner'
+import { useEmployees } from './employees-provider'
 
 type DataTableBulkActionsProps<TData> = {
   table: Table<TData>
@@ -35,6 +37,9 @@ export function DataTableBulkActions<TData>({
                                             }: DataTableBulkActionsProps<TData>) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showExportDialog, setShowExportDialog] = useState(false)
+
+  const { setOpen, setCurrentRow } = useEmployees()
+
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map((row) => (row.original as Employee).id)
 
@@ -117,6 +122,31 @@ export function DataTableBulkActions<TData>({
               </TooltipContent>
             </Tooltip>
           </>
+        )}
+
+        {canExport && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant='outline'
+                size='icon'
+                onClick={() => {
+                  setCurrentRow(null)
+                  setOpen('bulk-id-card')
+                }}
+                disabled={isBusy}
+                className='size-8'
+                aria-label='Print ID Cards'
+                title='Print ID Cards'
+              >
+                <HugeiconsIcon icon={PrinterIcon} strokeWidth={2} />
+                <span className='sr-only'>Print ID Cards</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Print Selected ID Cards</p>
+            </TooltipContent>
+          </Tooltip>
         )}
 
         {canExport && (

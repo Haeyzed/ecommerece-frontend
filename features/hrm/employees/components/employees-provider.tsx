@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type Employee } from '@/features/hrm/employees/types'
 
-type EmployeesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
+type EmployeesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view' | 'id-card' | 'bulk-id-card'
 
 type EmployeesContextType = {
   open: EmployeesDialogType | null

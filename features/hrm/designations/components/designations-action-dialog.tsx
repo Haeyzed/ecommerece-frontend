@@ -116,7 +116,7 @@ export function DesignationsActionDialog({
 
   if (isDesktop) {
     return (
-      <Dialog open={open} onOpenChange={handleOpenChange}>
+      <Dialog open={open} onOpenChange={handleOpenChange} modal={false}>
         <DialogContent className='sm:max-w-lg'>
           <DialogHeader className='text-start'>
             <DialogTitle>{isEdit ? 'Edit Designation' : 'Add New Designation'}</DialogTitle>
@@ -152,7 +152,7 @@ export function DesignationsActionDialog({
   }
 
   return (
-    <Drawer open={open} onOpenChange={handleOpenChange}>
+    <Drawer open={open} onOpenChange={handleOpenChange} modal={false}>
       <DrawerContent>
         <DrawerHeader className='text-left'>
           <DrawerTitle>{isEdit ? 'Edit Designation' : 'Add New Designation'}</DrawerTitle>

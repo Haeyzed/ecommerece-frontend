@@ -159,14 +159,13 @@ export function DocumentTypesImportDialog({
           <div className='space-y-2 rounded-md border bg-muted/50 p-3 text-sm'>
             <div className='font-medium'>Required Fields:</div>
             <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
-              <li><code className='rounded bg-background px-1 py-0.5 text-xs'>name*</code> - Leave type name</li>
-              <li><code className='rounded bg-background px-1 py-0.5 text-xs'>annual_quota*</code> - Numeric value</li>
-              <li><code className='rounded bg-background px-1 py-0.5 text-xs'>encashable*</code> - Boolean (1 or 0)</li>
-              <li><code className='rounded bg-background px-1 py-0.5 text-xs'>carry_forward_limit*</code> - Numeric value</li>
+              <li><code className='rounded bg-background px-1 py-0.5 text-xs'>name*</code> - Document type name</li>
+              <li><code className='rounded bg-background px-1 py-0.5 text-xs'>code*</code> - Document type code</li>
+              <li><code className='rounded bg-background px-1 py-0.5 text-xs'>requires_expiry*</code> - Boolean (true or false)</li>
             </ul>
             <div className='font-medium mt-3'>Optional Fields:</div>
             <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
-              <li><code className='rounded bg-background px-1 py-0.5 text-xs'>is_active</code> - Boolean (1 or 0)</li>
+              <li><code className='rounded bg-background px-1 py-0.5 text-xs'>is_active</code> - Boolean (true or false)</li>
             </ul>
           </div>
           <Controller

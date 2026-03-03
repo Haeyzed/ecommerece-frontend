@@ -21,6 +21,7 @@ export interface DocumentTypeFormBody {
 export interface DocumentTypeOption {
   value: number;
   label: string;
+  requires_expiry: boolean;
 }
 
 export type DocumentTypeListParams = {

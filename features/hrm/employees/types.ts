@@ -24,6 +24,28 @@ export interface EmployeeUser {
   permissions?: RolePermission[];
 }
 
+export interface EmployeeProfile {
+  date_of_birth?: string | null;
+  gender?: string | null;
+  marital_status?: string | null;
+  national_id?: string | null;
+  tax_number?: string | null;
+  bank_name?: string | null;
+  account_number?: string | null;
+}
+
+export interface EmployeeDocument {
+  id?: number;
+  document_type_id: number;
+  name?: string | null;
+  file_path?: string | null;
+  file_url?: string | null;
+  issue_date?: string | null;
+  expiry_date?: string | null;
+  notes?: string | null;
+  is_expired?: boolean;
+}
+
 export interface EmployeeDepartment {
   id: number;
   name: string;
@@ -58,6 +80,7 @@ export interface EmployeeCity {
 
 export interface Employee {
   id: number;
+  employee_code: string;
   staff_id: string;
   name: string;
   email: string | null;
@@ -83,6 +106,8 @@ export interface Employee {
   sales_target: EmployeeSalesTarget[];
   user_id: number | null;
   user?: EmployeeUser | null;
+  profile?: EmployeeProfile | null;
+  documents?: EmployeeDocument[];
   active_status: EmployeeActiveStatus;
   sales_agent: EmployeeSalesAgentStatus;
   created_at: string | null;
@@ -102,12 +127,6 @@ export type EmployeeListParams = {
   is_sale_agent?: boolean;
   department_id?: number;
   designation_id?: number;
-  shift_id?: number;
-  country_id?: number;
-  state_id?: number;
-  city_id?: number;
-  start_date?: string;
-  end_date?: string;
 };
 
 export type EmployeeExportParams = {
@@ -116,6 +135,4 @@ export type EmployeeExportParams = {
   method: "download" | "email";
   columns: string[];
   user_id?: number;
-  start_date?: string;
-  end_date?: string;
 };

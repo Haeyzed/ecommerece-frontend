@@ -19,6 +19,67 @@ export const employeeKeys = {
 
 const BASE_PATH = '/employees';
 
+function buildEmployeeFormData(data: EmployeeFormData, isUpdate = false): FormData {
+  const formData = new FormData();
+
+  if (isUpdate) formData.append('_method', 'PUT');
+
+  const rootFields = [
+    'name', 'staff_id', 'email', 'phone_number', 'address', 'department_id', 'designation_id',
+    'shift_id', 'basic_salary', 'country_id', 'state_id', 'city_id', 'is_active', 'is_sale_agent',
+    'sale_commission_percent', 'onboarding_checklist_template_id'
+  ] as const;
+
+  rootFields.forEach(key => {
+    if (data[key] !== undefined && data[key] !== null) {
+      formData.append(key, String(data[key]));
+    }
+  });
+
+  if (data.image && data.image[0] instanceof File) {
+    formData.append('image', data.image[0]);
+  }
+
+  // User object
+  if (data.user) {
+    if (data.user.username) formData.append('user[username]', data.user.username);
+    if (data.user.password) formData.append('user[password]', data.user.password);
+    data.user.roles?.forEach((r, i) => formData.append(`user[roles][${i}]`, r.toString()));
+    data.user.permissions?.forEach((p, i) => formData.append(`user[permissions][${i}]`, p.toString()));
+  }
+
+  // Profile object
+  if (data.profile) {
+    const profileFields = ['date_of_birth', 'gender', 'marital_status', 'national_id', 'tax_number', 'bank_name', 'account_number'] as const;
+    profileFields.forEach(key => {
+      if (data.profile![key]) formData.append(`profile[${key}]`, data.profile![key] as string);
+    });
+  }
+
+  // Sales Targets
+  data.sales_target?.forEach((st, i) => {
+    formData.append(`sales_target[${i}][sales_from]`, st.sales_from.toString());
+    formData.append(`sales_target[${i}][sales_to]`, st.sales_to.toString());
+    formData.append(`sales_target[${i}][percent]`, st.percent.toString());
+  });
+
+  // Documents
+  data.documents?.forEach((doc, i) => {
+    if (doc.id) formData.append(`documents[${i}][id]`, doc.id.toString());
+    formData.append(`documents[${i}][document_type_id]`, doc.document_type_id.toString());
+    if (doc.name) formData.append(`documents[${i}][name]`, doc.name);
+    if (doc.notes) formData.append(`documents[${i}][notes]`, doc.notes);
+    if (doc.issue_date) formData.append(`documents[${i}][issue_date]`, doc.issue_date);
+    if (doc.expiry_date) formData.append(`documents[${i}][expiry_date]`, doc.expiry_date);
+
+    if (doc.file && doc.file[0] instanceof File) {
+      formData.append(`documents[${i}][file]`, doc.file[0]);
+    }
+  });
+
+  return formData;
+}
+
 export function usePaginatedEmployees(params?: EmployeeListParams) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
@@ -28,10 +89,7 @@ export function usePaginatedEmployees(params?: EmployeeListParams) {
     },
     enabled: sessionStatus !== 'loading',
   });
-  return {
-    ...query,
-    isSessionLoading: sessionStatus === 'loading',
-  };
+  return { ...query, isSessionLoading: sessionStatus === 'loading' };
 }
 
 export function useOptionEmployees() {
@@ -48,7 +106,7 @@ export function useOptionEmployees() {
 
 export function useEmployee(id: number) {
   const { api, sessionStatus } = useApiClient();
-  const query = useQuery({
+  return useQuery({
     queryKey: employeeKeys.detail(id),
     queryFn: async () => {
       const response = await api.get<Employee>(`${BASE_PATH}/${id}`);
@@ -56,10 +114,6 @@ export function useEmployee(id: number) {
     },
     enabled: !!id && sessionStatus !== 'loading',
   });
-  return {
-    ...query,
-    isSessionLoading: sessionStatus === 'loading',
-  };
 }
 
 export function useCreateEmployee() {
@@ -68,60 +122,10 @@ export function useCreateEmployee() {
 
   return useMutation({
     mutationFn: async (data: EmployeeFormData) => {
-      const formData = new FormData();
-
-      formData.append("name", data.name);
-      formData.append("staff_id", data.staff_id);
-      if (data.email) formData.append("email", data.email);
-      if (data.phone_number) formData.append("phone_number", data.phone_number);
-      formData.append("basic_salary", String(data.basic_salary));
-      if (data.address) formData.append("address", data.address);
-
-      formData.append("department_id", String(data.department_id));
-      formData.append("designation_id", String(data.designation_id));
-      formData.append("shift_id", String(data.shift_id));
-
-      if (data.country_id != null) formData.append("country_id", String(data.country_id));
-      if (data.state_id != null) formData.append("state_id", String(data.state_id));
-      if (data.city_id != null) formData.append("city_id", String(data.city_id));
-
-      if (data.is_active !== undefined && data.is_active !== null) {
-        formData.append("is_active", data.is_active ? "1" : "0");
-      }
-      if (data.is_sale_agent !== undefined && data.is_sale_agent !== null) {
-        formData.append("is_sale_agent", data.is_sale_agent ? "1" : "0");
-      }
-      if (data.sale_commission_percent !== undefined && data.sale_commission_percent !== null) {
-        formData.append("sale_commission_percent", String(data.sale_commission_percent));
-      }
-
-      const images = data.image as File[] | undefined;
-      if (images && images.length > 0) {
-        formData.append("image", images[0]);
-      }
-
-      if (data.sales_target && data.sales_target.length > 0) {
-        data.sales_target.forEach((target, index) => {
-          formData.append(`sales_target[${index}][sales_from]`, String(target.sales_from));
-          formData.append(`sales_target[${index}][sales_to]`, String(target.sales_to));
-          formData.append(`sales_target[${index}][percent]`, String(target.percent));
-        });
-      }
-
-      if (data.user_id != null) formData.append("user_id", String(data.user_id));
-
-      if (data.user) {
-        if (data.user.username) formData.append('user[username]', data.user.username);
-        if (data.user.password) formData.append('user[password]', data.user.password);
-        if (data.user.roles && data.user.roles.length > 0) {
-          data.user.roles.forEach((id, idx) => formData.append(`user[roles][${idx}]`, String(id)));
-        }
-        if (data.user.permissions && data.user.permissions.length > 0) {
-          data.user.permissions.forEach((id, idx) => formData.append(`user[permissions][${idx}]`, String(id)));
-        }
-      }
-
-      const response = await api.post<{ data: Employee }>(BASE_PATH, formData);
+      const formData = buildEmployeeFormData(data, false);
+      const response = await api.post<{ data: Employee }>(BASE_PATH, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       if (!response.success) {
         if (response.errors) throw new ValidationError(response.message, response.errors);
         throw new Error(response.message);
@@ -132,7 +136,9 @@ export function useCreateEmployee() {
       queryClient.invalidateQueries({ queryKey: employeeKeys.lists() });
       toast.success(response.message);
     },
-    onError: (error) => toast.error(error.message),
+    onError: (error) => {
+      toast.error(error.message);
+    },
   });
 }
 
@@ -142,69 +148,10 @@ export function useUpdateEmployee() {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<EmployeeFormData> }) => {
-      const formData = new FormData();
-      formData.append("_method", "PUT");
-
-      if (data.name) formData.append("name", data.name);
-      if (data.staff_id) formData.append("staff_id", data.staff_id);
-      if (data.email !== undefined) formData.append("email", data.email ?? "");
-      if (data.phone_number !== undefined) formData.append("phone_number", data.phone_number ?? "");
-      if (data.address !== undefined) formData.append("address", data.address ?? "");
-      if (data.basic_salary !== undefined) formData.append("basic_salary", String(data.basic_salary));
-
-      if (data.department_id !== undefined) formData.append("department_id", String(data.department_id));
-      if (data.designation_id !== undefined) formData.append("designation_id", String(data.designation_id));
-      if (data.shift_id !== undefined) formData.append("shift_id", String(data.shift_id));
-
-      if (data.country_id !== undefined) formData.append("country_id", data.country_id != null ? String(data.country_id) : "");
-      if (data.state_id !== undefined) formData.append("state_id", data.state_id != null ? String(data.state_id) : "");
-      if (data.city_id !== undefined) formData.append("city_id", data.city_id != null ? String(data.city_id) : "");
-
-      if (data.is_active !== undefined && data.is_active !== null) {
-        formData.append("is_active", data.is_active ? "1" : "0");
-      }
-      if (data.is_sale_agent !== undefined && data.is_sale_agent !== null) {
-        formData.append("is_sale_agent", data.is_sale_agent ? "1" : "0");
-      }
-      if (data.sale_commission_percent !== undefined) {
-        formData.append("sale_commission_percent", data.sale_commission_percent != null ? String(data.sale_commission_percent) : "");
-      }
-
-      const images = data.image as File[] | undefined;
-      if (images && images.length > 0) {
-        formData.append("image", images[0]);
-      }
-
-      if (data.sales_target && data.sales_target.length > 0) {
-        data.sales_target.forEach((target, index) => {
-          formData.append(`sales_target[${index}][sales_from]`, String(target.sales_from));
-          formData.append(`sales_target[${index}][sales_to]`, String(target.sales_to));
-          formData.append(`sales_target[${index}][percent]`, String(target.percent));
-        });
-      } else if (data.sales_target && data.sales_target.length === 0) {
-        formData.append("sales_target", "");
-      }
-
-      if (data.user_id !== undefined) formData.append("user_id", data.user_id != null ? String(data.user_id) : "");
-
-      if (data.user) {
-        if (data.user.username) formData.append('user[username]', data.user.username);
-        if (data.user.password) formData.append('user[password]', data.user.password);
-
-        if (data.user.roles && data.user.roles.length > 0) {
-          data.user.roles.forEach((roleId, idx) => formData.append(`user[roles][${idx}]`, String(roleId)));
-        } else if (data.user.roles && data.user.roles.length === 0) {
-          formData.append("user[roles]", "");
-        }
-
-        if (data.user.permissions && data.user.permissions.length > 0) {
-          data.user.permissions.forEach((permId, idx) => formData.append(`user[permissions][${idx}]`, String(permId)));
-        } else if (data.user.permissions && data.user.permissions.length === 0) {
-          formData.append("user[permissions]", "");
-        }
-      }
-
-      const response = await api.post<{ data: Employee }>(`${BASE_PATH}/${id}`, formData);
+      const formData = buildEmployeeFormData(data as EmployeeFormData, true);
+      const response = await api.post<{ data: Employee }>(`${BASE_PATH}/${id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       if (!response.success) {
         if (response.errors) throw new ValidationError(response.message, response.errors);
         throw new Error(response.message);
@@ -216,7 +163,9 @@ export function useUpdateEmployee() {
       queryClient.invalidateQueries({ queryKey: employeeKeys.detail(data.id) });
       toast.success(data.message);
     },
-    onError: (error) => toast.error(error.message),
+    onError: (error) => {
+      toast.error(error.message);
+    },
   });
 }
 
@@ -234,7 +183,9 @@ export function useDeleteEmployee() {
       queryClient.invalidateQueries({ queryKey: employeeKeys.lists() });
       toast.success(response.message);
     },
-    onError: (error) => toast.error(error.message),
+    onError: (error) => {
+      toast.error(error.message);
+    },
   });
 }
 
@@ -243,10 +194,7 @@ export function useBulkActivateEmployees() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.patch<{ activated_count: number }>(
-        `${BASE_PATH}/bulk-activate`,
-        { ids }
-      );
+      const response = await api.post<{ activated_count: number }>(`${BASE_PATH}/bulk-activate`, { ids });
       if (!response.success) throw new Error(response.message);
       return response;
     },
@@ -263,10 +211,7 @@ export function useBulkDeactivateEmployees() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.patch<{ deactivated_count: number }>(
-        `${BASE_PATH}/bulk-deactivate`,
-        { ids }
-      );
+      const response = await api.post<{ deactivated_count: number }>(`${BASE_PATH}/bulk-deactivate`, { ids });
       if (!response.success) throw new Error(response.message);
       return response;
     },
@@ -281,6 +226,7 @@ export function useBulkDeactivateEmployees() {
 export function useBulkDestroyEmployees() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (ids: number[]) => {
       const response = await api.post(`${BASE_PATH}/bulk-destroy`, { ids });
@@ -298,10 +244,11 @@ export function useBulkDestroyEmployees() {
 export function useEmployeesImport() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (file: File) => {
       const form = new FormData();
-      form.append("file", file);
+      form.append('file', file);
       const response = await api.post(`${BASE_PATH}/import`, form);
       if (!response.success) throw new Error(response.message);
       return response;
@@ -319,12 +266,12 @@ export function useEmployeesExport() {
 
   return useMutation({
     mutationFn: async (params: EmployeeExportParams) => {
-      if (params.method === "download") {
+      if (params.method === 'download') {
         const blob = await api.postBlob(`${BASE_PATH}/export`, params);
         const url = window.URL.createObjectURL(blob);
+        const fileName = `employees-export-${Date.now()}.${params.format === "pdf" ? "pdf" : "xlsx"}`;
         const link = document.createElement("a");
         link.href = url;
-        const fileName = `employees-export-${Date.now()}.${params.format === "pdf" ? "pdf" : "xlsx"}`;
         link.download = fileName;
         document.body.appendChild(link);
         link.click();

@@ -30,7 +30,7 @@ export const useLeaveTypes = () => {
   const context = React.useContext(LeaveTypesContext)
 
   if (!context) {
-    throw new Error('useLeaveTypes has to be used within <OvertimesProvider>')
+    throw new Error('useLeaveTypes has to be used within <LeaveTypesProvider>')
   }
 
   return context

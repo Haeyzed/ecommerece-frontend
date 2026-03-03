@@ -68,7 +68,7 @@ export const documentTypesColumns: ColumnDef<DocumentType>[] = [
   {
     accessorKey: 'requires_expiry',
     header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Encashable' />
+        <DataTableColumnHeader column={column} title='Requires Expiry' />
     ),
     cell: ({ row }) => {
       const requiresExpiry = row.original.requires_expiry

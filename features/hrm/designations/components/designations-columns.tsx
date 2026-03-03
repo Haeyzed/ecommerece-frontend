@@ -62,7 +62,7 @@ export const designationsColumns: ColumnDef<Designation>[] = [
       <DataTableColumnHeader column={column} title='Department' />
     ),
     cell: ({ row }) => (
-      <span className='font-medium'>{row.original.department?.name || '-'}</span>
+      <span>{row.original.department?.name || '-'}</span>
     ),
     meta: { className: 'w-32' },
   },

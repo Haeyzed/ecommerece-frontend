@@ -101,6 +101,7 @@ import { Switch } from '@/components/ui/switch'
 import { Spinner } from '@/components/ui/spinner'
 import { DatePicker } from '@/components/date-picker'
 import { Textarea } from '@/components/ui/textarea'
+import { useAuthSession } from '@/features/auth/api'
 
 type EmployeesActionDialogProps = {
     currentRow?: Employee
@@ -292,6 +293,11 @@ interface EmployeeFormProps {
 
 function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: EmployeeFormProps) {
     const { resolvedTheme } = useTheme()
+    const { data: session } = useAuthSession()
+    const userPermissions = session?.user?.user_permissions || []
+    const canCreateDepartment = userPermissions.includes('create departments')
+    const canCreateDesignation = userPermissions.includes('create designations')
+    const canCreateShift = userPermissions.includes('create shifts')
     const isSaleAgent = form.watch('is_sale_agent')
 
     // Combobox Options
@@ -592,7 +598,9 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
                                             <ComboboxList>{(i) => <ComboboxItem key={i.value} value={i}>{i.label}</ComboboxItem>}</ComboboxList>
                                         </ComboboxContent>
                                     </Combobox>
+                                    {canCreateDepartment && (
                                     <Button type="button" size="icon" variant="outline" onClick={() => setIsDepartmentOpen(true)}><HugeiconsIcon icon={PlusSignIcon} className="size-4" /></Button>
+                                )}
                                 </div>
                                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
                             </Field>
@@ -608,7 +616,9 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
                                             <ComboboxList>{(i) => <ComboboxItem key={i.value} value={i}>{i.label}</ComboboxItem>}</ComboboxList>
                                         </ComboboxContent>
                                     </Combobox>
+                                    {canCreateDesignation && (
                                     <Button type="button" size="icon" variant="outline" onClick={() => setIsDesignationOpen(true)}><HugeiconsIcon icon={PlusSignIcon} className="size-4" /></Button>
+                                )}
                                 </div>
                                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
                             </Field>
@@ -624,7 +634,9 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
                                             <ComboboxList>{(i) => <ComboboxItem key={i.value} value={i}>{i.label}</ComboboxItem>}</ComboboxList>
                                         </ComboboxContent>
                                     </Combobox>
+                                    {canCreateShift && (
                                     <Button type="button" size="icon" variant="outline" onClick={() => setIsShiftOpen(true)}><HugeiconsIcon icon={PlusSignIcon} className="size-4" /></Button>
+                                )}
                                 </div>
                                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
                             </Field>

@@ -23,11 +23,6 @@ export const departmentKeys = {
 };
 
 const BASE_PATH = '/departments';
-
-// ==============================================================================
-// QUERIES (READ)
-// ==============================================================================
-
 export function usePaginatedDepartments(params?: DepartmentListParams) {
   const { api, sessionStatus } = useApiClient();
   const query = useQuery({
@@ -70,11 +65,6 @@ export function useDepartment(id: number) {
     isSessionLoading: sessionStatus === 'loading',
   };
 }
-
-// ==============================================================================
-// MUTATIONS (CREATE, UPDATE, DELETE)
-// ==============================================================================
-
 export function useCreateDepartment() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
@@ -132,7 +122,6 @@ export function useUpdateDepartment() {
     },
   });
 }
-
 export function useDeleteDepartment() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();
@@ -153,10 +142,6 @@ export function useDeleteDepartment() {
     },
   });
 }
-
-// ==============================================================================
-// BULK MUTATIONS
-// ==============================================================================
 
 export function useBulkActivateDepartments() {
   const { api } = useApiClient();
@@ -218,11 +203,6 @@ export function useBulkDestroyDepartments() {
     onError: (error) => toast.error(error.message),
   });
 }
-
-// ==============================================================================
-// IMPORT & EXPORT
-// ==============================================================================
-
 export function useDepartmentsImport() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();

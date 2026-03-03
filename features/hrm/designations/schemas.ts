@@ -2,6 +2,7 @@ import { z } from "zod";
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes';
 
 export const designationSchema = z.object({
+  department_id: z.number().min(1, "Department selection is required"),
   name: z.string().min(1, "Designation name is required").max(255, "Name is too long"),
   is_active: z.boolean().nullable().optional(),
 });

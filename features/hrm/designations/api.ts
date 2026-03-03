@@ -19,14 +19,11 @@ export const designationKeys = {
   details: () => [...designationKeys.all, 'detail'] as const,
   detail: (id: number) => [...designationKeys.details(), id] as const,
   options: () => [...designationKeys.all, 'options'] as const,
+  designations: (departmentId: number) => [...designationKeys.all, 'designations', departmentId] as const,
   template: () => [...designationKeys.all, 'template'] as const,
 };
 
 const BASE_PATH = '/designations';
-
-// ==============================================================================
-// QUERIES (READ)
-// ==============================================================================
 
 export function usePaginatedDesignations(params?: DesignationListParams) {
   const { api, sessionStatus } = useApiClient();
@@ -71,9 +68,19 @@ export function useDesignation(id: number) {
   };
 }
 
-// ==============================================================================
-// MUTATIONS (CREATE, UPDATE, DELETE)
-// ==============================================================================
+export function useDesignationsByDepartment(departmentId: number | null) {
+  const { api, sessionStatus } = useApiClient();
+  return useQuery({
+    queryKey: stateKeys.designations(departmentId ?? 0),
+    queryFn: async () => {
+      const response = await api.get<DesignationOption[]>(
+        `${BASE_PATH}/${departmentId}/designations`
+      );
+      return response.data ?? [];
+    },
+    enabled: !!departmentId && sessionStatus !== 'loading',
+  });
+}
 
 export function useCreateDesignation() {
   const { api } = useApiClient();
@@ -83,6 +90,7 @@ export function useCreateDesignation() {
     mutationFn: async (data: DesignationFormBody) => {
       const payload: Record<string, unknown> = {
         name: data.name,
+        department_id: data.department_id,
       };
       if (data.is_active !== undefined && data.is_active !== null) payload.is_active = data.is_active;
 
@@ -112,6 +120,7 @@ export function useUpdateDesignation() {
     mutationFn: async ({ id, data }: { id: number; data: Partial<DesignationFormBody> }) => {
       const payload: Record<string, unknown> = {};
       if (data.name !== undefined) payload.name = data.name;
+      if (data.department_id !== undefined) payload.department_id = data.department_id;
       if (data.is_active !== undefined) payload.is_active = data.is_active;
 
       const response = await api.put<{ data: Designation }>(`${BASE_PATH}/${id}`, payload);
@@ -153,10 +162,6 @@ export function useDeleteDesignation() {
     },
   });
 }
-
-// ==============================================================================
-// BULK MUTATIONS
-// ==============================================================================
 
 export function useBulkActivateDesignations() {
   const { api } = useApiClient();
@@ -218,10 +223,6 @@ export function useBulkDestroyDesignations() {
     onError: (error) => toast.error(error.message),
   });
 }
-
-// ==============================================================================
-// IMPORT & EXPORT
-// ==============================================================================
 
 export function useDesignationsImport() {
   const { api } = useApiClient();

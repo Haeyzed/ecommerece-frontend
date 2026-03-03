@@ -10,6 +10,7 @@ import {
 import { designationSchema, type DesignationFormData } from '@/features/hrm/designations'
 import { type Designation } from '@/features/hrm/designations'
 
+import { useOptionDepartments } from '@/features/hrm/departments/api'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { cn } from '@/lib/utils'
 
@@ -63,10 +64,12 @@ export function DesignationsActionDialog({
     resolver: zodResolver(designationSchema),
     defaultValues: isEdit
       ? {
+        department_id: currentRow.department_id,
         name: currentRow.name,
         is_active: currentRow.is_active,
       }
       : {
+        department_id: 0,
         name: '',
         is_active: true,
       },
@@ -176,6 +179,7 @@ interface DesignationFormProps {
 }
 
 function DesignationForm({ form, onSubmit, id, className }: DesignationFormProps) {
+  const { data: departments = [], isLoading: isLoadingDepartments } = useOptionDepartments();
   return (
     <form
       id={id}
@@ -183,6 +187,34 @@ function DesignationForm({ form, onSubmit, id, className }: DesignationFormProps
       className={cn('space-y-4', className)}
     >
       <FieldGroup>
+
+<Controller
+  control={form.control}
+  name='department_id'
+  render={({ field, fieldState }) => (
+    <Field data-invalid={!!fieldState.error}>
+      <FieldLabel htmlFor='designation-department'>Department <span className='text-destructive'>*</span></FieldLabel>
+      <Select
+        value={field.value ? String(field.value) : ''}
+        onValueChange={(val) => field.onChange(Number(val))}
+        disabled={isLoadingDepartments}
+      >
+        <SelectTrigger id='designation-department'>
+          <SelectValue placeholder="Select a department" />
+        </SelectTrigger>
+        <SelectContent>
+          {departments.map((department) => (
+            <SelectItem key={department.value} value={String(department.value)}>
+              {department.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      {fieldState.error && <FieldError errors={[fieldState.error]} />}
+    </Field>
+  )}
+/>
+
         <Controller
           control={form.control}
           name='name'

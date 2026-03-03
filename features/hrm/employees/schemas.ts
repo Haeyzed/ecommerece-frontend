@@ -97,6 +97,8 @@ export const employeeExportSchema = z
       method: z.enum(["download", "email"]),
       columns: z.array(z.string()).min(1),
       user_id: z.number().optional(),
+      start_date: z.string().optional(),
+      end_date: z.string().optional(),
     })
     .refine(
         (data) => {
@@ -105,10 +107,7 @@ export const employeeExportSchema = z
           }
           return true;
         },
-        {
-          message: "User is required when sending an email",
-          path: ["user_id"],
-        }
+        { path: ["user_id"] }
     );
 
 export type EmployeeFormData = z.infer<typeof employeeSchema>;

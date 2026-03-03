@@ -127,6 +127,12 @@ export type EmployeeListParams = {
   is_sale_agent?: boolean;
   department_id?: number;
   designation_id?: number;
+  shift_id?: number;
+  country_id?: number;
+  state_id?: number;
+  city_id?: number;
+  start_date?: string;
+  end_date?: string;
 };
 
 export type EmployeeExportParams = {
@@ -135,4 +141,6 @@ export type EmployeeExportParams = {
   method: "download" | "email";
   columns: string[];
   user_id?: number;
+  start_date?: string;
+  end_date?: string;
 };

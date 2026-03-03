@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { PaintBoardIcon, FloppyDiskIcon, Image01Icon, Delete02Icon } from '@hugeicons/core-free-icons'
+import {PaintBoardIcon, FloppyDiskIcon, Image01Icon, Delete02Icon, Date} from '@hugeicons/core-free-icons'
 
 import { useActiveIdCardTemplate, useUpdateIdCardTemplate } from '../api'
 import { generateIdCardsPdf } from '@/features/hrm/employees/utils/generate-id-card'
@@ -32,6 +32,8 @@ type DesignFormData = z.infer<typeof idCardDesignSchema>
 
 // Strict mapping to Employee Interface (No undefined, proper nulls)
 const DUMMY_EMPLOYEE: Employee = {
+  created_at: null,
+  updated_at: null,
   employee_code: "123",
   id: 0,
   staff_id: 'EMP-00123',
@@ -60,9 +62,9 @@ const DUMMY_EMPLOYEE: Employee = {
   is_sale_agent: false,
   sales_agent: 'no',
   sales_target: [],
-  user: null,
-  created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString()
+  user: null
+  // created_at: new Date().toISOString(),
+  // updated_at: new Date().toISOString()
 }
 
 export function IdCardDesigner() {

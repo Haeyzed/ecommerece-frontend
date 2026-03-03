@@ -194,7 +194,7 @@ interface DesignationFormProps {
 }
 
 function DesignationForm({ form, onSubmit, id, className }: DesignationFormProps) {
-  const { data: departments = [], isLoading: isLoadingDepartments } = useOptionDepartments();
+  const { data: optionDepartments } = useOptionDepartments()
   return (
     <>
     <form

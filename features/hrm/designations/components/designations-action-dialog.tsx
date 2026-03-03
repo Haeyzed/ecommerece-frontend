@@ -14,6 +14,7 @@ import { useOptionDepartments } from '@/features/hrm/departments/api'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { cn } from '@/lib/utils'
 
+import { DepartmentsActionDialog } from '@/features/hrm/departments'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -23,6 +24,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+
+import {
+  Combobox,
+  ComboboxChip,
+  ComboboxChips,
+  ComboboxChipsInput,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxValue,
+  useComboboxAnchor,
+} from "@/components/ui/combobox"
 import {
   Drawer,
   DrawerClose,
@@ -181,40 +196,29 @@ interface DesignationFormProps {
 function DesignationForm({ form, onSubmit, id, className }: DesignationFormProps) {
   const { data: departments = [], isLoading: isLoadingDepartments } = useOptionDepartments();
   return (
+    <>
     <form
       id={id}
       onSubmit={form.handleSubmit(onSubmit)}
       className={cn('space-y-4', className)}
     >
       <FieldGroup>
-
-<Controller
-  control={form.control}
-  name='department_id'
-  render={({ field, fieldState }) => (
-    <Field data-invalid={!!fieldState.error}>
-      <FieldLabel htmlFor='designation-department'>Department <span className='text-destructive'>*</span></FieldLabel>
-      <Select
-        value={field.value ? String(field.value) : ''}
-        onValueChange={(val) => field.onChange(Number(val))}
-        disabled={isLoadingDepartments}
-      >
-        <SelectTrigger id='designation-department'>
-          <SelectValue placeholder="Select a department" />
-        </SelectTrigger>
-        <SelectContent>
-          {departments.map((department) => (
-            <SelectItem key={department.value} value={String(department.value)}>
-              {department.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      {fieldState.error && <FieldError errors={[fieldState.error]} />}
-    </Field>
-  )}
-/>
-
+      <Controller control={form.control} name='department_id' render={({ field, fieldState }) => (
+        <Field data-invalid={!!fieldState.error} className="flex flex-col">
+            <FieldLabel>Department <span className="text-destructive">*</span></FieldLabel>
+            <div className="flex items-center gap-2">
+                <Combobox items={optionDepartments || []} itemToStringLabel={(i) => i.label} value={(optionDepartments || []).find((d) => d.value === field.value) ?? null} onValueChange={(i) => field.onChange(i?.value ?? 0)}>
+                    <ComboboxInput placeholder="Select Dept" />
+                    <ComboboxContent>
+                        <ComboboxEmpty>No match.</ComboboxEmpty>
+                        <ComboboxList>{(i) => <ComboboxItem key={i.value} value={i}>{i.label}</ComboboxItem>}</ComboboxList>
+                    </ComboboxContent>
+                </Combobox>
+                <Button type="button" size="icon" variant="outline" onClick={() => setIsDepartmentOpen(true)}><HugeiconsIcon icon={PlusSignIcon} className="size-4" /></Button>
+            </div>
+            {fieldState.error && <FieldError errors={[fieldState.error]} />}
+        </Field>
+    )} />
         <Controller
           control={form.control}
           name='name'
@@ -257,5 +261,7 @@ function DesignationForm({ form, onSubmit, id, className }: DesignationFormProps
         />
       </FieldGroup>
     </form>
+      <DepartmentsActionDialog open={isDepartmentOpen} onOpenChange={setIsDepartmentOpen} />
+      </>
   )
 }

@@ -10,6 +10,7 @@ import type {
   DepartmentFormBody,
   DepartmentListParams,
   DepartmentOption,
+  DesignationOption
 } from './types'
 
 export const departmentKeys = {

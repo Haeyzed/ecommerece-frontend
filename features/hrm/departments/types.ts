@@ -19,6 +19,11 @@ export interface DepartmentOption {
   label: string;
 }
 
+export type DesignationOption = {
+  value: number;
+  label: string
+}
+
 export type DepartmentListParams = {
   page?: number;
   per_page?: number;

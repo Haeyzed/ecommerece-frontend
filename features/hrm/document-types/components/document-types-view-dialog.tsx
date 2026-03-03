@@ -110,7 +110,7 @@ function DocumentTypesView({ className, currentRow }: DocumentTypesViewProps) {
 
         <div className='grid grid-cols-2 gap-4'>
           <div className='space-y-2'>
-            <div className='text-sm font-medium text-muted-foreground'>Carry Forward Limit</div>
+            <div className='text-sm font-medium text-muted-foreground'>Code</div>
             <div className='text-sm font-medium'>{currentRow.code}</div>
           </div>
           <div className='space-y-2'>

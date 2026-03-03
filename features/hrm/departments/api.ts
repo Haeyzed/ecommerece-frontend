@@ -19,6 +19,7 @@ export const departmentKeys = {
   details: () => [...departmentKeys.all, 'detail'] as const,
   detail: (id: number) => [...departmentKeys.details(), id] as const,
   options: () => [...departmentKeys.all, 'options'] as const,
+  designations: (departmentId: number) => [...departmentKeys.all, 'designations', departmentId] as const,
   template: () => [...departmentKeys.all, 'template'] as const,
 };
 
@@ -65,6 +66,21 @@ export function useDepartment(id: number) {
     isSessionLoading: sessionStatus === 'loading',
   };
 }
+
+export function useDesignationsByDepartment(departmentId: number | null) {
+  const { api, sessionStatus } = useApiClient();
+  return useQuery({
+    queryKey: departmentKeys.designations(departmentId ?? 0),
+    queryFn: async () => {
+      const response = await api.get<DesignationOption[]>(
+        `${BASE_PATH}/${departmentId}/designations`
+      );
+      return response.data ?? [];
+    },
+    enabled: !!departmentId && sessionStatus !== 'loading',
+  });
+}
+
 export function useCreateDepartment() {
   const { api } = useApiClient();
   const queryClient = useQueryClient();

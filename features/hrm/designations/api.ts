@@ -19,7 +19,6 @@ export const designationKeys = {
   details: () => [...designationKeys.all, 'detail'] as const,
   detail: (id: number) => [...designationKeys.details(), id] as const,
   options: () => [...designationKeys.all, 'options'] as const,
-  designations: (departmentId: number) => [...designationKeys.all, 'designations', departmentId] as const,
   template: () => [...designationKeys.all, 'template'] as const,
 };
 
@@ -66,20 +65,6 @@ export function useDesignation(id: number) {
     ...query,
     isSessionLoading: sessionStatus === 'loading',
   };
-}
-
-export function useDesignationsByDepartment(departmentId: number | null) {
-  const { api, sessionStatus } = useApiClient();
-  return useQuery({
-    queryKey: stateKeys.designations(departmentId ?? 0),
-    queryFn: async () => {
-      const response = await api.get<DesignationOption[]>(
-        `${BASE_PATH}/${departmentId}/designations`
-      );
-      return response.data ?? [];
-    },
-    enabled: !!departmentId && sessionStatus !== 'loading',
-  });
 }
 
 export function useCreateDesignation() {

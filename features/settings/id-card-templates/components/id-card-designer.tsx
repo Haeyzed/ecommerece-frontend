@@ -32,6 +32,7 @@ type DesignFormData = z.infer<typeof idCardDesignSchema>
 
 // Strict mapping to Employee Interface (No undefined, proper nulls)
 const DUMMY_EMPLOYEE: Employee = {
+  employee_code: "123",
   id: 0,
   staff_id: 'EMP-00123',
   name: 'John Doe',

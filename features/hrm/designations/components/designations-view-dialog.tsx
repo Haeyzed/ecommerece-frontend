@@ -102,6 +102,10 @@ function DesignationsView({ className, currentRow }: DesignationsViewProps) {
           <div className='text-sm font-medium text-muted-foreground'>Name</div>
           <div className='text-sm font-medium'>{currentRow.name}</div>
         </div>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>Department</div>
+          <div className='text-sm font-medium'>{currentRow.department?.name}</div>
+        </div>
       </div>
 
       <div className='space-y-2'>

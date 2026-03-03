@@ -213,29 +213,29 @@ function DocumentTypeForm({ form, onSubmit, id, className }: DocumentTypeFormPro
                 )}
             />
 
-          <Controller
-              control={form.control}
-              name='requires_expiry'
-              render={({ field, fieldState }) => (
-                  <Field
-                      data-invalid={!!fieldState.error}
-                      className='flex flex-row items-center justify-between rounded-md border p-4'
-                  >
-                    <div className='space-y-0.5'>
-                      <FieldLabel htmlFor='document-type-requires-expiry'>Requires Expiry</FieldLabel>
-                      <FieldDescription>
-                        Disabling this will hide the document type from the system.
-                      </FieldDescription>
-                    </div>
-                    <Switch
-                        id='document-type-requires-expiry'
-                        checked={!!field.value}
-                        onCheckedChange={field.onChange}
-                    />
-                    {fieldState.error && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-              )}
-          />
+            <Controller
+                control={form.control}
+                name='requires_expiry'
+                render={({ field, fieldState }) => (
+                    <Field
+                        data-invalid={!!fieldState.error}
+                        className='flex flex-row items-center justify-between rounded-md border p-4'
+                    >
+                        <div className='space-y-0.5'>
+                            <FieldLabel htmlFor='document-type-requires-expiry'>Requires Expiry</FieldLabel>
+                            <FieldDescription>
+                                If enabled, an expiry date will be mandatory for documents of this type.
+                            </FieldDescription>
+                        </div>
+                        <Switch
+                            id='document-type-requires-expiry'
+                            checked={!!field.value}
+                            onCheckedChange={field.onChange}
+                        />
+                        {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                )}
+            />
 
           <Controller
               control={form.control}

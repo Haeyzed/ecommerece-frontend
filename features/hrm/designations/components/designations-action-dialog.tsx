@@ -3,7 +3,14 @@
 import React, { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
-
+import {
+  CancelCircleIcon,
+  CloudUploadIcon,
+  PlusSignIcon,
+  Delete02Icon,
+  File02Icon
+} from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
 import {
   useCreateDesignation,
   useUpdateDesignation

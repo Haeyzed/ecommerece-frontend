@@ -1,5 +1,6 @@
 'use client'
 
+import React, { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 
@@ -195,6 +196,7 @@ interface DesignationFormProps {
 
 function DesignationForm({ form, onSubmit, id, className }: DesignationFormProps) {
   const { data: optionDepartments } = useOptionDepartments()
+  const [isDepartmentOpen, setIsDepartmentOpen] = useState(false)
   return (
     <>
     <form

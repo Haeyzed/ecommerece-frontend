@@ -830,7 +830,7 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
                                         </Button>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                        <Controller control={form.control} name={`documents.${index}.document_type`} render={({ field, fieldState }) => (
+                                        <Controller control={form.control} name={`documents.${index}.document_type_id`} render={({ field, fieldState }) => (
                                             <Field data-invalid={!!fieldState.error} className="flex flex-col">
                                                 <FieldLabel>Document Type <span className="text-destructive">*</span></FieldLabel>
                                                 <Combobox items={optionDocumentTypes || []} itemToStringLabel={(i) => i.label} value={(optionDocumentTypes || []).find((d) => d.value === field.value) ?? null} onValueChange={(i) => field.onChange(i?.value ?? 0)}>

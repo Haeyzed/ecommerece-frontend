@@ -187,7 +187,7 @@ function DocumentTypeForm({ form, onSubmit, id, className }: DocumentTypeFormPro
                     <FieldLabel htmlFor='document-type-name'>Name <span className="text-destructive">*</span></FieldLabel>
                     <Input
                         id='document-type-name'
-                        placeholder='e.g. Annual Document, Sick Document'
+                        placeholder='e.g. National Identity Card'
                         autoComplete='off'
                         {...field}
                     />
@@ -204,8 +204,9 @@ function DocumentTypeForm({ form, onSubmit, id, className }: DocumentTypeFormPro
                       <FieldLabel htmlFor='code'>Code <span className="text-destructive">*</span></FieldLabel>
                       <Input
                           id='code'
+                          placeholder='e.g. NIN'
+                          autoComplete='off'
                           {...field}
-                          onChange={(e) => field.onChange(Number(e.target.value))}
                       />
                       {fieldState.error && <FieldError errors={[fieldState.error]} />}
                     </Field>

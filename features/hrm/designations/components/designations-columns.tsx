@@ -57,6 +57,16 @@ export const designationsColumns: ColumnDef<Designation>[] = [
     enableHiding: false,
   },
   {
+    accessorKey: 'department_id',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Department' />
+    ),
+    cell: ({ row }) => (
+      <span className='font-medium'>{row.original.department?.name || '-'}</span>
+    ),
+    meta: { className: 'w-32' },
+  },
+  {
     accessorKey: 'active_status',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Status' />

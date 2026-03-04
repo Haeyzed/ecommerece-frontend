@@ -287,7 +287,6 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
   const canCreateShift = userPermissions.includes('create shifts')
   const isSaleAgent = form.watch('is_sale_agent')
 
-  // Combobox Options
   const { data: optionDepartments } = useOptionDepartments()
   const { data: optionDesignations } = useOptionDesignations()
   const { data: optionShifts } = useOptionShifts()
@@ -302,7 +301,6 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
   const { data: optionStates } = useStatesByCountry(countryId ?? null)
   const { data: optionCities } = useCitiesByState(stateId ?? null)
 
-  // Field Arrays
   const { fields: salesTargets, append: appendSalesTarget, remove: removeSalesTarget } = useFieldArray({
     control: form.control,
     name: 'sales_target',
@@ -313,7 +311,6 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
     name: 'documents',
   })
 
-  // Quick Dialog States
   const [isDepartmentOpen, setIsDepartmentOpen] = useState(false)
   const [isDesignationOpen, setIsDesignationOpen] = useState(false)
   const [isShiftOpen, setIsShiftOpen] = useState(false)
@@ -586,7 +583,7 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
                   <Combobox items={optionDepartments || []} itemToStringLabel={(i) => i.label}
                             value={(optionDepartments || []).find((d) => d.value === field.value) ?? null}
                             onValueChange={(i) => field.onChange(i?.value ?? 0)}>
-                    <ComboboxInput placeholder="Select Dept" />
+                    <ComboboxInput placeholder="Select Department" />
                     <ComboboxContent>
                       <ComboboxEmpty>No match.</ComboboxEmpty>
                       <ComboboxList>{(i) => <ComboboxItem key={i.value}

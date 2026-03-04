@@ -103,8 +103,7 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
   const salesAgentBadgeColor =
     salesAgentTypes.get(currentRow.sales_agent) || 'bg-neutral-100'
 
-  // Use a type cast to any for new API fields that might not be in your types.ts yet
-  const employee = currentRow as any
+  const employee = currentRow as Employee
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -352,7 +351,7 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
                     {/* Render Document Type Badge if available */}
                     {employee.documents?.find((d: any) => d.id === doc.id)?.document_type?.name && (
                       <Badge variant='secondary' className='text-[10px] h-5'>
-                        {employee.documents.find((d: any) => d.id === doc.id).document_type.name}
+                        {employee.documents.find((d: any) => d.id === doc.id)?.document_type?.name}
                       </Badge>
                     )}
                   </div>

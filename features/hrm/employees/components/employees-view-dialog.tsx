@@ -39,10 +39,10 @@ type EmployeesViewDialogProps = {
 }
 
 export function EmployeesViewDialog({
-  currentRow,
-  open,
-  onOpenChange,
-}: EmployeesViewDialogProps) {
+                                      currentRow,
+                                      open,
+                                      onOpenChange,
+                                    }: EmployeesViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   if (!currentRow) return null
 
@@ -103,6 +103,9 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
   const salesAgentBadgeColor =
     salesAgentTypes.get(currentRow.sales_agent) || 'bg-neutral-100'
 
+  // Use a type cast to any for new API fields that might not be in your types.ts yet
+  const employee = currentRow as any
+
   return (
     <div className={cn('space-y-6', className)}>
       {/* Header Info */}
@@ -133,6 +136,7 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
           </div>
           <div className='font-mono text-sm text-muted-foreground'>
             {currentRow.staff_id}
+            {employee.employee_code && ` • Code: ${employee.employee_code}`}
           </div>
           <div className='text-sm text-muted-foreground'>
             {currentRow.designation?.name || 'No Designation'} •{' '}
@@ -179,6 +183,65 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
 
       <Separator />
 
+      {/* Employment Details */}
+      <div className='space-y-4'>
+        <h4 className='text-sm font-semibold'>Employment Details</h4>
+        <div className='grid grid-cols-2 gap-4 md:grid-cols-3'>
+          <div className='space-y-1'>
+            <div className='text-xs text-muted-foreground'>Status</div>
+            <div className='text-sm capitalize'>
+              {employee.employment_status || '-'}
+            </div>
+          </div>
+          <div className='space-y-1'>
+            <div className='text-xs text-muted-foreground'>Type</div>
+            <div className='text-sm'>
+              {employee.employment_type?.name || '-'}
+            </div>
+          </div>
+          <div className='space-y-1'>
+            <div className='text-xs text-muted-foreground'>Shift</div>
+            <div className='text-sm'>
+              {currentRow.shift
+                ? `${currentRow.shift.name} (${currentRow.shift.start_time} - ${currentRow.shift.end_time})`
+                : '-'}
+            </div>
+          </div>
+          <div className='space-y-1'>
+            <div className='text-xs text-muted-foreground'>Joining Date</div>
+            <div className='text-sm'>{employee.joining_date || '-'}</div>
+          </div>
+          <div className='space-y-1'>
+            <div className='text-xs text-muted-foreground'>Probation End</div>
+            <div className='text-sm'>{employee.probation_end_date || '-'}</div>
+          </div>
+          <div className='space-y-1'>
+            <div className='text-xs text-muted-foreground'>Confirmation Date</div>
+            <div className='text-sm'>{employee.confirmation_date || '-'}</div>
+          </div>
+          <div className='space-y-1'>
+            <div className='text-xs text-muted-foreground'>Reporting Manager</div>
+            <div className='text-sm'>
+              {employee.reporting_manager?.name || '-'}
+            </div>
+          </div>
+          <div className='space-y-1'>
+            <div className='text-xs text-muted-foreground'>Work Location</div>
+            <div className='text-sm'>
+              {employee.work_location?.name || '-'}
+            </div>
+          </div>
+          <div className='space-y-1'>
+            <div className='text-xs text-muted-foreground'>Warehouse</div>
+            <div className='text-sm'>
+              {employee.warehouse?.name || '-'}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Separator />
+
       {/* Profile & Finance (if exists) */}
       {currentRow.profile && (
         <div className='space-y-4 rounded-lg border bg-muted/30 p-4'>
@@ -218,9 +281,12 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
               </div>
             </div>
             <div className='space-y-1'>
-              <div className='text-xs text-muted-foreground'>Basic Salary</div>
-              <div className='font-mono text-sm'>
-                ${Number(currentRow.basic_salary).toFixed(2)}
+              <div className='text-xs text-muted-foreground'>Salary & Structure</div>
+              <div className='text-sm'>
+                <span className='font-mono'>
+                  ${Number(currentRow.basic_salary).toFixed(2)}
+                </span>
+                {employee.salary_structure?.name ? ` (${employee.salary_structure.name})` : ''}
               </div>
             </div>
           </div>
@@ -279,9 +345,17 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
                 className='flex items-start justify-between rounded-md border bg-muted/10 p-3'
               >
                 <div>
-                  <p className='text-sm font-medium'>
-                    {doc.name || `Document #${doc.id}`}
-                  </p>
+                  <div className='flex items-center gap-2'>
+                    <p className='text-sm font-medium'>
+                      {doc.name || `Document #${doc.id}`}
+                    </p>
+                    {/* Render Document Type Badge if available */}
+                    {employee.documents?.find((d: any) => d.id === doc.id)?.document_type?.name && (
+                      <Badge variant='secondary' className='text-[10px] h-5'>
+                        {employee.documents.find((d: any) => d.id === doc.id).document_type.name}
+                      </Badge>
+                    )}
+                  </div>
                   <p className='mt-1 text-xs text-muted-foreground'>
                     {doc.issue_date && <span>Issued: {doc.issue_date} </span>}
                     {doc.expiry_date && (
@@ -319,7 +393,7 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
       <Separator />
 
       {/* Access info */}
-      <div className='grid grid-cols-2 gap-4'>
+      <div className='grid grid-cols-2 gap-4 md:grid-cols-3'>
         <div className='space-y-2'>
           <div className='text-sm font-medium text-muted-foreground'>
             Username
@@ -333,6 +407,24 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
           <div className='text-sm'>
             {currentRow.user?.roles?.map((r) => r.name).join(', ') || '-'}
           </div>
+        </div>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>Permissions</div>
+          <div className='text-sm'>
+            {currentRow.user?.permissions?.length
+              ? `${currentRow.user.permissions.length} direct permissions`
+              : '-'}
+          </div>
+        </div>
+      </div>
+
+      {/* Meta Timestamps */}
+      <div className='flex items-center justify-between border-t pt-4 text-xs text-muted-foreground'>
+        <div>
+          Created: {currentRow.created_at ? new Date(currentRow.created_at).toLocaleString() : '-'}
+        </div>
+        <div>
+          Updated: {currentRow.updated_at ? new Date(currentRow.updated_at).toLocaleString() : '-'}
         </div>
       </div>
     </div>

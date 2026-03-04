@@ -1,15 +1,24 @@
 'use client'
 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+
 import { AuthLayout } from '@/components/layout/auth-layout'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+
 import { RegisterForm } from '@/features/auth'
 
 export default function RegisterPage() {
   return (
     <AuthLayout>
-      <Card className="gap-4">
+      <Card className='gap-4'>
         <CardHeader>
-          <CardTitle className="text-lg tracking-tight">Sign in</CardTitle>
+          <CardTitle className='text-lg tracking-tight'>Sign in</CardTitle>
           <CardDescription>
             Enter your email and password below to <br />
             log into your account
@@ -19,18 +28,18 @@ export default function RegisterPage() {
           <RegisterForm />
         </CardContent>
         <CardFooter>
-          <p className="px-8 text-center text-sm text-muted-foreground">
+          <p className='px-8 text-center text-sm text-muted-foreground'>
             By clicking sign up, you agree to our{' '}
             <a
-              href="/terms"
-              className="underline underline-offset-4 hover:text-primary"
+              href='/terms'
+              className='underline underline-offset-4 hover:text-primary'
             >
               Terms of Service
             </a>{' '}
             and{' '}
             <a
-              href="/privacy"
-              className="underline underline-offset-4 hover:text-primary"
+              href='/privacy'
+              className='underline underline-offset-4 hover:text-primary'
             >
               Privacy Policy
             </a>

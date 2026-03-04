@@ -1,5 +1,7 @@
-import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
+
+import { auth } from '@/auth'
+
 import { hasPermission } from '@/lib/utils/permissions'
 
 export async function requirePermission(permission: string | string[]) {

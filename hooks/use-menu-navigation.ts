@@ -1,7 +1,8 @@
 'use client'
 
-import type { Editor } from '@tiptap/react'
 import { useEffect, useState } from 'react'
+
+import type { Editor } from '@tiptap/react'
 
 type Orientation = 'horizontal' | 'vertical' | 'both'
 
@@ -52,17 +53,17 @@ interface MenuNavigationOptions<T> {
  * @returns Object containing the selected index and a setter function
  */
 export function useMenuNavigation<T>({
-                                       editor,
-                                       containerRef,
-                                       query,
-                                       items,
-                                       onSelect,
-                                       onClose,
-                                       orientation = 'vertical',
-                                       autoSelectFirstItem = true,
-                                     }: MenuNavigationOptions<T>) {
+  editor,
+  containerRef,
+  query,
+  items,
+  onSelect,
+  onClose,
+  orientation = 'vertical',
+  autoSelectFirstItem = true,
+}: MenuNavigationOptions<T>) {
   const [selectedIndex, setSelectedIndex] = useState<number>(
-    autoSelectFirstItem ? 0 : -1,
+    autoSelectFirstItem ? 0 : -1
   )
 
   useEffect(() => {
@@ -167,7 +168,7 @@ export function useMenuNavigation<T>({
         targetElement?.removeEventListener(
           'keydown',
           handleKeyboardNavigation,
-          true,
+          true
         )
       }
     }

@@ -1,15 +1,25 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import type { Shift, ShiftExportParams, ShiftFormBody, ShiftListParams, ShiftOption } from './types'
+
+import type {
+  Shift,
+  ShiftExportParams,
+  ShiftFormBody,
+  ShiftListParams,
+  ShiftOption,
+} from './types'
 
 export const shiftKeys = {
   all: ['shifts'] as const,
   lists: () => [...shiftKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...shiftKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...shiftKeys.lists(), filters] as const,
   details: () => [...shiftKeys.all, 'detail'] as const,
   detail: (id: number) => [...shiftKeys.details(), id] as const,
   options: () => [...shiftKeys.all, 'options'] as const,
@@ -82,7 +92,8 @@ export function useCreateShift() {
 
       const response = await api.post<{ data: Shift }>(BASE_PATH, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -103,7 +114,13 @@ export function useUpdateShift() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<ShiftFormBody> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<ShiftFormBody>
+    }) => {
       const payload: Record<string, unknown> = {}
 
       if (data.name !== undefined) payload.name = data.name
@@ -114,9 +131,13 @@ export function useUpdateShift() {
       if (data.total_hours !== undefined) payload.total_hours = data.total_hours
       if (data.is_active !== undefined) payload.is_active = data.is_active
 
-      const response = await api.put<{ data: Shift }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: Shift }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }
@@ -161,7 +182,7 @@ export function useBulkActivateShifts() {
     mutationFn: async (ids: number[]) => {
       const response = await api.post<{ activated_count: number }>(
         `${BASE_PATH}/bulk-activate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -182,7 +203,7 @@ export function useBulkDeactivateShifts() {
     mutationFn: async (ids: number[]) => {
       const response = await api.post<{ deactivated_count: number }>(
         `${BASE_PATH}/bulk-deactivate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response

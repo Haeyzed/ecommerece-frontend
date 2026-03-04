@@ -6,11 +6,11 @@
  * Orchestrator component that renders the appropriate dialog (View, Export)
  * based on the current state from the AuditLogProvider.
  */
+import { useAuthSession } from '@/features/auth/api'
 
 import { AuditLogExportDialog } from './audit-log-export-dialog'
-import { AuditLogViewDialog } from './audit-log-view-dialog'
 import { useAuditLog } from './audit-log-provider'
-import { useAuthSession } from '@/features/auth/api'
+import { AuditLogViewDialog } from './audit-log-view-dialog'
 
 export function AuditLogDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useAuditLog()
@@ -24,7 +24,7 @@ export function AuditLogDialogs() {
     <>
       {canExport && (
         <AuditLogExportDialog
-          key="audit-log-export"
+          key='audit-log-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

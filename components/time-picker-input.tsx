@@ -1,17 +1,23 @@
-import { Input } from '@/components/ui/input'
+import React from 'react'
 
 import { cn } from '@/lib/utils'
-import React from 'react'
-import { getArrowByType, getDateByType, Period, setDateByType, TimePickerType } from '@/lib/utils/time-picker-utils'
+import {
+  Period,
+  TimePickerType,
+  getArrowByType,
+  getDateByType,
+  setDateByType,
+} from '@/lib/utils/time-picker-utils'
 
-export interface TimePickerInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
-  picker: TimePickerType;
-  date: Date | undefined;
-  setDate: (date: Date | undefined) => void;
-  period?: Period;
-  onRightFocus?: () => void;
-  onLeftFocus?: () => void;
+import { Input } from '@/components/ui/input'
+
+export interface TimePickerInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  picker: TimePickerType
+  date: Date | undefined
+  setDate: (date: Date | undefined) => void
+  period?: Period
+  onRightFocus?: () => void
+  onLeftFocus?: () => void
 }
 
 const TimePickerInput = React.forwardRef<
@@ -35,7 +41,7 @@ const TimePickerInput = React.forwardRef<
       onRightFocus,
       ...props
     },
-    ref,
+    ref
   ) => {
     const [flag, setFlag] = React.useState<boolean>(false)
     const [prevIntKey, setPrevIntKey] = React.useState<string>('0')
@@ -101,7 +107,7 @@ const TimePickerInput = React.forwardRef<
         name={name || picker}
         className={cn(
           'w-[48px] text-center font-mono text-base tabular-nums caret-transparent focus:bg-accent focus:text-accent-foreground [&::-webkit-inner-spin-button]:appearance-none',
-          className,
+          className
         )}
         value={value || calculatedValue}
         onChange={(e) => {
@@ -109,7 +115,7 @@ const TimePickerInput = React.forwardRef<
           onChange?.(e)
         }}
         type={type}
-        inputMode="decimal"
+        inputMode='decimal'
         onKeyDown={(e) => {
           onKeyDown?.(e)
           handleKeyDown(e)
@@ -117,7 +123,7 @@ const TimePickerInput = React.forwardRef<
         {...props}
       />
     )
-  },
+  }
 )
 
 TimePickerInput.displayName = 'TimePickerInput'

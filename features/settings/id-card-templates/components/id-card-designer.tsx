@@ -1,23 +1,39 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Controller, useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { Delete02Icon, FloppyDiskIcon, Image01Icon, PaintBoardIcon } from '@hugeicons/core-free-icons'
 
-import { useActiveIdCardTemplate, useUpdateIdCardTemplate } from '../api'
-import { generateIdCardsPdf } from '@/features/hrm/employees/utils/generate-id-card'
-import { type Employee } from '@/features/hrm/employees/types'
+import { z } from 'zod'
+
+import { Controller, useForm } from 'react-hook-form'
+
+import {
+  Delete02Icon,
+  FloppyDiskIcon,
+  Image01Icon,
+  PaintBoardIcon,
+} from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
+import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
-import { Spinner } from '@/components/ui/spinner'
 import { Separator } from '@/components/ui/separator'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Spinner } from '@/components/ui/spinner'
+import { Switch } from '@/components/ui/switch'
+
+import { type Employee } from '@/features/hrm/employees/types'
+import { generateIdCardsPdf } from '@/features/hrm/employees/utils/generate-id-card'
+
+import { useActiveIdCardTemplate, useUpdateIdCardTemplate } from '../api'
 
 const idCardDesignSchema = z.object({
   primary_color: z.string().min(4),
@@ -68,8 +84,10 @@ const DUMMY_EMPLOYEE: Employee = {
 }
 
 export function IdCardDesigner() {
-  const { data: activeTemplate, isLoading: isLoadingConfig } = useActiveIdCardTemplate()
-  const { mutate: updateTemplate, isPending: isSaving } = useUpdateIdCardTemplate()
+  const { data: activeTemplate, isLoading: isLoadingConfig } =
+    useActiveIdCardTemplate()
+  const { mutate: updateTemplate, isPending: isSaving } =
+    useUpdateIdCardTemplate()
 
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
@@ -104,13 +122,16 @@ export function IdCardDesigner() {
 
       setIsGenerating(true)
       try {
-        const generated = await generateIdCardsPdf([DUMMY_EMPLOYEE], watchedValues as any)
+        const generated = await generateIdCardsPdf(
+          [DUMMY_EMPLOYEE],
+          watchedValues as any
+        )
 
         // Ensure TS understands this is definitely a string
         const finalUrlString: string = String(generated)
 
         if (isMounted) {
-          setPdfUrl(prev => {
+          setPdfUrl((prev) => {
             if (prev) window.URL.revokeObjectURL(prev)
             return finalUrlString
           })
@@ -144,67 +165,107 @@ export function IdCardDesigner() {
     if (file) {
       const reader = new FileReader()
       reader.onloadend = () => {
-        form.setValue('logo_url', reader.result as string, { shouldDirty: true })
+        form.setValue('logo_url', reader.result as string, {
+          shouldDirty: true,
+        })
       }
       reader.readAsDataURL(file)
     }
   }
 
   if (isLoadingConfig) {
-    return <div className="flex h-64 items-center justify-center"><Spinner /></div>
+    return (
+      <div className='flex h-64 items-center justify-center'>
+        <Spinner />
+      </div>
+    )
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div className='grid grid-cols-1 gap-6 lg:grid-cols-12'>
       {/* Settings Form - Left Side */}
-      <div className="lg:col-span-7 xl:col-span-8">
-        <form id="id-card-design-form" onSubmit={form.handleSubmit(onSubmit)}>
+      <div className='lg:col-span-7 xl:col-span-8'>
+        <form id='id-card-design-form' onSubmit={form.handleSubmit(onSubmit)}>
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className='flex items-center justify-between'>
                 <div>
-                  <CardTitle className="text-xl flex items-center gap-2">
-                    <HugeiconsIcon icon={PaintBoardIcon} className="size-5" />
+                  <CardTitle className='flex items-center gap-2 text-xl'>
+                    <HugeiconsIcon icon={PaintBoardIcon} className='size-5' />
                     ID Card Designer
                   </CardTitle>
                   <CardDescription>
-                    Customize the layout, colors, and fields displayed on employee ID cards.
+                    Customize the layout, colors, and fields displayed on
+                    employee ID cards.
                   </CardDescription>
                 </div>
-                <Button type="submit" disabled={isSaving || !form.formState.isDirty}>
-                  {isSaving ? <Spinner className="mr-2 size-4" /> :
-                    <HugeiconsIcon icon={FloppyDiskIcon} className="mr-2 size-4" />}
+                <Button
+                  type='submit'
+                  disabled={isSaving || !form.formState.isDirty}
+                >
+                  {isSaving ? (
+                    <Spinner className='mr-2 size-4' />
+                  ) : (
+                    <HugeiconsIcon
+                      icon={FloppyDiskIcon}
+                      className='mr-2 size-4'
+                    />
+                  )}
                   Save Design
                 </Button>
               </div>
             </CardHeader>
             <Separator />
-            <CardContent className="space-y-6 pt-6">
-
+            <CardContent className='space-y-6 pt-6'>
               {/* Colors */}
               <div>
-                <h3 className="text-sm font-semibold mb-4 text-muted-foreground uppercase tracking-wider">Brand
-                  Colors</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <Controller control={form.control} name="primary_color" render={({ field }) => (
-                    <div className="space-y-2">
-                      <Label>Primary Background</Label>
-                      <div className="flex gap-2">
-                        <Input type="color" className="w-14 h-10 p-1 cursor-pointer" {...field} />
-                        <Input type="text" className="uppercase font-mono" {...field} />
+                <h3 className='mb-4 text-sm font-semibold tracking-wider text-muted-foreground uppercase'>
+                  Brand Colors
+                </h3>
+                <div className='grid grid-cols-2 gap-4'>
+                  <Controller
+                    control={form.control}
+                    name='primary_color'
+                    render={({ field }) => (
+                      <div className='space-y-2'>
+                        <Label>Primary Background</Label>
+                        <div className='flex gap-2'>
+                          <Input
+                            type='color'
+                            className='h-10 w-14 cursor-pointer p-1'
+                            {...field}
+                          />
+                          <Input
+                            type='text'
+                            className='font-mono uppercase'
+                            {...field}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )} />
+                    )}
+                  />
 
-                  <Controller control={form.control} name="text_color" render={({ field }) => (
-                    <div className="space-y-2">
-                      <Label>Text Color</Label>
-                      <div className="flex gap-2">
-                        <Input type="color" className="w-14 h-10 p-1 cursor-pointer" {...field} />
-                        <Input type="text" className="uppercase font-mono" {...field} />
+                  <Controller
+                    control={form.control}
+                    name='text_color'
+                    render={({ field }) => (
+                      <div className='space-y-2'>
+                        <Label>Text Color</Label>
+                        <div className='flex gap-2'>
+                          <Input
+                            type='color'
+                            className='h-10 w-14 cursor-pointer p-1'
+                            {...field}
+                          />
+                          <Input
+                            type='text'
+                            className='font-mono uppercase'
+                            {...field}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )} />
+                    )}
+                  />
                 </div>
               </div>
 
@@ -212,85 +273,150 @@ export function IdCardDesigner() {
 
               {/* Logo */}
               <div>
-                <h3 className="text-sm font-semibold mb-4 text-muted-foreground uppercase tracking-wider">Company
-                  Logo</h3>
-                <Controller control={form.control} name="logo_url" render={({ field }) => (
-                  <div className="space-y-4">
-                    {field.value ? (
-                      <div className="flex items-center gap-4 p-4 border rounded-md bg-muted/20">
-                        <img src={field.value} alt="Logo" className="h-12 object-contain" />
-                        <Button type="button" variant="destructive" size="sm"
-                                onClick={() => form.setValue('logo_url', null, { shouldDirty: true })}>
-                          <HugeiconsIcon icon={Delete02Icon} className="mr-2 size-4" /> Remove Logo
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        <Label htmlFor="logo-upload"
-                               className="cursor-pointer flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-md hover:bg-muted/50 transition-colors">
-                          <HugeiconsIcon icon={Image01Icon} className="size-8 text-muted-foreground mb-2" />
-                          <span className="text-sm font-medium">Click to upload logo (PNG/JPG)</span>
-                        </Label>
-                        <Input id="logo-upload" type="file" accept="image/png, image/jpeg" className="hidden"
-                               onChange={handleLogoUpload} />
-                      </div>
-                    )}
-                  </div>
-                )} />
+                <h3 className='mb-4 text-sm font-semibold tracking-wider text-muted-foreground uppercase'>
+                  Company Logo
+                </h3>
+                <Controller
+                  control={form.control}
+                  name='logo_url'
+                  render={({ field }) => (
+                    <div className='space-y-4'>
+                      {field.value ? (
+                        <div className='flex items-center gap-4 rounded-md border bg-muted/20 p-4'>
+                          <img
+                            src={field.value}
+                            alt='Logo'
+                            className='h-12 object-contain'
+                          />
+                          <Button
+                            type='button'
+                            variant='destructive'
+                            size='sm'
+                            onClick={() =>
+                              form.setValue('logo_url', null, {
+                                shouldDirty: true,
+                              })
+                            }
+                          >
+                            <HugeiconsIcon
+                              icon={Delete02Icon}
+                              className='mr-2 size-4'
+                            />{' '}
+                            Remove Logo
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className='space-y-2'>
+                          <Label
+                            htmlFor='logo-upload'
+                            className='flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-md border-2 border-dashed transition-colors hover:bg-muted/50'
+                          >
+                            <HugeiconsIcon
+                              icon={Image01Icon}
+                              className='mb-2 size-8 text-muted-foreground'
+                            />
+                            <span className='text-sm font-medium'>
+                              Click to upload logo (PNG/JPG)
+                            </span>
+                          </Label>
+                          <Input
+                            id='logo-upload'
+                            type='file'
+                            accept='image/png, image/jpeg'
+                            className='hidden'
+                            onChange={handleLogoUpload}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                />
               </div>
 
               <Separator />
 
               {/* Toggles */}
               <div>
-                <h3 className="text-sm font-semibold mb-4 text-muted-foreground uppercase tracking-wider">Visible
-                  Fields</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Controller control={form.control} name="show_phone" render={({ field }) => (
-                    <div className="flex items-center justify-between p-4 border rounded-md">
-                      <Label className="cursor-pointer" htmlFor="show-phone">Show Phone Number</Label>
-                      <Switch id="show-phone" checked={field.value} onCheckedChange={field.onChange} />
-                    </div>
-                  )} />
+                <h3 className='mb-4 text-sm font-semibold tracking-wider text-muted-foreground uppercase'>
+                  Visible Fields
+                </h3>
+                <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+                  <Controller
+                    control={form.control}
+                    name='show_phone'
+                    render={({ field }) => (
+                      <div className='flex items-center justify-between rounded-md border p-4'>
+                        <Label className='cursor-pointer' htmlFor='show-phone'>
+                          Show Phone Number
+                        </Label>
+                        <Switch
+                          id='show-phone'
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </div>
+                    )}
+                  />
 
-                  <Controller control={form.control} name="show_address" render={({ field }) => (
-                    <div className="flex items-center justify-between p-4 border rounded-md">
-                      <Label className="cursor-pointer" htmlFor="show-address">Show Address</Label>
-                      <Switch id="show-address" checked={field.value} onCheckedChange={field.onChange} />
-                    </div>
-                  )} />
+                  <Controller
+                    control={form.control}
+                    name='show_address'
+                    render={({ field }) => (
+                      <div className='flex items-center justify-between rounded-md border p-4'>
+                        <Label
+                          className='cursor-pointer'
+                          htmlFor='show-address'
+                        >
+                          Show Address
+                        </Label>
+                        <Switch
+                          id='show-address'
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </div>
+                    )}
+                  />
 
-                  <Controller control={form.control} name="show_qr_code" render={({ field }) => (
-                    <div className="flex items-center justify-between p-4 border rounded-md">
-                      <Label className="cursor-pointer" htmlFor="show-qr">Show QR Code</Label>
-                      <Switch id="show-qr" checked={field.value} onCheckedChange={field.onChange} />
-                    </div>
-                  )} />
+                  <Controller
+                    control={form.control}
+                    name='show_qr_code'
+                    render={({ field }) => (
+                      <div className='flex items-center justify-between rounded-md border p-4'>
+                        <Label className='cursor-pointer' htmlFor='show-qr'>
+                          Show QR Code
+                        </Label>
+                        <Switch
+                          id='show-qr'
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </div>
+                    )}
+                  />
                 </div>
               </div>
-
             </CardContent>
           </Card>
         </form>
       </div>
 
       {/* Live Preview - Right Side */}
-      <div className="lg:col-span-5 xl:col-span-4">
-        <div className="sticky top-24">
-          <Card className="h-[600px] flex flex-col">
-            <CardHeader className="py-4 border-b">
-              <CardTitle className="text-base flex items-center justify-between">
+      <div className='lg:col-span-5 xl:col-span-4'>
+        <div className='sticky top-24'>
+          <Card className='flex h-[600px] flex-col'>
+            <CardHeader className='border-b py-4'>
+              <CardTitle className='flex items-center justify-between text-base'>
                 Live Preview
-                {isGenerating && <Spinner className="size-4" />}
+                {isGenerating && <Spinner className='size-4' />}
               </CardTitle>
             </CardHeader>
-            <CardContent
-              className="flex-1 p-0 bg-neutral-100 dark:bg-neutral-900 flex items-center justify-center relative overflow-hidden">
+            <CardContent className='relative flex flex-1 items-center justify-center overflow-hidden bg-neutral-100 p-0 dark:bg-neutral-900'>
               {pdfUrl ? (
                 <iframe
                   src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`} // Hides PDF viewer toolbars
-                  className="w-full h-full border-0"
-                  title="ID Card Live Preview"
+                  className='h-full w-full border-0'
+                  title='ID Card Live Preview'
                 />
               ) : (
                 <Spinner />

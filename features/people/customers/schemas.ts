@@ -8,7 +8,9 @@ export const customerSchema = z
     customer_group_id: z.number().int().positive('Customer group is required'),
     name: z.string().min(1, 'Name is required').max(255, 'Name is too long'),
     company_name: optionalString,
-    email: z.union([z.string().email('Invalid email').max(255), z.literal('')]).optional(),
+    email: z
+      .union([z.string().email('Invalid email').max(255), z.literal('')])
+      .optional(),
     type: z.string().max(50).nullable().optional(),
     phone_number: optionalString,
     wa_number: optionalString,
@@ -27,7 +29,12 @@ export const customerSchema = z
     both: z.boolean().optional(),
     user: z.boolean().optional(),
     username: z.string().max(255).nullable().optional(),
-    password: z.string().min(8, 'Password must be at least 8 characters').max(255).nullable().optional(),
+    password: z
+      .string()
+      .min(8, 'Password must be at least 8 characters')
+      .max(255)
+      .nullable()
+      .optional(),
   })
   .superRefine((data, ctx) => {
     if (data.both) {
@@ -39,18 +46,34 @@ export const customerSchema = z
         })
       }
       if (!data.email?.trim()) {
-        ctx.addIssue({ code: 'custom', message: 'Email is required when also adding as supplier', path: ['email'] })
+        ctx.addIssue({
+          code: 'custom',
+          message: 'Email is required when also adding as supplier',
+          path: ['email'],
+        })
       }
       if (!data.address?.trim()) {
-        ctx.addIssue({ code: 'custom', message: 'Address is required when also adding as supplier', path: ['address'] })
+        ctx.addIssue({
+          code: 'custom',
+          message: 'Address is required when also adding as supplier',
+          path: ['address'],
+        })
       }
     }
     if (data.user) {
       if (!data.username?.trim()) {
-        ctx.addIssue({ code: 'custom', message: 'Username is required when creating login', path: ['username'] })
+        ctx.addIssue({
+          code: 'custom',
+          message: 'Username is required when creating login',
+          path: ['username'],
+        })
       }
       if (!data.both && !data.email?.trim()) {
-        ctx.addIssue({ code: 'custom', message: 'Email is required when creating login', path: ['email'] })
+        ctx.addIssue({
+          code: 'custom',
+          message: 'Email is required when creating login',
+          path: ['email'],
+        })
       }
     }
   })
@@ -76,7 +99,7 @@ export const customerExportSchema = z
       if (data.method === 'email') return data.user_id !== undefined
       return true
     },
-    { message: 'Please select a user to send the email to', path: ['user_id'] },
+    { message: 'Please select a user to send the email to', path: ['user_id'] }
   )
 
 export const addDepositSchema = z.object({

@@ -1,9 +1,18 @@
 'use client'
 
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/components/ui/sidebar'
 import { useLayout } from '@/lib/providers/layout-provider'
+
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
+} from '@/components/ui/sidebar'
+
 // import { AppTitle } from './app-title'
 import { useAuthSession } from '@/features/auth/api'
+
 import { sidebarData } from './data/sidebar-data'
 import { NavGroup } from './nav-group'
 import { NavUser } from './nav-user'
@@ -13,17 +22,18 @@ export function AppSidebar() {
   const { collapsible, variant } = useLayout()
   const { data: session } = useAuthSession()
 
-  const user = session && session.user
-    ? {
-      name: session.user.name || 'User',
-      email: session.user.email || 'No email',
-      image: session.user.image_url || '/avatars/shadcn.png',
-    }
-    : {
-      name: 'User',
-      email: 'No email',
-      image: '/avatars/shadcn.png',
-    }
+  const user =
+    session && session.user
+      ? {
+          name: session.user.name || 'User',
+          email: session.user.email || 'No email',
+          image: session.user.image_url || '/avatars/shadcn.png',
+        }
+      : {
+          name: 'User',
+          email: 'No email',
+          image: '/avatars/shadcn.png',
+        }
 
   return (
     <Sidebar collapsible={collapsible} variant={variant}>

@@ -1,8 +1,10 @@
 'use client'
 
-import { DataTableEmptyState } from '@/components/data-table'
-import { HugeiconsIcon } from '@hugeicons/react'
 import { Download01Icon, PlusSignIcon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
+import { DataTableEmptyState } from '@/components/data-table'
+
 import { useBrands } from './brands-provider'
 
 export function BrandsEmptyState() {
@@ -10,17 +12,17 @@ export function BrandsEmptyState() {
 
   return (
     <DataTableEmptyState
-      title="No brands yet"
+      title='No brands yet'
       description="You haven't created any brands yet. Get started by creating your first brand."
       primaryAction={{
         label: 'Add Brand',
         onClick: () => setOpen('add'),
-        icon: <HugeiconsIcon icon={PlusSignIcon} className="size-4 mr-2" />,
+        icon: <HugeiconsIcon icon={PlusSignIcon} className='mr-2 size-4' />,
       }}
       secondaryAction={{
         label: 'Import Brands',
         onClick: () => setOpen('import'),
-        icon: <HugeiconsIcon icon={Download01Icon} className="size-4 mr-2" />,
+        icon: <HugeiconsIcon icon={Download01Icon} className='mr-2 size-4' />,
       }}
       learnMoreLink={{
         href: '#',

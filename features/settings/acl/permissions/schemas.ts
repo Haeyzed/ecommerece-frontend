@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
 export const permissionSchema = z.object({
@@ -42,9 +43,9 @@ export const permissionExportSchema = z
       }
       return true
     },
-    { path: ['user_id'] },
+    { path: ['user_id'] }
   )
 
-export type PermissionFormData = z.infer<typeof permissionSchema>;
-export type PermissionImportFormData = z.infer<typeof permissionImportSchema>;
-export type PermissionExportFormData = z.infer<typeof permissionExportSchema>;
+export type PermissionFormData = z.infer<typeof permissionSchema>
+export type PermissionImportFormData = z.infer<typeof permissionImportSchema>
+export type PermissionExportFormData = z.infer<typeof permissionExportSchema>

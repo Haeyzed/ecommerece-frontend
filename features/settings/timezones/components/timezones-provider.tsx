@@ -1,10 +1,18 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import useDialogState from '@/hooks/use-dialog-state'
+
 import { type Timezone } from '../types'
 
-type TimezonesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
+type TimezonesDialogType =
+  | 'import'
+  | 'add'
+  | 'edit'
+  | 'delete'
+  | 'export'
+  | 'view'
 
 type TimezonesContextType = {
   open: TimezonesDialogType | null
@@ -20,7 +28,9 @@ export function TimezonesProvider({ children }: { children: React.ReactNode }) {
   const [currentRow, setCurrentRow] = useState<Timezone | null>(null)
 
   return (
-    <TimezonesContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <TimezonesContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </TimezonesContext.Provider>
   )

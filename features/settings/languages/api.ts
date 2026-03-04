@@ -1,15 +1,25 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import type { Language, LanguageExportParams, LanguageFormData, LanguageListParams, LanguageOption } from './types'
+
+import type {
+  Language,
+  LanguageExportParams,
+  LanguageFormData,
+  LanguageListParams,
+  LanguageOption,
+} from './types'
 
 export const languageKeys = {
   all: ['languages'] as const,
   lists: () => [...languageKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...languageKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...languageKeys.lists(), filters] as const,
   details: () => [...languageKeys.all, 'detail'] as const,
   detail: (id: number) => [...languageKeys.details(), id] as const,
   options: () => [...languageKeys.all, 'options'] as const,
@@ -77,7 +87,8 @@ export function useCreateLanguage() {
 
       const response = await api.post<{ data: Language }>(BASE_PATH, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -97,7 +108,13 @@ export function useUpdateLanguage() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<LanguageFormData> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<LanguageFormData>
+    }) => {
       const payload: Record<string, unknown> = {}
 
       Object.keys(data).forEach((key) => {
@@ -107,9 +124,13 @@ export function useUpdateLanguage() {
         }
       })
 
-      const response = await api.put<{ data: Language }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: Language }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }

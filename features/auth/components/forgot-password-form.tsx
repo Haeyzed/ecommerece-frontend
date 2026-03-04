@@ -8,20 +8,39 @@
  *
  * @component
  */
-
-import { zodResolver } from '@hookform/resolvers/zod'
-import Link from 'next/link'
 import { useState } from 'react'
+
+import Link from 'next/link'
+
 import { Controller, useForm } from 'react-hook-form'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { ValidationError } from '@/lib/api/api-errors'
+
 import { Button } from '@/components/ui/button'
-import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import {
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
+
 import { useForgotPassword } from '@/features/auth/api'
-import { type ForgotPasswordFormData, forgotPasswordSchema } from '@/features/auth/schemas'
-import { ValidationError } from '@/lib/api/api-errors'
+import {
+  type ForgotPasswordFormData,
+  forgotPasswordSchema,
+} from '@/features/auth/schemas'
 
 export function ForgotPasswordForm() {
   const [success, setSuccess] = useState(false)
@@ -58,7 +77,7 @@ export function ForgotPasswordForm() {
     return (
       <>
         <CardHeader>
-          <CardTitle className="text-lg tracking-tight">
+          <CardTitle className='text-lg tracking-tight'>
             Check your email
           </CardTitle>
           <CardDescription>
@@ -66,8 +85,8 @@ export function ForgotPasswordForm() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Link href="/login">
-            <Button variant="outline" className="w-full">
+          <Link href='/login'>
+            <Button variant='outline' className='w-full'>
               Back to login
             </Button>
           </Link>
@@ -79,7 +98,7 @@ export function ForgotPasswordForm() {
   return (
     <>
       <CardHeader>
-        <CardTitle className="text-lg tracking-tight">
+        <CardTitle className='text-lg tracking-tight'>
           Forgot password
         </CardTitle>
         <CardDescription>
@@ -88,27 +107,27 @@ export function ForgotPasswordForm() {
       </CardHeader>
       <CardContent>
         <form
-          id="form-forgot-password"
+          id='form-forgot-password'
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6"
+          className='space-y-6'
         >
           <FieldGroup>
             <Controller
-              name="email"
+              name='email'
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel>
-                    Email <span className="text-destructive">*</span>
+                    Email <span className='text-destructive'>*</span>
                   </FieldLabel>
                   <FieldContent>
                     <Input
                       {...field}
-                      type="email"
-                      placeholder="you@example.com"
+                      type='email'
+                      placeholder='you@example.com'
                       disabled={form.formState.isSubmitting}
                       aria-invalid={fieldState.invalid}
-                      autoComplete="email"
+                      autoComplete='email'
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -120,20 +139,20 @@ export function ForgotPasswordForm() {
           </FieldGroup>
 
           {form.formState.errors.root && (
-            <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+            <div className='rounded-md bg-destructive/10 p-3 text-sm text-destructive'>
               {form.formState.errors.root.message}
             </div>
           )}
 
           <Button
-            type="submit"
-            form="form-forgot-password"
-            className="w-full"
+            type='submit'
+            form='form-forgot-password'
+            className='w-full'
             disabled={form.formState.isSubmitting}
           >
             {form.formState.isSubmitting ? (
               <>
-                <Spinner className="mr-2 size-4" />
+                <Spinner className='mr-2 size-4' />
                 Sending...
               </>
             ) : (
@@ -143,10 +162,10 @@ export function ForgotPasswordForm() {
         </form>
       </CardContent>
       <CardFooter>
-        <p className="px-8 text-center text-sm text-muted-foreground">
+        <p className='px-8 text-center text-sm text-muted-foreground'>
           <Link
-            href="/login"
-            className="underline underline-offset-4 hover:text-primary"
+            href='/login'
+            className='underline underline-offset-4 hover:text-primary'
           >
             Back to login
           </Link>

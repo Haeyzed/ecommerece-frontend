@@ -1,10 +1,18 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import useDialogState from '@/hooks/use-dialog-state'
+
 import { type Overtime } from '@/features/hrm/overtimes/types'
 
-type OvertimesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
+type OvertimesDialogType =
+  | 'import'
+  | 'add'
+  | 'edit'
+  | 'delete'
+  | 'export'
+  | 'view'
 
 type OvertimesContextType = {
   open: OvertimesDialogType | null
@@ -20,7 +28,9 @@ export function OvertimesProvider({ children }: { children: React.ReactNode }) {
   const [currentRow, setCurrentRow] = useState<Overtime | null>(null)
 
   return (
-    <OvertimesContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <OvertimesContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </OvertimesContext.Provider>
   )

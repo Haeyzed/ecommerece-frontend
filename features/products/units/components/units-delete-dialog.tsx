@@ -1,15 +1,20 @@
 'use client'
 
 import { useState } from 'react'
-import { HugeiconsIcon } from '@hugeicons/react'
+
 import { Alert02Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+
 import { ConfirmDialog } from '@/components/confirm-dialog'
+
+import { useAuthSession } from '@/features/auth/api'
+
 import { useDeleteUnit } from '../api'
 import { type Unit } from '../types'
-import { useAuthSession } from '@/features/auth/api'
 
 type UnitDeleteDialogProps = {
   open: boolean
@@ -18,10 +23,10 @@ type UnitDeleteDialogProps = {
 }
 
 export function UnitsDeleteDialog({
-                                    open,
-                                    onOpenChange,
-                                    currentRow,
-                                  }: UnitDeleteDialogProps) {
+  open,
+  onOpenChange,
+  currentRow,
+}: UnitDeleteDialogProps) {
   const [value, setValue] = useState('')
   const { mutate: deleteUnit, isPending } = useDeleteUnit()
   const { data: session } = useAuthSession()
@@ -47,10 +52,10 @@ export function UnitsDeleteDialog({
       handleConfirm={handleDelete}
       disabled={value.trim() !== currentRow.name || isPending}
       title={
-        <span className="text-destructive">
+        <span className='text-destructive'>
           <HugeiconsIcon
             icon={Alert02Icon}
-            className="me-1 inline-block stroke-destructive"
+            className='me-1 inline-block stroke-destructive'
             size={18}
             strokeWidth={2}
           />{' '}
@@ -58,25 +63,25 @@ export function UnitsDeleteDialog({
         </span>
       }
       desc={
-        <div className="space-y-4">
-          <p className="mb-2">
+        <div className='space-y-4'>
+          <p className='mb-2'>
             Are you sure you want to delete{' '}
-            <span className="font-bold">{currentRow.name}</span>?
+            <span className='font-bold'>{currentRow.name}</span>?
             <br />
-            This action will permanently remove the unit from the system.
-            This cannot be undone.
+            This action will permanently remove the unit from the system. This
+            cannot be undone.
           </p>
 
-          <Label className="my-2">
+          <Label className='my-2'>
             Unit Name:
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder="Enter unit name to confirm deletion."
+              placeholder='Enter unit name to confirm deletion.'
             />
           </Label>
 
-          <Alert variant="destructive">
+          <Alert variant='destructive'>
             <AlertTitle>Warning!</AlertTitle>
             <AlertDescription>
               Please be careful, this operation can not be rolled back.
@@ -84,7 +89,7 @@ export function UnitsDeleteDialog({
           </Alert>
         </div>
       }
-      confirmText="Delete"
+      confirmText='Delete'
       destructive
     />
   )

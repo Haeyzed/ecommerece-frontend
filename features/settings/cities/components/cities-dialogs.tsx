@@ -1,12 +1,13 @@
 'use client'
 
+import { useAuthSession } from '@/features/auth/api'
+
 import { CitiesActionDialog } from './cities-action-dialog'
 import { CitiesDeleteDialog } from './cities-delete-dialog'
 import { CitiesExportDialog } from './cities-export-dialog'
 import { CitiesImportDialog } from './cities-import-dialog'
-import { CitiesViewDialog } from './cities-view-dialog'
 import { useCities } from './cities-provider'
-import { useAuthSession } from '@/features/auth/api'
+import { CitiesViewDialog } from './cities-view-dialog'
 
 export function CitiesDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useCities()
@@ -23,7 +24,7 @@ export function CitiesDialogs() {
     <>
       {canCreate && (
         <CitiesActionDialog
-          key="city-add"
+          key='city-add'
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -33,7 +34,7 @@ export function CitiesDialogs() {
 
       {canImport && (
         <CitiesImportDialog
-          key="city-import"
+          key='city-import'
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -43,7 +44,7 @@ export function CitiesDialogs() {
 
       {canExport && (
         <CitiesExportDialog
-          key="city-export"
+          key='city-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

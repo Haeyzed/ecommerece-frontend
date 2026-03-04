@@ -18,7 +18,10 @@ export interface SmsProvider {
 }
 
 /** Detail key config per gateway name for form labels */
-export const SMS_GATEWAY_FIELDS: Record<string, { key: string; label: string; type?: 'text' | 'password' }[]> = {
+export const SMS_GATEWAY_FIELDS: Record<
+  string,
+  { key: string; label: string; type?: 'text' | 'password' }[]
+> = {
   tonkra: [
     { key: 'api_token', label: 'API Token', type: 'password' },
     { key: 'sender_id', label: 'Sender ID' },

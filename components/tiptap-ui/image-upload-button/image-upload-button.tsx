@@ -8,14 +8,16 @@ import { parseShortcutKeys } from '@/lib/tiptap-utils'
 // --- Hooks ---
 import { useTiptapEditor } from '@/hooks/use-tiptap-editor'
 
-// --- Tiptap UI ---
-import type { UseImageUploadConfig } from '@/components/tiptap-ui/image-upload-button'
-import { IMAGE_UPLOAD_SHORTCUT_KEY, useImageUpload } from '@/components/tiptap-ui/image-upload-button'
-
+import { Badge } from '@/components/tiptap-ui-primitive/badge'
 // --- UI Primitives ---
 import type { ButtonProps } from '@/components/tiptap-ui-primitive/button'
 import { Button } from '@/components/tiptap-ui-primitive/button'
-import { Badge } from '@/components/tiptap-ui-primitive/badge'
+// --- Tiptap UI ---
+import type { UseImageUploadConfig } from '@/components/tiptap-ui/image-upload-button'
+import {
+  IMAGE_UPLOAD_SHORTCUT_KEY,
+  useImageUpload,
+} from '@/components/tiptap-ui/image-upload-button'
 
 type IconProps = React.SVGProps<SVGSVGElement>
 type IconComponent = ({ className, ...props }: IconProps) => React.ReactElement
@@ -38,8 +40,8 @@ export interface ImageUploadButtonProps
 }
 
 export function ImageShortcutBadge({
-                                     shortcutKeys = IMAGE_UPLOAD_SHORTCUT_KEY,
-                                   }: {
+  shortcutKeys = IMAGE_UPLOAD_SHORTCUT_KEY,
+}: {
   shortcutKeys?: string
 }) {
   return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>
@@ -66,7 +68,7 @@ export const ImageUploadButton = forwardRef<
       children,
       ...buttonProps
     },
-    ref,
+    ref
   ) => {
     const { editor } = useTiptapEditor(providedEditor)
     const {
@@ -89,7 +91,7 @@ export const ImageUploadButton = forwardRef<
         if (event.defaultPrevented) return
         handleImage()
       },
-      [handleImage, onClick],
+      [handleImage, onClick]
     )
 
     if (!isVisible) {
@@ -100,10 +102,10 @@ export const ImageUploadButton = forwardRef<
 
     return (
       <Button
-        type="button"
-        variant="ghost"
+        type='button'
+        variant='ghost'
         data-active-state={isActive ? 'on' : 'off'}
-        role="button"
+        role='button'
         tabIndex={-1}
         disabled={!canInsert}
         data-disabled={!canInsert}
@@ -116,14 +118,14 @@ export const ImageUploadButton = forwardRef<
       >
         {children ?? (
           <>
-            <RenderIcon className="tiptap-button-icon" />
-            {text && <span className="tiptap-button-text">{text}</span>}
+            <RenderIcon className='tiptap-button-icon' />
+            {text && <span className='tiptap-button-text'>{text}</span>}
             {showShortcut && <ImageShortcutBadge shortcutKeys={shortcutKeys} />}
           </>
         )}
       </Button>
     )
-  },
+  }
 )
 
 ImageUploadButton.displayName = 'ImageUploadButton'

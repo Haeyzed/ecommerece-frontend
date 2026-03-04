@@ -1,13 +1,12 @@
-import { mergeAttributes, Node, ReactNodeViewRenderer } from '@tiptap/react'
-import {
-  ImageUploadNode as ImageUploadNodeComponent,
-} from '@/components/tiptap-node/image-upload-node/image-upload-node'
 import type { NodeType } from '@tiptap/pm/model'
+import { Node, ReactNodeViewRenderer, mergeAttributes } from '@tiptap/react'
+
+import { ImageUploadNode as ImageUploadNodeComponent } from '@/components/tiptap-node/image-upload-node/image-upload-node'
 
 export type UploadFunction = (
   file: File,
   onProgress?: (event: { progress: number }) => void,
-  abortSignal?: AbortSignal,
+  abortSignal?: AbortSignal
 ) => Promise<string>
 
 export interface ImageUploadNodeOptions {
@@ -121,12 +120,12 @@ export const ImageUploadNode = Node.create<ImageUploadNodeOptions>({
     return {
       setImageUploadNode:
         (options) =>
-          ({ commands }) => {
-            return commands.insertContent({
-              type: this.name,
-              attrs: options,
-            })
-          },
+        ({ commands }) => {
+          return commands.insertContent({
+            type: this.name,
+            attrs: options,
+          })
+        },
     }
   },
 

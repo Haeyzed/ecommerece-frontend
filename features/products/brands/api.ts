@@ -1,15 +1,25 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import type { Brand, BrandExportParams, BrandFormData, BrandListParams, BrandOption } from './types'
+
+import type {
+  Brand,
+  BrandExportParams,
+  BrandFormData,
+  BrandListParams,
+  BrandOption,
+} from './types'
 
 export const brandKeys = {
   all: ['brands'] as const,
   lists: () => [...brandKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...brandKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...brandKeys.lists(), filters] as const,
   details: () => [...brandKeys.all, 'detail'] as const,
   detail: (id: number) => [...brandKeys.details(), id] as const,
   options: () => [...brandKeys.all, 'options'] as const,
@@ -23,10 +33,7 @@ export function useBrands(params?: BrandListParams) {
   const query = useQuery({
     queryKey: brandKeys.list(params),
     queryFn: async () => {
-      const response = await api.get<Brand[]>(
-        BASE_PATH,
-        { params },
-      )
+      const response = await api.get<Brand[]>(BASE_PATH, { params })
       return response
     },
     enabled: sessionStatus !== 'loading',
@@ -75,12 +82,14 @@ export function useCreateBrand() {
 
       formData.append('name', data.name)
       if (data.slug) formData.append('slug', data.slug)
-      if (data.short_description) formData.append('short_description', data.short_description)
+      if (data.short_description)
+        formData.append('short_description', data.short_description)
       if (data.page_title) formData.append('page_title', data.page_title)
       if (data.image && data.image.length > 0) {
         formData.append('image', data.image[0])
       }
-      if (data.is_active !== undefined) formData.append('is_active', data.is_active ? '1' : '0')
+      if (data.is_active !== undefined)
+        formData.append('is_active', data.is_active ? '1' : '0')
 
       const response = await api.post<{ data: Brand }>(BASE_PATH, formData)
       if (!response.success) {
@@ -106,19 +115,31 @@ export function useUpdateBrand() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<BrandFormData> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<BrandFormData>
+    }) => {
       const formData = new FormData()
       formData.append('_method', 'PUT')
       if (data.name) formData.append('name', data.name)
       if (data.slug !== undefined) formData.append('slug', data.slug || '')
-      if (data.short_description !== undefined) formData.append('short_description', data.short_description || '')
-      if (data.page_title !== undefined) formData.append('page_title', data.page_title || '')
+      if (data.short_description !== undefined)
+        formData.append('short_description', data.short_description || '')
+      if (data.page_title !== undefined)
+        formData.append('page_title', data.page_title || '')
       if (data.image && data.image.length > 0) {
         formData.append('image', data.image[0])
       }
-      if (data.is_active !== undefined) formData.append('is_active', data.is_active ? '1' : '0')
+      if (data.is_active !== undefined)
+        formData.append('is_active', data.is_active ? '1' : '0')
 
-      const response = await api.post<{ data: Brand }>(`${BASE_PATH}/${id}`, formData)
+      const response = await api.post<{ data: Brand }>(
+        `${BASE_PATH}/${id}`,
+        formData
+      )
       if (!response.success) {
         if (response.errors) {
           throw new ValidationError(response.message, response.errors)
@@ -165,7 +186,7 @@ export function useBulkActivateBrands() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
         `${BASE_PATH}/bulk-activate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -185,7 +206,7 @@ export function useBulkDeactivateBrands() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ deactivated_count: number }>(
         `${BASE_PATH}/bulk-deactivate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response

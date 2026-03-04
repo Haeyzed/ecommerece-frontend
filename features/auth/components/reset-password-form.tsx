@@ -9,20 +9,34 @@
  *
  * @component
  */
-
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
+
+import { useSearchParams } from 'next/navigation'
+
 import { Controller, useForm } from 'react-hook-form'
 
-import { PasswordInput } from '@/components/password-input'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { ValidationError } from '@/lib/api/api-errors'
+
 import { Button } from '@/components/ui/button'
-import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
+
+import { PasswordInput } from '@/components/password-input'
+
+import {
+  type ResetPasswordFormData,
+  resetPasswordSchema,
+} from '@/features/auth'
 import { useResetPassword } from '@/features/auth/api'
-import { type ResetPasswordFormData, resetPasswordSchema } from '@/features/auth'
-import { ValidationError } from '@/lib/api/api-errors'
 
 export function ResetPasswordForm() {
   const searchParams = useSearchParams()
@@ -68,32 +82,32 @@ export function ResetPasswordForm() {
 
   return (
     <form
-      id="form-reset-password"
+      id='form-reset-password'
       onSubmit={form.handleSubmit(onSubmit)}
-      className="space-y-6"
+      className='space-y-6'
     >
       <Controller
-        name="token"
+        name='token'
         control={form.control}
-        render={({ field }) => <input type="hidden" {...field} />}
+        render={({ field }) => <input type='hidden' {...field} />}
       />
       <FieldGroup>
         <Controller
-          name="email"
+          name='email'
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel>
-                Email <span className="text-destructive">*</span>
+                Email <span className='text-destructive'>*</span>
               </FieldLabel>
               <FieldContent>
                 <Input
                   {...field}
-                  type="email"
-                  placeholder="you@example.com"
+                  type='email'
+                  placeholder='you@example.com'
                   disabled={form.formState.isSubmitting || !!email}
                   aria-invalid={fieldState.invalid}
-                  autoComplete="email"
+                  autoComplete='email'
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -103,20 +117,20 @@ export function ResetPasswordForm() {
           )}
         />
         <Controller
-          name="password"
+          name='password'
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel>
-                New Password <span className="text-destructive">*</span>
+                New Password <span className='text-destructive'>*</span>
               </FieldLabel>
               <FieldContent>
                 <PasswordInput
                   {...field}
-                  placeholder="••••••••"
+                  placeholder='••••••••'
                   disabled={form.formState.isSubmitting}
                   aria-invalid={fieldState.invalid}
-                  autoComplete="new-password"
+                  autoComplete='new-password'
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -126,20 +140,20 @@ export function ResetPasswordForm() {
           )}
         />
         <Controller
-          name="password_confirmation"
+          name='password_confirmation'
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel>
-                Confirm Password <span className="text-destructive">*</span>
+                Confirm Password <span className='text-destructive'>*</span>
               </FieldLabel>
               <FieldContent>
                 <PasswordInput
                   {...field}
-                  placeholder="••••••••"
+                  placeholder='••••••••'
                   disabled={form.formState.isSubmitting}
                   aria-invalid={fieldState.invalid}
-                  autoComplete="new-password"
+                  autoComplete='new-password'
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -151,20 +165,20 @@ export function ResetPasswordForm() {
       </FieldGroup>
 
       {form.formState.errors.root && (
-        <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+        <div className='rounded-md bg-destructive/10 p-3 text-sm text-destructive'>
           {form.formState.errors.root.message}
         </div>
       )}
 
       <Button
-        type="submit"
-        form="form-reset-password"
-        className="w-full"
+        type='submit'
+        form='form-reset-password'
+        className='w-full'
         disabled={form.formState.isSubmitting || !token}
       >
         {form.formState.isSubmitting ? (
           <>
-            <Spinner className="mr-2 size-4" />
+            <Spinner className='mr-2 size-4' />
             Resetting...
           </>
         ) : (

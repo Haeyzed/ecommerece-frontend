@@ -1,15 +1,21 @@
 'use client'
 
 import { useState } from 'react'
-import { HugeiconsIcon } from '@hugeicons/react'
+
 import { Alert02Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
 import type { Table } from '@tanstack/react-table'
+
 import { toast } from 'sonner'
-import { useBulkDestroySuppliers } from '../api'
+
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+
 import { ConfirmDialog } from '@/components/confirm-dialog'
+
+import { useBulkDestroySuppliers } from '../api'
 import type { Supplier } from '../schemas'
 
 type SuppliersMultiDeleteDialogProps<TData> = {
@@ -21,10 +27,10 @@ type SuppliersMultiDeleteDialogProps<TData> = {
 const CONFIRM_WORD = 'DELETE'
 
 export function SuppliersMultiDeleteDialog<TData>({
-                                                    open,
-                                                    onOpenChange,
-                                                    table,
-                                                  }: SuppliersMultiDeleteDialogProps<TData>) {
+  open,
+  onOpenChange,
+  table,
+}: SuppliersMultiDeleteDialogProps<TData>) {
   const [value, setValue] = useState('')
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map((row) => (row.original as Supplier).id)
@@ -51,10 +57,10 @@ export function SuppliersMultiDeleteDialog<TData>({
       handleConfirm={handleDelete}
       disabled={value.trim() !== CONFIRM_WORD || isPending}
       title={
-        <span className="text-destructive">
+        <span className='text-destructive'>
           <HugeiconsIcon
             icon={Alert02Icon}
-            className="me-1 inline-block stroke-destructive"
+            className='me-1 inline-block stroke-destructive'
             size={18}
             strokeWidth={2}
           />{' '}
@@ -63,12 +69,12 @@ export function SuppliersMultiDeleteDialog<TData>({
         </span>
       }
       desc={
-        <div className="space-y-4">
-          <p className="mb-2">
+        <div className='space-y-4'>
+          <p className='mb-2'>
             Are you sure you want to delete the selected suppliers? This action
             cannot be undone.
           </p>
-          <Label className="my-4 flex flex-col items-start gap-1.5">
+          <Label className='my-4 flex flex-col items-start gap-1.5'>
             <span>Confirm by typing &quot;{CONFIRM_WORD}&quot;:</span>
             <Input
               value={value}
@@ -76,7 +82,7 @@ export function SuppliersMultiDeleteDialog<TData>({
               placeholder={`Type "${CONFIRM_WORD}" to confirm.`}
             />
           </Label>
-          <Alert variant="destructive">
+          <Alert variant='destructive'>
             <AlertTitle>Warning!</AlertTitle>
             <AlertDescription>
               This operation cannot be rolled back.
@@ -84,7 +90,7 @@ export function SuppliersMultiDeleteDialog<TData>({
           </Alert>
         </div>
       }
-      confirmText="Delete"
+      confirmText='Delete'
       destructive
     />
   )

@@ -1,26 +1,41 @@
 'use client'
 
 import { useState } from 'react'
+
+import {
+  CheckmarkCircle02Icon,
+  Delete02Icon,
+  UnavailableIcon,
+  Upload01Icon,
+} from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { CheckmarkCircle02Icon, Delete02Icon, UnavailableIcon, Upload01Icon } from '@hugeicons/core-free-icons'
+
 import type { Table } from '@tanstack/react-table'
+
 import { Button } from '@/components/ui/button'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
 import { Spinner } from '@/components/ui/spinner'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+
+import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
+
+import { useAuthSession } from '@/features/auth/api'
+
 import { useBulkActivateCustomers, useBulkDeactivateCustomers } from '../api'
 import type { Customer } from '../types'
 import { CustomersExportDialog } from './customers-export-dialog'
 import { CustomersMultiDeleteDialog } from './customers-multi-delete-dialog'
-import { useAuthSession } from '@/features/auth/api'
 
 type DataTableBulkActionsProps<TData> = {
   table: Table<TData>
 }
 
 export function DataTableBulkActions<TData>({
-                                              table,
-                                            }: DataTableBulkActionsProps<TData>) {
+  table,
+}: DataTableBulkActionsProps<TData>) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showExportDialog, setShowExportDialog] = useState(false)
   const selectedRows = table.getFilteredSelectedRowModel().rows
@@ -53,26 +68,29 @@ export function DataTableBulkActions<TData>({
 
   return (
     <>
-      <BulkActionsToolbar table={table} entityName="customer">
+      <BulkActionsToolbar table={table} entityName='customer'>
         {canUpdate && (
           <>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant="outline"
-                  size="icon"
+                  variant='outline'
+                  size='icon'
                   onClick={() => handleBulkStatusChange('active')}
                   disabled={isBusy}
-                  className="size-8"
-                  aria-label="Activate selected customers"
-                  title="Activate selected customers"
+                  className='size-8'
+                  aria-label='Activate selected customers'
+                  title='Activate selected customers'
                 >
                   {isActivating ? (
-                    <Spinner className="size-4" />
+                    <Spinner className='size-4' />
                   ) : (
-                    <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
+                    <HugeiconsIcon
+                      icon={CheckmarkCircle02Icon}
+                      strokeWidth={2}
+                    />
                   )}
-                  <span className="sr-only">Activate selected customers</span>
+                  <span className='sr-only'>Activate selected customers</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -82,20 +100,20 @@ export function DataTableBulkActions<TData>({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant="outline"
-                  size="icon"
+                  variant='outline'
+                  size='icon'
                   onClick={() => handleBulkStatusChange('inactive')}
                   disabled={isBusy}
-                  className="size-8"
-                  aria-label="Deactivate selected customers"
-                  title="Deactivate selected customers"
+                  className='size-8'
+                  aria-label='Deactivate selected customers'
+                  title='Deactivate selected customers'
                 >
                   {isDeactivating ? (
-                    <Spinner className="size-4" />
+                    <Spinner className='size-4' />
                   ) : (
                     <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
                   )}
-                  <span className="sr-only">Deactivate selected customers</span>
+                  <span className='sr-only'>Deactivate selected customers</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -109,16 +127,16 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant="outline"
-                size="icon"
+                variant='outline'
+                size='icon'
                 onClick={() => setShowExportDialog(true)}
                 disabled={isBusy}
-                className="size-8"
-                aria-label="Export selected customers"
-                title="Export selected customers"
+                className='size-8'
+                aria-label='Export selected customers'
+                title='Export selected customers'
               >
                 <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} />
-                <span className="sr-only">Export selected customers</span>
+                <span className='sr-only'>Export selected customers</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
@@ -131,16 +149,16 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant="destructive"
-                size="icon"
+                variant='destructive'
+                size='icon'
                 onClick={() => setShowDeleteConfirm(true)}
                 disabled={isBusy}
-                className="size-8"
-                aria-label="Delete selected customers"
-                title="Delete selected customers"
+                className='size-8'
+                aria-label='Delete selected customers'
+                title='Delete selected customers'
               >
                 <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} />
-                <span className="sr-only">Delete selected customers</span>
+                <span className='sr-only'>Delete selected customers</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>

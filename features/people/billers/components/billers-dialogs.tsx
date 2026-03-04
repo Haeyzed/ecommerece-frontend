@@ -1,12 +1,13 @@
 'use client'
 
+import { useAuthSession } from '@/features/auth/api'
+
 import { BillersActionDialog } from './billers-action-dialog'
 import { BillersDeleteDialog } from './billers-delete-dialog'
 import { BillersExportDialog } from './billers-export-dialog'
 import { BillersImportDialog } from './billers-import-dialog'
-import { BillersViewDialog } from './billers-view-dialog'
 import { useBillers } from './billers-provider'
-import { useAuthSession } from '@/features/auth/api'
+import { BillersViewDialog } from './billers-view-dialog'
 
 export function BillersDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useBillers()
@@ -25,7 +26,7 @@ export function BillersDialogs() {
     <>
       {canCreate && (
         <BillersActionDialog
-          key="biller-add"
+          key='biller-add'
           open={open === 'add'}
           onOpenChange={() => setOpen('add')}
         />
@@ -33,7 +34,7 @@ export function BillersDialogs() {
 
       {canImport && (
         <BillersImportDialog
-          key="biller-import"
+          key='biller-import'
           open={open === 'import'}
           onOpenChange={() => setOpen('import')}
         />
@@ -41,7 +42,7 @@ export function BillersDialogs() {
 
       {canExport && (
         <BillersExportDialog
-          key="biller-export"
+          key='biller-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

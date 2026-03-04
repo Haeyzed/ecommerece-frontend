@@ -1,10 +1,18 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import useDialogState from '@/hooks/use-dialog-state'
+
 import { type Holiday } from '@/features/hrm/holidays/types'
 
-type HolidaysDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
+type HolidaysDialogType =
+  | 'import'
+  | 'add'
+  | 'edit'
+  | 'delete'
+  | 'export'
+  | 'view'
 
 type HolidaysContextType = {
   open: HolidaysDialogType | null
@@ -20,7 +28,9 @@ export function HolidaysProvider({ children }: { children: React.ReactNode }) {
   const [currentRow, setCurrentRow] = useState<Holiday | null>(null)
 
   return (
-    <HolidaysContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <HolidaysContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </HolidaysContext.Provider>
   )

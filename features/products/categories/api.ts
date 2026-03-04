@@ -1,15 +1,25 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import type { Category, CategoryExportParams, CategoryFormData, CategoryListParams, CategoryOption } from './types'
+
+import type {
+  Category,
+  CategoryExportParams,
+  CategoryFormData,
+  CategoryListParams,
+  CategoryOption,
+} from './types'
 
 export const categoryKeys = {
   all: ['categories'] as const,
   lists: () => [...categoryKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...categoryKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...categoryKeys.lists(), filters] as const,
   details: () => [...categoryKeys.all, 'detail'] as const,
   detail: (id: number) => [...categoryKeys.details(), id] as const,
   options: () => [...categoryKeys.all, 'options'] as const,
@@ -23,10 +33,7 @@ export function useCategories(params?: CategoryListParams) {
   const query = useQuery({
     queryKey: categoryKeys.list(params),
     queryFn: async () => {
-      const response = await api.get<Category[]>(
-        BASE_PATH,
-        { params },
-      )
+      const response = await api.get<Category[]>(BASE_PATH, { params })
       return response
     },
     enabled: sessionStatus !== 'loading',
@@ -75,7 +82,8 @@ export function useCreateCategory() {
 
       formData.append('name', data.name)
       if (data.slug) formData.append('slug', data.slug)
-      if (data.short_description) formData.append('short_description', data.short_description)
+      if (data.short_description)
+        formData.append('short_description', data.short_description)
       if (data.page_title) formData.append('page_title', data.page_title)
       if (data.image && data.image.length > 0) {
         formData.append('image', data.image[0])
@@ -83,11 +91,19 @@ export function useCreateCategory() {
       if (data.icon && data.icon.length > 0) {
         formData.append('icon', data.icon[0])
       }
-      if (data.parent_id) formData.append('parent_id', data.parent_id.toString())
-      if (data.is_active !== undefined) formData.append('is_active', data.is_active ? '1' : '0')
-      if (data.featured !== undefined) formData.append('featured', data.featured ? '1' : '0')
-      if (data.is_sync_disable !== undefined) formData.append('is_sync_disable', data.is_sync_disable ? '1' : '0')
-      if (data.woocommerce_category_id) formData.append('woocommerce_category_id', data.woocommerce_category_id.toString())
+      if (data.parent_id)
+        formData.append('parent_id', data.parent_id.toString())
+      if (data.is_active !== undefined)
+        formData.append('is_active', data.is_active ? '1' : '0')
+      if (data.featured !== undefined)
+        formData.append('featured', data.featured ? '1' : '0')
+      if (data.is_sync_disable !== undefined)
+        formData.append('is_sync_disable', data.is_sync_disable ? '1' : '0')
+      if (data.woocommerce_category_id)
+        formData.append(
+          'woocommerce_category_id',
+          data.woocommerce_category_id.toString()
+        )
 
       const response = await api.post<{ data: Category }>(BASE_PATH, formData)
       if (!response.success) {
@@ -114,27 +130,46 @@ export function useUpdateCategory() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<CategoryFormData> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<CategoryFormData>
+    }) => {
       const formData = new FormData()
       formData.append('_method', 'PUT')
 
       if (data.name) formData.append('name', data.name)
       if (data.slug !== undefined) formData.append('slug', data.slug || '')
-      if (data.short_description !== undefined) formData.append('short_description', data.short_description || '')
-      if (data.page_title !== undefined) formData.append('page_title', data.page_title || '')
+      if (data.short_description !== undefined)
+        formData.append('short_description', data.short_description || '')
+      if (data.page_title !== undefined)
+        formData.append('page_title', data.page_title || '')
       if (data.image && data.image.length > 0) {
         formData.append('image', data.image[0])
       }
       if (data.icon && data.icon.length > 0) {
         formData.append('icon', data.icon[0])
       }
-      if (data.parent_id !== undefined) formData.append('parent_id', data.parent_id?.toString() || '')
-      if (data.is_active !== undefined) formData.append('is_active', data.is_active ? '1' : '0')
-      if (data.featured !== undefined) formData.append('featured', data.featured ? '1' : '0')
-      if (data.is_sync_disable !== undefined) formData.append('is_sync_disable', data.is_sync_disable ? '1' : '0')
-      if (data.woocommerce_category_id !== undefined) formData.append('woocommerce_category_id', data.woocommerce_category_id?.toString() || '')
+      if (data.parent_id !== undefined)
+        formData.append('parent_id', data.parent_id?.toString() || '')
+      if (data.is_active !== undefined)
+        formData.append('is_active', data.is_active ? '1' : '0')
+      if (data.featured !== undefined)
+        formData.append('featured', data.featured ? '1' : '0')
+      if (data.is_sync_disable !== undefined)
+        formData.append('is_sync_disable', data.is_sync_disable ? '1' : '0')
+      if (data.woocommerce_category_id !== undefined)
+        formData.append(
+          'woocommerce_category_id',
+          data.woocommerce_category_id?.toString() || ''
+        )
 
-      const response = await api.post<{ data: Category }>(`${BASE_PATH}/${id}`, formData)
+      const response = await api.post<{ data: Category }>(
+        `${BASE_PATH}/${id}`,
+        formData
+      )
       if (!response.success) {
         if (response.errors) {
           throw new ValidationError(response.message, response.errors)
@@ -161,15 +196,15 @@ export function useReparentCategory() {
 
   return useMutation({
     mutationFn: async ({
-                         id,
-                         parent_id,
-                       }: {
-      id: number;
-      parent_id: number | null;
+      id,
+      parent_id,
+    }: {
+      id: number
+      parent_id: number | null
     }) => {
       const response = await api.patch<{ data: Category }>(
         `${BASE_PATH}/${id}/reparent`,
-        { parent_id },
+        { parent_id }
       )
       if (!response.success) {
         throw new Error(response.message)
@@ -216,7 +251,7 @@ export function useBulkActivateCategories() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
         `${BASE_PATH}/bulk-activate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -236,7 +271,7 @@ export function useBulkDeactivateCategories() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ deactivated_count: number }>(
         `${BASE_PATH}/bulk-deactivate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -256,7 +291,7 @@ export function useBulkEnableFeaturedCategories() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ updated_count: number }>(
         `${BASE_PATH}/bulk-enable-featured`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -276,7 +311,7 @@ export function useBulkDisableFeaturedCategories() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ updated_count: number }>(
         `${BASE_PATH}/bulk-disable-featured`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -296,7 +331,7 @@ export function useBulkEnableSyncCategories() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ updated_count: number }>(
         `${BASE_PATH}/bulk-enable-sync`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -316,7 +351,7 @@ export function useBulkDisableSyncCategories() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ updated_count: number }>(
         `${BASE_PATH}/bulk-disable-sync`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response

@@ -1,9 +1,12 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
+
 import type {
   Designation,
   DesignationExportParams,
@@ -15,7 +18,8 @@ import type {
 export const designationKeys = {
   all: ['designations'] as const,
   lists: () => [...designationKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...designationKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...designationKeys.lists(), filters] as const,
   details: () => [...designationKeys.all, 'detail'] as const,
   detail: (id: number) => [...designationKeys.details(), id] as const,
   options: () => [...designationKeys.all, 'options'] as const,
@@ -44,7 +48,9 @@ export function useOptionDesignations() {
   return useQuery({
     queryKey: designationKeys.options(),
     queryFn: async () => {
-      const response = await api.get<DesignationOption[]>(`${BASE_PATH}/options`)
+      const response = await api.get<DesignationOption[]>(
+        `${BASE_PATH}/options`
+      )
       return response.data ?? []
     },
     enabled: sessionStatus !== 'loading',
@@ -77,11 +83,13 @@ export function useCreateDesignation() {
         name: data.name,
         department_id: data.department_id,
       }
-      if (data.is_active !== undefined && data.is_active !== null) payload.is_active = data.is_active
+      if (data.is_active !== undefined && data.is_active !== null)
+        payload.is_active = data.is_active
 
       const response = await api.post<{ data: Designation }>(BASE_PATH, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -102,22 +110,35 @@ export function useUpdateDesignation() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<DesignationFormBody> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<DesignationFormBody>
+    }) => {
       const payload: Record<string, unknown> = {}
       if (data.name !== undefined) payload.name = data.name
-      if (data.department_id !== undefined) payload.department_id = data.department_id
+      if (data.department_id !== undefined)
+        payload.department_id = data.department_id
       if (data.is_active !== undefined) payload.is_active = data.is_active
 
-      const response = await api.put<{ data: Designation }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: Designation }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: designationKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: designationKeys.detail(data.id) })
+      queryClient.invalidateQueries({
+        queryKey: designationKeys.detail(data.id),
+      })
       queryClient.invalidateQueries({ queryKey: designationKeys.options() })
       toast.success(data.message)
     },
@@ -155,7 +176,7 @@ export function useBulkActivateDesignations() {
     mutationFn: async (ids: number[]) => {
       const response = await api.post<{ activated_count: number }>(
         `${BASE_PATH}/bulk-activate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -176,7 +197,7 @@ export function useBulkDeactivateDesignations() {
     mutationFn: async (ids: number[]) => {
       const response = await api.post<{ deactivated_count: number }>(
         `${BASE_PATH}/bulk-deactivate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response

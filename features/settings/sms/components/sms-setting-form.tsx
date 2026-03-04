@@ -1,16 +1,29 @@
 'use client'
 
 import { Controller, useForm } from 'react-hook-form'
-import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field'
-import { Input } from '@/components/ui/input'
+
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Spinner } from '@/components/ui/spinner'
 import { Switch } from '@/components/ui/switch'
+
+import type { SmsSettingUpdateData } from '../schemas'
 import type { SmsProvider } from '../types'
 import { SMS_GATEWAY_FIELDS } from '../types'
-import type { SmsSettingUpdateData } from '../schemas'
 
 type SmsSettingFormProps = {
   providers: SmsProvider[]
@@ -21,13 +34,15 @@ type SmsSettingFormProps = {
 }
 
 export function SmsSettingForm({
-                                 providers,
-                                 selectedProvider,
-                                 onSelectProvider,
-                                 onSubmit,
-                                 isPending = false,
-                               }: SmsSettingFormProps) {
-  const form = useForm<SmsSettingUpdateData & { details: Record<string, string> }>({
+  providers,
+  selectedProvider,
+  onSelectProvider,
+  onSubmit,
+  isPending = false,
+}: SmsSettingFormProps) {
+  const form = useForm<
+    SmsSettingUpdateData & { details: Record<string, string> }
+  >({
     defaultValues: {
       details: {},
       active: false,
@@ -69,34 +84,42 @@ export function SmsSettingForm({
         if (v != null && v !== '' && v !== MASKED) detailsClean[key] = v
       }
     }
-    onSubmit(selectedProvider.id, { details: detailsClean, active: data.active })
+    onSubmit(selectedProvider.id, {
+      details: detailsClean,
+      active: data.active,
+    })
   })
 
-  const gatewayFields = selectedProvider ? SMS_GATEWAY_FIELDS[selectedProvider.name] : null
+  const gatewayFields = selectedProvider
+    ? SMS_GATEWAY_FIELDS[selectedProvider.name]
+    : null
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className='space-y-6'>
       <Card>
         <CardHeader>
           <CardTitle>SMS Gateway</CardTitle>
-          <p className="text-muted-foreground text-sm">
-            Select a gateway and enter credentials. Set one as default to send SMS.
+          <p className='text-sm text-muted-foreground'>
+            Select a gateway and enter credentials. Set one as default to send
+            SMS.
           </p>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className='space-y-4'>
           <FieldGroup>
             <Field>
               <FieldLabel>Gateway</FieldLabel>
               <Select
-                value={selectedProvider ? String(selectedProvider.id) : undefined}
+                value={
+                  selectedProvider ? String(selectedProvider.id) : undefined
+                }
                 onValueChange={handleSelect}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select SMS gateway" />
+                  <SelectValue placeholder='Select SMS gateway' />
                 </SelectTrigger>
                 <SelectContent>
                   {providers.length === 0 ? (
-                    <div className="py-4 text-center text-muted-foreground text-sm">
+                    <div className='py-4 text-center text-sm text-muted-foreground'>
                       No SMS gateways configured
                     </div>
                   ) : (
@@ -119,26 +142,34 @@ export function SmsSettingForm({
                     <Input
                       id={`sms-${key}`}
                       type={type}
-                      placeholder={type === 'password' ? 'Leave blank to keep current' : ''}
+                      placeholder={
+                        type === 'password' ? 'Leave blank to keep current' : ''
+                      }
                       value={details[key] ?? ''}
                       onChange={(e) => setDetail(key, e.target.value)}
-                      autoComplete="off"
+                      autoComplete='off'
                     />
                   </Field>
                 ))}
 
                 <Controller
                   control={form.control}
-                  name="active"
+                  name='active'
                   render={({ field }) => (
-                    <Field className="flex flex-row items-center justify-between rounded-md border p-4">
-                      <div className="space-y-0.5">
-                        <FieldLabel htmlFor="sms-active">Set as default</FieldLabel>
+                    <Field className='flex flex-row items-center justify-between rounded-md border p-4'>
+                      <div className='space-y-0.5'>
+                        <FieldLabel htmlFor='sms-active'>
+                          Set as default
+                        </FieldLabel>
                         <FieldDescription>
                           When enabled, this gateway will be used to send SMS.
                         </FieldDescription>
                       </div>
-                      <Switch id="sms-active" checked={!!field.value} onCheckedChange={field.onChange} />
+                      <Switch
+                        id='sms-active'
+                        checked={!!field.value}
+                        onCheckedChange={field.onChange}
+                      />
                     </Field>
                   )}
                 />
@@ -149,11 +180,11 @@ export function SmsSettingForm({
       </Card>
 
       {selectedProvider && (
-        <div className="flex justify-end">
-          <Button type="submit" disabled={isPending}>
+        <div className='flex justify-end'>
+          <Button type='submit' disabled={isPending}>
             {isPending ? (
               <>
-                <Spinner className="mr-2 size-4" />
+                <Spinner className='mr-2 size-4' />
                 Saving...
               </>
             ) : (

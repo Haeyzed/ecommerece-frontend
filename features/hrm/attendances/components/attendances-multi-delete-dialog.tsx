@@ -1,17 +1,23 @@
 'use client'
 
 import { useState } from 'react'
-import { HugeiconsIcon } from '@hugeicons/react'
+
 import { Alert02Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
 import { type Table } from '@tanstack/react-table'
+
 import { toast } from 'sonner'
-import { useBulkDestroyAttendances } from '@/features/hrm/attendances/api'
+
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { type Attendance } from '@/features/hrm/attendances/types'
+
 import { useAuthSession } from '@/features/auth/api'
+import { useBulkDestroyAttendances } from '@/features/hrm/attendances/api'
+import { type Attendance } from '@/features/hrm/attendances/types'
 
 type AttendancesMultiDeleteDialogProps<TData> = {
   open: boolean
@@ -22,13 +28,13 @@ type AttendancesMultiDeleteDialogProps<TData> = {
 const CONFIRM_WORD = 'DELETE'
 
 export function AttendancesMultiDeleteDialog<TData>({
-                                                      open,
-                                                      onOpenChange,
-                                                      table,
-                                                    }: AttendancesMultiDeleteDialogProps<TData>) {
+  open,
+  onOpenChange,
+  table,
+}: AttendancesMultiDeleteDialogProps<TData>) {
   const [value, setValue] = useState('')
   const selectedRows = table.getFilteredSelectedRowModel().rows
-  const selectedIds = selectedRows.map(row => (row.original as Attendance).id)
+  const selectedIds = selectedRows.map((row) => (row.original as Attendance).id)
   const { mutate: bulkDestroy, isPending } = useBulkDestroyAttendances()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
@@ -58,10 +64,10 @@ export function AttendancesMultiDeleteDialog<TData>({
       handleConfirm={handleDelete}
       disabled={value.trim() !== CONFIRM_WORD || isPending}
       title={
-        <span className="text-destructive">
+        <span className='text-destructive'>
           <HugeiconsIcon
             icon={Alert02Icon}
-            className="me-1 inline-block stroke-destructive"
+            className='me-1 inline-block stroke-destructive'
             size={18}
             strokeWidth={2}
           />{' '}
@@ -70,14 +76,15 @@ export function AttendancesMultiDeleteDialog<TData>({
         </span>
       }
       desc={
-        <div className="space-y-4">
-          <p className="mb-2">
-            Are you sure you want to delete the selected attendance records? <br />
+        <div className='space-y-4'>
+          <p className='mb-2'>
+            Are you sure you want to delete the selected attendance records?{' '}
+            <br />
             This action cannot be undone.
           </p>
 
-          <Label className="my-4 flex flex-col items-start gap-1.5">
-            <span className="">Confirm by typing "{CONFIRM_WORD}":</span>
+          <Label className='my-4 flex flex-col items-start gap-1.5'>
+            <span className=''>Confirm by typing "{CONFIRM_WORD}":</span>
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
@@ -85,7 +92,7 @@ export function AttendancesMultiDeleteDialog<TData>({
             />
           </Label>
 
-          <Alert variant="destructive">
+          <Alert variant='destructive'>
             <AlertTitle>Warning!</AlertTitle>
             <AlertDescription>
               Please be careful, this operation can not be rolled back.
@@ -93,7 +100,7 @@ export function AttendancesMultiDeleteDialog<TData>({
           </Alert>
         </div>
       }
-      confirmText="Delete"
+      confirmText='Delete'
       destructive
     />
   )

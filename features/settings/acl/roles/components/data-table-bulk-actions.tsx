@@ -1,32 +1,54 @@
 'use client'
 
 import { useState } from 'react'
+
+import {
+  CheckmarkCircle02Icon,
+  Delete02Icon,
+  UnavailableIcon,
+  Upload01Icon,
+} from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { CheckmarkCircle02Icon, Delete02Icon, UnavailableIcon, Upload01Icon } from '@hugeicons/core-free-icons'
+
 import { type Table } from '@tanstack/react-table'
+
 import { Button } from '@/components/ui/button'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
-import { useBulkActivateRoles, useBulkDeactivateRoles } from '@/features/settings/acl/roles/api'
-import { type Role } from '@/features/settings/acl/roles/types'
-import { RolesExportDialog, RolesMultiDeleteDialog } from '@/features/settings/acl/roles'
-import { useAuthSession } from '@/features/auth/api'
 import { Spinner } from '@/components/ui/spinner'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+
+import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
+
+import { useAuthSession } from '@/features/auth/api'
+import {
+  RolesExportDialog,
+  RolesMultiDeleteDialog,
+} from '@/features/settings/acl/roles'
+import {
+  useBulkActivateRoles,
+  useBulkDeactivateRoles,
+} from '@/features/settings/acl/roles/api'
+import { type Role } from '@/features/settings/acl/roles/types'
 
 type DataTableBulkActionsProps<TData> = {
   table: Table<TData>
 }
 
 export function DataTableBulkActions<TData>({
-                                              table,
-                                            }: DataTableBulkActionsProps<TData>) {
+  table,
+}: DataTableBulkActionsProps<TData>) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showExportDialog, setShowExportDialog] = useState(false)
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map((row) => (row.original as Role).id)
 
-  const { mutate: activateRoles, isPending: isActivating } = useBulkActivateRoles()
-  const { mutate: deactivateRoles, isPending: isDeactivating } = useBulkDeactivateRoles()
+  const { mutate: activateRoles, isPending: isActivating } =
+    useBulkActivateRoles()
+  const { mutate: deactivateRoles, isPending: isDeactivating } =
+    useBulkDeactivateRoles()
 
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
@@ -53,26 +75,29 @@ export function DataTableBulkActions<TData>({
 
   return (
     <>
-      <BulkActionsToolbar table={table} entityName="role">
+      <BulkActionsToolbar table={table} entityName='role'>
         {canUpdate && (
           <>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant="outline"
-                  size="icon"
+                  variant='outline'
+                  size='icon'
                   onClick={() => handleBulkStatusChange('active')}
                   disabled={isBusy}
-                  className="size-8"
-                  aria-label="Activate selected roles"
-                  title="Activate selected roles"
+                  className='size-8'
+                  aria-label='Activate selected roles'
+                  title='Activate selected roles'
                 >
                   {isActivating ? (
-                    <Spinner className="size-4" />
+                    <Spinner className='size-4' />
                   ) : (
-                    <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
+                    <HugeiconsIcon
+                      icon={CheckmarkCircle02Icon}
+                      strokeWidth={2}
+                    />
                   )}
-                  <span className="sr-only">Activate selected roles</span>
+                  <span className='sr-only'>Activate selected roles</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -83,20 +108,20 @@ export function DataTableBulkActions<TData>({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant="outline"
-                  size="icon"
+                  variant='outline'
+                  size='icon'
                   onClick={() => handleBulkStatusChange('inactive')}
                   disabled={isBusy}
-                  className="size-8"
-                  aria-label="Deactivate selected roles"
-                  title="Deactivate selected roles"
+                  className='size-8'
+                  aria-label='Deactivate selected roles'
+                  title='Deactivate selected roles'
                 >
                   {isDeactivating ? (
-                    <Spinner className="size-4" />
+                    <Spinner className='size-4' />
                   ) : (
                     <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
                   )}
-                  <span className="sr-only">Deactivate selected roles</span>
+                  <span className='sr-only'>Deactivate selected roles</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -110,16 +135,16 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant="outline"
-                size="icon"
+                variant='outline'
+                size='icon'
                 onClick={() => setShowExportDialog(true)}
                 disabled={isBusy}
-                className="size-8"
-                aria-label="Export selected roles"
-                title="Export selected roles"
+                className='size-8'
+                aria-label='Export selected roles'
+                title='Export selected roles'
               >
                 <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} />
-                <span className="sr-only">Export selected roles</span>
+                <span className='sr-only'>Export selected roles</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
@@ -132,16 +157,16 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant="destructive"
-                size="icon"
+                variant='destructive'
+                size='icon'
                 onClick={() => setShowDeleteConfirm(true)}
                 disabled={isBusy}
-                className="size-8"
-                aria-label="Delete selected roles"
-                title="Delete selected roles"
+                className='size-8'
+                aria-label='Delete selected roles'
+                title='Delete selected roles'
               >
                 <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} />
-                <span className="sr-only">Delete selected roles</span>
+                <span className='sr-only'>Delete selected roles</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>

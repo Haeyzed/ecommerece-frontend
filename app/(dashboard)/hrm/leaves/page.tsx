@@ -1,8 +1,11 @@
+import type { Metadata } from 'next'
+
 import { auth } from '@/auth'
+
+import { hasPermission } from '@/lib/utils/permissions'
+
 import { ForbiddenError } from '@/features/errors/forbidden'
 import { LeavesClient } from '@/features/hrm/leaves'
-import { hasPermission } from '@/lib/utils/permissions'
-import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Leave | HR Management System',

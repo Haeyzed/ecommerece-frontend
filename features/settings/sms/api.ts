@@ -7,10 +7,12 @@
  *
  * @module features/settings/sms/api
  */
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
 
 import { useApiClient } from '@/lib/api/api-client-client'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
+
 import type { SmsProvider } from './types'
 
 export const smsSettingKeys = {
@@ -56,7 +58,13 @@ export function useUpdateSmsProvider() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: { details?: Record<string, string>; active?: boolean } }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: { details?: Record<string, string>; active?: boolean }
+    }) => {
       const response = await api.put<SmsProvider>(`/settings/sms/${id}`, data)
       if (!response.success || !response.data) {
         throw new Error(response.message ?? 'Failed to update SMS provider')
@@ -69,7 +77,9 @@ export function useUpdateSmsProvider() {
       toast.success('SMS provider updated successfully')
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : 'Failed to update SMS provider')
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to update SMS provider'
+      )
     },
   })
 }

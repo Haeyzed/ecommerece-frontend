@@ -1,12 +1,13 @@
 'use client'
 
-import { useCustomerGroups } from './customer-groups-provider'
 import { useAuthSession } from '@/features/auth/api'
+
 import { CustomerGroupsActionDialog } from './customer-groups-action-dialog'
 import { CustomerGroupsDeleteDialog } from './customer-groups-delete-dialog'
-import { CustomerGroupsViewDialog } from './customer-groups-view-dialog'
-import { CustomerGroupsImportDialog } from './customer-groups-import-dialog'
 import { CustomerGroupsExportDialog } from './customer-groups-export-dialog'
+import { CustomerGroupsImportDialog } from './customer-groups-import-dialog'
+import { useCustomerGroups } from './customer-groups-provider'
+import { CustomerGroupsViewDialog } from './customer-groups-view-dialog'
 
 export function CustomerGroupsDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useCustomerGroups()
@@ -23,7 +24,7 @@ export function CustomerGroupsDialogs() {
     <>
       {canCreate && (
         <CustomerGroupsActionDialog
-          key="customer-group-add"
+          key='customer-group-add'
           open={open === 'add'}
           onOpenChange={() => setOpen('add')}
         />
@@ -31,7 +32,7 @@ export function CustomerGroupsDialogs() {
 
       {canImport && (
         <CustomerGroupsImportDialog
-          key="customer-group-import"
+          key='customer-group-import'
           open={open === 'import'}
           onOpenChange={() => setOpen('import')}
         />
@@ -39,7 +40,7 @@ export function CustomerGroupsDialogs() {
 
       {canExport && (
         <CustomerGroupsExportDialog
-          key="customer-group-export"
+          key='customer-group-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

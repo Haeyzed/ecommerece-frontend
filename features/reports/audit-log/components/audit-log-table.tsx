@@ -1,12 +1,11 @@
 'use client'
 
 import { Fragment, useEffect, useMemo, useState } from 'react'
-import { DataTablePagination, DataTableSkeleton } from '@/components/data-table'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useTableUrlState } from '@/hooks/use-table-url-state'
-import { cn } from '@/lib/utils'
+
 import {
   type ExpandedState,
+  type SortingState,
+  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getExpandedRowModel,
@@ -14,17 +13,36 @@ import {
   getFacetedUniqueValues,
   getFilteredRowModel,
   getSortedRowModel,
-  type SortingState,
   useReactTable,
-  type VisibilityState,
 } from '@tanstack/react-table'
+
 import { toast } from 'sonner'
+
+import { cn } from '@/lib/utils'
+
+import { useTableUrlState } from '@/hooks/use-table-url-state'
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+
+import { DataTablePagination, DataTableSkeleton } from '@/components/data-table'
+
 import { useAudits } from '@/features/reports/audit-log/api'
 import type { Audit } from '@/features/reports/audit-log/types'
+
+import {
+  AuditLogExpandedContent,
+  auditColumns as columns,
+} from './audit-log-columns'
 import { AuditLogEmptyState } from './audit-log-empty-state'
 import { AuditLogToolbar } from './audit-log-toolbar'
 import { DataTableBulkActions } from './data-table-bulk-actions'
-import { auditColumns as columns, AuditLogExpandedContent } from './audit-log-columns'
 
 export function AuditLogTable() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
@@ -34,37 +52,56 @@ export function AuditLogTable() {
   const [sorting, setSorting] = useState<SortingState>([])
   const [expanded, setExpanded] = useState<ExpandedState>({})
 
-  const { columnFilters, onColumnFiltersChange, pagination, onPaginationChange, ensurePageInRange } =
-    useTableUrlState({
-      pagination: { defaultPage: 1, defaultPageSize: 10 },
-      globalFilter: { enabled: false },
-      columnFilters: [
-        { columnId: 'auditable_type', searchKey: 'auditable_type', type: 'string' },
-        { columnId: 'event', searchKey: 'event', type: 'array' },
-        { columnId: 'ip_address', searchKey: 'ip_address', type: 'string' },
-        { columnId: 'user', searchKey: 'user', type: 'string' },
-        { columnId: 'date_from', searchKey: 'date_from', type: 'string' },
-        { columnId: 'date_to', searchKey: 'date_to', type: 'string' },
-      ],
-    })
+  const {
+    columnFilters,
+    onColumnFiltersChange,
+    pagination,
+    onPaginationChange,
+    ensurePageInRange,
+  } = useTableUrlState({
+    pagination: { defaultPage: 1, defaultPageSize: 10 },
+    globalFilter: { enabled: false },
+    columnFilters: [
+      {
+        columnId: 'auditable_type',
+        searchKey: 'auditable_type',
+        type: 'string',
+      },
+      { columnId: 'event', searchKey: 'event', type: 'array' },
+      { columnId: 'ip_address', searchKey: 'ip_address', type: 'string' },
+      { columnId: 'user', searchKey: 'user', type: 'string' },
+      { columnId: 'date_from', searchKey: 'date_from', type: 'string' },
+      { columnId: 'date_to', searchKey: 'date_to', type: 'string' },
+    ],
+  })
 
   const apiParams = useMemo(() => {
     const page = pagination.pageIndex + 1
     const perPage = pagination.pageSize
-    const auditableTypeFilter = columnFilters.find((f) => f.id === 'auditable_type')
+    const auditableTypeFilter = columnFilters.find(
+      (f) => f.id === 'auditable_type'
+    )
     const eventFilter = columnFilters.find((f) => f.id === 'event')
     const ipFilter = columnFilters.find((f) => f.id === 'ip_address')
     const userFilter = columnFilters.find((f) => f.id === 'user')
     const dateFromFilter = columnFilters.find((f) => f.id === 'date_from')
     const dateToFilter = columnFilters.find((f) => f.id === 'date_to')
-    const eventValue = eventFilter?.value && Array.isArray(eventFilter.value)
-      ? (eventFilter.value.length === 1 ? eventFilter.value[0] : undefined)
-      : undefined
+    const eventValue =
+      eventFilter?.value && Array.isArray(eventFilter.value)
+        ? eventFilter.value.length === 1
+          ? eventFilter.value[0]
+          : undefined
+        : undefined
     return {
       page,
       per_page: perPage,
       auditable_type: auditableTypeFilter?.value as string | undefined,
-      event: eventValue as 'created' | 'updated' | 'deleted' | 'restored' | undefined,
+      event: eventValue as
+        | 'created'
+        | 'updated'
+        | 'deleted'
+        | 'restored'
+        | undefined,
       ip_address: ipFilter?.value as string | undefined,
       user: userFilter?.value as string | undefined,
       date_from: dateFromFilter?.value as string | undefined,
@@ -85,7 +122,14 @@ export function AuditLogTable() {
     data: data?.data ?? [],
     columns,
     pageCount,
-    state: { sorting, pagination, rowSelection, columnFilters, columnVisibility, expanded },
+    state: {
+      sorting,
+      pagination,
+      rowSelection,
+      columnFilters,
+      columnVisibility,
+      expanded,
+    },
     enableRowSelection: true,
     manualPagination: true,
     onPaginationChange,
@@ -123,31 +167,33 @@ export function AuditLogTable() {
     <div
       className={cn(
         'max-sm:has-[div[role="toolbar"]]:mb-16',
-        'flex flex-1 flex-col gap-4',
+        'flex flex-1 flex-col gap-4'
       )}
     >
       <AuditLogToolbar table={table} />
-      <div className="overflow-hidden rounded-md border">
+      <div className='overflow-hidden rounded-md border'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="group/row">
+              <TableRow key={headerGroup.id} className='group/row'>
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
                     colSpan={header.colSpan}
                     className={cn(
                       'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
-                      (header.column.columnDef.meta as { className?: string })?.className,
-                      (header.column.columnDef.meta as { thClassName?: string })?.thClassName,
+                      (header.column.columnDef.meta as { className?: string })
+                        ?.className,
+                      (header.column.columnDef.meta as { thClassName?: string })
+                        ?.thClassName
                     )}
                   >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -162,28 +208,38 @@ export function AuditLogTable() {
                   <Fragment key={row.id}>
                     <TableRow
                       data-state={row.getIsSelected() && 'selected'}
-                      className="group/row"
+                      className='group/row'
                     >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell
                           key={cell.id}
                           className={cn(
                             'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
-                            (cell.column.columnDef.meta as { className?: string })?.className,
-                            (cell.column.columnDef.meta as { tdClassName?: string })?.tdClassName,
+                            (
+                              cell.column.columnDef.meta as {
+                                className?: string
+                              }
+                            )?.className,
+                            (
+                              cell.column.columnDef.meta as {
+                                tdClassName?: string
+                              }
+                            )?.tdClassName
                           )}
                         >
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
                         </TableCell>
                       ))}
                     </TableRow>
                     {row.getIsExpanded() && (
-                      <TableRow className="bg-muted/30 hover:bg-muted/30">
-                        <TableCell
-                          colSpan={columns.length}
-                          className="p-4"
-                        >
-                          <AuditLogExpandedContent audit={row.original as Audit} />
+                      <TableRow className='bg-muted/30 hover:bg-muted/30'>
+                        <TableCell colSpan={columns.length} className='p-4'>
+                          <AuditLogExpandedContent
+                            audit={row.original as Audit}
+                          />
                         </TableCell>
                       </TableRow>
                     )}
@@ -191,7 +247,10 @@ export function AuditLogTable() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                  <TableCell
+                    colSpan={columns.length}
+                    className='h-24 text-center'
+                  >
                     No results.
                   </TableCell>
                 </TableRow>
@@ -200,7 +259,7 @@ export function AuditLogTable() {
           )}
         </Table>
       </div>
-      <DataTablePagination table={table} className="mt-auto" />
+      <DataTablePagination table={table} className='mt-auto' />
       <DataTableBulkActions table={table} />
     </div>
   )

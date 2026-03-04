@@ -6,14 +6,17 @@
 'use client'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
+
 import type { Product, ProductFormData } from './types'
 
 export const productKeys = {
   all: ['products'] as const,
   lists: () => [...productKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...productKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...productKeys.lists(), filters] as const,
   details: () => [...productKeys.all, 'detail'] as const,
   detail: (id: number) => [...productKeys.details(), id] as const,
 }
@@ -22,18 +25,15 @@ export const productKeys = {
  * Get all products with pagination
  */
 export function useProducts(params?: {
-  page?: number;
-  per_page?: number;
-  search?: string;
+  page?: number
+  per_page?: number
+  search?: string
 }) {
   const { api, sessionStatus } = useApiClient()
   const query = useQuery({
     queryKey: productKeys.list(params),
     queryFn: async () => {
-      const response = await api.get<Product[]>(
-        '/products',
-        { params },
-      )
+      const response = await api.get<Product[]>('/products', { params })
       return response
     },
     enabled: sessionStatus !== 'loading',
@@ -90,7 +90,13 @@ export function useUpdateProduct() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<ProductFormData> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<ProductFormData>
+    }) => {
       const response = await api.put<{ data: Product }>(`/products/${id}`, data)
       if (!response.success || !response.data) {
         if (response.errors) {
@@ -103,7 +109,9 @@ export function useUpdateProduct() {
     onSuccess: (_, variables) => {
       // Invalidate both list and detail
       queryClient.invalidateQueries({ queryKey: productKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: productKeys.detail(variables.id) })
+      queryClient.invalidateQueries({
+        queryKey: productKeys.detail(variables.id),
+      })
     },
   })
 }

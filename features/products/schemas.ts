@@ -1,7 +1,6 @@
 /**
  * Products Zod Schemas
  */
-
 import { z } from 'zod'
 
 export const productSchema = z.object({
@@ -11,4 +10,4 @@ export const productSchema = z.object({
   stock: z.number().int().min(0, 'Stock must be a non-negative integer'),
 })
 
-export type ProductFormData = z.infer<typeof productSchema>;
+export type ProductFormData = z.infer<typeof productSchema>

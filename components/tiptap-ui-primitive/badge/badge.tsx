@@ -1,6 +1,7 @@
 'use client'
 
 import { forwardRef } from 'react'
+
 import '@/components/tiptap-ui-primitive/badge/badge-colors.scss'
 import '@/components/tiptap-ui-primitive/badge/badge-group.scss'
 import '@/components/tiptap-ui-primitive/badge/badge.scss'
@@ -23,7 +24,7 @@ export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
       children,
       ...props
     },
-    ref,
+    ref
   ) => {
     return (
       <div
@@ -38,7 +39,7 @@ export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
         {children}
       </div>
     )
-  },
+  }
 )
 
 Badge.displayName = 'Badge'

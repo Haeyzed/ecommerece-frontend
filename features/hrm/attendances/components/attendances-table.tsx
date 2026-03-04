@@ -1,27 +1,49 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+
 import { format } from 'date-fns'
-import { type DateRange } from 'react-day-picker'
-import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useTableUrlState } from '@/hooks/use-table-url-state'
-import { cn } from '@/lib/utils'
+
 import {
+  type SortingState,
+  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
   getSortedRowModel,
-  type SortingState,
   useReactTable,
-  type VisibilityState,
 } from '@tanstack/react-table'
+
+import { type DateRange } from 'react-day-picker'
 import { toast } from 'sonner'
 
+import { cn } from '@/lib/utils'
+
+import { useTableUrlState } from '@/hooks/use-table-url-state'
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+
+import {
+  DataTablePagination,
+  DataTableSkeleton,
+  DataTableToolbar,
+} from '@/components/data-table'
+
+import {
+  AttendancesEmptyState,
+  DataTableBulkActions,
+  attendancesColumns as columns,
+} from '@/features/hrm/attendances'
 import { usePaginatedAttendances } from '@/features/hrm/attendances/api'
-import { attendancesColumns as columns, AttendancesEmptyState, DataTableBulkActions } from '@/features/hrm/attendances'
 import { useOptionEmployees } from '@/features/hrm/employees/api'
 
 export function AttendancesTable() {
@@ -65,8 +87,12 @@ export function AttendancesTable() {
       page,
       per_page: perPage,
       status: statusValue as any,
-      employee_id: employeeFilter?.value ? Number(employeeFilter.value) : undefined,
-      start_date: dateRange?.from ? format(dateRange.from, 'yyyy-MM-dd') : undefined,
+      employee_id: employeeFilter?.value
+        ? Number(employeeFilter.value)
+        : undefined,
+      start_date: dateRange?.from
+        ? format(dateRange.from, 'yyyy-MM-dd')
+        : undefined,
       end_date: dateRange?.to ? format(dateRange.to, 'yyyy-MM-dd') : undefined,
     }
   }, [pagination, columnFilters, dateRange])
@@ -114,14 +140,23 @@ export function AttendancesTable() {
   }
 
   const hasData = data?.meta?.total && data.meta.total > 0
-  const isFiltered = !!apiParams.status || !!apiParams.employee_id || !!apiParams.start_date || !!apiParams.end_date
+  const isFiltered =
+    !!apiParams.status ||
+    !!apiParams.employee_id ||
+    !!apiParams.start_date ||
+    !!apiParams.end_date
 
   if (!isLoading && !hasData && !isFiltered) {
     return <AttendancesEmptyState />
   }
 
   return (
-    <div className={cn('max-sm:has-[div[role="toolbar"]]:mb-16', 'flex flex-1 flex-col gap-4')}>
+    <div
+      className={cn(
+        'max-sm:has-[div[role="toolbar"]]:mb-16',
+        'flex flex-1 flex-col gap-4'
+      )}
+    >
       <DataTableToolbar
         table={table}
         dateRange={dateRange}
@@ -140,15 +175,19 @@ export function AttendancesTable() {
           {
             columnId: 'employee_id',
             title: 'Employee',
-            options: optionEmployees?.map(emp => ({ label: emp.label, value: emp.value.toString() })) || [],
+            options:
+              optionEmployees?.map((emp) => ({
+                label: emp.label,
+                value: emp.value.toString(),
+              })) || [],
           },
         ]}
       />
-      <div className="overflow-hidden rounded-md border">
+      <div className='overflow-hidden rounded-md border'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="group/row">
+              <TableRow key={headerGroup.id} className='group/row'>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
@@ -157,15 +196,15 @@ export function AttendancesTable() {
                       className={cn(
                         'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                         (header.column.columnDef.meta as any)?.className,
-                        (header.column.columnDef.meta as any)?.thClassName,
+                        (header.column.columnDef.meta as any)?.thClassName
                       )}
                     >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   )
                 })}
@@ -181,7 +220,7 @@ export function AttendancesTable() {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    className="group/row"
+                    className='group/row'
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
@@ -189,12 +228,12 @@ export function AttendancesTable() {
                         className={cn(
                           'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                           (cell.column.columnDef.meta as any)?.className,
-                          (cell.column.columnDef.meta as any)?.tdClassName,
+                          (cell.column.columnDef.meta as any)?.tdClassName
                         )}
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext(),
+                          cell.getContext()
                         )}
                       </TableCell>
                     ))}
@@ -204,7 +243,7 @@ export function AttendancesTable() {
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className="h-24 text-center"
+                    className='h-24 text-center'
                   >
                     No results.
                   </TableCell>
@@ -214,7 +253,7 @@ export function AttendancesTable() {
           )}
         </Table>
       </div>
-      <DataTablePagination table={table} className="mt-auto" />
+      <DataTablePagination table={table} className='mt-auto' />
       <DataTableBulkActions table={table} />
     </div>
   )

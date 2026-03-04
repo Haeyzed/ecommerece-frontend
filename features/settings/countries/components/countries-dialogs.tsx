@@ -1,12 +1,13 @@
 'use client'
 
+import { useAuthSession } from '@/features/auth/api'
+
 import { CountriesActionDialog } from './countries-action-dialog'
 import { CountriesDeleteDialog } from './countries-delete-dialog'
 import { CountriesExportDialog } from './countries-export-dialog'
 import { CountriesImportDialog } from './countries-import-dialog'
-import { CountriesViewDialog } from './countries-view-dialog'
 import { useCountries } from './countries-provider'
-import { useAuthSession } from '@/features/auth/api'
+import { CountriesViewDialog } from './countries-view-dialog'
 
 export function CountriesDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useCountries()
@@ -23,7 +24,7 @@ export function CountriesDialogs() {
     <>
       {canCreate && (
         <CountriesActionDialog
-          key="country-add"
+          key='country-add'
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -33,7 +34,7 @@ export function CountriesDialogs() {
 
       {canImport && (
         <CountriesImportDialog
-          key="country-import"
+          key='country-import'
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -43,7 +44,7 @@ export function CountriesDialogs() {
 
       {canExport && (
         <CountriesExportDialog
-          key="country-export"
+          key='country-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

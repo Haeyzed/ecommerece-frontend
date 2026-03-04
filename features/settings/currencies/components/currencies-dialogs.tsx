@@ -1,12 +1,14 @@
 'use client'
 
+import { useAuthSession } from '@/features/auth/api'
+
 import { CurrenciesActionDialog } from './currencies-action-dialog'
 import { CurrenciesDeleteDialog } from './currencies-delete-dialog'
 import { CurrenciesExportDialog } from './currencies-export-dialog'
 import { CurrenciesImportDialog } from './currencies-import-dialog'
-import { CurrenciesViewDialog } from './currencies-view-dialog' // Generates separately, assume present
+// Generates separately, assume present
 import { useCurrencies } from './currencies-provider'
-import { useAuthSession } from '@/features/auth/api'
+import { CurrenciesViewDialog } from './currencies-view-dialog'
 
 export function CurrenciesDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useCurrencies()
@@ -23,7 +25,7 @@ export function CurrenciesDialogs() {
     <>
       {canCreate && (
         <CurrenciesActionDialog
-          key="currency-add"
+          key='currency-add'
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -33,7 +35,7 @@ export function CurrenciesDialogs() {
 
       {canImport && (
         <CurrenciesImportDialog
-          key="currency-import"
+          key='currency-import'
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -43,7 +45,7 @@ export function CurrenciesDialogs() {
 
       {canExport && (
         <CurrenciesExportDialog
-          key="currency-export"
+          key='currency-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

@@ -7,7 +7,6 @@
  *
  * @module features/settings/general/schemas
  */
-
 import { z } from 'zod'
 
 export const generalSettingSchema = z.object({
@@ -22,7 +21,11 @@ export const generalSettingSchema = z.object({
     .optional(),
   is_rtl: z.boolean().nullable().optional(),
   is_zatca: z.boolean().nullable().optional(),
-  company_name: z.string().max(255, 'Company name is too long').nullable().optional(),
+  company_name: z
+    .string()
+    .max(255, 'Company name is too long')
+    .nullable()
+    .optional(),
   vat_registration_number: z.string().max(255).nullable().optional(),
   currency: z.string().max(255).nullable().optional(),
   currency_position: z.enum(['prefix', 'suffix']).nullable().optional(),
@@ -33,7 +36,10 @@ export const generalSettingSchema = z.object({
   date_format: z.string().max(50).nullable().optional(),
   developed_by: z.string().max(255).nullable().optional(),
   invoice_format: z.enum(['standard', 'gst']).nullable().optional(),
-  state: z.union([z.literal(1), z.literal(2)]).nullable().optional(),
+  state: z
+    .union([z.literal(1), z.literal(2)])
+    .nullable()
+    .optional(),
   default_margin_value: z.number().min(0).nullable().optional(),
   font_css: z.string().nullable().optional(),
   pos_css: z.string().nullable().optional(),
@@ -43,7 +49,10 @@ export const generalSettingSchema = z.object({
   disable_signup: z.boolean().nullable().optional(),
   disable_forgot_password: z.boolean().nullable().optional(),
   maintenance_allowed_ips: z.string().max(500).nullable().optional(),
-  margin_type: z.union([z.literal(0), z.literal(1)]).nullable().optional(),
+  margin_type: z
+    .union([z.literal(0), z.literal(1)])
+    .nullable()
+    .optional(),
   timezone: z.string().max(100).nullable().optional(),
   show_products_details_in_sales_table: z.boolean().nullable().optional(),
   show_products_details_in_purchase_table: z.boolean().nullable().optional(),

@@ -1,10 +1,14 @@
 'use client'
 
 import { type ColumnDef } from '@tanstack/react-table'
+
 import { cn } from '@/lib/utils'
+
 import { Checkbox } from '@/components/ui/checkbox'
+
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
+
 import { type State } from '../types'
 import { DataTableRowActions } from './data-table-row-actions'
 
@@ -18,8 +22,8 @@ export const statesColumns: ColumnDef<State>[] = [
           (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
+        aria-label='Select all'
+        className='translate-y-[2px]'
       />
     ),
     meta: {
@@ -29,8 +33,8 @@ export const statesColumns: ColumnDef<State>[] = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
+        aria-label='Select row'
+        className='translate-y-[2px]'
       />
     ),
     enableSorting: false,
@@ -39,22 +43,22 @@ export const statesColumns: ColumnDef<State>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title='Name' />
     ),
     cell: ({ row }) => (
-      <div className="flex items-center gap-3 ps-3">
-        <div className="flex size-10 items-center justify-center rounded-md bg-muted">
-          <span className="text-xs font-medium">
+      <div className='flex items-center gap-3 ps-3'>
+        <div className='flex size-10 items-center justify-center rounded-md bg-muted'>
+          <span className='text-xs font-medium'>
             {row.original.name.charAt(0).toUpperCase()}
           </span>
         </div>
-        <LongText className="max-w-36">{row.getValue('name')}</LongText>
+        <LongText className='max-w-36'>{row.getValue('name')}</LongText>
       </div>
     ),
     meta: {
       className: cn(
         'drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]',
-        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none',
+        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none'
       ),
     },
     enableHiding: false,
@@ -62,40 +66,36 @@ export const statesColumns: ColumnDef<State>[] = [
   {
     accessorKey: 'country_id',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Country" />
+      <DataTableColumnHeader column={column} title='Country' />
     ),
     cell: ({ row }) => (
-      <span className="font-medium">{row.original.country?.name || '-'}</span>
+      <span className='font-medium'>{row.original.country?.name || '-'}</span>
     ),
     meta: { className: 'w-32' },
   },
   {
     accessorKey: 'code',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Code" />
+      <DataTableColumnHeader column={column} title='Code' />
     ),
-    cell: ({ row }) => (
-      <span>{row.original.code || '-'}</span>
-    ),
+    cell: ({ row }) => <span>{row.original.code || '-'}</span>,
     meta: { className: 'w-24' },
   },
   {
     accessorKey: 'state_code',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="State Code" />
+      <DataTableColumnHeader column={column} title='State Code' />
     ),
-    cell: ({ row }) => (
-      <span>{row.original.state_code || '-'}</span>
-    ),
+    cell: ({ row }) => <span>{row.original.state_code || '-'}</span>,
     meta: { className: 'w-24' },
   },
   {
     accessorKey: 'type',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Type" />
+      <DataTableColumnHeader column={column} title='Type' />
     ),
     cell: ({ row }) => (
-      <span className="capitalize">{row.original.type || '-'}</span>
+      <span className='capitalize'>{row.original.type || '-'}</span>
     ),
     meta: { className: 'w-24' },
   },

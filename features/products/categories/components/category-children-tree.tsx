@@ -1,8 +1,10 @@
 'use client'
 
 import { Spinner } from '@/components/ui/spinner'
+
 import type { TreeDataItem } from '@/components/tree-view'
 import { TreeView } from '@/components/tree-view'
+
 import { useReparentCategory } from '../api'
 import type { CategoryTreeItem } from '../types'
 
@@ -12,9 +14,7 @@ function mapToTreeData(items: CategoryTreeItem[]): TreeDataItem[] {
     name: item.name,
     iconUrl: item.icon_url ?? undefined,
     draggable: true,
-    children: item.children?.length
-      ? mapToTreeData(item.children)
-      : undefined,
+    children: item.children?.length ? mapToTreeData(item.children) : undefined,
   }))
 }
 
@@ -25,9 +25,9 @@ type CategoryChildrenTreeProps = {
 }
 
 export function CategoryChildrenTree({
-                                       children: categoryChildren = [],
-                                       parentId,
-                                     }: CategoryChildrenTreeProps) {
+  children: categoryChildren = [],
+  parentId,
+}: CategoryChildrenTreeProps) {
   const { mutate: reparent, isPending } = useReparentCategory()
 
   if (!categoryChildren.length) {
@@ -52,19 +52,16 @@ export function CategoryChildrenTree({
 
   return (
     <>
-      <div className="text-sm font-medium text-muted-foreground">
+      <div className='text-sm font-medium text-muted-foreground'>
         Child Categories
         {isPending && (
-          <span className="ml-2 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Spinner className="size-3.5" />
+          <span className='ml-2 inline-flex items-center gap-1.5 text-xs text-muted-foreground'>
+            <Spinner className='size-3.5' />
             Updating…
           </span>
         )}
       </div>
-      <TreeView
-        data={treeData}
-        onDocumentDrag={handleDrag}
-      />
+      <TreeView data={treeData} onDocumentDrag={handleDrag} />
     </>
   )
 }

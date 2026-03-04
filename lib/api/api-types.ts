@@ -13,12 +13,12 @@
  * Aligns with Laravel's default pagination response structure.
  */
 export interface PaginationMeta {
-  current_page: number;
-  last_page: number;
-  per_page: number;
-  total: number;
-  from: number | null;
-  to: number | null;
+  current_page: number
+  last_page: number
+  per_page: number
+  total: number
+  from: number | null
+  to: number | null
 }
 
 /**
@@ -27,11 +27,11 @@ export interface PaginationMeta {
  * @template T - The type of the `data` payload.
  */
 export interface ApiResponse<T = unknown> {
-  success: boolean;
-  message: string;
-  data: T | null;
-  meta?: PaginationMeta;
-  errors?: Record<string, string[]>;
+  success: boolean
+  message: string
+  data: T | null
+  meta?: PaginationMeta
+  errors?: Record<string, string[]>
 }
 
 /**
@@ -41,9 +41,9 @@ export interface ApiResponse<T = unknown> {
  * @template T - The type of the `data` payload.
  */
 export interface NormalizedApiResponse<T = unknown> {
-  success: boolean;
-  message: string;
-  data: T | null;
-  meta?: PaginationMeta;
-  errors?: Record<string, string[]>;
+  success: boolean
+  message: string
+  data: T | null
+  meta?: PaginationMeta
+  errors?: Record<string, string[]>
 }

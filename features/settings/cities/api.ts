@@ -1,15 +1,25 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import type { City, CityExportParams, CityFormData, CityListParams, CityOption } from './types'
+
+import type {
+  City,
+  CityExportParams,
+  CityFormData,
+  CityListParams,
+  CityOption,
+} from './types'
 
 export const cityKeys = {
   all: ['cities'] as const,
   lists: () => [...cityKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...cityKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...cityKeys.lists(), filters] as const,
   details: () => [...cityKeys.all, 'detail'] as const,
   detail: (id: number) => [...cityKeys.details(), id] as const,
   options: () => [...cityKeys.all, 'options'] as const,
@@ -73,14 +83,16 @@ export function useCreateCity() {
         state_id: data.state_id,
       }
 
-      if (data.country_code !== undefined) payload.country_code = data.country_code
+      if (data.country_code !== undefined)
+        payload.country_code = data.country_code
       if (data.state_code !== undefined) payload.state_code = data.state_code
       if (data.latitude !== undefined) payload.latitude = data.latitude
       if (data.longitude !== undefined) payload.longitude = data.longitude
 
       const response = await api.post<{ data: City }>(BASE_PATH, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -100,7 +112,13 @@ export function useUpdateCity() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<CityFormData> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<CityFormData>
+    }) => {
       const payload: Record<string, unknown> = {}
 
       Object.keys(data).forEach((key) => {
@@ -110,9 +128,13 @@ export function useUpdateCity() {
         }
       })
 
-      const response = await api.put<{ data: City }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: City }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }

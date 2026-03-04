@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
 export const timezoneSchema = z.object({
@@ -40,9 +41,9 @@ export const timezoneExportSchema = z
       }
       return true
     },
-    { message: 'Please select a user to send the email to', path: ['user_id'] },
+    { message: 'Please select a user to send the email to', path: ['user_id'] }
   )
 
-export type TimezoneFormData = z.infer<typeof timezoneSchema>;
-export type TimezoneImportFormData = z.infer<typeof timezoneImportSchema>;
-export type TimezoneExportFormData = z.infer<typeof timezoneExportSchema>;
+export type TimezoneFormData = z.infer<typeof timezoneSchema>
+export type TimezoneImportFormData = z.infer<typeof timezoneImportSchema>
+export type TimezoneExportFormData = z.infer<typeof timezoneExportSchema>

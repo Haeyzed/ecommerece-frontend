@@ -3,10 +3,10 @@
 /**
  * Edit Product Page
  */
-
-import { ProductForm } from '@/features/products/components/product-form'
-import { useProduct, useUpdateProduct } from '@/features/products/api'
 import { useParams, useRouter } from 'next/navigation'
+
+import { useProduct, useUpdateProduct } from '@/features/products/api'
+import { ProductForm } from '@/features/products/components/product-form'
 
 export default function EditProductPage() {
   const params = useParams()
@@ -15,22 +15,24 @@ export default function EditProductPage() {
   const { data: product, isLoading, isSessionLoading } = useProduct(id)
   const updateMutation = useUpdateProduct()
 
-  const handleSubmit = async (data: Parameters<typeof updateMutation.mutateAsync>[0]['data']) => {
+  const handleSubmit = async (
+    data: Parameters<typeof updateMutation.mutateAsync>[0]['data']
+  ) => {
     await updateMutation.mutateAsync({ id, data })
     router.push('/products')
   }
 
   if (isSessionLoading || isLoading) {
-    return <div className="container mx-auto py-8">Loading...</div>
+    return <div className='container mx-auto py-8'>Loading...</div>
   }
 
   if (!product) {
-    return <div className="container mx-auto py-8">Product not found</div>
+    return <div className='container mx-auto py-8'>Product not found</div>
   }
 
   return (
-    <div className="container mx-auto py-8 max-w-2xl">
-      <h1 className="text-3xl font-bold mb-6">Edit Product</h1>
+    <div className='container mx-auto max-w-2xl py-8'>
+      <h1 className='mb-6 text-3xl font-bold'>Edit Product</h1>
       <ProductForm
         product={product}
         onSubmit={handleSubmit}

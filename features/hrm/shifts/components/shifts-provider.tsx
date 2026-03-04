@@ -1,7 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import useDialogState from '@/hooks/use-dialog-state'
+
 import { type Shift } from '@/features/hrm/shifts'
 
 type ShiftsDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
@@ -20,7 +22,9 @@ export function ShiftsProvider({ children }: { children: React.ReactNode }) {
   const [currentRow, setCurrentRow] = useState<Shift | null>(null)
 
   return (
-    <ShiftsContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <ShiftsContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </ShiftsContext.Provider>
   )

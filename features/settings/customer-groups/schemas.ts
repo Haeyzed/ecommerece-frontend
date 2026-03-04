@@ -1,9 +1,15 @@
 import { z } from 'zod'
+
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
 export const customerGroupSchema = z.object({
   name: z.string().min(1, 'Name is required').max(255, 'Name is too long'),
-  percentage: z.coerce.number().min(0, 'Must be 0 or more').max(100, 'Must be 100 or less').nullable().optional(),
+  percentage: z.coerce
+    .number()
+    .min(0, 'Must be 0 or more')
+    .max(100, 'Must be 100 or less')
+    .nullable()
+    .optional(),
   is_active: z.boolean().nullable().optional(),
 })
 
@@ -27,7 +33,9 @@ export const customerGroupImportSchema = z.object({
     }, 'Only .csv files are allowed'),
 })
 
-export type CustomerGroupImportFormData = z.infer<typeof customerGroupImportSchema>
+export type CustomerGroupImportFormData = z.infer<
+  typeof customerGroupImportSchema
+>
 
 export const customerGroupExportSchema = z
   .object({
@@ -41,7 +49,9 @@ export const customerGroupExportSchema = z
       if (data.method === 'email') return data.user_id !== undefined
       return true
     },
-    { message: 'Please select a user to send the email to', path: ['user_id'] },
+    { message: 'Please select a user to send the email to', path: ['user_id'] }
   )
 
-export type CustomerGroupExportFormData = z.infer<typeof customerGroupExportSchema>
+export type CustomerGroupExportFormData = z.infer<
+  typeof customerGroupExportSchema
+>

@@ -1,12 +1,13 @@
 'use client'
 
+import { useAuthSession } from '@/features/auth/api'
+
 import { WarehousesActionDialog } from './warehouses-action-dialog'
 import { WarehousesDeleteDialog } from './warehouses-delete-dialog'
 import { WarehousesExportDialog } from './warehouses-export-dialog'
 import { WarehousesImportDialog } from './warehouses-import-dialog'
-import { WarehousesViewDialog } from './warehouses-view-dialog'
 import { useWarehouses } from './warehouses-provider'
-import { useAuthSession } from '@/features/auth/api'
+import { WarehousesViewDialog } from './warehouses-view-dialog'
 
 export function WarehousesDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useWarehouses()
@@ -23,7 +24,7 @@ export function WarehousesDialogs() {
     <>
       {canCreate && (
         <WarehousesActionDialog
-          key="warehouse-add"
+          key='warehouse-add'
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -33,7 +34,7 @@ export function WarehousesDialogs() {
 
       {canImport && (
         <WarehousesImportDialog
-          key="warehouse-import"
+          key='warehouse-import'
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -43,7 +44,7 @@ export function WarehousesDialogs() {
 
       {canExport && (
         <WarehousesExportDialog
-          key="warehouse-export"
+          key='warehouse-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

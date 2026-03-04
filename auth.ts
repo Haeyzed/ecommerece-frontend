@@ -2,39 +2,42 @@
  * NextAuth v5 Configuration
  * Handles authentication with Laravel backend
  */
+import NextAuth from 'next-auth'
+import 'next-auth/jwt'
+import Credentials from 'next-auth/providers/credentials'
 
-import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import type { AuthResponse, AuthUser } from './features/auth/types';
-import { api } from "@/lib/api/api-client";
-import "next-auth/jwt";
+import { api } from '@/lib/api/api-client'
+
+import type { AuthResponse, AuthUser } from './features/auth/types'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
   providers: [
     Credentials({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        identifier: { label: "Email or Username", type: "text" },
-        password: { label: "Password", type: "password" },
+        identifier: { label: 'Email or Username', type: 'text' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         if (!credentials?.identifier || !credentials?.password) {
-          return null;
+          return null
         }
 
         try {
           const response = await api.post<AuthResponse>(
-            "/auth/login",
+            '/auth/login',
             {
               identifier: credentials.identifier,
               password: credentials.password,
             },
             { skipAuth: true }
-          );
+          )
 
           if (response.success && response.data) {
-            const userData = response.data.user as AuthUser & { image_url?: string | null };
+            const userData = response.data.user as AuthUser & {
+              image_url?: string | null
+            }
             return {
               id: String(response.data.user.id),
               name: response.data.user.name,
@@ -42,13 +45,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               token: response.data.token,
               image_url: userData.image_url ?? null,
               user_permissions: userData.user_permissions || [],
-            };
+            }
           }
 
-          return null;
+          return null
         } catch (error) {
-          console.error("Auth error:", error);
-          return null;
+          console.error('Auth error:', error)
+          return null
         }
       },
     }),
@@ -56,51 +59,52 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.token = user.token;
-        token.id = user.id;
-        token.user_permissions = user.user_permissions;
+        token.token = user.token
+        token.id = user.id
+        token.user_permissions = user.user_permissions
       }
-      return token;
+      return token
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string;
-        session.user.token = token.token as string;
-        session.user.user_permissions = (token.user_permissions as string[]) || [];
+        session.user.id = token.id as string
+        session.user.token = token.token as string
+        session.user.user_permissions =
+          (token.user_permissions as string[]) || []
       }
-      return session;
+      return session
     },
   },
   pages: {
-    signIn: "/login",
+    signIn: '/login',
   },
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
   },
-});
+})
 
 // Extend NextAuth types
-declare module "next-auth" {
+declare module 'next-auth' {
   interface User {
-    token?: string;
-    image_url?: string | null;
-    user_permissions?: string[];
+    token?: string
+    image_url?: string | null
+    user_permissions?: string[]
   }
 
   interface Session {
     user: {
-      id: string;
-      name: string;
-      email: string;
-      image_url?: string | null;
-      token?: string;
-      user_permissions: string[];
-    };
+      id: string
+      name: string
+      email: string
+      image_url?: string | null
+      token?: string
+      user_permissions: string[]
+    }
   }
 }
 
-declare module "next-auth/jwt" {
+declare module 'next-auth/jwt' {
   interface JWT {
-    user_permissions?: string[];
+    user_permissions?: string[]
   }
 }

@@ -1,15 +1,25 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import type { Tax, TaxExportParams, TaxFormData, TaxListParams, TaxOption } from './types'
+
+import type {
+  Tax,
+  TaxExportParams,
+  TaxFormData,
+  TaxListParams,
+  TaxOption,
+} from './types'
 
 export const taxKeys = {
   all: ['taxes'] as const,
   lists: () => [...taxKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...taxKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...taxKeys.lists(), filters] as const,
   details: () => [...taxKeys.all, 'detail'] as const,
   detail: (id: number) => [...taxKeys.details(), id] as const,
   options: () => [...taxKeys.all, 'options'] as const,
@@ -73,11 +83,13 @@ export function useCreateTax() {
         rate: data.rate,
         is_active: data.is_active ?? true,
       }
-      if (data.woocommerce_tax_id != null) payload.woocommerce_tax_id = data.woocommerce_tax_id
+      if (data.woocommerce_tax_id != null)
+        payload.woocommerce_tax_id = data.woocommerce_tax_id
 
       const response = await api.post<{ data: Tax }>(BASE_PATH, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -97,16 +109,27 @@ export function useUpdateTax() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<TaxFormData> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<TaxFormData>
+    }) => {
       const payload: Record<string, unknown> = {}
       if (data.name !== undefined) payload.name = data.name
       if (data.rate !== undefined) payload.rate = data.rate
-      if (data.woocommerce_tax_id !== undefined) payload.woocommerce_tax_id = data.woocommerce_tax_id
+      if (data.woocommerce_tax_id !== undefined)
+        payload.woocommerce_tax_id = data.woocommerce_tax_id
       if (data.is_active !== undefined) payload.is_active = data.is_active
 
-      const response = await api.put<{ data: Tax }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: Tax }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }
@@ -149,7 +172,7 @@ export function useBulkActivateTaxes() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
         `${BASE_PATH}/bulk-activate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -169,7 +192,7 @@ export function useBulkDeactivateTaxes() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ deactivated_count: number }>(
         `${BASE_PATH}/bulk-deactivate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response

@@ -7,7 +7,6 @@
  *
  * @module features/auth/schemas
  */
-
 import { z } from 'zod'
 
 /**
@@ -82,38 +81,37 @@ export const lockScreenSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 })
 
-
 /**
  * LoginFormData
  *
  * Type inferred from loginSchema.
  */
-export type LoginFormData = z.infer<typeof loginSchema>;
+export type LoginFormData = z.infer<typeof loginSchema>
 
 /**
  * RegisterFormData
  *
  * Type inferred from registerSchema.
  */
-export type RegisterFormData = z.infer<typeof registerSchema>;
+export type RegisterFormData = z.infer<typeof registerSchema>
 
 /**
  * ForgotPasswordFormData
  *
  * Type inferred from forgotPasswordSchema.
  */
-export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
+export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>
 
 /**
  * ResetPasswordFormData
  *
  * Type inferred from resetPasswordSchema.
  */
-export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
+export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>
 
 /**
  * LockScreenFormData
  *
  * Type inferred from lockScreenSchema.
  */
-export type LockScreenFormData = z.infer<typeof lockScreenSchema>;
+export type LockScreenFormData = z.infer<typeof lockScreenSchema>

@@ -1,10 +1,18 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import useDialogState from '@/hooks/use-dialog-state'
+
 import { type Country } from '../types'
 
-type CountriesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
+type CountriesDialogType =
+  | 'import'
+  | 'add'
+  | 'edit'
+  | 'delete'
+  | 'export'
+  | 'view'
 
 type CountriesContextType = {
   open: CountriesDialogType | null
@@ -20,7 +28,9 @@ export function CountriesProvider({ children }: { children: React.ReactNode }) {
   const [currentRow, setCurrentRow] = useState<Country | null>(null)
 
   return (
-    <CountriesContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <CountriesContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </CountriesContext.Provider>
   )

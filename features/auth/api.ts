@@ -1,11 +1,15 @@
 'use client'
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { UnauthorizedError, ValidationError } from '@/lib/api/api-errors'
-import { toast } from 'sonner'
+
 import type {
   AuthResponse,
   AuthUser,
@@ -65,7 +69,7 @@ export function useLogin() {
       const response = await api.post<AuthResponse>(
         `${BASE_PATH}/login`,
         credentials,
-        { skipAuth: true },
+        { skipAuth: true }
       )
 
       if (!response.success || !response.data) {
@@ -105,11 +109,12 @@ export function useRegister() {
       const response = await api.post<AuthResponse>(
         `${BASE_PATH}/register`,
         data,
-        { skipAuth: true },
+        { skipAuth: true }
       )
 
       if (!response.success || !response.data) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
 
@@ -141,7 +146,7 @@ export function useUnlock() {
       const response = await api.post<null>(
         `${BASE_PATH}/unlock`,
         { password: credentials.password },
-        { skipAuth: false },
+        { skipAuth: false }
       )
 
       if (!response.success) {
@@ -173,7 +178,7 @@ export function useLogout() {
       const response = await api.post<null>(
         `${BASE_PATH}/logout`,
         {},
-        { skipAuth: false },
+        { skipAuth: false }
       )
 
       if (!response.success) {
@@ -194,14 +199,13 @@ export function useForgotPassword() {
 
   return useMutation({
     mutationFn: async (data: ForgotPasswordData) => {
-      const response = await api.post(
-        `${BASE_PATH}/forgot-password`,
-        data,
-        { skipAuth: true },
-      )
+      const response = await api.post(`${BASE_PATH}/forgot-password`, data, {
+        skipAuth: true,
+      })
 
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
 
@@ -216,14 +220,13 @@ export function useResetPassword() {
 
   return useMutation({
     mutationFn: async (data: ResetPasswordData) => {
-      const response = await api.post(
-        `${BASE_PATH}/reset-password`,
-        data,
-        { skipAuth: true },
-      )
+      const response = await api.post(`${BASE_PATH}/reset-password`, data, {
+        skipAuth: true,
+      })
 
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
 
@@ -243,7 +246,7 @@ export function useVerifyEmail() {
       const response = await api.post(
         `${BASE_PATH}/verify-email`,
         { token },
-        { skipAuth: true },
+        { skipAuth: true }
       )
 
       if (!response.success) {
@@ -263,7 +266,7 @@ export function useResendVerification() {
       const response = await api.post(
         `${BASE_PATH}/resend-verification`,
         {},
-        { skipAuth: false },
+        { skipAuth: false }
       )
 
       if (!response.success) {
@@ -284,7 +287,7 @@ export function useRefreshToken() {
       const response = await api.post<RefreshTokenResponse>(
         `${BASE_PATH}/refresh-token`,
         { revoke_old_token: revokeOldToken },
-        { skipAuth: false },
+        { skipAuth: false }
       )
 
       if (!response.success || !response.data) {
@@ -297,7 +300,9 @@ export function useRefreshToken() {
       await updateSession({ user: { token: data.token } })
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : 'Failed to refresh token')
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to refresh token'
+      )
     },
   })
 }

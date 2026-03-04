@@ -1,6 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/tiptap-utils'
+
 import '@/components/tiptap-ui-primitive/input/input.scss'
 
 function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
@@ -10,10 +11,10 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
 }
 
 function InputGroup({
-                      className,
-                      children,
-                      ...props
-                    }: React.ComponentProps<'div'>) {
+  className,
+  children,
+  ...props
+}: React.ComponentProps<'div'>) {
   return (
     <div className={cn('tiptap-input-group', className)} {...props}>
       {children}

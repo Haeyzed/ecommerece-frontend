@@ -1,7 +1,9 @@
 'use client'
 
 import { type ColumnDef } from '@tanstack/react-table'
+
 import { DataTableColumnHeader } from '@/components/data-table'
+
 import type { CustomerDueReportRow } from '../types'
 
 function formatMoney(value: number) {
@@ -15,7 +17,7 @@ export const customerDueReportColumns: ColumnDef<CustomerDueReportRow>[] = [
   {
     accessorKey: 'date',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Date" />
+      <DataTableColumnHeader column={column} title='Date' />
     ),
     cell: ({ row }) => {
       const date = row.original.date
@@ -34,22 +36,22 @@ export const customerDueReportColumns: ColumnDef<CustomerDueReportRow>[] = [
   {
     accessorKey: 'reference_no',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Reference" />
+      <DataTableColumnHeader column={column} title='Reference' />
     ),
     cell: ({ row }) => (
-      <span className="font-mono">{row.original.reference_no}</span>
+      <span className='font-mono'>{row.original.reference_no}</span>
     ),
   },
   {
     accessorKey: 'customer_name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Customer" />
+      <DataTableColumnHeader column={column} title='Customer' />
     ),
     cell: ({ row }) => (
       <div>
         <div>{row.original.customer_name}</div>
         {row.original.customer_phone && (
-          <div className="text-muted-foreground text-sm">
+          <div className='text-sm text-muted-foreground'>
             {row.original.customer_phone}
           </div>
         )}
@@ -59,10 +61,10 @@ export const customerDueReportColumns: ColumnDef<CustomerDueReportRow>[] = [
   {
     accessorKey: 'grand_total',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Grand Total" />
+      <DataTableColumnHeader column={column} title='Grand Total' />
     ),
     cell: ({ row }) => (
-      <span className="tabular-nums">
+      <span className='tabular-nums'>
         {formatMoney(row.original.grand_total)}
       </span>
     ),
@@ -71,10 +73,10 @@ export const customerDueReportColumns: ColumnDef<CustomerDueReportRow>[] = [
   {
     accessorKey: 'returned_amount',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Returned" />
+      <DataTableColumnHeader column={column} title='Returned' />
     ),
     cell: ({ row }) => (
-      <span className="tabular-nums">
+      <span className='tabular-nums'>
         {formatMoney(row.original.returned_amount)}
       </span>
     ),
@@ -83,20 +85,20 @@ export const customerDueReportColumns: ColumnDef<CustomerDueReportRow>[] = [
   {
     accessorKey: 'paid',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Paid" />
+      <DataTableColumnHeader column={column} title='Paid' />
     ),
     cell: ({ row }) => (
-      <span className="tabular-nums">{formatMoney(row.original.paid)}</span>
+      <span className='tabular-nums'>{formatMoney(row.original.paid)}</span>
     ),
     meta: { className: 'text-right', thClassName: 'text-right' },
   },
   {
     accessorKey: 'due',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Due" />
+      <DataTableColumnHeader column={column} title='Due' />
     ),
     cell: ({ row }) => (
-      <span className="tabular-nums font-medium">
+      <span className='font-medium tabular-nums'>
         {formatMoney(row.original.due)}
       </span>
     ),

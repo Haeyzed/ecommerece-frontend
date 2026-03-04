@@ -1,9 +1,12 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
+
 import type {
   Warehouse,
   WarehouseExportParams,
@@ -15,7 +18,8 @@ import type {
 export const warehouseKeys = {
   all: ['warehouses'] as const,
   lists: () => [...warehouseKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...warehouseKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...warehouseKeys.lists(), filters] as const,
   details: () => [...warehouseKeys.all, 'detail'] as const,
   detail: (id: number) => [...warehouseKeys.details(), id] as const,
   options: () => [...warehouseKeys.all, 'options'] as const,
@@ -84,7 +88,8 @@ export function useCreateWarehouse() {
 
       const response = await api.post<{ data: Warehouse }>(BASE_PATH, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -104,7 +109,13 @@ export function useUpdateWarehouse() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<WarehouseFormData> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<WarehouseFormData>
+    }) => {
       const payload: Record<string, unknown> = {}
       if (data.name !== undefined) payload.name = data.name
       if (data.phone !== undefined) payload.phone = data.phone
@@ -112,9 +123,13 @@ export function useUpdateWarehouse() {
       if (data.address !== undefined) payload.address = data.address
       if (data.is_active !== undefined) payload.is_active = data.is_active
 
-      const response = await api.put<{ data: Warehouse }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: Warehouse }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }
@@ -157,7 +172,7 @@ export function useBulkActivateWarehouses() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
         `${BASE_PATH}/bulk-activate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -177,7 +192,7 @@ export function useBulkDeactivateWarehouses() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ deactivated_count: number }>(
         `${BASE_PATH}/bulk-deactivate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response

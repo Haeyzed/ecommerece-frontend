@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+
 import {
   FeaturedCategories,
   FeaturedProducts,
@@ -18,9 +19,9 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className='flex min-h-screen flex-col'>
       <LandingHeader />
-      <main className="flex-1">
+      <main className='flex-1'>
         <Hero />
         <TrustHighlights />
         <FeaturedCategories />

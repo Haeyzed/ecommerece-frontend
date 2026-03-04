@@ -1,14 +1,15 @@
 'use client'
 
+import { useAuthSession } from '@/features/auth/api'
 import {
   LeaveTypesActionDialog,
   LeaveTypesDeleteDialog,
   LeaveTypesExportDialog,
   LeaveTypesImportDialog,
 } from '@/features/hrm/leave-types'
-import { LeaveTypesViewDialog } from './leave-types-view-dialog'
+
 import { useLeaveTypes } from './leave-types-provider'
-import { useAuthSession } from '@/features/auth/api'
+import { LeaveTypesViewDialog } from './leave-types-view-dialog'
 
 export function LeaveTypesDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useLeaveTypes()
@@ -26,7 +27,7 @@ export function LeaveTypesDialogs() {
     <>
       {canCreate && (
         <LeaveTypesActionDialog
-          key="leave-type-add"
+          key='leave-type-add'
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -36,7 +37,7 @@ export function LeaveTypesDialogs() {
 
       {canImport && (
         <LeaveTypesImportDialog
-          key="leave-type-import"
+          key='leave-type-import'
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -46,7 +47,7 @@ export function LeaveTypesDialogs() {
 
       {canExport && (
         <LeaveTypesExportDialog
-          key="leave-type-export"
+          key='leave-type-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

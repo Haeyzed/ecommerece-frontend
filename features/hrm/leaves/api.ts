@@ -1,15 +1,24 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import type { Leave, LeaveExportParams, LeaveFormBody, LeaveListParams } from './types'
+
+import type {
+  Leave,
+  LeaveExportParams,
+  LeaveFormBody,
+  LeaveListParams,
+} from './types'
 
 export const leaveKeys = {
   all: ['leaves'] as const,
   lists: () => [...leaveKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...leaveKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...leaveKeys.lists(), filters] as const,
   details: () => [...leaveKeys.all, 'detail'] as const,
   detail: (id: number) => [...leaveKeys.details(), id] as const,
   template: () => [...leaveKeys.all, 'template'] as const,
@@ -67,7 +76,8 @@ export function useCreateLeave() {
 
       const response = await api.post<{ data: Leave }>(BASE_PATH, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -87,18 +97,29 @@ export function useUpdateLeave() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<LeaveFormBody> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<LeaveFormBody>
+    }) => {
       const payload: Record<string, unknown> = {}
 
       if (data.employee_id !== undefined) payload.employee_id = data.employee_id
-      if (data.leave_type_id !== undefined) payload.leave_type_id = data.leave_type_id
+      if (data.leave_type_id !== undefined)
+        payload.leave_type_id = data.leave_type_id
       if (data.start_date !== undefined) payload.start_date = data.start_date
       if (data.end_date !== undefined) payload.end_date = data.end_date
       if (data.status !== undefined) payload.status = data.status
 
-      const response = await api.put<{ data: Leave }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: Leave }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }
@@ -141,7 +162,7 @@ export function useBulkApproveLeaves() {
     mutationFn: async (ids: number[]) => {
       const response = await api.post<{ approved_count: number }>(
         `${BASE_PATH}/bulk-approve`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -161,7 +182,7 @@ export function useBulkRejectLeaves() {
     mutationFn: async (ids: number[]) => {
       const response = await api.post<{ rejected_count: number }>(
         `${BASE_PATH}/bulk-reject`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response

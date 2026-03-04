@@ -1,9 +1,12 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
+
 import type {
   Timezone,
   TimezoneExportParams,
@@ -15,7 +18,8 @@ import type {
 export const timezoneKeys = {
   all: ['timezones'] as const,
   lists: () => [...timezoneKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...timezoneKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...timezoneKeys.lists(), filters] as const,
   details: () => [...timezoneKeys.all, 'detail'] as const,
   detail: (id: number) => [...timezoneKeys.details(), id] as const,
   options: () => [...timezoneKeys.all, 'options'] as const,
@@ -44,7 +48,9 @@ export function useOptionTimezones() {
   return useQuery({
     queryKey: timezoneKeys.options(),
     queryFn: async () => {
-      const response = await api.get<TimezoneOptionsGrouped[]>(`${BASE_PATH}/options`)
+      const response = await api.get<TimezoneOptionsGrouped[]>(
+        `${BASE_PATH}/options`
+      )
       return response.data ?? []
     },
     enabled: sessionStatus !== 'loading',
@@ -80,7 +86,8 @@ export function useCreateTimezone() {
 
       const response = await api.post<{ data: Timezone }>(BASE_PATH, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -100,7 +107,13 @@ export function useUpdateTimezone() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<TimezoneFormData> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<TimezoneFormData>
+    }) => {
       const payload: Record<string, unknown> = {}
 
       Object.keys(data).forEach((key) => {
@@ -110,9 +123,13 @@ export function useUpdateTimezone() {
         }
       })
 
-      const response = await api.put<{ data: Timezone }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: Timezone }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }

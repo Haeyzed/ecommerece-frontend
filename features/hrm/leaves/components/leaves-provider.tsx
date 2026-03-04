@@ -1,7 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import useDialogState from '@/hooks/use-dialog-state'
+
 import { type Leave } from '@/features/hrm/leaves/types'
 
 type LeavesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
@@ -20,7 +22,9 @@ export function LeavesProvider({ children }: { children: React.ReactNode }) {
   const [currentRow, setCurrentRow] = useState<Leave | null>(null)
 
   return (
-    <LeavesContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <LeavesContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </LeavesContext.Provider>
   )

@@ -8,7 +8,6 @@ export interface CustomerGroup {
   updated_at: string | null
 }
 
-
 export type CustomerGroupListParams = {
   page?: number
   per_page?: number

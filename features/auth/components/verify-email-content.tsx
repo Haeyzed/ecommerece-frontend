@@ -9,14 +9,22 @@
  *
  * @component
  */
+import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Spinner } from '@/components/ui/spinner'
+
 import { useVerifyEmail } from '@/features/auth/api'
 
 export function VerifyEmailContent() {
@@ -45,16 +53,16 @@ export function VerifyEmailContent() {
     } catch (error) {
       setStatus('error')
       setErrorMessage(
-        error instanceof Error ? error.message : 'Verification failed',
+        error instanceof Error ? error.message : 'Verification failed'
       )
     }
   }
 
   if (!token) {
     return (
-      <Card className="gap-4">
+      <Card className='gap-4'>
         <CardHeader>
-          <CardTitle className="text-lg tracking-tight">
+          <CardTitle className='text-lg tracking-tight'>
             Invalid verification link
           </CardTitle>
           <CardDescription>
@@ -62,15 +70,15 @@ export function VerifyEmailContent() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Link href="/login">
-            <Button className="w-full">Go to login</Button>
+          <Link href='/login'>
+            <Button className='w-full'>Go to login</Button>
           </Link>
         </CardContent>
         <CardFooter>
-          <p className="px-8 text-center text-sm text-muted-foreground">
+          <p className='px-8 text-center text-sm text-muted-foreground'>
             <Link
-              href="/login"
-              className="underline underline-offset-4 hover:text-primary"
+              href='/login'
+              className='underline underline-offset-4 hover:text-primary'
             >
               Back to login
             </Link>
@@ -82,9 +90,9 @@ export function VerifyEmailContent() {
 
   if (status === 'success') {
     return (
-      <Card className="gap-4">
+      <Card className='gap-4'>
         <CardHeader>
-          <CardTitle className="text-lg tracking-tight">
+          <CardTitle className='text-lg tracking-tight'>
             Email verified
           </CardTitle>
           <CardDescription>
@@ -92,15 +100,15 @@ export function VerifyEmailContent() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Link href="/login">
-            <Button className="w-full">Go to login</Button>
+          <Link href='/login'>
+            <Button className='w-full'>Go to login</Button>
           </Link>
         </CardContent>
         <CardFooter>
-          <p className="px-8 text-center text-sm text-muted-foreground">
+          <p className='px-8 text-center text-sm text-muted-foreground'>
             <Link
-              href="/login"
-              className="underline underline-offset-4 hover:text-primary"
+              href='/login'
+              className='underline underline-offset-4 hover:text-primary'
             >
               Back to login
             </Link>
@@ -112,28 +120,28 @@ export function VerifyEmailContent() {
 
   if (status === 'error') {
     return (
-      <Card className="gap-4">
+      <Card className='gap-4'>
         <CardHeader>
-          <CardTitle className="text-lg tracking-tight">
+          <CardTitle className='text-lg tracking-tight'>
             Verification failed
           </CardTitle>
           <CardDescription>{errorMessage}</CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col gap-2">
-          <Button onClick={handleVerify} className="w-full">
+        <CardContent className='flex flex-col gap-2'>
+          <Button onClick={handleVerify} className='w-full'>
             Try again
           </Button>
-          <Link href="/login">
-            <Button variant="outline" className="w-full">
+          <Link href='/login'>
+            <Button variant='outline' className='w-full'>
               Go to login
             </Button>
           </Link>
         </CardContent>
         <CardFooter>
-          <p className="px-8 text-center text-sm text-muted-foreground">
+          <p className='px-8 text-center text-sm text-muted-foreground'>
             <Link
-              href="/login"
-              className="underline underline-offset-4 hover:text-primary"
+              href='/login'
+              className='underline underline-offset-4 hover:text-primary'
             >
               Back to login
             </Link>
@@ -144,21 +152,21 @@ export function VerifyEmailContent() {
   }
 
   return (
-    <Card className="gap-4">
+    <Card className='gap-4'>
       <CardHeader>
-        <CardTitle className="text-lg tracking-tight">
+        <CardTitle className='text-lg tracking-tight'>
           Verifying email
         </CardTitle>
         <CardDescription>Please wait...</CardDescription>
       </CardHeader>
-      <CardContent className="flex justify-center py-6">
-        <Spinner className="size-8" />
+      <CardContent className='flex justify-center py-6'>
+        <Spinner className='size-8' />
       </CardContent>
       <CardFooter>
-        <p className="px-8 text-center text-sm text-muted-foreground">
+        <p className='px-8 text-center text-sm text-muted-foreground'>
           <Link
-            href="/login"
-            className="underline underline-offset-4 hover:text-primary"
+            href='/login'
+            className='underline underline-offset-4 hover:text-primary'
           >
             Back to login
           </Link>

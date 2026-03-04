@@ -1,9 +1,12 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
+
 import type {
   DocumentType,
   DocumentTypeExportParams,
@@ -15,7 +18,8 @@ import type {
 export const documentTypeKeys = {
   all: ['document-types'] as const,
   lists: () => [...documentTypeKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...documentTypeKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...documentTypeKeys.lists(), filters] as const,
   details: () => [...documentTypeKeys.all, 'detail'] as const,
   detail: (id: number) => [...documentTypeKeys.details(), id] as const,
   options: () => [...documentTypeKeys.all, 'options'] as const,
@@ -44,7 +48,9 @@ export function useOptionDocumentTypes() {
   return useQuery({
     queryKey: documentTypeKeys.options(),
     queryFn: async () => {
-      const response = await api.get<DocumentTypeOption[]>(`${BASE_PATH}/options`)
+      const response = await api.get<DocumentTypeOption[]>(
+        `${BASE_PATH}/options`
+      )
       return response.data ?? []
     },
     enabled: sessionStatus !== 'loading',
@@ -83,9 +89,13 @@ export function useCreateDocumentType() {
         payload.is_active = data.is_active
       }
 
-      const response = await api.post<{ data: DocumentType }>(BASE_PATH, payload)
+      const response = await api.post<{ data: DocumentType }>(
+        BASE_PATH,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -105,24 +115,37 @@ export function useUpdateDocumentType() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<DocumentTypeFormBody> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<DocumentTypeFormBody>
+    }) => {
       const payload: Record<string, unknown> = {}
 
       if (data.name !== undefined) payload.name = data.name
       if (data.code !== undefined) payload.code = data.code
-      if (data.requires_expiry !== undefined) payload.requires_expiry = data.requires_expiry
+      if (data.requires_expiry !== undefined)
+        payload.requires_expiry = data.requires_expiry
       if (data.is_active !== undefined) payload.is_active = data.is_active
 
-      const response = await api.put<{ data: DocumentType }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: DocumentType }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: documentTypeKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: documentTypeKeys.detail(data.id) })
+      queryClient.invalidateQueries({
+        queryKey: documentTypeKeys.detail(data.id),
+      })
       toast.success(data.message)
     },
     onError: (error) => {
@@ -158,7 +181,7 @@ export function useBulkActivateDocumentTypes() {
     mutationFn: async (ids: number[]) => {
       const response = await api.post<{ activated_count: number }>(
         `${BASE_PATH}/bulk-activate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -178,7 +201,7 @@ export function useBulkDeactivateDocumentTypes() {
     mutationFn: async (ids: number[]) => {
       const response = await api.post<{ deactivated_count: number }>(
         `${BASE_PATH}/bulk-deactivate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response

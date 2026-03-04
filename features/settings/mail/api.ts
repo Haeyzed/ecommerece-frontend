@@ -7,12 +7,14 @@
  *
  * @module features/settings/mail/api
  */
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
 
 import { useApiClient } from '@/lib/api/api-client-client'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import type { MailSetting } from './types'
+
 import type { MailSettingFormData } from './schemas'
+import type { MailSetting } from './types'
 
 export const mailSettingKeys = {
   all: ['mail-setting'] as const,
@@ -68,7 +70,9 @@ export function useUpdateMailSetting() {
       toast.success(message)
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : 'Failed to update mail setting')
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to update mail setting'
+      )
     },
   })
 }
@@ -88,7 +92,9 @@ export function useSendTestMail() {
       toast.success('Test email sent successfully')
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : 'Failed to send test email')
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to send test email'
+      )
     },
   })
 }

@@ -1,13 +1,20 @@
 'use client'
 
 import { Controller, useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { HugeiconsIcon } from '@hugeicons/react'
+
 import { Upload01Icon } from '@hugeicons/core-free-icons'
-import { useSuppliersExport } from '../api'
-import { type SupplierExportFormData, supplierExportSchema } from '../schemas'
-import { SUPPLIER_EXPORT_COLUMNS } from '../constants'
+import { HugeiconsIcon } from '@hugeicons/react'
+
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { useQuery } from '@tanstack/react-query'
+
+import { useApiClient } from '@/lib/api/api-client-client'
+
+import { useMediaQuery } from '@/hooks/use-media-query'
+
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Dialog,
   DialogContent,
@@ -25,14 +32,26 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
-import { Checkbox } from '@/components/ui/checkbox'
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { useMediaQuery } from '@/hooks/use-media-query'
-import { useQuery } from '@tanstack/react-query'
-import { useApiClient } from '@/lib/api/api-client-client'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Spinner } from '@/components/ui/spinner'
+
+import { useSuppliersExport } from '../api'
+import { SUPPLIER_EXPORT_COLUMNS } from '../constants'
+import { type SupplierExportFormData, supplierExportSchema } from '../schemas'
 
 const AVAILABLE_COLUMNS = SUPPLIER_EXPORT_COLUMNS.map((value) => ({
   value,
@@ -46,10 +65,10 @@ type SuppliersExportDialogProps = {
 }
 
 export function SuppliersExportDialog({
-                                        open,
-                                        onOpenChange,
-                                        ids = [],
-                                      }: SuppliersExportDialogProps) {
+  open,
+  onOpenChange,
+  ids = [],
+}: SuppliersExportDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: exportSuppliers, isPending } = useSuppliersExport()
   const { api } = useApiClient()
@@ -90,7 +109,7 @@ export function SuppliersExportDialog({
         columns: data.columns,
         user_id: data.method === 'email' ? data.user_id : undefined,
       },
-      { onSuccess: () => handleOpenChange(false) },
+      { onSuccess: () => handleOpenChange(false) }
     )
   }
 
@@ -104,31 +123,37 @@ export function SuppliersExportDialog({
 
   const content = (
     <form
-      id="suppliers-export-form"
+      id='suppliers-export-form'
       onSubmit={form.handleSubmit(onSubmit)}
-      className="grid gap-4 py-4"
+      className='grid gap-4 py-4'
     >
       <FieldGroup>
         <Controller
           control={form.control}
-          name="format"
+          name='format'
           render={({ field, fieldState }) => (
             <Field>
               <FieldLabel>Export Format</FieldLabel>
               <RadioGroup
                 value={field.value}
                 onValueChange={field.onChange}
-                className="flex gap-4"
+                className='flex gap-4'
               >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="excel" id="format-excel" />
-                  <label htmlFor="format-excel" className="cursor-pointer text-sm font-medium">
+                <div className='flex items-center space-x-2'>
+                  <RadioGroupItem value='excel' id='format-excel' />
+                  <label
+                    htmlFor='format-excel'
+                    className='cursor-pointer text-sm font-medium'
+                  >
                     Excel (XLSX)
                   </label>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="pdf" id="format-pdf" />
-                  <label htmlFor="format-pdf" className="cursor-pointer text-sm font-medium">
+                <div className='flex items-center space-x-2'>
+                  <RadioGroupItem value='pdf' id='format-pdf' />
+                  <label
+                    htmlFor='format-pdf'
+                    className='cursor-pointer text-sm font-medium'
+                  >
                     PDF
                   </label>
                 </div>
@@ -140,7 +165,7 @@ export function SuppliersExportDialog({
 
         <Controller
           control={form.control}
-          name="method"
+          name='method'
           render={({ field, fieldState }) => (
             <Field>
               <FieldLabel>Export Method</FieldLabel>
@@ -150,17 +175,23 @@ export function SuppliersExportDialog({
                   field.onChange(value)
                   if (value === 'download') form.setValue('user_id', undefined)
                 }}
-                className="flex gap-4"
+                className='flex gap-4'
               >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="download" id="method-download" />
-                  <label htmlFor="method-download" className="cursor-pointer text-sm font-medium">
+                <div className='flex items-center space-x-2'>
+                  <RadioGroupItem value='download' id='method-download' />
+                  <label
+                    htmlFor='method-download'
+                    className='cursor-pointer text-sm font-medium'
+                  >
                     Download
                   </label>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="email" id="method-email" />
-                  <label htmlFor="method-email" className="cursor-pointer text-sm font-medium">
+                <div className='flex items-center space-x-2'>
+                  <RadioGroupItem value='email' id='method-email' />
+                  <label
+                    htmlFor='method-email'
+                    className='cursor-pointer text-sm font-medium'
+                  >
                     Send via Email
                   </label>
                 </div>
@@ -173,24 +204,28 @@ export function SuppliersExportDialog({
         {method === 'email' && (
           <Controller
             control={form.control}
-            name="user_id"
+            name='user_id'
             render={({ field, fieldState }) => (
               <Field>
                 <FieldLabel>Select User</FieldLabel>
                 <Select
                   value={field.value ? String(field.value) : ''}
-                  onValueChange={(v) => field.onChange(v ? Number(v) : undefined)}
+                  onValueChange={(v) =>
+                    field.onChange(v ? Number(v) : undefined)
+                  }
                   disabled={isLoadingUsers}
                 >
                   <SelectTrigger data-invalid={!!fieldState.error}>
-                    <SelectValue placeholder="Select user to send email to" />
+                    <SelectValue placeholder='Select user to send email to' />
                   </SelectTrigger>
                   <SelectContent>
                     {users.map((u) => (
                       <SelectItem key={u.id} value={String(u.id)}>
-                        <div className="flex flex-col">
-                          <span className="font-medium">{u.name}</span>
-                          <span className="text-xs text-muted-foreground">{u.email}</span>
+                        <div className='flex flex-col'>
+                          <span className='font-medium'>{u.name}</span>
+                          <span className='text-xs text-muted-foreground'>
+                            {u.email}
+                          </span>
                         </div>
                       </SelectItem>
                     ))}
@@ -207,23 +242,33 @@ export function SuppliersExportDialog({
 
         <Controller
           control={form.control}
-          name="columns"
+          name='columns'
           render={({ field, fieldState }) => (
             <Field>
-              <div className="flex items-center justify-between">
+              <div className='flex items-center justify-between'>
                 <FieldLabel>Select Columns</FieldLabel>
-                <div className="flex gap-2">
-                  <Button type="button" variant="ghost" size="sm" onClick={handleSelectAllColumns}>
+                <div className='flex gap-2'>
+                  <Button
+                    type='button'
+                    variant='ghost'
+                    size='sm'
+                    onClick={handleSelectAllColumns}
+                  >
                     Select All
                   </Button>
-                  <Button type="button" variant="ghost" size="sm" onClick={handleDeselectAllColumns}>
+                  <Button
+                    type='button'
+                    variant='ghost'
+                    size='sm'
+                    onClick={handleDeselectAllColumns}
+                  >
                     Deselect All
                   </Button>
                 </div>
               </div>
-              <div className="grid max-h-60 grid-cols-2 gap-3 overflow-y-auto rounded-md border p-3">
+              <div className='grid max-h-60 grid-cols-2 gap-3 overflow-y-auto rounded-md border p-3'>
                 {AVAILABLE_COLUMNS.map((col) => (
-                  <div key={col.value} className="flex items-center space-x-2">
+                  <div key={col.value} className='flex items-center space-x-2'>
                     <Checkbox
                       id={`col-${col.value}`}
                       checked={field.value?.includes(col.value) ?? false}
@@ -236,13 +281,18 @@ export function SuppliersExportDialog({
                         }
                       }}
                     />
-                    <label htmlFor={`col-${col.value}`} className="cursor-pointer text-sm font-medium">
+                    <label
+                      htmlFor={`col-${col.value}`}
+                      className='cursor-pointer text-sm font-medium'
+                    >
                       {col.label}
                     </label>
                   </div>
                 ))}
               </div>
-              <FieldDescription>Select the columns to include in the export</FieldDescription>
+              <FieldDescription>
+                Select the columns to include in the export
+              </FieldDescription>
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -259,29 +309,29 @@ export function SuppliersExportDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
-          <DialogHeader className="text-start">
+        <DialogContent className='max-h-[90vh] overflow-y-auto sm:max-w-2xl'>
+          <DialogHeader className='text-start'>
             <DialogTitle>Export Suppliers</DialogTitle>
             <DialogDescription>{description}</DialogDescription>
           </DialogHeader>
           {content}
-          <DialogFooter className="gap-y-2">
-            <Button variant="outline" onClick={() => handleOpenChange(false)}>
+          <DialogFooter className='gap-y-2'>
+            <Button variant='outline' onClick={() => handleOpenChange(false)}>
               Cancel
             </Button>
             <Button
-              type="submit"
-              form="suppliers-export-form"
+              type='submit'
+              form='suppliers-export-form'
               disabled={isPending || (method === 'email' && isLoadingUsers)}
             >
               {isPending ? (
                 <>
-                  <Spinner className="mr-2 size-4" />
+                  <Spinner className='mr-2 size-4' />
                   Exporting...
                 </>
               ) : (
                 <>
-                  <HugeiconsIcon icon={Upload01Icon} className="mr-2 size-4" />
+                  <HugeiconsIcon icon={Upload01Icon} className='mr-2 size-4' />
                   Export
                 </>
               )}
@@ -295,31 +345,31 @@ export function SuppliersExportDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className="text-left">
+        <DrawerHeader className='text-left'>
           <DrawerTitle>Export Suppliers</DrawerTitle>
           <DrawerDescription>{description}</DrawerDescription>
         </DrawerHeader>
-        <div className="no-scrollbar overflow-y-auto px-4">{content}</div>
+        <div className='no-scrollbar overflow-y-auto px-4'>{content}</div>
         <DrawerFooter>
           <Button
-            type="submit"
-            form="suppliers-export-form"
+            type='submit'
+            form='suppliers-export-form'
             disabled={isPending || (method === 'email' && isLoadingUsers)}
           >
             {isPending ? (
               <>
-                <Spinner className="mr-2 size-4" />
+                <Spinner className='mr-2 size-4' />
                 Exporting...
               </>
             ) : (
               <>
-                <HugeiconsIcon icon={Upload01Icon} className="mr-2 size-4" />
+                <HugeiconsIcon icon={Upload01Icon} className='mr-2 size-4' />
                 Export
               </>
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant='outline'>Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>

@@ -1,15 +1,20 @@
 'use client'
 
 import { useState } from 'react'
-import { HugeiconsIcon } from '@hugeicons/react'
+
 import { Alert02Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { useDeleteHoliday } from '@/features/hrm/holidays/api'
-import { type Holiday } from '../types'
+
 import { useAuthSession } from '@/features/auth/api'
+import { useDeleteHoliday } from '@/features/hrm/holidays/api'
+
+import { type Holiday } from '../types'
 
 type HolidaysDeleteDialogProps = {
   open: boolean
@@ -20,10 +25,10 @@ type HolidaysDeleteDialogProps = {
 const CONFIRM_WORD = 'DELETE'
 
 export function HolidaysDeleteDialog({
-                                       open,
-                                       onOpenChange,
-                                       currentRow,
-                                     }: HolidaysDeleteDialogProps) {
+  open,
+  onOpenChange,
+  currentRow,
+}: HolidaysDeleteDialogProps) {
   const [value, setValue] = useState('')
   const { mutate: deleteHoliday, isPending } = useDeleteHoliday()
   const { data: session } = useAuthSession()
@@ -50,10 +55,10 @@ export function HolidaysDeleteDialog({
       handleConfirm={handleDelete}
       disabled={value.trim() !== CONFIRM_WORD || isPending}
       title={
-        <span className="text-destructive">
+        <span className='text-destructive'>
           <HugeiconsIcon
             icon={Alert02Icon}
-            className="me-1 inline-block stroke-destructive"
+            className='me-1 inline-block stroke-destructive'
             size={18}
             strokeWidth={2}
           />{' '}
@@ -61,17 +66,18 @@ export function HolidaysDeleteDialog({
         </span>
       }
       desc={
-        <div className="space-y-4">
-          <p className="mb-2">
+        <div className='space-y-4'>
+          <p className='mb-2'>
             Are you sure you want to delete this holiday?
             <br />
-            <strong>Date:</strong> {currentRow.from_date} to {currentRow.to_date}
+            <strong>Date:</strong> {currentRow.from_date} to{' '}
+            {currentRow.to_date}
             <br />
             This action will permanently remove the holiday from the system.
             This cannot be undone.
           </p>
 
-          <Label className="my-2">
+          <Label className='my-2'>
             Confirm Deletion:
             <Input
               value={value}
@@ -80,7 +86,7 @@ export function HolidaysDeleteDialog({
             />
           </Label>
 
-          <Alert variant="destructive">
+          <Alert variant='destructive'>
             <AlertTitle>Warning!</AlertTitle>
             <AlertDescription>
               Please be careful, this operation can not be rolled back.
@@ -88,7 +94,7 @@ export function HolidaysDeleteDialog({
           </Alert>
         </div>
       }
-      confirmText="Delete"
+      confirmText='Delete'
       destructive
     />
   )

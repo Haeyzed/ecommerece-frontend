@@ -1,8 +1,10 @@
 'use client'
 
 import { forwardRef } from 'react'
-import '@/components/tiptap-ui-primitive/separator/separator.scss'
+
 import { cn } from '@/lib/tiptap-utils'
+
+import '@/components/tiptap-ui-primitive/separator/separator.scss'
 
 export type Orientation = 'horizontal' | 'vertical'
 
@@ -27,7 +29,7 @@ export const Separator = forwardRef<HTMLDivElement, SeparatorProps>(
         ref={ref}
       />
     )
-  },
+  }
 )
 
 Separator.displayName = 'Separator'

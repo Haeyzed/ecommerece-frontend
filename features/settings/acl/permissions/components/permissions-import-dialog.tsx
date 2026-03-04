@@ -1,14 +1,21 @@
 'use client'
 
 import { useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { CancelCircleIcon, CloudUploadIcon, Download01Icon, File02Icon, ViewIcon } from '@hugeicons/core-free-icons'
 
-import { usePermissionsImport, usePermissionsTemplateDownload } from '@/features/settings/acl/permissions/api'
-import { type PermissionImportFormData, permissionImportSchema } from '@/features/settings/acl/permissions/schemas'
-import { PermissionsCsvPreviewDialog } from '@/features/settings/acl/permissions'
+import { Controller, useForm } from 'react-hook-form'
+
+import {
+  CancelCircleIcon,
+  CloudUploadIcon,
+  Download01Icon,
+  File02Icon,
+  ViewIcon,
+} from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { useMediaQuery } from '@/hooks/use-media-query'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -28,7 +35,13 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
 import {
   FileUpload,
   FileUploadDropzone,
@@ -39,8 +52,17 @@ import {
   FileUploadList,
   FileUploadTrigger,
 } from '@/components/ui/file-upload'
-import { useMediaQuery } from '@/hooks/use-media-query'
 import { Spinner } from '@/components/ui/spinner'
+
+import { PermissionsCsvPreviewDialog } from '@/features/settings/acl/permissions'
+import {
+  usePermissionsImport,
+  usePermissionsTemplateDownload,
+} from '@/features/settings/acl/permissions/api'
+import {
+  type PermissionImportFormData,
+  permissionImportSchema,
+} from '@/features/settings/acl/permissions/schemas'
 
 type PermissionsImportDialogProps = {
   open: boolean
@@ -48,12 +70,13 @@ type PermissionsImportDialogProps = {
 }
 
 export function PermissionsImportDialog({
-                                          open,
-                                          onOpenChange,
-                                        }: PermissionsImportDialogProps) {
+  open,
+  onOpenChange,
+}: PermissionsImportDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: importPermissions, isPending } = usePermissionsImport()
-  const { mutate: downloadTemplate, isPending: isDownloading } = usePermissionsTemplateDownload()
+  const { mutate: downloadTemplate, isPending: isDownloading } =
+    usePermissionsTemplateDownload()
 
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewData, setPreviewData] = useState<any[]>([])
@@ -66,14 +89,17 @@ export function PermissionsImportDialog({
   })
 
   const parseCSV = (text: string) => {
-    const lines = text.split('\n').filter(line => line.trim() !== '')
-    const headers = lines[0].split(',').map(h => h.trim())
-    return lines.slice(1).map(line => {
+    const lines = text.split('\n').filter((line) => line.trim() !== '')
+    const headers = lines[0].split(',').map((h) => h.trim())
+    return lines.slice(1).map((line) => {
       const values = line.split(',')
-      return headers.reduce((obj, header, i) => {
-        obj[header] = values[i]?.trim()
-        return obj
-      }, {} as Record<string, string>)
+      return headers.reduce(
+        (obj, header, i) => {
+          obj[header] = values[i]?.trim()
+          return obj
+        },
+        {} as Record<string, string>
+      )
     })
   }
 
@@ -117,24 +143,28 @@ export function PermissionsImportDialog({
   }
 
   const importFormContent = (
-    <form id="import-form" onSubmit={form.handleSubmit(handlePreview)} className="grid gap-4 py-4">
-      <div className="flex justify-end">
+    <form
+      id='import-form'
+      onSubmit={form.handleSubmit(handlePreview)}
+      className='grid gap-4 py-4'
+    >
+      <div className='flex justify-end'>
         <Button
-          type="button"
-          variant="outline"
-          size="sm"
+          type='button'
+          variant='outline'
+          size='sm'
           onClick={handleDownloadSample}
           disabled={isDownloading}
-          className="text-muted-foreground"
+          className='text-muted-foreground'
         >
           {isDownloading ? (
             <>
-              <Spinner className="mr-2 size-4" />
+              <Spinner className='mr-2 size-4' />
               Downloading...
             </>
           ) : (
             <>
-              <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
+              <HugeiconsIcon icon={Download01Icon} className='mr-2 size-4' />
               Download Sample CSV
             </>
           )}
@@ -142,49 +172,80 @@ export function PermissionsImportDialog({
       </div>
 
       <FieldGroup>
-        <div className="space-y-2 rounded-md border bg-muted/50 p-3 text-sm">
-          <div className="font-medium">Required Fields:</div>
-          <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-            <li><code className="rounded bg-background px-1 py-0.5 text-xs">name*</code> - Permission name</li>
+        <div className='space-y-2 rounded-md border bg-muted/50 p-3 text-sm'>
+          <div className='font-medium'>Required Fields:</div>
+          <ul className='list-inside list-disc space-y-1 text-muted-foreground'>
+            <li>
+              <code className='rounded bg-background px-1 py-0.5 text-xs'>
+                name*
+              </code>{' '}
+              - Permission name
+            </li>
           </ul>
-          <div className="font-medium mt-3">Optional Fields:</div>
-          <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-            <li><code className="rounded bg-background px-1 py-0.5 text-xs">guard_name</code> - e.g., web</li>
-            <li><code className="rounded bg-background px-1 py-0.5 text-xs">module</code> - e.g., hrm</li>
-            <li><code className="rounded bg-background px-1 py-0.5 text-xs">description</code> - Text description</li>
-            <li><code className="rounded bg-background px-1 py-0.5 text-xs">is_active</code> - Boolean (1 or 0)</li>
+          <div className='mt-3 font-medium'>Optional Fields:</div>
+          <ul className='list-inside list-disc space-y-1 text-muted-foreground'>
+            <li>
+              <code className='rounded bg-background px-1 py-0.5 text-xs'>
+                guard_name
+              </code>{' '}
+              - e.g., web
+            </li>
+            <li>
+              <code className='rounded bg-background px-1 py-0.5 text-xs'>
+                module
+              </code>{' '}
+              - e.g., hrm
+            </li>
+            <li>
+              <code className='rounded bg-background px-1 py-0.5 text-xs'>
+                description
+              </code>{' '}
+              - Text description
+            </li>
+            <li>
+              <code className='rounded bg-background px-1 py-0.5 text-xs'>
+                is_active
+              </code>{' '}
+              - Boolean (1 or 0)
+            </li>
           </ul>
         </div>
         <Controller
           control={form.control}
-          name="file"
-          render={({ field: { value, onChange, ...fieldProps }, fieldState }) => (
+          name='file'
+          render={({
+            field: { value, onChange, ...fieldProps },
+            fieldState,
+          }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor="import-file">Upload File</FieldLabel>
+              <FieldLabel htmlFor='import-file'>Upload File</FieldLabel>
 
               <FileUpload
                 value={value}
                 onValueChange={onChange}
-                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
                 maxFiles={1}
                 maxSize={5 * 1024 * 1024}
                 onFileReject={(_, message) => {
                   form.setError('file', { message })
                 }}
               >
-                <FileUploadDropzone
-                  className="flex-col items-center justify-center gap-2 border-dashed p-8 text-center">
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-                    <HugeiconsIcon icon={CloudUploadIcon} className="size-5" />
+                <FileUploadDropzone className='flex-col items-center justify-center gap-2 border-dashed p-8 text-center'>
+                  <div className='flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground'>
+                    <HugeiconsIcon icon={CloudUploadIcon} className='size-5' />
                   </div>
-                  <div className="text-sm">
-                    <span className="font-semibold text-primary">Click to upload</span>
-                    {' '}or drag and drop
+                  <div className='text-sm'>
+                    <span className='font-semibold text-primary'>
+                      Click to upload
+                    </span>{' '}
+                    or drag and drop
                     <br />
-                    <span className="text-muted-foreground">CSV or Excel (max 5MB)</span>
+                    <span className='text-muted-foreground'>
+                      CSV or Excel (max 5MB)
+                    </span>
                   </div>
                   <FileUploadTrigger asChild>
-                    <Button variant="link" size="sm" className="sr-only">
+                    <Button variant='link' size='sm' className='sr-only'>
                       Select file
                     </Button>
                   </FileUploadTrigger>
@@ -192,20 +253,23 @@ export function PermissionsImportDialog({
 
                 <FileUploadList>
                   {value?.map((file, index) => (
-                    <FileUploadItem key={index} value={file} className="w-full">
-                      <div className="flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary">
-                        <HugeiconsIcon icon={File02Icon} className="size-4" />
+                    <FileUploadItem key={index} value={file} className='w-full'>
+                      <div className='flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary'>
+                        <HugeiconsIcon icon={File02Icon} className='size-4' />
                       </div>
-                      <FileUploadItemPreview className="hidden" />
-                      <FileUploadItemMetadata className="ml-2 flex-1" />
+                      <FileUploadItemPreview className='hidden' />
+                      <FileUploadItemMetadata className='ml-2 flex-1' />
                       <FileUploadItemDelete asChild>
                         <Button
-                          variant="ghost"
-                          size="icon"
-                          className="size-7 text-muted-foreground hover:text-destructive"
+                          variant='ghost'
+                          size='icon'
+                          className='size-7 text-muted-foreground hover:text-destructive'
                         >
-                          <HugeiconsIcon icon={CancelCircleIcon} className="size-4" />
-                          <span className="sr-only">Remove</span>
+                          <HugeiconsIcon
+                            icon={CancelCircleIcon}
+                            className='size-4'
+                          />
+                          <span className='sr-only'>Remove</span>
                         </Button>
                       </FileUploadItemDelete>
                     </FileUploadItem>
@@ -228,8 +292,8 @@ export function PermissionsImportDialog({
     <>
       {isDesktop ? (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader className="text-start">
+          <DialogContent className='sm:max-w-md'>
+            <DialogHeader className='text-start'>
               <DialogTitle>Import Permissions</DialogTitle>
               <DialogDescription>
                 Bulk create permissions by uploading a CSV or Excel file.
@@ -238,13 +302,21 @@ export function PermissionsImportDialog({
 
             {importFormContent}
 
-            <DialogFooter className="gap-y-2">
-              <Button variant="outline" onClick={() => handleOpenChange(false)}>
+            <DialogFooter className='gap-y-2'>
+              <Button variant='outline' onClick={() => handleOpenChange(false)}>
                 Cancel
               </Button>
-              <Button type="submit" form="import-form" disabled={!form.formState.isValid || isPending}>
+              <Button
+                type='submit'
+                form='import-form'
+                disabled={!form.formState.isValid || isPending}
+              >
                 Preview Data
-                <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
+                <HugeiconsIcon
+                  icon={ViewIcon}
+                  strokeWidth={2}
+                  className='ml-2 size-4'
+                />
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -252,24 +324,32 @@ export function PermissionsImportDialog({
       ) : (
         <Drawer open={open} onOpenChange={handleOpenChange}>
           <DrawerContent>
-            <DrawerHeader className="text-left">
+            <DrawerHeader className='text-left'>
               <DrawerTitle>Import Permissions</DrawerTitle>
               <DrawerDescription>
                 Bulk create permissions by uploading a CSV or Excel file.
               </DrawerDescription>
             </DrawerHeader>
 
-            <div className="no-scrollbar overflow-y-auto px-4">
+            <div className='no-scrollbar overflow-y-auto px-4'>
               {importFormContent}
             </div>
 
             <DrawerFooter>
-              <Button type="submit" form="import-form" disabled={!form.formState.isValid || isPending}>
+              <Button
+                type='submit'
+                form='import-form'
+                disabled={!form.formState.isValid || isPending}
+              >
                 Preview Data
-                <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
+                <HugeiconsIcon
+                  icon={ViewIcon}
+                  strokeWidth={2}
+                  className='ml-2 size-4'
+                />
               </Button>
               <DrawerClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant='outline'>Cancel</Button>
               </DrawerClose>
             </DrawerFooter>
           </DrawerContent>

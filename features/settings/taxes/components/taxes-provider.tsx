@@ -1,7 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import useDialogState from '@/hooks/use-dialog-state'
+
 import { type Tax } from '../types'
 
 type TaxesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'

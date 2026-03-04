@@ -1,22 +1,40 @@
 'use client'
 
-import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useTableUrlState } from '@/hooks/use-table-url-state'
-import { cn } from '@/lib/utils'
+import { useEffect, useMemo, useState } from 'react'
+
 import {
+  type SortingState,
+  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
   getSortedRowModel,
-  type SortingState,
   useReactTable,
-  type VisibilityState,
 } from '@tanstack/react-table'
-import { useEffect, useMemo, useState } from 'react'
+
 import { toast } from 'sonner'
+
+import { cn } from '@/lib/utils'
+
+import { useTableUrlState } from '@/hooks/use-table-url-state'
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+
+import {
+  DataTablePagination,
+  DataTableSkeleton,
+  DataTableToolbar,
+} from '@/components/data-table'
+
 import { useCategories } from '../api'
 import { categoriesColumns as columns } from './categories-columns'
 import { CategoriesEmptyState } from './categories-empty-state'
@@ -39,7 +57,11 @@ export function CategoriesTable() {
     columnFilters: [
       { columnId: 'name', searchKey: 'search', type: 'string' },
       { columnId: 'status', searchKey: 'status', type: 'array' },
-      { columnId: 'featured_status', searchKey: 'featured_status', type: 'array' },
+      {
+        columnId: 'featured_status',
+        searchKey: 'featured_status',
+        type: 'array',
+      },
       { columnId: 'sync_status', searchKey: 'sync_status', type: 'array' },
     ],
   })
@@ -50,11 +72,17 @@ export function CategoriesTable() {
 
     const nameFilter = columnFilters.find((f) => f.id === 'name')
     const statusFilter = columnFilters.find((f) => f.id === 'status')
-    const featuredStatusFilter = columnFilters.find((f) => f.id === 'featured_status')
+    const featuredStatusFilter = columnFilters.find(
+      (f) => f.id === 'featured_status'
+    )
     const syncStatusFilter = columnFilters.find((f) => f.id === 'sync_status')
 
     const getFilterValue = (filter: typeof statusFilter) => {
-      if (filter?.value && Array.isArray(filter.value) && filter.value.length === 1) {
+      if (
+        filter?.value &&
+        Array.isArray(filter.value) &&
+        filter.value.length === 1
+      ) {
         return filter.value[0]
       }
       return undefined
@@ -110,9 +138,7 @@ export function CategoriesTable() {
   }, [pageCount, ensurePageInRange])
 
   if (error) {
-    return (
-      toast.error(error.message)
-    )
+    return toast.error(error.message)
   }
 
   const hasData = data?.meta?.total && data.meta.total > 0
@@ -131,13 +157,13 @@ export function CategoriesTable() {
     <div
       className={cn(
         'max-sm:has-[div[role="toolbar"]]:mb-16',
-        'flex flex-1 flex-col gap-4',
+        'flex flex-1 flex-col gap-4'
       )}
     >
       <DataTableToolbar
         table={table}
-        searchPlaceholder="Filter categories..."
-        searchKey="name"
+        searchPlaceholder='Filter categories...'
+        searchKey='name'
         filters={[
           {
             columnId: 'active_status',
@@ -165,11 +191,11 @@ export function CategoriesTable() {
           },
         ]}
       />
-      <div className="overflow-hidden rounded-md border">
+      <div className='overflow-hidden rounded-md border'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="group/row">
+              <TableRow key={headerGroup.id} className='group/row'>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
@@ -178,15 +204,15 @@ export function CategoriesTable() {
                       className={cn(
                         'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                         (header.column.columnDef.meta as any)?.className,
-                        (header.column.columnDef.meta as any)?.thClassName,
+                        (header.column.columnDef.meta as any)?.thClassName
                       )}
                     >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   )
                 })}
@@ -202,7 +228,7 @@ export function CategoriesTable() {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    className="group/row"
+                    className='group/row'
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
@@ -210,12 +236,12 @@ export function CategoriesTable() {
                         className={cn(
                           'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                           (cell.column.columnDef.meta as any)?.className,
-                          (cell.column.columnDef.meta as any)?.tdClassName,
+                          (cell.column.columnDef.meta as any)?.tdClassName
                         )}
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext(),
+                          cell.getContext()
                         )}
                       </TableCell>
                     ))}
@@ -225,7 +251,7 @@ export function CategoriesTable() {
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className="h-24 text-center"
+                    className='h-24 text-center'
                   >
                     No results.
                   </TableCell>
@@ -235,7 +261,7 @@ export function CategoriesTable() {
           )}
         </Table>
       </div>
-      <DataTablePagination table={table} className="mt-auto" />
+      <DataTablePagination table={table} className='mt-auto' />
       <DataTableBulkActions table={table} />
     </div>
   )

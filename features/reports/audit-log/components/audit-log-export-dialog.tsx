@@ -1,12 +1,20 @@
 'use client'
 
 import { Controller, useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { HugeiconsIcon } from '@hugeicons/react'
+
 import { Upload01Icon } from '@hugeicons/core-free-icons'
-import { useAuditsExport } from '@/features/reports/audit-log/api'
-import { type AuditExportFormData, auditExportSchema } from '@/features/reports/audit-log/schemas'
+import { HugeiconsIcon } from '@hugeicons/react'
+
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { useQuery } from '@tanstack/react-query'
+
+import { useApiClient } from '@/lib/api/api-client-client'
+
+import { useMediaQuery } from '@/hooks/use-media-query'
+
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Dialog,
   DialogContent,
@@ -24,14 +32,28 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
-import { Checkbox } from '@/components/ui/checkbox'
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { useMediaQuery } from '@/hooks/use-media-query'
-import { useQuery } from '@tanstack/react-query'
-import { useApiClient } from '@/lib/api/api-client-client'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Spinner } from '@/components/ui/spinner'
+
+import { useAuditsExport } from '@/features/reports/audit-log/api'
+import {
+  type AuditExportFormData,
+  auditExportSchema,
+} from '@/features/reports/audit-log/schemas'
 
 const AVAILABLE_COLUMNS = [
   { value: 'id', label: 'ID' },
@@ -50,10 +72,10 @@ type AuditLogExportDialogProps = {
 }
 
 export function AuditLogExportDialog({
-                                       open,
-                                       onOpenChange,
-                                       ids = [],
-                                     }: AuditLogExportDialogProps) {
+  open,
+  onOpenChange,
+  ids = [],
+}: AuditLogExportDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: exportAudits, isPending } = useAuditsExport()
   const { api } = useApiClient()
@@ -63,7 +85,14 @@ export function AuditLogExportDialog({
     defaultValues: {
       format: 'excel',
       method: 'download',
-      columns: ['id', 'event', 'auditable_type', 'auditable_id', 'user_name', 'created_at'],
+      columns: [
+        'id',
+        'event',
+        'auditable_type',
+        'auditable_id',
+        'user_name',
+        'created_at',
+      ],
     },
   })
 
@@ -94,14 +123,14 @@ export function AuditLogExportDialog({
         columns: data.columns,
         user_id: data.method === 'email' ? data.user_id : undefined,
       },
-      { onSuccess: () => handleOpenChange(false) },
+      { onSuccess: () => handleOpenChange(false) }
     )
   }
 
   const handleSelectAllColumns = () => {
     form.setValue(
       'columns',
-      AVAILABLE_COLUMNS.map((c) => c.value),
+      AVAILABLE_COLUMNS.map((c) => c.value)
     )
   }
 
@@ -111,36 +140,36 @@ export function AuditLogExportDialog({
 
   const ExportContent = () => (
     <form
-      id="audit-export-form"
+      id='audit-export-form'
       onSubmit={form.handleSubmit(onSubmit)}
-      className="grid gap-4 py-4"
+      className='grid gap-4 py-4'
     >
       <FieldGroup>
         <Controller
           control={form.control}
-          name="format"
+          name='format'
           render={({ field, fieldState }) => (
             <Field>
               <FieldLabel>Export Format</FieldLabel>
               <RadioGroup
                 value={field.value}
                 onValueChange={field.onChange}
-                className="flex gap-4"
+                className='flex gap-4'
               >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="excel" id="format-excel" />
+                <div className='flex items-center space-x-2'>
+                  <RadioGroupItem value='excel' id='format-excel' />
                   <label
-                    htmlFor="format-excel"
-                    className="cursor-pointer text-sm font-medium"
+                    htmlFor='format-excel'
+                    className='cursor-pointer text-sm font-medium'
                   >
                     Excel (XLSX)
                   </label>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="pdf" id="format-pdf" />
+                <div className='flex items-center space-x-2'>
+                  <RadioGroupItem value='pdf' id='format-pdf' />
                   <label
-                    htmlFor="format-pdf"
-                    className="cursor-pointer text-sm font-medium"
+                    htmlFor='format-pdf'
+                    className='cursor-pointer text-sm font-medium'
                   >
                     PDF
                   </label>
@@ -153,7 +182,7 @@ export function AuditLogExportDialog({
 
         <Controller
           control={form.control}
-          name="method"
+          name='method'
           render={({ field, fieldState }) => (
             <Field>
               <FieldLabel>Export Method</FieldLabel>
@@ -163,22 +192,22 @@ export function AuditLogExportDialog({
                   field.onChange(value)
                   if (value === 'download') form.setValue('user_id', undefined)
                 }}
-                className="flex gap-4"
+                className='flex gap-4'
               >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="download" id="method-download" />
+                <div className='flex items-center space-x-2'>
+                  <RadioGroupItem value='download' id='method-download' />
                   <label
-                    htmlFor="method-download"
-                    className="cursor-pointer text-sm font-medium"
+                    htmlFor='method-download'
+                    className='cursor-pointer text-sm font-medium'
                   >
                     Download
                   </label>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="email" id="method-email" />
+                <div className='flex items-center space-x-2'>
+                  <RadioGroupItem value='email' id='method-email' />
                   <label
-                    htmlFor="method-email"
-                    className="cursor-pointer text-sm font-medium"
+                    htmlFor='method-email'
+                    className='cursor-pointer text-sm font-medium'
                   >
                     Send via Email
                   </label>
@@ -192,7 +221,7 @@ export function AuditLogExportDialog({
         {method === 'email' && (
           <Controller
             control={form.control}
-            name="user_id"
+            name='user_id'
             render={({ field, fieldState }) => (
               <Field>
                 <FieldLabel>Select User</FieldLabel>
@@ -204,14 +233,14 @@ export function AuditLogExportDialog({
                   disabled={isLoadingUsers}
                 >
                   <SelectTrigger data-invalid={!!fieldState.error}>
-                    <SelectValue placeholder="Select user to send email to" />
+                    <SelectValue placeholder='Select user to send email to' />
                   </SelectTrigger>
                   <SelectContent>
                     {users.map((user) => (
                       <SelectItem key={user.id} value={String(user.id)}>
-                        <div className="flex flex-col">
-                          <span className="font-medium">{user.name}</span>
-                          <span className="text-xs text-muted-foreground">
+                        <div className='flex flex-col'>
+                          <span className='font-medium'>{user.name}</span>
+                          <span className='text-xs text-muted-foreground'>
                             {user.email}
                           </span>
                         </div>
@@ -222,9 +251,7 @@ export function AuditLogExportDialog({
                 <FieldDescription>
                   Select a user to receive the export file via email
                 </FieldDescription>
-                {fieldState.error && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
           />
@@ -232,35 +259,35 @@ export function AuditLogExportDialog({
 
         <Controller
           control={form.control}
-          name="columns"
+          name='columns'
           render={({ field, fieldState }) => (
             <Field>
-              <div className="flex items-center justify-between">
+              <div className='flex items-center justify-between'>
                 <FieldLabel>Select Columns</FieldLabel>
-                <div className="flex gap-2">
+                <div className='flex gap-2'>
                   <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
+                    type='button'
+                    variant='ghost'
+                    size='sm'
                     onClick={handleSelectAllColumns}
                   >
                     Select All
                   </Button>
                   <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
+                    type='button'
+                    variant='ghost'
+                    size='sm'
                     onClick={handleDeselectAllColumns}
                   >
                     Deselect All
                   </Button>
                 </div>
               </div>
-              <div className="grid max-h-60 grid-cols-2 gap-3 overflow-y-auto rounded-md border p-3">
+              <div className='grid max-h-60 grid-cols-2 gap-3 overflow-y-auto rounded-md border p-3'>
                 {AVAILABLE_COLUMNS.map((column) => (
                   <div
                     key={column.value}
-                    className="flex items-center space-x-2"
+                    className='flex items-center space-x-2'
                   >
                     <Checkbox
                       id={`column-${column.value}`}
@@ -271,14 +298,14 @@ export function AuditLogExportDialog({
                           field.onChange([...current, column.value])
                         } else {
                           field.onChange(
-                            current.filter((c) => c !== column.value),
+                            current.filter((c) => c !== column.value)
                           )
                         }
                       }}
                     />
                     <label
                       htmlFor={`column-${column.value}`}
-                      className="cursor-pointer text-sm font-medium"
+                      className='cursor-pointer text-sm font-medium'
                     >
                       {column.label}
                     </label>
@@ -288,9 +315,7 @@ export function AuditLogExportDialog({
               <FieldDescription>
                 Select the columns to include in the export
               </FieldDescription>
-              {fieldState.error && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
@@ -301,8 +326,8 @@ export function AuditLogExportDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
-          <DialogHeader className="text-start">
+        <DialogContent className='max-h-[90vh] overflow-y-auto sm:max-w-2xl'>
+          <DialogHeader className='text-start'>
             <DialogTitle>Export Audit Log</DialogTitle>
             <DialogDescription>
               Select export format, method, and columns.
@@ -312,25 +337,23 @@ export function AuditLogExportDialog({
 
           <ExportContent />
 
-          <DialogFooter className="gap-y-2">
-            <Button variant="outline" onClick={() => handleOpenChange(false)}>
+          <DialogFooter className='gap-y-2'>
+            <Button variant='outline' onClick={() => handleOpenChange(false)}>
               Cancel
             </Button>
             <Button
-              type="submit"
-              form="audit-export-form"
-              disabled={
-                isPending || (method === 'email' && isLoadingUsers)
-              }
+              type='submit'
+              form='audit-export-form'
+              disabled={isPending || (method === 'email' && isLoadingUsers)}
             >
               {isPending ? (
                 <>
-                  <Spinner className="mr-2 size-4" />
+                  <Spinner className='mr-2 size-4' />
                   Exporting...
                 </>
               ) : (
                 <>
-                  <HugeiconsIcon icon={Upload01Icon} className="mr-2 size-4" />
+                  <HugeiconsIcon icon={Upload01Icon} className='mr-2 size-4' />
                   Export
                 </>
               )}
@@ -344,7 +367,7 @@ export function AuditLogExportDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className="text-left">
+        <DrawerHeader className='text-left'>
           <DrawerTitle>Export Audit Log</DrawerTitle>
           <DrawerDescription>
             Select export format, method, and columns.
@@ -352,32 +375,30 @@ export function AuditLogExportDialog({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className="no-scrollbar overflow-y-auto px-4">
+        <div className='no-scrollbar overflow-y-auto px-4'>
           <ExportContent />
         </div>
 
         <DrawerFooter>
           <Button
-            type="submit"
-            form="audit-export-form"
-            disabled={
-              isPending || (method === 'email' && isLoadingUsers)
-            }
+            type='submit'
+            form='audit-export-form'
+            disabled={isPending || (method === 'email' && isLoadingUsers)}
           >
             {isPending ? (
               <>
-                <Spinner className="mr-2 size-4" />
+                <Spinner className='mr-2 size-4' />
                 Exporting...
               </>
             ) : (
               <>
-                <HugeiconsIcon icon={Upload01Icon} className="mr-2 size-4" />
+                <HugeiconsIcon icon={Upload01Icon} className='mr-2 size-4' />
                 Export
               </>
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant='outline'>Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>

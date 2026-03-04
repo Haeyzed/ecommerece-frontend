@@ -1,14 +1,21 @@
 'use client'
 
 import { useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { CancelCircleIcon, CloudUploadIcon, Download01Icon, File02Icon, ViewIcon } from '@hugeicons/core-free-icons'
 
-import { useOvertimesImport, useOvertimesTemplateDownload } from '@/features/hrm/overtimes/api'
-import { type OvertimeImportFormData, overtimeImportSchema } from '@/features/hrm/overtimes/schemas'
-import { OvertimesCsvPreviewDialog } from '@/features/hrm/overtimes'
+import { Controller, useForm } from 'react-hook-form'
+
+import {
+  CancelCircleIcon,
+  CloudUploadIcon,
+  Download01Icon,
+  File02Icon,
+  ViewIcon,
+} from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { useMediaQuery } from '@/hooks/use-media-query'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -28,7 +35,13 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
 import {
   FileUpload,
   FileUploadDropzone,
@@ -39,8 +52,17 @@ import {
   FileUploadList,
   FileUploadTrigger,
 } from '@/components/ui/file-upload'
-import { useMediaQuery } from '@/hooks/use-media-query'
 import { Spinner } from '@/components/ui/spinner'
+
+import { OvertimesCsvPreviewDialog } from '@/features/hrm/overtimes'
+import {
+  useOvertimesImport,
+  useOvertimesTemplateDownload,
+} from '@/features/hrm/overtimes/api'
+import {
+  type OvertimeImportFormData,
+  overtimeImportSchema,
+} from '@/features/hrm/overtimes/schemas'
 
 type OvertimesImportDialogProps = {
   open: boolean
@@ -48,12 +70,13 @@ type OvertimesImportDialogProps = {
 }
 
 export function OvertimesImportDialog({
-                                        open,
-                                        onOpenChange,
-                                      }: OvertimesImportDialogProps) {
+  open,
+  onOpenChange,
+}: OvertimesImportDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: importOvertimes, isPending } = useOvertimesImport()
-  const { mutate: downloadTemplate, isPending: isDownloading } = useOvertimesTemplateDownload()
+  const { mutate: downloadTemplate, isPending: isDownloading } =
+    useOvertimesTemplateDownload()
 
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewData, setPreviewData] = useState<any[]>([])
@@ -66,14 +89,17 @@ export function OvertimesImportDialog({
   })
 
   const parseCSV = (text: string) => {
-    const lines = text.split('\n').filter(line => line.trim() !== '')
-    const headers = lines[0].split(',').map(h => h.trim())
-    return lines.slice(1).map(line => {
+    const lines = text.split('\n').filter((line) => line.trim() !== '')
+    const headers = lines[0].split(',').map((h) => h.trim())
+    return lines.slice(1).map((line) => {
       const values = line.split(',')
-      return headers.reduce((obj, header, i) => {
-        obj[header] = values[i]?.trim()
-        return obj
-      }, {} as Record<string, string>)
+      return headers.reduce(
+        (obj, header, i) => {
+          obj[header] = values[i]?.trim()
+          return obj
+        },
+        {} as Record<string, string>
+      )
     })
   }
 
@@ -117,24 +143,28 @@ export function OvertimesImportDialog({
   }
 
   const importFormContent = (
-    <form id="import-form" onSubmit={form.handleSubmit(handlePreview)} className="grid gap-4 py-4">
-      <div className="flex justify-end">
+    <form
+      id='import-form'
+      onSubmit={form.handleSubmit(handlePreview)}
+      className='grid gap-4 py-4'
+    >
+      <div className='flex justify-end'>
         <Button
-          type="button"
-          variant="outline"
-          size="sm"
+          type='button'
+          variant='outline'
+          size='sm'
           onClick={handleDownloadSample}
           disabled={isDownloading}
-          className="text-muted-foreground"
+          className='text-muted-foreground'
         >
           {isDownloading ? (
             <>
-              <Spinner className="mr-2 size-4" />
+              <Spinner className='mr-2 size-4' />
               Downloading...
             </>
           ) : (
             <>
-              <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
+              <HugeiconsIcon icon={Download01Icon} className='mr-2 size-4' />
               Download Sample CSV
             </>
           )}
@@ -142,51 +172,80 @@ export function OvertimesImportDialog({
       </div>
 
       <FieldGroup>
-        <div className="space-y-2 rounded-md border bg-muted/50 p-3 text-sm">
-          <div className="font-medium">Required Fields:</div>
-          <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-            <li><code className="rounded bg-background px-1 py-0.5 text-xs">employee_id*</code> - The Employee ID</li>
-            <li><code className="rounded bg-background px-1 py-0.5 text-xs">date*</code> - YYYY-MM-DD</li>
-            <li><code className="rounded bg-background px-1 py-0.5 text-xs">hours*</code> - Number of hours</li>
-            <li><code className="rounded bg-background px-1 py-0.5 text-xs">rate*</code> - Hourly rate</li>
+        <div className='space-y-2 rounded-md border bg-muted/50 p-3 text-sm'>
+          <div className='font-medium'>Required Fields:</div>
+          <ul className='list-inside list-disc space-y-1 text-muted-foreground'>
+            <li>
+              <code className='rounded bg-background px-1 py-0.5 text-xs'>
+                employee_id*
+              </code>{' '}
+              - The Employee ID
+            </li>
+            <li>
+              <code className='rounded bg-background px-1 py-0.5 text-xs'>
+                date*
+              </code>{' '}
+              - YYYY-MM-DD
+            </li>
+            <li>
+              <code className='rounded bg-background px-1 py-0.5 text-xs'>
+                hours*
+              </code>{' '}
+              - Number of hours
+            </li>
+            <li>
+              <code className='rounded bg-background px-1 py-0.5 text-xs'>
+                rate*
+              </code>{' '}
+              - Hourly rate
+            </li>
           </ul>
-          <div className="font-medium mt-3">Optional Fields:</div>
-          <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-            <li><code className="rounded bg-background px-1 py-0.5 text-xs">status</code> - Pending, Approved, or
-              Rejected
+          <div className='mt-3 font-medium'>Optional Fields:</div>
+          <ul className='list-inside list-disc space-y-1 text-muted-foreground'>
+            <li>
+              <code className='rounded bg-background px-1 py-0.5 text-xs'>
+                status
+              </code>{' '}
+              - Pending, Approved, or Rejected
             </li>
           </ul>
         </div>
         <Controller
           control={form.control}
-          name="file"
-          render={({ field: { value, onChange, ...fieldProps }, fieldState }) => (
+          name='file'
+          render={({
+            field: { value, onChange, ...fieldProps },
+            fieldState,
+          }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor="import-file">Upload File</FieldLabel>
+              <FieldLabel htmlFor='import-file'>Upload File</FieldLabel>
 
               <FileUpload
                 value={value}
                 onValueChange={onChange}
-                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
                 maxFiles={1}
                 maxSize={5 * 1024 * 1024} // 5MB
                 onFileReject={(_, message) => {
                   form.setError('file', { message })
                 }}
               >
-                <FileUploadDropzone
-                  className="flex-col items-center justify-center gap-2 border-dashed p-8 text-center">
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-                    <HugeiconsIcon icon={CloudUploadIcon} className="size-5" />
+                <FileUploadDropzone className='flex-col items-center justify-center gap-2 border-dashed p-8 text-center'>
+                  <div className='flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground'>
+                    <HugeiconsIcon icon={CloudUploadIcon} className='size-5' />
                   </div>
-                  <div className="text-sm">
-                    <span className="font-semibold text-primary">Click to upload</span>
-                    {' '}or drag and drop
+                  <div className='text-sm'>
+                    <span className='font-semibold text-primary'>
+                      Click to upload
+                    </span>{' '}
+                    or drag and drop
                     <br />
-                    <span className="text-muted-foreground">CSV or Excel (max 5MB)</span>
+                    <span className='text-muted-foreground'>
+                      CSV or Excel (max 5MB)
+                    </span>
                   </div>
                   <FileUploadTrigger asChild>
-                    <Button variant="link" size="sm" className="sr-only">
+                    <Button variant='link' size='sm' className='sr-only'>
                       Select file
                     </Button>
                   </FileUploadTrigger>
@@ -194,20 +253,23 @@ export function OvertimesImportDialog({
 
                 <FileUploadList>
                   {value?.map((file, index) => (
-                    <FileUploadItem key={index} value={file} className="w-full">
-                      <div className="flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary">
-                        <HugeiconsIcon icon={File02Icon} className="size-4" />
+                    <FileUploadItem key={index} value={file} className='w-full'>
+                      <div className='flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary'>
+                        <HugeiconsIcon icon={File02Icon} className='size-4' />
                       </div>
-                      <FileUploadItemPreview className="hidden" />
-                      <FileUploadItemMetadata className="ml-2 flex-1" />
+                      <FileUploadItemPreview className='hidden' />
+                      <FileUploadItemMetadata className='ml-2 flex-1' />
                       <FileUploadItemDelete asChild>
                         <Button
-                          variant="ghost"
-                          size="icon"
-                          className="size-7 text-muted-foreground hover:text-destructive"
+                          variant='ghost'
+                          size='icon'
+                          className='size-7 text-muted-foreground hover:text-destructive'
                         >
-                          <HugeiconsIcon icon={CancelCircleIcon} className="size-4" />
-                          <span className="sr-only">Remove</span>
+                          <HugeiconsIcon
+                            icon={CancelCircleIcon}
+                            className='size-4'
+                          />
+                          <span className='sr-only'>Remove</span>
                         </Button>
                       </FileUploadItemDelete>
                     </FileUploadItem>
@@ -230,8 +292,8 @@ export function OvertimesImportDialog({
     <>
       {isDesktop ? (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader className="text-start">
+          <DialogContent className='sm:max-w-md'>
+            <DialogHeader className='text-start'>
               <DialogTitle>Import Overtimes</DialogTitle>
               <DialogDescription>
                 Bulk create overtimes by uploading a CSV or Excel file.
@@ -240,13 +302,21 @@ export function OvertimesImportDialog({
 
             {importFormContent}
 
-            <DialogFooter className="gap-y-2">
-              <Button variant="outline" onClick={() => handleOpenChange(false)}>
+            <DialogFooter className='gap-y-2'>
+              <Button variant='outline' onClick={() => handleOpenChange(false)}>
                 Cancel
               </Button>
-              <Button type="submit" form="import-form" disabled={!form.formState.isValid || isPending}>
+              <Button
+                type='submit'
+                form='import-form'
+                disabled={!form.formState.isValid || isPending}
+              >
                 Preview Data
-                <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
+                <HugeiconsIcon
+                  icon={ViewIcon}
+                  strokeWidth={2}
+                  className='ml-2 size-4'
+                />
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -254,24 +324,32 @@ export function OvertimesImportDialog({
       ) : (
         <Drawer open={open} onOpenChange={handleOpenChange}>
           <DrawerContent>
-            <DrawerHeader className="text-left">
+            <DrawerHeader className='text-left'>
               <DrawerTitle>Import Overtimes</DrawerTitle>
               <DrawerDescription>
                 Bulk create overtimes by uploading a CSV or Excel file.
               </DrawerDescription>
             </DrawerHeader>
 
-            <div className="no-scrollbar overflow-y-auto px-4">
+            <div className='no-scrollbar overflow-y-auto px-4'>
               {importFormContent}
             </div>
 
             <DrawerFooter>
-              <Button type="submit" form="import-form" disabled={!form.formState.isValid || isPending}>
+              <Button
+                type='submit'
+                form='import-form'
+                disabled={!form.formState.isValid || isPending}
+              >
                 Preview Data
-                <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
+                <HugeiconsIcon
+                  icon={ViewIcon}
+                  strokeWidth={2}
+                  className='ml-2 size-4'
+                />
               </Button>
               <DrawerClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant='outline'>Cancel</Button>
               </DrawerClose>
             </DrawerFooter>
           </DrawerContent>

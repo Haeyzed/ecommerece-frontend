@@ -1,15 +1,24 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import type { Attendance, AttendanceExportParams, AttendanceFormBody, AttendanceListParams } from './types'
+
+import type {
+  Attendance,
+  AttendanceExportParams,
+  AttendanceFormBody,
+  AttendanceListParams,
+} from './types'
 
 export const attendanceKeys = {
   all: ['attendances'] as const,
   lists: () => [...attendanceKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...attendanceKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...attendanceKeys.lists(), filters] as const,
   details: () => [...attendanceKeys.all, 'detail'] as const,
   detail: (id: number) => [...attendanceKeys.details(), id] as const,
   template: () => [...attendanceKeys.all, 'template'] as const,
@@ -70,7 +79,8 @@ export function useCreateAttendance() {
 
       const response = await api.post<{ data: Attendance }>(BASE_PATH, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -90,7 +100,13 @@ export function useUpdateAttendance() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<AttendanceFormBody> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<AttendanceFormBody>
+    }) => {
       const payload: Record<string, unknown> = {}
 
       if (data.date !== undefined) payload.date = data.date
@@ -98,16 +114,22 @@ export function useUpdateAttendance() {
       if (data.checkout !== undefined) payload.checkout = data.checkout
       if (data.note !== undefined) payload.note = data.note
 
-      const response = await api.put<{ data: Attendance }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: Attendance }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: attendanceKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: attendanceKeys.detail(data.id) })
+      queryClient.invalidateQueries({
+        queryKey: attendanceKeys.detail(data.id),
+      })
       toast.success(data.message)
     },
     onError: (error) => {
@@ -143,7 +165,7 @@ export function useBulkMarkPresentAttendances() {
     mutationFn: async (ids: number[]) => {
       const response = await api.post<{ marked_count: number }>(
         `${BASE_PATH}/bulk-mark-present`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -163,7 +185,7 @@ export function useBulkMarkLateAttendances() {
     mutationFn: async (ids: number[]) => {
       const response = await api.post<{ marked_count: number }>(
         `${BASE_PATH}/bulk-mark-late`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response

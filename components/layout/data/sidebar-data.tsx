@@ -1,6 +1,5 @@
 'use client'
 
-import { HugeiconsIcon } from '@hugeicons/react'
 import {
   AnalyticsUpIcon,
   ArrowDataTransferHorizontalIcon,
@@ -22,27 +21,61 @@ import {
   TruckReturnIcon,
   UserIcon,
 } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
 import type { SidebarData } from '../types'
 
-const DashboardIcon = () => <HugeiconsIcon icon={Home01Icon} className="size-4" />
-const ProductIcon = () => <HugeiconsIcon icon={Package02Icon} className="size-4" />
-const PurchaseIcon = () => <HugeiconsIcon icon={ShoppingCart01Icon} className="size-4" />
-const SaleIcon = () => <HugeiconsIcon icon={Invoice04Icon} className="size-4" />
-const ExpenseIcon = () => <HugeiconsIcon icon={ExchangeDollarIcon} className="size-4" />
-const QuotationIcon = () => <HugeiconsIcon icon={File01Icon} className="size-4" />
-const TransferIcon = () => <HugeiconsIcon icon={ArrowDataTransferHorizontalIcon} className="size-4" />
-const ReturnIcon = () => <HugeiconsIcon icon={TruckReturnIcon} className="size-4" />
-const AccountingIcon = () => <HugeiconsIcon icon={Calculator01Icon} className="size-4" />
-const HRMIcon = () => <HugeiconsIcon icon={Briefcase01Icon} className="size-4" />
-const PeopleIcon = () => <HugeiconsIcon icon={UserIcon} className="size-4" />
-const ReportsIcon = () => <HugeiconsIcon icon={AnalyticsUpIcon} className="size-4" />
-const ManufacturingIcon = () => <HugeiconsIcon icon={Factory01Icon} className="size-4" />
-const WooCommerceIcon = () => <HugeiconsIcon icon={ShoppingBag01Icon} className="size-4" />
-const EcommerceIcon = () => <HugeiconsIcon icon={Store01Icon} className="size-4" />
-const SupportIcon = () => <HugeiconsIcon icon={Tag01Icon} className="size-4" />
-const SettingsIcon = () => <HugeiconsIcon icon={Settings01Icon} className="size-4" />
-const HelpIcon = () => <HugeiconsIcon icon={HelpCircleIcon} className="size-4" />
-const CommandIconComponent = () => <HugeiconsIcon icon={CommandIcon} className="size-4" />
+const DashboardIcon = () => (
+  <HugeiconsIcon icon={Home01Icon} className='size-4' />
+)
+const ProductIcon = () => (
+  <HugeiconsIcon icon={Package02Icon} className='size-4' />
+)
+const PurchaseIcon = () => (
+  <HugeiconsIcon icon={ShoppingCart01Icon} className='size-4' />
+)
+const SaleIcon = () => <HugeiconsIcon icon={Invoice04Icon} className='size-4' />
+const ExpenseIcon = () => (
+  <HugeiconsIcon icon={ExchangeDollarIcon} className='size-4' />
+)
+const QuotationIcon = () => (
+  <HugeiconsIcon icon={File01Icon} className='size-4' />
+)
+const TransferIcon = () => (
+  <HugeiconsIcon icon={ArrowDataTransferHorizontalIcon} className='size-4' />
+)
+const ReturnIcon = () => (
+  <HugeiconsIcon icon={TruckReturnIcon} className='size-4' />
+)
+const AccountingIcon = () => (
+  <HugeiconsIcon icon={Calculator01Icon} className='size-4' />
+)
+const HRMIcon = () => (
+  <HugeiconsIcon icon={Briefcase01Icon} className='size-4' />
+)
+const PeopleIcon = () => <HugeiconsIcon icon={UserIcon} className='size-4' />
+const ReportsIcon = () => (
+  <HugeiconsIcon icon={AnalyticsUpIcon} className='size-4' />
+)
+const ManufacturingIcon = () => (
+  <HugeiconsIcon icon={Factory01Icon} className='size-4' />
+)
+const WooCommerceIcon = () => (
+  <HugeiconsIcon icon={ShoppingBag01Icon} className='size-4' />
+)
+const EcommerceIcon = () => (
+  <HugeiconsIcon icon={Store01Icon} className='size-4' />
+)
+const SupportIcon = () => <HugeiconsIcon icon={Tag01Icon} className='size-4' />
+const SettingsIcon = () => (
+  <HugeiconsIcon icon={Settings01Icon} className='size-4' />
+)
+const HelpIcon = () => (
+  <HugeiconsIcon icon={HelpCircleIcon} className='size-4' />
+)
+const CommandIconComponent = () => (
+  <HugeiconsIcon icon={CommandIcon} className='size-4' />
+)
 // const AppWindowIcon = () => <HugeiconsIcon icon={AppWindow01Icon} className="size-4" />
 // const VolumeIcon = () => <HugeiconsIcon icon={Volume2Icon} className="size-4" />
 
@@ -758,4 +791,3 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
     },
   ],
 }
-

@@ -8,14 +8,17 @@ interface DataTableSkeletonProps {
   rowCount?: number
 }
 
-export function DataTableSkeleton({ columnCount, rowCount = 10 }: DataTableSkeletonProps) {
+export function DataTableSkeleton({
+  columnCount,
+  rowCount = 10,
+}: DataTableSkeletonProps) {
   return (
     <TableBody>
       {Array.from({ length: rowCount }).map((_, rowIndex) => (
         <TableRow key={rowIndex}>
           {Array.from({ length: columnCount }).map((_, colIndex) => (
             <TableCell key={colIndex}>
-              <Skeleton className="h-8 w-full" />
+              <Skeleton className='h-8 w-full' />
             </TableCell>
           ))}
         </TableRow>
@@ -23,4 +26,3 @@ export function DataTableSkeleton({ columnCount, rowCount = 10 }: DataTableSkele
     </TableBody>
   )
 }
-

@@ -1,16 +1,34 @@
 'use client'
 
 import * as React from 'react'
-import { endOfMonth, endOfYear, format, isSameDay, startOfMonth, startOfYear, subDays, subMonths } from 'date-fns'
-import { type DateRange } from 'react-day-picker'
-import { HugeiconsIcon } from '@hugeicons/react'
+
+import {
+  endOfMonth,
+  endOfYear,
+  format,
+  isSameDay,
+  startOfMonth,
+  startOfYear,
+  subDays,
+  subMonths,
+} from 'date-fns'
+
 import { CalendarIcon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
+import { type DateRange } from 'react-day-picker'
+
+import { cn } from '@/lib/utils'
+
+import { useMediaQuery } from '@/hooks/use-media-query'
 
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { cn } from '@/lib/utils'
-import { useMediaQuery } from '@/hooks/use-media-query'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 
 interface DateRangePickerProps {
   value?: DateRange
@@ -22,13 +40,13 @@ interface DateRangePickerProps {
 }
 
 export function DateRangePicker({
-                                  value,
-                                  onChange,
-                                  placeholder = 'Pick a date range',
-                                  disabled,
-                                  error,
-                                  className,
-                                }: DateRangePickerProps) {
+  value,
+  onChange,
+  placeholder = 'Pick a date range',
+  disabled,
+  error,
+  className,
+}: DateRangePickerProps) {
   const [isOpen, setIsOpen] = React.useState(false)
   const isDesktop = useMediaQuery('(min-width: 768px)')
 
@@ -56,7 +74,10 @@ export function DateRangePicker({
     },
     {
       label: 'Last Month',
-      range: { from: startOfMonth(subMonths(today, 1)), to: endOfMonth(subMonths(today, 1)) },
+      range: {
+        from: startOfMonth(subMonths(today, 1)),
+        to: endOfMonth(subMonths(today, 1)),
+      },
     },
     {
       label: 'This Year',
@@ -71,30 +92,34 @@ export function DateRangePicker({
 
   // Helper to check if a preset is currently selected
   const checkIsActive = (presetRange: DateRange) => {
-    if (!value?.from || !value?.to || !presetRange.from || !presetRange.to) return false
-    return isSameDay(value.from, presetRange.from) && isSameDay(value.to, presetRange.to)
+    if (!value?.from || !value?.to || !presetRange.from || !presetRange.to)
+      return false
+    return (
+      isSameDay(value.from, presetRange.from) &&
+      isSameDay(value.to, presetRange.to)
+    )
   }
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button
-          id="date"
-          variant="outline"
+          id='date'
+          variant='outline'
           disabled={disabled}
           className={cn(
-            'justify-start text-left font-normal px-2.5',
+            'justify-start px-2.5 text-left font-normal',
             !value && 'text-muted-foreground',
             error && 'border-destructive',
-            className,
+            className
           )}
         >
           <HugeiconsIcon
             icon={CalendarIcon}
             strokeWidth={2}
-            className="mr-2 size-4 shrink-0"
+            className='mr-2 size-4 shrink-0'
           />
-          <span className="truncate">
+          <span className='truncate'>
             {value?.from ? (
               value.to ? (
                 <>
@@ -111,11 +136,11 @@ export function DateRangePicker({
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-auto p-0 shadow-lg" align="start">
-        <div className="flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x">
+      <PopoverContent className='w-auto p-0 shadow-lg' align='start'>
+        <div className='flex flex-col divide-y sm:flex-row sm:divide-x sm:divide-y-0'>
           {/* Quick Select Sidebar */}
-          <div className="flex flex-col gap-1 p-3 sm:w-40 bg-muted/20">
-            <span className="text-xs font-semibold text-muted-foreground mb-1 px-2 uppercase tracking-wider">
+          <div className='flex flex-col gap-1 bg-muted/20 p-3 sm:w-40'>
+            <span className='mb-1 px-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase'>
               Quick Select
             </span>
             {presets.map((preset) => {
@@ -124,11 +149,11 @@ export function DateRangePicker({
                 <Button
                   key={preset.label}
                   variant={isActive ? 'default' : 'ghost'}
-                  size="sm"
+                  size='sm'
                   onClick={() => handlePresetClick(preset.range)}
                   className={cn(
                     'justify-start font-normal transition-all',
-                    isActive && 'font-medium',
+                    isActive && 'font-medium'
                   )}
                 >
                   {preset.label}
@@ -138,15 +163,15 @@ export function DateRangePicker({
           </div>
 
           {/* Calendar Area */}
-          <div className="p-1">
+          <div className='p-1'>
             <Calendar
-              mode="range"
+              mode='range'
               defaultMonth={value?.from}
               selected={value}
               onSelect={onChange}
               numberOfMonths={isDesktop ? 2 : 1}
               initialFocus
-              captionLayout="dropdown"
+              captionLayout='dropdown'
               fromYear={1990}
               toYear={today.getFullYear() + 10}
             />

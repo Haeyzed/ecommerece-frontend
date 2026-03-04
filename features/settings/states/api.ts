@@ -1,15 +1,26 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import { CityOption, State, StateExportParams, StateFormData, StateListParams, StateOption } from './types'
+
+import {
+  CityOption,
+  State,
+  StateExportParams,
+  StateFormData,
+  StateListParams,
+  StateOption,
+} from './types'
 
 export const stateKeys = {
   all: ['states'] as const,
   lists: () => [...stateKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...stateKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...stateKeys.lists(), filters] as const,
   details: () => [...stateKeys.all, 'detail'] as const,
   detail: (id: number) => [...stateKeys.details(), id] as const,
   options: () => [...stateKeys.all, 'options'] as const,
@@ -68,7 +79,7 @@ export function useCitiesByState(stateId: number | null) {
     queryKey: stateKeys.cities(stateId ?? 0),
     queryFn: async () => {
       const response = await api.get<CityOption[]>(
-        `${BASE_PATH}/${stateId}/cities`,
+        `${BASE_PATH}/${stateId}/cities`
       )
       return response.data ?? []
     },
@@ -88,7 +99,8 @@ export function useCreateState() {
       }
 
       if (data.code !== undefined) payload.code = data.code
-      if (data.country_code !== undefined) payload.country_code = data.country_code
+      if (data.country_code !== undefined)
+        payload.country_code = data.country_code
       if (data.state_code !== undefined) payload.state_code = data.state_code
       if (data.type !== undefined) payload.type = data.type
       if (data.latitude !== undefined) payload.latitude = data.latitude
@@ -96,7 +108,8 @@ export function useCreateState() {
 
       const response = await api.post<{ data: State }>(BASE_PATH, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -116,7 +129,13 @@ export function useUpdateState() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<StateFormData> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<StateFormData>
+    }) => {
       const payload: Record<string, unknown> = {}
 
       Object.keys(data).forEach((key) => {
@@ -126,9 +145,13 @@ export function useUpdateState() {
         }
       })
 
-      const response = await api.put<{ data: State }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: State }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }

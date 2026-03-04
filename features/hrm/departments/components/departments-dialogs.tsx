@@ -1,5 +1,6 @@
 'use client'
 
+import { useAuthSession } from '@/features/auth/api'
 import {
   DepartmentsActionDialog,
   DepartmentsDeleteDialog,
@@ -8,7 +9,6 @@ import {
   DepartmentsViewDialog,
   useDepartments,
 } from '@/features/hrm/departments'
-import { useAuthSession } from '@/features/auth/api'
 
 export function DepartmentsDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useDepartments()
@@ -25,7 +25,7 @@ export function DepartmentsDialogs() {
     <>
       {canCreate && (
         <DepartmentsActionDialog
-          key="department-add"
+          key='department-add'
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -35,7 +35,7 @@ export function DepartmentsDialogs() {
 
       {canImport && (
         <DepartmentsImportDialog
-          key="department-import"
+          key='department-import'
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -45,7 +45,7 @@ export function DepartmentsDialogs() {
 
       {canExport && (
         <DepartmentsExportDialog
-          key="department-export"
+          key='department-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

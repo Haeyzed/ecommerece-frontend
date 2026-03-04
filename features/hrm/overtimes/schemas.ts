@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
 export const overtimeSchema = z.object({
@@ -46,9 +47,9 @@ export const overtimeExportSchema = z
     {
       message: 'User is required when sending an email',
       path: ['user_id'],
-    },
+    }
   )
 
-export type OvertimeFormData = z.infer<typeof overtimeSchema>;
-export type OvertimeImportFormData = z.infer<typeof overtimeImportSchema>;
-export type OvertimeExportFormData = z.infer<typeof overtimeExportSchema>;
+export type OvertimeFormData = z.infer<typeof overtimeSchema>
+export type OvertimeImportFormData = z.infer<typeof overtimeImportSchema>
+export type OvertimeExportFormData = z.infer<typeof overtimeExportSchema>

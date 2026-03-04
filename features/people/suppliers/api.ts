@@ -7,11 +7,13 @@
  * Uses TanStack Query and NextAuth-aware API client.
  * API base path: /suppliers
  */
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
 
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
+
 import type { Supplier, SupplierFormData } from './schemas'
 
 export const supplierKeys = {
@@ -92,13 +94,17 @@ export function useCreateSupplier() {
       if (data.state) formData.append('state', data.state)
       if (data.postal_code) formData.append('postal_code', data.postal_code)
       if (data.country) formData.append('country', data.country)
-      if (data.opening_balance != null) formData.append('opening_balance', String(data.opening_balance))
-      if (data.pay_term_no != null) formData.append('pay_term_no', String(data.pay_term_no))
-      if (data.pay_term_period) formData.append('pay_term_period', data.pay_term_period)
+      if (data.opening_balance != null)
+        formData.append('opening_balance', String(data.opening_balance))
+      if (data.pay_term_no != null)
+        formData.append('pay_term_no', String(data.pay_term_no))
+      if (data.pay_term_period)
+        formData.append('pay_term_period', data.pay_term_period)
       if (data.image && data.image.length > 0) {
         formData.append('image', data.image[0])
       }
-      if (data.is_active !== undefined) formData.append('is_active', data.is_active ? '1' : '0')
+      if (data.is_active !== undefined)
+        formData.append('is_active', data.is_active ? '1' : '0')
 
       const response = await api.post<Supplier>(BASE_PATH, formData)
       if (!response.success || !response.data) {
@@ -114,7 +120,9 @@ export function useCreateSupplier() {
       toast.success('Supplier created successfully')
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : 'Failed to create supplier')
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to create supplier'
+      )
     },
   })
 }
@@ -125,32 +133,43 @@ export function useUpdateSupplier() {
 
   return useMutation({
     mutationFn: async ({
-                         id,
-                         data,
-                       }: {
+      id,
+      data,
+    }: {
       id: number
       data: Partial<SupplierFormData>
     }) => {
       const formData = new FormData()
       formData.append('_method', 'PUT')
       if (data.name) formData.append('name', data.name)
-      if (data.company_name !== undefined) formData.append('company_name', data.company_name ?? '')
-      if (data.vat_number !== undefined) formData.append('vat_number', data.vat_number ?? '')
+      if (data.company_name !== undefined)
+        formData.append('company_name', data.company_name ?? '')
+      if (data.vat_number !== undefined)
+        formData.append('vat_number', data.vat_number ?? '')
       if (data.email !== undefined) formData.append('email', data.email ?? '')
-      if (data.phone_number !== undefined) formData.append('phone_number', data.phone_number ?? '')
-      if (data.wa_number !== undefined) formData.append('wa_number', data.wa_number ?? '')
-      if (data.address !== undefined) formData.append('address', data.address ?? '')
+      if (data.phone_number !== undefined)
+        formData.append('phone_number', data.phone_number ?? '')
+      if (data.wa_number !== undefined)
+        formData.append('wa_number', data.wa_number ?? '')
+      if (data.address !== undefined)
+        formData.append('address', data.address ?? '')
       if (data.city !== undefined) formData.append('city', data.city ?? '')
       if (data.state !== undefined) formData.append('state', data.state ?? '')
-      if (data.postal_code !== undefined) formData.append('postal_code', data.postal_code ?? '')
-      if (data.country !== undefined) formData.append('country', data.country ?? '')
-      if (data.opening_balance !== undefined) formData.append('opening_balance', String(data.opening_balance ?? 0))
-      if (data.pay_term_no !== undefined) formData.append('pay_term_no', String(data.pay_term_no ?? ''))
-      if (data.pay_term_period !== undefined) formData.append('pay_term_period', data.pay_term_period ?? '')
+      if (data.postal_code !== undefined)
+        formData.append('postal_code', data.postal_code ?? '')
+      if (data.country !== undefined)
+        formData.append('country', data.country ?? '')
+      if (data.opening_balance !== undefined)
+        formData.append('opening_balance', String(data.opening_balance ?? 0))
+      if (data.pay_term_no !== undefined)
+        formData.append('pay_term_no', String(data.pay_term_no ?? ''))
+      if (data.pay_term_period !== undefined)
+        formData.append('pay_term_period', data.pay_term_period ?? '')
       if (data.image && data.image.length > 0) {
         formData.append('image', data.image[0])
       }
-      if (data.is_active !== undefined) formData.append('is_active', data.is_active ? '1' : '0')
+      if (data.is_active !== undefined)
+        formData.append('is_active', data.is_active ? '1' : '0')
 
       const response = await api.post<Supplier>(`${BASE_PATH}/${id}`, formData)
       if (!response.success || !response.data) {
@@ -163,11 +182,15 @@ export function useUpdateSupplier() {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: supplierKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: supplierKeys.detail(variables.id) })
+      queryClient.invalidateQueries({
+        queryKey: supplierKeys.detail(variables.id),
+      })
       toast.success('Supplier updated successfully')
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : 'Failed to update supplier')
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to update supplier'
+      )
     },
   })
 }
@@ -187,7 +210,9 @@ export function useDeleteSupplier() {
       toast.success('Supplier deleted successfully')
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : 'Failed to delete supplier')
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to delete supplier'
+      )
     },
   })
 }
@@ -199,7 +224,7 @@ export function useBulkActivateSuppliers() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
         `${BASE_PATH}/bulk-activate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response.data
@@ -208,7 +233,8 @@ export function useBulkActivateSuppliers() {
       queryClient.invalidateQueries({ queryKey: supplierKeys.lists() })
       toast.success('Suppliers activated')
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : 'Failed to activate'),
+    onError: (e) =>
+      toast.error(e instanceof Error ? e.message : 'Failed to activate'),
   })
 }
 
@@ -219,7 +245,7 @@ export function useBulkDeactivateSuppliers() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ deactivated_count: number }>(
         `${BASE_PATH}/bulk-deactivate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response.data
@@ -228,7 +254,8 @@ export function useBulkDeactivateSuppliers() {
       queryClient.invalidateQueries({ queryKey: supplierKeys.lists() })
       toast.success('Suppliers deactivated')
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : 'Failed to deactivate'),
+    onError: (e) =>
+      toast.error(e instanceof Error ? e.message : 'Failed to deactivate'),
   })
 }
 
@@ -245,7 +272,10 @@ export function useBulkDestroySuppliers() {
       queryClient.invalidateQueries({ queryKey: supplierKeys.lists() })
       toast.success('Suppliers deleted')
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : 'Failed to delete suppliers'),
+    onError: (e) =>
+      toast.error(
+        e instanceof Error ? e.message : 'Failed to delete suppliers'
+      ),
   })
 }
 

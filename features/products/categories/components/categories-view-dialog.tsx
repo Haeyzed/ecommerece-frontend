@@ -1,8 +1,21 @@
 'use client'
 
+import Image from 'next/image'
+
+import { useTheme } from '@/lib/providers/theme-provider'
+import { cn } from '@/lib/utils'
+
+import { useMediaQuery } from '@/hooks/use-media-query'
+
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import {
   Drawer,
   DrawerClose,
@@ -13,12 +26,9 @@ import {
   DrawerTitle,
 } from '@/components/ui/drawer'
 import { ImageZoom } from '@/components/ui/image-zoom'
-import { useMediaQuery } from '@/hooks/use-media-query'
-import { useTheme } from '@/lib/providers/theme-provider'
-import { cn } from '@/lib/utils'
-import Image from 'next/image'
-import { type Category } from '../types'
+
 import { featuredTypes, statusTypes, syncTypes } from '../constants'
+import { type Category } from '../types'
 import { CategoryChildrenTree } from './category-children-tree'
 
 type CategoriesViewDialogProps = {
@@ -28,10 +38,10 @@ type CategoriesViewDialogProps = {
 }
 
 export function CategoriesViewDialog({
-                                       currentRow,
-                                       open,
-                                       onOpenChange,
-                                     }: CategoriesViewDialogProps) {
+  currentRow,
+  open,
+  onOpenChange,
+}: CategoriesViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   if (!currentRow) return null
   const handleOpenChange = (value: boolean) => {
@@ -41,18 +51,16 @@ export function CategoriesViewDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader className="text-start">
+        <DialogContent className='sm:max-w-lg'>
+          <DialogHeader className='text-start'>
             <DialogTitle>Category Details</DialogTitle>
             <DialogDescription>
               View category information below.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="max-h-[70vh] overflow-y-auto py-1 pe-2">
-            <CategoryView
-              currentRow={currentRow}
-            />
+          <div className='max-h-[70vh] overflow-y-auto py-1 pe-2'>
+            <CategoryView currentRow={currentRow} />
           </div>
         </DialogContent>
       </Dialog>
@@ -62,20 +70,20 @@ export function CategoriesViewDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className="text-left">
+        <DrawerHeader className='text-left'>
           <DrawerTitle>Category Details</DrawerTitle>
-          <DrawerDescription>View category information below.</DrawerDescription>
+          <DrawerDescription>
+            View category information below.
+          </DrawerDescription>
         </DrawerHeader>
 
-        <div className="max-h-[80vh] overflow-y-auto px-4">
-          <CategoryView
-            currentRow={currentRow}
-          />
+        <div className='max-h-[80vh] overflow-y-auto px-4'>
+          <CategoryView currentRow={currentRow} />
         </div>
 
         <DrawerFooter>
           <DrawerClose asChild>
-            <Button variant="outline">Close</Button>
+            <Button variant='outline'>Close</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -98,14 +106,14 @@ function CategoryView({ className, currentRow }: CategoryViewProps) {
     <div className={cn('space-y-6', className)}>
       {/* Main Image */}
       {currentRow.image_url && (
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Image</div>
-          <div className="relative h-48 w-full overflow-hidden rounded-md border bg-muted">
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>Image</div>
+          <div className='relative h-48 w-full overflow-hidden rounded-md border bg-muted'>
             <ImageZoom
               backdropClassName={cn(
                 resolvedTheme === 'dark'
                   ? '[&_[data-rmiz-modal-overlay="visible"]]:bg-white/80'
-                  : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80',
+                  : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80'
               )}
             >
               <Image
@@ -113,7 +121,7 @@ function CategoryView({ className, currentRow }: CategoryViewProps) {
                 alt={currentRow.name}
                 width={800}
                 height={400}
-                className="h-full w-full object-cover"
+                className='h-full w-full object-cover'
                 unoptimized
               />
             </ImageZoom>
@@ -121,42 +129,46 @@ function CategoryView({ className, currentRow }: CategoryViewProps) {
         </div>
       )}
 
-      <div className="space-y-2">
-        <div className="text-sm font-medium text-muted-foreground">Name</div>
-        <div className="text-sm font-medium">{currentRow.name}</div>
+      <div className='space-y-2'>
+        <div className='text-sm font-medium text-muted-foreground'>Name</div>
+        <div className='text-sm font-medium'>{currentRow.name}</div>
       </div>
 
       {currentRow.slug && (
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Slug</div>
-          <div className="text-sm font-mono text-muted-foreground">{currentRow.slug}</div>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>Slug</div>
+          <div className='font-mono text-sm text-muted-foreground'>
+            {currentRow.slug}
+          </div>
         </div>
       )}
 
       {currentRow.parent?.name && (
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Parent Category</div>
-          <div className="text-sm font-medium">{currentRow.parent.name}</div>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
+            Parent Category
+          </div>
+          <div className='text-sm font-medium'>{currentRow.parent.name}</div>
         </div>
       )}
 
       {currentRow.icon_url && (
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Icon</div>
-          <div className="relative h-24 w-24 overflow-hidden rounded-md border bg-muted p-2">
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>Icon</div>
+          <div className='relative h-24 w-24 overflow-hidden rounded-md border bg-muted p-2'>
             <ImageZoom
               backdropClassName={cn(
                 resolvedTheme === 'dark'
                   ? '[&_[data-rmiz-modal-overlay="visible"]]:bg-white/80'
-                  : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80',
+                  : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80'
               )}
             >
               <Image
                 src={currentRow.icon_url}
                 alt={`${currentRow.name} icon`}
                 fill
-                className="object-contain"
-                sizes="96px"
+                className='object-contain'
+                sizes='96px'
                 unoptimized
               />
             </ImageZoom>
@@ -165,46 +177,69 @@ function CategoryView({ className, currentRow }: CategoryViewProps) {
       )}
 
       {currentRow.short_description && (
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Description</div>
-          <div className="text-sm text-muted-foreground whitespace-pre-wrap">
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
+            Description
+          </div>
+          <div className='text-sm whitespace-pre-wrap text-muted-foreground'>
             {currentRow.short_description}
           </div>
         </div>
       )}
 
       {currentRow.page_title && (
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Page Title</div>
-          <div className="text-sm">{currentRow.page_title}</div>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
+            Page Title
+          </div>
+          <div className='text-sm'>{currentRow.page_title}</div>
         </div>
       )}
 
       {currentRow.woocommerce_category_id && (
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">WooCommerce Category ID</div>
-          <div className="text-sm font-mono">{currentRow.woocommerce_category_id}</div>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
+            WooCommerce Category ID
+          </div>
+          <div className='font-mono text-sm'>
+            {currentRow.woocommerce_category_id}
+          </div>
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Status</div>
-          <Badge variant="outline" className={cn('capitalize', statusBadgeColor)}>
+      <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
+            Status
+          </div>
+          <Badge
+            variant='outline'
+            className={cn('capitalize', statusBadgeColor)}
+          >
             {currentRow.active_status}
           </Badge>
         </div>
 
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Featured</div>
-          <Badge variant="outline" className={cn('capitalize', featuredStatusBadgeColor)}>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
+            Featured
+          </div>
+          <Badge
+            variant='outline'
+            className={cn('capitalize', featuredStatusBadgeColor)}
+          >
             {currentRow.featured_status}
           </Badge>
         </div>
 
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Sync Disabled</div>
-          <Badge variant="outline" className={cn('capitalize', syncStatusBadgeColor)}>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
+            Sync Disabled
+          </div>
+          <Badge
+            variant='outline'
+            className={cn('capitalize', syncStatusBadgeColor)}
+          >
             {currentRow.sync_status}
           </Badge>
         </div>
@@ -215,19 +250,23 @@ function CategoryView({ className, currentRow }: CategoryViewProps) {
         parentId={currentRow.id}
       />
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Created At</div>
-          <div className="text-sm text-muted-foreground">
+      <div className='grid grid-cols-2 gap-4'>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
+            Created At
+          </div>
+          <div className='text-sm text-muted-foreground'>
             {currentRow.created_at
               ? new Date(currentRow.created_at).toLocaleString()
               : 'N/A'}
           </div>
         </div>
 
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Updated At</div>
-          <div className="text-sm text-muted-foreground">
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
+            Updated At
+          </div>
+          <div className='text-sm text-muted-foreground'>
             {currentRow.updated_at
               ? new Date(currentRow.updated_at).toLocaleString()
               : 'N/A'}

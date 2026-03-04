@@ -8,13 +8,16 @@
  *
  * @constant
  */
-
 import { type ColumnDef } from '@tanstack/react-table'
+
 import { cn } from '@/lib/utils'
+
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
+
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
+
 import { statusTypes } from '../constants'
 import { type Tax } from '../types'
 import { DataTableRowActions } from './data-table-row-actions'
@@ -29,8 +32,8 @@ export const taxesColumns: ColumnDef<Tax>[] = [
           (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
+        aria-label='Select all'
+        className='translate-y-[2px]'
       />
     ),
     meta: {
@@ -40,8 +43,8 @@ export const taxesColumns: ColumnDef<Tax>[] = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
+        aria-label='Select row'
+        className='translate-y-[2px]'
       />
     ),
     enableSorting: false,
@@ -50,17 +53,17 @@ export const taxesColumns: ColumnDef<Tax>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title='Name' />
     ),
     cell: ({ row }) => (
-      <div className="flex items-center gap-3 ps-3">
-        <LongText className="max-w-36">{row.getValue('name')}</LongText>
+      <div className='flex items-center gap-3 ps-3'>
+        <LongText className='max-w-36'>{row.getValue('name')}</LongText>
       </div>
     ),
     meta: {
       className: cn(
         'drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]',
-        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none',
+        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none'
       ),
     },
     enableHiding: false,
@@ -68,11 +71,11 @@ export const taxesColumns: ColumnDef<Tax>[] = [
   {
     accessorKey: 'rate',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Rate (%)" />
+      <DataTableColumnHeader column={column} title='Rate (%)' />
     ),
     cell: ({ row }) => (
-      <div className="ps-3">
-        <span className="font-medium">{row.getValue('rate')}%</span>
+      <div className='ps-3'>
+        <span className='font-medium'>{row.getValue('rate')}%</span>
       </div>
     ),
     meta: { className: 'w-36' },
@@ -80,10 +83,10 @@ export const taxesColumns: ColumnDef<Tax>[] = [
   {
     accessorKey: 'woocommerce_tax_id',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Woo ID" />
+      <DataTableColumnHeader column={column} title='Woo ID' />
     ),
     cell: ({ row }) => (
-      <div className="ps-3 text-muted-foreground">
+      <div className='ps-3 text-muted-foreground'>
         {row.getValue('woocommerce_tax_id') || '-'}
       </div>
     ),
@@ -92,14 +95,17 @@ export const taxesColumns: ColumnDef<Tax>[] = [
   {
     accessorKey: 'active_status',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title='Status' />
     ),
     cell: ({ row }) => {
       const { active_status } = row.original
       const statusBadgeColor = statusTypes.get(active_status)
       return (
-        <div className="flex justify-center">
-          <Badge variant="outline" className={cn('capitalize', statusBadgeColor)}>
+        <div className='flex justify-center'>
+          <Badge
+            variant='outline'
+            className={cn('capitalize', statusBadgeColor)}
+          >
             {row.getValue('active_status')}
           </Badge>
         </div>

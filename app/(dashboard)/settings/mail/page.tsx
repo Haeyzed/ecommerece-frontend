@@ -1,7 +1,9 @@
 import { auth } from '@/auth'
+
+import { hasPermission } from '@/lib/utils/permissions'
+
 import { ForbiddenError } from '@/features/errors/forbidden'
 import { MailSettingClient } from '@/features/settings/mail'
-import { hasPermission } from '@/lib/utils/permissions'
 
 export const metadata = {
   title: 'Mail Setting Management',

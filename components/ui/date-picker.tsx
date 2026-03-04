@@ -1,15 +1,24 @@
 'use client'
 
 import * as React from 'react'
+
 import { format } from 'date-fns'
-import { type DateRange } from 'react-day-picker'
-import { Calendar } from '@/components/ui/calendar'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Button } from '@/components/ui/button'
-import { HugeiconsIcon } from '@hugeicons/react'
+
 import { CalendarIcon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
+import { type DateRange } from 'react-day-picker'
+
 import { cn } from '@/lib/utils'
+
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import { Field, FieldLabel } from '@/components/ui/field'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 
 type DatePickerSingleProps = {
   value?: Date
@@ -25,24 +34,28 @@ type DatePickerSingleProps = {
  * Single date picker: opens a calendar in a popover.
  */
 export function DatePickerSingle({
-                                   value,
-                                   onChange,
-                                   placeholder = 'Pick a date',
-                                   disabled,
-                                   id,
-                                   className,
-                                   label,
-                                 }: DatePickerSingleProps) {
+  value,
+  onChange,
+  placeholder = 'Pick a date',
+  disabled,
+  id,
+  className,
+  label,
+}: DatePickerSingleProps) {
   const [open, setOpen] = React.useState(false)
 
   const trigger = (
     <Button
       id={id}
-      variant="outline"
+      variant='outline'
       className={cn('justify-start px-2.5 font-normal', className)}
       disabled={disabled}
     >
-      <HugeiconsIcon icon={CalendarIcon} strokeWidth={2} data-icon="inline-start" />
+      <HugeiconsIcon
+        icon={CalendarIcon}
+        strokeWidth={2}
+        data-icon='inline-start'
+      />
       {value ? format(value, 'PPP') : <span>{placeholder}</span>}
     </Button>
   )
@@ -50,9 +63,9 @@ export function DatePickerSingle({
   const content = (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>{trigger}</PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent className='w-auto p-0' align='start'>
         <Calendar
-          mode="single"
+          mode='single'
           selected={value}
           onSelect={(date) => {
             onChange?.(date)
@@ -89,24 +102,28 @@ type DateRangePickerProps = {
  * Date range picker: opens a calendar in a popover with range selection.
  */
 export function DateRangePicker({
-                                  value,
-                                  onChange,
-                                  placeholder = 'Pick a date range',
-                                  disabled,
-                                  id,
-                                  className,
-                                  label,
-                                }: DateRangePickerProps) {
+  value,
+  onChange,
+  placeholder = 'Pick a date range',
+  disabled,
+  id,
+  className,
+  label,
+}: DateRangePickerProps) {
   const [open, setOpen] = React.useState(false)
 
   const trigger = (
     <Button
       id={id}
-      variant="outline"
+      variant='outline'
       className={cn('justify-start px-2.5 font-normal', className)}
       disabled={disabled}
     >
-      <HugeiconsIcon icon={CalendarIcon} strokeWidth={2} data-icon="inline-start" />
+      <HugeiconsIcon
+        icon={CalendarIcon}
+        strokeWidth={2}
+        data-icon='inline-start'
+      />
       {value?.from ? (
         value.to ? (
           <>
@@ -124,19 +141,19 @@ export function DateRangePicker({
   const content = (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>{trigger}</PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent className='w-auto p-0' align='start'>
         <Calendar
-          mode="range"
+          mode='range'
           defaultMonth={value?.from}
           selected={value}
           onSelect={onChange}
           numberOfMonths={2}
         />
-        <div className="flex gap-2 border-t p-2">
+        <div className='flex gap-2 border-t p-2'>
           <Button
-            variant="outline"
-            size="sm"
-            className="w-full"
+            variant='outline'
+            size='sm'
+            className='w-full'
             onClick={() => setOpen(false)}
           >
             Done

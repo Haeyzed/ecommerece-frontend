@@ -1,19 +1,22 @@
 'use client'
 
 import { forwardRef } from 'react'
+
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
+
 import { cn } from '@/lib/tiptap-utils'
+
 import '@/components/tiptap-ui-primitive/dropdown-menu/dropdown-menu.scss'
 
 function DropdownMenu({
-                        ...props
-                      }: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
   return <DropdownMenuPrimitive.Root modal={false} {...props} />
 }
 
 function DropdownMenuPortal({
-                              ...props
-                            }: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>) {
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>) {
   return <DropdownMenuPrimitive.Portal {...props} />
 }
 
@@ -36,8 +39,8 @@ const DropdownMenuSubTrigger = DropdownMenuPrimitive.SubTrigger
 const DropdownMenuSubContent = forwardRef<
   React.ComponentRef<typeof DropdownMenuPrimitive.SubContent>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubContent> & {
-  portal?: boolean | React.ComponentProps<typeof DropdownMenuPortal>
-}
+    portal?: boolean | React.ComponentProps<typeof DropdownMenuPortal>
+  }
 >(({ className, portal = true, ...props }, ref) => {
   const content = (
     <DropdownMenuPrimitive.SubContent
@@ -61,8 +64,8 @@ DropdownMenuSubContent.displayName =
 const DropdownMenuContent = forwardRef<
   React.ComponentRef<typeof DropdownMenuPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content> & {
-  portal?: boolean
-}
+    portal?: boolean
+  }
 >(({ className, sideOffset = 4, portal = false, ...props }, ref) => {
   const content = (
     <DropdownMenuPrimitive.Content

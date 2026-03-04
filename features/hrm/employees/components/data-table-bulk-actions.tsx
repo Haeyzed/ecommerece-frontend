@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { HugeiconsIcon } from '@hugeicons/react'
+
 import {
   CheckmarkCircle02Icon,
   Delete02Icon,
@@ -9,15 +9,31 @@ import {
   UnavailableIcon,
   Upload01Icon,
 } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
 import { type Table } from '@tanstack/react-table'
+
 import { Button } from '@/components/ui/button'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
-import { useBulkActivateEmployees, useBulkDeactivateEmployees } from '@/features/hrm/employees/api'
-import { type Employee } from '@/features/hrm/employees/types'
-import { EmployeesExportDialog, EmployeesMultiDeleteDialog } from '@/features/hrm/employees'
-import { useAuthSession } from '@/features/auth/api'
 import { Spinner } from '@/components/ui/spinner'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+
+import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
+
+import { useAuthSession } from '@/features/auth/api'
+import {
+  EmployeesExportDialog,
+  EmployeesMultiDeleteDialog,
+} from '@/features/hrm/employees'
+import {
+  useBulkActivateEmployees,
+  useBulkDeactivateEmployees,
+} from '@/features/hrm/employees/api'
+import { type Employee } from '@/features/hrm/employees/types'
+
 import { useEmployees } from './employees-provider'
 
 type DataTableBulkActionsProps<TData> = {
@@ -25,8 +41,8 @@ type DataTableBulkActionsProps<TData> = {
 }
 
 export function DataTableBulkActions<TData>({
-                                              table,
-                                            }: DataTableBulkActionsProps<TData>) {
+  table,
+}: DataTableBulkActionsProps<TData>) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showExportDialog, setShowExportDialog] = useState(false)
 
@@ -35,8 +51,10 @@ export function DataTableBulkActions<TData>({
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map((row) => (row.original as Employee).id)
 
-  const { mutate: activateEmployees, isPending: isActivating } = useBulkActivateEmployees()
-  const { mutate: deactivateEmployees, isPending: isDeactivating } = useBulkDeactivateEmployees()
+  const { mutate: activateEmployees, isPending: isActivating } =
+    useBulkActivateEmployees()
+  const { mutate: deactivateEmployees, isPending: isDeactivating } =
+    useBulkDeactivateEmployees()
 
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
@@ -63,26 +81,29 @@ export function DataTableBulkActions<TData>({
 
   return (
     <>
-      <BulkActionsToolbar table={table} entityName="employee">
+      <BulkActionsToolbar table={table} entityName='employee'>
         {canUpdate && (
           <>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant="outline"
-                  size="icon"
+                  variant='outline'
+                  size='icon'
                   onClick={() => handleBulkStatusChange('active')}
                   disabled={isBusy}
-                  className="size-8"
-                  aria-label="Activate selected employees"
-                  title="Activate selected employees"
+                  className='size-8'
+                  aria-label='Activate selected employees'
+                  title='Activate selected employees'
                 >
                   {isActivating ? (
-                    <Spinner className="size-4" />
+                    <Spinner className='size-4' />
                   ) : (
-                    <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
+                    <HugeiconsIcon
+                      icon={CheckmarkCircle02Icon}
+                      strokeWidth={2}
+                    />
                   )}
-                  <span className="sr-only">Activate selected employees</span>
+                  <span className='sr-only'>Activate selected employees</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -93,20 +114,20 @@ export function DataTableBulkActions<TData>({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant="outline"
-                  size="icon"
+                  variant='outline'
+                  size='icon'
                   onClick={() => handleBulkStatusChange('inactive')}
                   disabled={isBusy}
-                  className="size-8"
-                  aria-label="Deactivate selected employees"
-                  title="Deactivate selected employees"
+                  className='size-8'
+                  aria-label='Deactivate selected employees'
+                  title='Deactivate selected employees'
                 >
                   {isDeactivating ? (
-                    <Spinner className="size-4" />
+                    <Spinner className='size-4' />
                   ) : (
                     <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
                   )}
-                  <span className="sr-only">Deactivate selected employees</span>
+                  <span className='sr-only'>Deactivate selected employees</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -120,19 +141,19 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant="outline"
-                size="icon"
+                variant='outline'
+                size='icon'
                 onClick={() => {
                   setCurrentRow(null)
                   setOpen('bulk-id-card')
                 }}
                 disabled={isBusy}
-                className="size-8"
-                aria-label="Print ID Cards"
-                title="Print ID Cards"
+                className='size-8'
+                aria-label='Print ID Cards'
+                title='Print ID Cards'
               >
                 <HugeiconsIcon icon={PrinterIcon} strokeWidth={2} />
-                <span className="sr-only">Print ID Cards</span>
+                <span className='sr-only'>Print ID Cards</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
@@ -145,16 +166,16 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant="outline"
-                size="icon"
+                variant='outline'
+                size='icon'
                 onClick={() => setShowExportDialog(true)}
                 disabled={isBusy}
-                className="size-8"
-                aria-label="Export selected employees"
-                title="Export selected employees"
+                className='size-8'
+                aria-label='Export selected employees'
+                title='Export selected employees'
               >
                 <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} />
-                <span className="sr-only">Export selected employees</span>
+                <span className='sr-only'>Export selected employees</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
@@ -167,16 +188,16 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant="destructive"
-                size="icon"
+                variant='destructive'
+                size='icon'
                 onClick={() => setShowDeleteConfirm(true)}
                 disabled={isBusy}
-                className="size-8"
-                aria-label="Delete selected employees"
-                title="Delete selected employees"
+                className='size-8'
+                aria-label='Delete selected employees'
+                title='Delete selected employees'
               >
                 <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} />
-                <span className="sr-only">Delete selected employees</span>
+                <span className='sr-only'>Delete selected employees</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>

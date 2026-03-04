@@ -13,17 +13,22 @@
  * @param {function} props.onOpenChange - Callback for visibility changes
  * @param {Table<TData>} props.table - The table instance containing selected rows
  */
-
 import { useState } from 'react'
-import { HugeiconsIcon } from '@hugeicons/react'
+
 import { Alert02Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
 import { type Table } from '@tanstack/react-table'
+
 import { toast } from 'sonner'
-import { useBulkDestroyCustomerGroups } from '../api'
+
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+
 import { ConfirmDialog } from '@/components/confirm-dialog'
+
+import { useBulkDestroyCustomerGroups } from '../api'
 import { type CustomerGroup } from '../types'
 
 type CustomerGroupsMultiDeleteDialogProps<TData> = {
@@ -35,13 +40,15 @@ type CustomerGroupsMultiDeleteDialogProps<TData> = {
 const CONFIRM_WORD = 'DELETE'
 
 export function CustomerGroupsMultiDeleteDialog<TData>({
-                                                         open,
-                                                         onOpenChange,
-                                                         table,
-                                                       }: CustomerGroupsMultiDeleteDialogProps<TData>) {
+  open,
+  onOpenChange,
+  table,
+}: CustomerGroupsMultiDeleteDialogProps<TData>) {
   const [value, setValue] = useState('')
   const selectedRows = table.getFilteredSelectedRowModel().rows
-  const selectedIds = selectedRows.map((row) => (row.original as CustomerGroup).id)
+  const selectedIds = selectedRows.map(
+    (row) => (row.original as CustomerGroup).id
+  )
 
   const { mutate: bulkDestroy, isPending } = useBulkDestroyCustomerGroups()
 
@@ -67,10 +74,10 @@ export function CustomerGroupsMultiDeleteDialog<TData>({
       handleConfirm={handleDelete}
       disabled={value.trim() !== CONFIRM_WORD || isPending}
       title={
-        <span className="text-destructive">
+        <span className='text-destructive'>
           <HugeiconsIcon
             icon={Alert02Icon}
-            className="me-1 inline-block stroke-destructive"
+            className='me-1 inline-block stroke-destructive'
             size={18}
             strokeWidth={2}
           />{' '}
@@ -79,13 +86,13 @@ export function CustomerGroupsMultiDeleteDialog<TData>({
         </span>
       }
       desc={
-        <div className="space-y-4">
-          <p className="mb-2">
+        <div className='space-y-4'>
+          <p className='mb-2'>
             Are you sure you want to delete the selected customer groups? <br />
             This action cannot be undone.
           </p>
 
-          <Label className="my-4 flex flex-col items-start gap-1.5">
+          <Label className='my-4 flex flex-col items-start gap-1.5'>
             <span>Confirm by typing "{CONFIRM_WORD}":</span>
             <Input
               value={value}
@@ -94,7 +101,7 @@ export function CustomerGroupsMultiDeleteDialog<TData>({
             />
           </Label>
 
-          <Alert variant="destructive">
+          <Alert variant='destructive'>
             <AlertTitle>Warning!</AlertTitle>
             <AlertDescription>
               Please be careful, this operation can not be rolled back.
@@ -102,7 +109,7 @@ export function CustomerGroupsMultiDeleteDialog<TData>({
           </Alert>
         </div>
       }
-      confirmText="Delete"
+      confirmText='Delete'
       destructive
     />
   )

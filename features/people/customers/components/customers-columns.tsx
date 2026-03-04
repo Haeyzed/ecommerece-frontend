@@ -1,14 +1,18 @@
 'use client'
 
 import type { ColumnDef } from '@tanstack/react-table'
+
 import { cn } from '@/lib/utils'
+
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
+
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
+
+import { statusTypes } from '../constants'
 import type { Customer } from '../types'
 import { DataTableRowActions } from './data-table-row-actions'
-import { statusTypes } from '../constants'
 
 export const customersColumns: ColumnDef<Customer>[] = [
   {
@@ -20,8 +24,8 @@ export const customersColumns: ColumnDef<Customer>[] = [
           (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
+        aria-label='Select all'
+        className='translate-y-[2px]'
       />
     ),
     meta: { className: cn('max-md:sticky start-0 z-10 rounded-tl-[inherit]') },
@@ -29,8 +33,8 @@ export const customersColumns: ColumnDef<Customer>[] = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
+        aria-label='Select row'
+        className='translate-y-[2px]'
       />
     ),
     enableSorting: false,
@@ -38,21 +42,23 @@ export const customersColumns: ColumnDef<Customer>[] = [
   },
   {
     accessorKey: 'name',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Name' />
+    ),
     cell: ({ row }) => (
-      <div className="flex items-center gap-3 ps-3">
-        <div className="flex size-10 items-center justify-center rounded-md bg-muted">
-          <span className="text-xs font-medium">
+      <div className='flex items-center gap-3 ps-3'>
+        <div className='flex size-10 items-center justify-center rounded-md bg-muted'>
+          <span className='text-xs font-medium'>
             {String(row.original.name).charAt(0).toUpperCase()}
           </span>
         </div>
-        <LongText className="max-w-36">{row.getValue('name')}</LongText>
+        <LongText className='max-w-36'>{row.getValue('name')}</LongText>
       </div>
     ),
     meta: {
       className: cn(
         'drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]',
-        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none',
+        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none'
       ),
     },
     enableHiding: false,
@@ -61,10 +67,10 @@ export const customersColumns: ColumnDef<Customer>[] = [
     accessorKey: 'customer_group',
     id: 'customer_group_id',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Group" />
+      <DataTableColumnHeader column={column} title='Group' />
     ),
     cell: ({ row }) => (
-      <LongText className="max-w-28">
+      <LongText className='max-w-28'>
         {row.original.customer_group?.name ?? '-'}
       </LongText>
     ),
@@ -73,10 +79,10 @@ export const customersColumns: ColumnDef<Customer>[] = [
   {
     accessorKey: 'company_name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Company" />
+      <DataTableColumnHeader column={column} title='Company' />
     ),
     cell: ({ row }) => (
-      <LongText className="max-w-32">
+      <LongText className='max-w-32'>
         {row.original.company_name ?? '-'}
       </LongText>
     ),
@@ -85,32 +91,31 @@ export const customersColumns: ColumnDef<Customer>[] = [
   {
     accessorKey: 'email',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Email" />
+      <DataTableColumnHeader column={column} title='Email' />
     ),
     cell: ({ row }) => (
-      <LongText className="max-w-36">{row.original.email ?? '-'}</LongText>
+      <LongText className='max-w-36'>{row.original.email ?? '-'}</LongText>
     ),
     meta: { className: 'w-36' },
   },
   {
     accessorKey: 'phone_number',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Phone" />
+      <DataTableColumnHeader column={column} title='Phone' />
     ),
-    cell: ({ row }) => (
-      <span>{row.original.phone_number ?? '-'}</span>
-    ),
+    cell: ({ row }) => <span>{row.original.phone_number ?? '-'}</span>,
     meta: { className: 'w-28' },
   },
   {
     accessorKey: 'discount_plans',
     id: 'discount_plan',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Discount plan" />
+      <DataTableColumnHeader column={column} title='Discount plan' />
     ),
     cell: ({ row }) => (
-      <LongText className="max-w-28">
-        {Array.isArray(row.original.discount_plans) && row.original.discount_plans.length > 0
+      <LongText className='max-w-28'>
+        {Array.isArray(row.original.discount_plans) &&
+        row.original.discount_plans.length > 0
           ? row.original.discount_plans.join(', ')
           : '-'}
       </LongText>
@@ -121,17 +126,15 @@ export const customersColumns: ColumnDef<Customer>[] = [
     accessorKey: 'points',
     id: 'reward_points',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Reward points" />
+      <DataTableColumnHeader column={column} title='Reward points' />
     ),
-    cell: ({ row }) => (
-      <span>{Number(row.original.points ?? 0)}</span>
-    ),
+    cell: ({ row }) => <span>{Number(row.original.points ?? 0)}</span>,
     meta: { className: 'w-24' },
   },
   {
     accessorKey: 'deposited_balance',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Deposited balance" />
+      <DataTableColumnHeader column={column} title='Deposited balance' />
     ),
     cell: ({ row }) => {
       const v = row.original.deposited_balance ?? row.original.deposit ?? 0
@@ -142,7 +145,7 @@ export const customersColumns: ColumnDef<Customer>[] = [
   {
     accessorKey: 'total_due',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Total due" />
+      <DataTableColumnHeader column={column} title='Total due' />
     ),
     cell: ({ row }) => {
       const v = row.original.total_due ?? 0
@@ -153,15 +156,15 @@ export const customersColumns: ColumnDef<Customer>[] = [
   {
     accessorKey: 'active_status',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title='Status' />
     ),
     cell: ({ row }) => {
       const { active_status } = row.original
       const statusBadgeColor = statusTypes.get(active_status ?? 'inactive')
       return (
-        <div className="flex justify-center">
+        <div className='flex justify-center'>
           <Badge
-            variant="outline"
+            variant='outline'
             className={cn('capitalize', statusBadgeColor)}
           >
             {row.getValue('active_status') ?? 'inactive'}

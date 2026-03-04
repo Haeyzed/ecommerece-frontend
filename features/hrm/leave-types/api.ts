@@ -1,9 +1,12 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
+
 import type {
   LeaveType,
   LeaveTypeExportParams,
@@ -15,7 +18,8 @@ import type {
 export const leaveTypeKeys = {
   all: ['leave-types'] as const,
   lists: () => [...leaveTypeKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...leaveTypeKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...leaveTypeKeys.lists(), filters] as const,
   details: () => [...leaveTypeKeys.all, 'detail'] as const,
   detail: (id: number) => [...leaveTypeKeys.details(), id] as const,
   options: () => [...leaveTypeKeys.all, 'options'] as const,
@@ -86,7 +90,8 @@ export function useCreateLeaveType() {
 
       const response = await api.post<{ data: LeaveType }>(BASE_PATH, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -106,18 +111,30 @@ export function useUpdateLeaveType() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<LeaveTypeFormBody> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<LeaveTypeFormBody>
+    }) => {
       const payload: Record<string, unknown> = {}
 
       if (data.name !== undefined) payload.name = data.name
-      if (data.annual_quota !== undefined) payload.annual_quota = data.annual_quota
+      if (data.annual_quota !== undefined)
+        payload.annual_quota = data.annual_quota
       if (data.encashable !== undefined) payload.encashable = data.encashable
-      if (data.carry_forward_limit !== undefined) payload.carry_forward_limit = data.carry_forward_limit
+      if (data.carry_forward_limit !== undefined)
+        payload.carry_forward_limit = data.carry_forward_limit
       if (data.is_active !== undefined) payload.is_active = data.is_active
 
-      const response = await api.put<{ data: LeaveType }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: LeaveType }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }
@@ -160,7 +177,7 @@ export function useBulkActivateLeaveTypes() {
     mutationFn: async (ids: number[]) => {
       const response = await api.post<{ activated_count: number }>(
         `${BASE_PATH}/bulk-activate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -180,7 +197,7 @@ export function useBulkDeactivateLeaveTypes() {
     mutationFn: async (ids: number[]) => {
       const response = await api.post<{ deactivated_count: number }>(
         `${BASE_PATH}/bulk-deactivate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response

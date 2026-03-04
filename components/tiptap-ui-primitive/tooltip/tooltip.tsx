@@ -1,24 +1,35 @@
 'use client'
 
-import { cloneElement, createContext, forwardRef, isValidElement, useContext, useMemo, useState, version } from 'react'
 import {
-  autoUpdate,
-  flip,
+  cloneElement,
+  createContext,
+  forwardRef,
+  isValidElement,
+  useContext,
+  useMemo,
+  useState,
+  version,
+} from 'react'
+
+import {
   FloatingDelayGroup,
   FloatingPortal,
-  offset,
   type Placement,
   type ReferenceType,
+  type UseFloatingReturn,
+  autoUpdate,
+  flip,
+  offset,
   shift,
   useDismiss,
   useFloating,
-  type UseFloatingReturn,
   useFocus,
   useHover,
   useInteractions,
   useMergeRefs,
   useRole,
 } from '@floating-ui/react'
+
 import '@/components/tiptap-ui-primitive/tooltip/tooltip.scss'
 
 interface TooltipProviderProps {
@@ -33,14 +44,18 @@ interface TooltipProviderProps {
   useDelayGroup?: boolean
 }
 
-interface TooltipTriggerProps
-  extends Omit<React.HTMLProps<HTMLElement>, 'ref'> {
+interface TooltipTriggerProps extends Omit<
+  React.HTMLProps<HTMLElement>,
+  'ref'
+> {
   asChild?: boolean
   children: React.ReactNode
 }
 
-interface TooltipContentProps
-  extends Omit<React.HTMLProps<HTMLDivElement>, 'ref'> {
+interface TooltipContentProps extends Omit<
+  React.HTMLProps<HTMLDivElement>,
+  'ref'
+> {
   children?: React.ReactNode
   portal?: boolean
   portalProps?: Omit<React.ComponentProps<typeof FloatingPortal>, 'children'>
@@ -50,21 +65,21 @@ interface TooltipContextValue extends UseFloatingReturn<ReferenceType> {
   open: boolean
   setOpen: (open: boolean) => void
   getReferenceProps: (
-    userProps?: React.HTMLProps<HTMLElement>,
+    userProps?: React.HTMLProps<HTMLElement>
   ) => Record<string, unknown>
   getFloatingProps: (
-    userProps?: React.HTMLProps<HTMLDivElement>,
+    userProps?: React.HTMLProps<HTMLDivElement>
   ) => Record<string, unknown>
 }
 
 function useTooltip({
-                      initialOpen = false,
-                      placement = 'top',
-                      open: controlledOpen,
-                      onOpenChange: setControlledOpen,
-                      delay = 600,
-                      closeDelay = 0,
-                    }: Omit<TooltipProviderProps, 'children'> = {}) {
+  initialOpen = false,
+  placement = 'top',
+  open: controlledOpen,
+  onOpenChange: setControlledOpen,
+  delay = 600,
+  closeDelay = 0,
+}: Omit<TooltipProviderProps, 'children'> = {}) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState<boolean>(initialOpen)
 
   const open = controlledOpen ?? uncontrolledOpen
@@ -112,7 +127,7 @@ function useTooltip({
       ...interactions,
       ...data,
     }),
-    [open, setOpen, interactions, data],
+    [open, setOpen, interactions, data]
   )
 }
 
@@ -157,9 +172,9 @@ export const TooltipTrigger = forwardRef<HTMLElement, TooltipTriggerProps>(
     const childrenRef = isValidElement(children)
       ? parseInt(version, 10) >= 19
         ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (children as { props: { ref?: React.Ref<any> } }).props.ref
+          (children as { props: { ref?: React.Ref<any> } }).props.ref
         : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (children as any).ref
+          (children as any).ref
       : undefined
     const ref = useMergeRefs([context.refs.setReference, propRef, childrenRef])
 
@@ -175,7 +190,7 @@ export const TooltipTrigger = forwardRef<HTMLElement, TooltipTriggerProps>(
           ...props,
           ...(typeof children.props === 'object' ? children.props : {}),
           ...dataAttributes,
-        }),
+        })
       )
     }
 
@@ -188,13 +203,13 @@ export const TooltipTrigger = forwardRef<HTMLElement, TooltipTriggerProps>(
         {children}
       </button>
     )
-  },
+  }
 )
 
 export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
   function TooltipContent(
     { style, children, portal = true, portalProps = {}, ...props },
-    propRef,
+    propRef
   ) {
     const context = useTooltipContext()
     const ref = useMergeRefs([context.refs.setFloating, propRef])
@@ -209,7 +224,7 @@ export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
           ...style,
         }}
         {...context.getFloatingProps(props)}
-        className="tiptap-tooltip"
+        className='tiptap-tooltip'
       >
         {children}
       </div>
@@ -220,7 +235,7 @@ export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
     }
 
     return content
-  },
+  }
 )
 
 Tooltip.displayName = 'Tooltip'

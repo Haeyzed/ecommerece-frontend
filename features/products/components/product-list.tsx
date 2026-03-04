@@ -4,16 +4,21 @@
  * Product List Component
  * Example CRUD list with pagination
  */
+import { useState } from 'react'
 
-import { useDeleteProduct, useProducts } from '../api'
+import Link from 'next/link'
+
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { useState } from 'react'
-import Link from 'next/link'
+
+import { useDeleteProduct, useProducts } from '../api'
 
 export function ProductList() {
   const [page, setPage] = useState(1)
-  const { data, isLoading, error, isSessionLoading } = useProducts({ page, per_page: 10 })
+  const { data, isLoading, error, isSessionLoading } = useProducts({
+    page,
+    per_page: 10,
+  })
   const deleteMutation = useDeleteProduct()
 
   const handleDelete = async (id: number) => {
@@ -38,42 +43,42 @@ export function ProductList() {
   const meta = data?.meta
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Products</h2>
-        <Link href="/dashboard/products/new">
+    <div className='space-y-4'>
+      <div className='flex items-center justify-between'>
+        <h2 className='text-2xl font-bold'>Products</h2>
+        <Link href='/dashboard/products/new'>
           <Button>Create Product</Button>
         </Link>
       </div>
 
-      <div className="grid gap-4">
+      <div className='grid gap-4'>
         {products.length === 0 ? (
-          <Card className="p-8 text-center text-muted-foreground">
+          <Card className='p-8 text-center text-muted-foreground'>
             No products found. Create your first product to get started.
           </Card>
         ) : (
           products.map((product) => (
-            <Card key={product.id} className="p-4">
-              <div className="flex items-center justify-between">
+            <Card key={product.id} className='p-4'>
+              <div className='flex items-center justify-between'>
                 <div>
-                  <h3 className="font-semibold">{product.name}</h3>
-                  <p className="text-sm text-muted-foreground">
+                  <h3 className='font-semibold'>{product.name}</h3>
+                  <p className='text-sm text-muted-foreground'>
                     {product.description}
                   </p>
-                  <div className="mt-2 flex gap-4 text-sm">
+                  <div className='mt-2 flex gap-4 text-sm'>
                     <span>Price: ${product.price}</span>
                     <span>Stock: {product.stock}</span>
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className='flex gap-2'>
                   <Link href={`/dashboard/products/${product.id}/edit`}>
-                    <Button variant="outline" size="sm">
+                    <Button variant='outline' size='sm'>
                       Edit
                     </Button>
                   </Link>
                   <Button
-                    variant="destructive"
-                    size="sm"
+                    variant='destructive'
+                    size='sm'
                     onClick={() => handleDelete(product.id)}
                     disabled={deleteMutation.isPending}
                   >
@@ -87,19 +92,19 @@ export function ProductList() {
       </div>
 
       {meta && meta.last_page > 1 && (
-        <div className="flex items-center justify-center gap-2">
+        <div className='flex items-center justify-center gap-2'>
           <Button
-            variant="outline"
+            variant='outline'
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
           >
             Previous
           </Button>
-          <span className="text-sm">
+          <span className='text-sm'>
             Page {meta.current_page} of {meta.last_page}
           </span>
           <Button
-            variant="outline"
+            variant='outline'
             onClick={() => setPage((p) => Math.min(meta.last_page, p + 1))}
             disabled={page === meta.last_page}
           >

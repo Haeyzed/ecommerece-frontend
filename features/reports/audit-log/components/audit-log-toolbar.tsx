@@ -1,14 +1,21 @@
 'use client'
 
 import { useMemo } from 'react'
+
+import { format, parseISO } from 'date-fns'
+
 import { CancelIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { type Table } from '@tanstack/react-table'
+
 import { useQuery } from '@tanstack/react-query'
+
+import { type Table } from '@tanstack/react-table'
+
 import { type DateRange } from 'react-day-picker'
-import { format, parseISO } from 'date-fns'
+
+import { useApiClient } from '@/lib/api/api-client-client'
+
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import {
   Combobox,
   ComboboxContent,
@@ -18,9 +25,14 @@ import {
   ComboboxList,
 } from '@/components/ui/combobox'
 import { DateRangePicker } from '@/components/ui/date-picker'
-import { DataTableFacetedFilter, DataTableTableViewOptions } from '@/components/data-table'
+import { Input } from '@/components/ui/input'
+
+import {
+  DataTableFacetedFilter,
+  DataTableTableViewOptions,
+} from '@/components/data-table'
+
 import { useAuditableModels } from '@/features/reports/audit-log/api'
-import { useApiClient } from '@/lib/api/api-client-client'
 
 const EVENT_OPTIONS = [
   { label: 'Created', value: 'created' },
@@ -47,14 +59,18 @@ export function AuditLogToolbar<TData>({ table }: AuditLogToolbarProps<TData>) {
   const users = usersResponse?.data ?? []
 
   const isFiltered =
-    table.getState().columnFilters.some(
-      (f) => f.value !== undefined && f.value !== '',
-    ) || table.getState().globalFilter
+    table
+      .getState()
+      .columnFilters.some((f) => f.value !== undefined && f.value !== '') ||
+    table.getState().globalFilter
 
-  const modelFilter = (table.getColumn('auditable_type')?.getFilterValue() as string) ?? ''
+  const modelFilter =
+    (table.getColumn('auditable_type')?.getFilterValue() as string) ?? ''
   const userFilter = (table.getColumn('user')?.getFilterValue() as string) ?? ''
-  const dateFromRaw = (table.getColumn('date_from')?.getFilterValue() as string) ?? ''
-  const dateToRaw = (table.getColumn('date_to')?.getFilterValue() as string) ?? ''
+  const dateFromRaw =
+    (table.getColumn('date_from')?.getFilterValue() as string) ?? ''
+  const dateToRaw =
+    (table.getColumn('date_to')?.getFilterValue() as string) ?? ''
 
   const dateRange = useMemo((): DateRange | undefined => {
     const from = dateFromRaw ? parseISO(dateFromRaw) : undefined
@@ -64,30 +80,32 @@ export function AuditLogToolbar<TData>({ table }: AuditLogToolbarProps<TData>) {
   }, [dateFromRaw, dateToRaw])
 
   const handleDateRangeChange = (range: DateRange | undefined) => {
-    table.getColumn('date_from')?.setFilterValue(
-      range?.from ? format(range.from, 'yyyy-MM-dd') : '',
-    )
-    table.getColumn('date_to')?.setFilterValue(
-      range?.to ? format(range.to, 'yyyy-MM-dd') : '',
-    )
+    table
+      .getColumn('date_from')
+      ?.setFilterValue(range?.from ? format(range.from, 'yyyy-MM-dd') : '')
+    table
+      .getColumn('date_to')
+      ?.setFilterValue(range?.to ? format(range.to, 'yyyy-MM-dd') : '')
   }
 
   const userOptions = users.map((u) => ({ value: u.name, label: u.name }))
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex flex-1 flex-col-reverse items-start gap-y-2 sm:flex-row sm:items-center sm:gap-x-2">
+    <div className='flex flex-col gap-3'>
+      <div className='flex flex-1 flex-col-reverse items-start gap-y-2 sm:flex-row sm:items-center sm:gap-x-2'>
         <Combobox
           items={modelOptions}
           value={modelOptions.find((m) => m.value === modelFilter) ?? null}
           onValueChange={(option) =>
-            table.getColumn('auditable_type')?.setFilterValue(option?.value ?? '')
+            table
+              .getColumn('auditable_type')
+              ?.setFilterValue(option?.value ?? '')
           }
           itemToStringValue={(item) => item?.label ?? ''}
         >
           <ComboboxInput
-            placeholder="Model"
-            className="h-8 w-[120px] lg:w-[140px]"
+            placeholder='Model'
+            className='h-8 w-[120px] lg:w-[140px]'
             showClear
           />
           <ComboboxContent>
@@ -105,19 +123,19 @@ export function AuditLogToolbar<TData>({ table }: AuditLogToolbarProps<TData>) {
         <DateRangePicker
           value={dateRange}
           onChange={handleDateRangeChange}
-          placeholder="Date range"
-          className="h-8 w-[200px] lg:w-[240px]"
+          placeholder='Date range'
+          className='h-8 w-[200px] lg:w-[240px]'
         />
 
         <Input
-          placeholder="IP address"
+          placeholder='IP address'
           value={
             (table.getColumn('ip_address')?.getFilterValue() as string) ?? ''
           }
           onChange={(event) =>
             table.getColumn('ip_address')?.setFilterValue(event.target.value)
           }
-          className="h-8 w-[120px] lg:w-[140px]"
+          className='h-8 w-[120px] lg:w-[140px]'
         />
 
         <Combobox
@@ -129,8 +147,8 @@ export function AuditLogToolbar<TData>({ table }: AuditLogToolbarProps<TData>) {
           itemToStringValue={(item) => item?.label ?? ''}
         >
           <ComboboxInput
-            placeholder="User"
-            className="h-8 w-[120px] lg:w-[140px]"
+            placeholder='User'
+            className='h-8 w-[120px] lg:w-[140px]'
             showClear
           />
           <ComboboxContent>
@@ -145,24 +163,24 @@ export function AuditLogToolbar<TData>({ table }: AuditLogToolbarProps<TData>) {
           </ComboboxContent>
         </Combobox>
 
-        <div className="flex gap-x-2">
+        <div className='flex gap-x-2'>
           <DataTableFacetedFilter
             column={table.getColumn('event')}
-            title="Event"
+            title='Event'
             options={EVENT_OPTIONS}
           />
         </div>
         {isFiltered && (
           <Button
-            variant="ghost"
+            variant='ghost'
             onClick={() => {
               table.resetColumnFilters()
               table.setGlobalFilter('')
             }}
-            className="h-8 px-2 lg:px-3"
+            className='h-8 px-2 lg:px-3'
           >
             Reset
-            <HugeiconsIcon icon={CancelIcon} className="ms-2 h-4 w-4" />
+            <HugeiconsIcon icon={CancelIcon} className='ms-2 h-4 w-4' />
           </Button>
         )}
       </div>

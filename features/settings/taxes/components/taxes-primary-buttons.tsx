@@ -1,11 +1,19 @@
 'use client'
 
+import {
+  FileImportIcon,
+  PlusSignIcon,
+  Upload01Icon,
+} from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { FileImportIcon, PlusSignIcon, Upload01Icon } from '@hugeicons/core-free-icons'
-import { Button } from '@/components/ui/button'
+
 import { useMediaQuery } from '@/hooks/use-media-query'
-import { useTaxes } from './taxes-provider'
+
+import { Button } from '@/components/ui/button'
+
 import { useAuthSession } from '@/features/auth/api'
+
+import { useTaxes } from './taxes-provider'
 
 export function TaxesPrimaryButtons() {
   const { setOpen } = useTaxes()
@@ -18,14 +26,14 @@ export function TaxesPrimaryButtons() {
   if (!canImport && !canExport && !canCreate) return null
 
   return (
-    <div className="flex gap-2">
+    <div className='flex gap-2'>
       {canExport && (
         <Button
-          variant="outline"
+          variant='outline'
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('export')}
-          aria-label="Export Taxes"
+          aria-label='Export Taxes'
         >
           <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} size={18} />
           {!isMobile && <span>Export Taxes</span>}
@@ -33,11 +41,11 @@ export function TaxesPrimaryButtons() {
       )}
       {canImport && (
         <Button
-          variant="outline"
+          variant='outline'
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('import')}
-          aria-label="Import Taxes"
+          aria-label='Import Taxes'
         >
           <HugeiconsIcon icon={FileImportIcon} strokeWidth={2} size={18} />
           {!isMobile && <span>Import Taxes</span>}
@@ -48,7 +56,7 @@ export function TaxesPrimaryButtons() {
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('add')}
-          aria-label="Add Tax"
+          aria-label='Add Tax'
         >
           <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} size={18} />
           {!isMobile && <span>Add Tax</span>}

@@ -131,7 +131,7 @@
 /* =====================
      EMOJI
      ===================== */
-.tiptap.ProseMirror [data-type="emoji"] img {
+.tiptap.ProseMirror [data-type='emoji'] img {
   display: inline-block;
   width: 1.25em;
   height: 1.25em;
@@ -152,7 +152,7 @@
      MENTION
      ===================== */
 .tiptap.ProseMirror {
-  [data-type="mention"] {
+  [data-type='mention'] {
     display: inline-block;
     color: var(--tt-brand-color-500);
   }
@@ -164,8 +164,9 @@
 .tiptap.ProseMirror {
   // Base styles for inline threads
   .tiptap-thread.tiptap-thread--unresolved.tiptap-thread--inline {
-    transition: color 0.2s ease-in-out,
-    background-color 0.2s ease-in-out;
+    transition:
+      color 0.2s ease-in-out,
+      background-color 0.2s ease-in-out;
     color: var(--thread-text);
     border-bottom: 2px dashed var(--tt-color-yellow-base);
     font-weight: 600;

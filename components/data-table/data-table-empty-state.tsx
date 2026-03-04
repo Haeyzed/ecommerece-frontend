@@ -1,10 +1,18 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { ArrowUpRight01Icon } from '@hugeicons/core-free-icons'
 import { ReactNode } from 'react'
+
+import { ArrowUpRight01Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
+import { Button } from '@/components/ui/button'
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from '@/components/ui/empty'
 
 type DataTableEmptyStateProps = {
   title: string
@@ -26,12 +34,12 @@ type DataTableEmptyStateProps = {
 }
 
 export function DataTableEmptyState({
-                                      title,
-                                      description,
-                                      primaryAction,
-                                      secondaryAction,
-                                      learnMoreLink,
-                                    }: DataTableEmptyStateProps) {
+  title,
+  description,
+  primaryAction,
+  secondaryAction,
+  learnMoreLink,
+}: DataTableEmptyStateProps) {
   return (
     <Empty>
       <EmptyHeader>
@@ -40,10 +48,10 @@ export function DataTableEmptyState({
       </EmptyHeader>
       {(primaryAction ?? secondaryAction ?? learnMoreLink) && (
         <EmptyContent>
-          <div className="flex w-full flex-col items-center justify-center gap-2 sm:flex-row sm:gap-3">
+          <div className='flex w-full flex-col items-center justify-center gap-2 sm:flex-row sm:gap-3'>
             {primaryAction && (
               <Button
-                className="w-full sm:w-auto"
+                className='w-full sm:w-auto'
                 onClick={primaryAction.onClick}
               >
                 {primaryAction.icon}
@@ -52,8 +60,8 @@ export function DataTableEmptyState({
             )}
             {secondaryAction && (
               <Button
-                variant="outline"
-                className="w-full sm:w-auto"
+                variant='outline'
+                className='w-full sm:w-auto'
                 onClick={secondaryAction.onClick}
               >
                 {secondaryAction.icon}
@@ -62,9 +70,9 @@ export function DataTableEmptyState({
             )}
             {learnMoreLink && (
               <Button
-                variant="link"
+                variant='link'
                 asChild
-                className="w-full text-muted-foreground sm:w-auto"
+                className='w-full text-muted-foreground sm:w-auto'
               >
                 <a href={learnMoreLink.href}>
                   {learnMoreLink.label}{' '}

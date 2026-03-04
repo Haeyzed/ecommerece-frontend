@@ -1,10 +1,18 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import useDialogState from '@/hooks/use-dialog-state'
+
 import { type Language } from '../types'
 
-type LanguagesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
+type LanguagesDialogType =
+  | 'import'
+  | 'add'
+  | 'edit'
+  | 'delete'
+  | 'export'
+  | 'view'
 
 type LanguagesContextType = {
   open: LanguagesDialogType | null
@@ -20,7 +28,9 @@ export function LanguagesProvider({ children }: { children: React.ReactNode }) {
   const [currentRow, setCurrentRow] = useState<Language | null>(null)
 
   return (
-    <LanguagesContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <LanguagesContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </LanguagesContext.Provider>
   )

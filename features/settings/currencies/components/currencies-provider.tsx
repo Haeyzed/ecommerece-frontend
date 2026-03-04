@@ -1,10 +1,18 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import useDialogState from '@/hooks/use-dialog-state'
+
 import { type Currency } from '../types'
 
-type CurrenciesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
+type CurrenciesDialogType =
+  | 'import'
+  | 'add'
+  | 'edit'
+  | 'delete'
+  | 'export'
+  | 'view'
 
 type CurrenciesContextType = {
   open: CurrenciesDialogType | null
@@ -13,14 +21,22 @@ type CurrenciesContextType = {
   setCurrentRow: React.Dispatch<React.SetStateAction<Currency | null>>
 }
 
-const CurrenciesContext = React.createContext<CurrenciesContextType | null>(null)
+const CurrenciesContext = React.createContext<CurrenciesContextType | null>(
+  null
+)
 
-export function CurrenciesProvider({ children }: { children: React.ReactNode }) {
+export function CurrenciesProvider({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   const [open, setOpen] = useDialogState<CurrenciesDialogType>(null)
   const [currentRow, setCurrentRow] = useState<Currency | null>(null)
 
   return (
-    <CurrenciesContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <CurrenciesContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </CurrenciesContext.Provider>
   )

@@ -1,11 +1,18 @@
 'use client'
 
+import {
+  FileImportIcon,
+  PlusSignIcon,
+  Upload01Icon,
+} from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { FileImportIcon, PlusSignIcon, Upload01Icon } from '@hugeicons/core-free-icons'
-import { Button } from '@/components/ui/button'
+
 import { useMediaQuery } from '@/hooks/use-media-query'
-import { useLeaveTypes } from '@/features/hrm/leave-types/components/leave-types-provider'
+
+import { Button } from '@/components/ui/button'
+
 import { useAuthSession } from '@/features/auth/api'
+import { useLeaveTypes } from '@/features/hrm/leave-types/components/leave-types-provider'
 
 export function LeaveTypesPrimaryButtons() {
   const { setOpen } = useLeaveTypes()
@@ -19,14 +26,14 @@ export function LeaveTypesPrimaryButtons() {
   if (!canImport && !canExport && !canCreate) return null
 
   return (
-    <div className="flex gap-2">
+    <div className='flex gap-2'>
       {canExport && (
         <Button
-          variant="outline"
+          variant='outline'
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('export')}
-          aria-label="Export Leave Types"
+          aria-label='Export Leave Types'
         >
           <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} size={18} />
           {!isMobile && <span>Export Leave Types</span>}
@@ -34,11 +41,11 @@ export function LeaveTypesPrimaryButtons() {
       )}
       {canImport && (
         <Button
-          variant="outline"
+          variant='outline'
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('import')}
-          aria-label="Import Leave Types"
+          aria-label='Import Leave Types'
         >
           <HugeiconsIcon icon={FileImportIcon} strokeWidth={2} size={18} />
           {!isMobile && <span>Import Leave Types</span>}
@@ -49,7 +56,7 @@ export function LeaveTypesPrimaryButtons() {
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('add')}
-          aria-label="Add Leave Type"
+          aria-label='Add Leave Type'
         >
           <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} size={18} />
           {!isMobile && <span>Add Leave Type</span>}

@@ -1,11 +1,14 @@
 'use client'
 
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react'
+
+import { cn } from '@/lib/tiptap-utils'
+
+import { useComposedRef } from '@/hooks/use-composed-ref'
+import { useMenuNavigation } from '@/hooks/use-menu-navigation'
+
 import { Separator } from '@/components/tiptap-ui-primitive/separator'
 import '@/components/tiptap-ui-primitive/toolbar/toolbar.scss'
-import { cn } from '@/lib/tiptap-utils'
-import { useMenuNavigation } from '@/hooks/use-menu-navigation'
-import { useComposedRef } from '@/hooks/use-composed-ref'
 
 type BaseProps = React.HTMLAttributes<HTMLDivElement>
 
@@ -14,7 +17,7 @@ interface ToolbarProps extends BaseProps {
 }
 
 const useToolbarNavigation = (
-  toolbarRef: React.RefObject<HTMLDivElement | null>,
+  toolbarRef: React.RefObject<HTMLDivElement | null>
 ) => {
   const [items, setItems] = useState<HTMLElement[]>([])
 
@@ -22,8 +25,8 @@ const useToolbarNavigation = (
     if (!toolbarRef.current) return []
     return Array.from(
       toolbarRef.current.querySelectorAll<HTMLElement>(
-        'button:not([disabled]), [role="button"]:not([disabled]), [tabindex="0"]:not([disabled])',
-      ),
+        'button:not([disabled]), [role="button"]:not([disabled]), [tabindex="0"]:not([disabled])'
+      )
     )
   }, [toolbarRef])
 
@@ -88,8 +91,8 @@ export const Toolbar = forwardRef<HTMLDivElement, ToolbarProps>(
     return (
       <div
         ref={composedRef}
-        role="toolbar"
-        aria-label="toolbar"
+        role='toolbar'
+        aria-label='toolbar'
         data-variant={variant}
         className={cn('tiptap-toolbar', className)}
         {...props}
@@ -97,7 +100,7 @@ export const Toolbar = forwardRef<HTMLDivElement, ToolbarProps>(
         {children}
       </div>
     )
-  },
+  }
 )
 Toolbar.displayName = 'Toolbar'
 
@@ -105,19 +108,19 @@ export const ToolbarGroup = forwardRef<HTMLDivElement, BaseProps>(
   ({ children, className, ...props }, ref) => (
     <div
       ref={ref}
-      role="group"
+      role='group'
       className={cn('tiptap-toolbar-group', className)}
       {...props}
     >
       {children}
     </div>
-  ),
+  )
 )
 ToolbarGroup.displayName = 'ToolbarGroup'
 
 export const ToolbarSeparator = forwardRef<HTMLDivElement, BaseProps>(
   ({ ...props }, ref) => (
-    <Separator ref={ref} orientation="vertical" decorative {...props} />
-  ),
+    <Separator ref={ref} orientation='vertical' decorative {...props} />
+  )
 )
 ToolbarSeparator.displayName = 'ToolbarSeparator'

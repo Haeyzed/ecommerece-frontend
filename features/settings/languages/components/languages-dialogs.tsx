@@ -1,12 +1,13 @@
 'use client'
 
+import { useAuthSession } from '@/features/auth/api'
+
 import { LanguagesActionDialog } from './languages-action-dialog'
 import { LanguagesDeleteDialog } from './languages-delete-dialog'
 import { LanguagesExportDialog } from './languages-export-dialog'
 import { LanguagesImportDialog } from './languages-import-dialog'
-import { LanguagesViewDialog } from './languages-view-dialog'
 import { useLanguages } from './languages-provider'
-import { useAuthSession } from '@/features/auth/api'
+import { LanguagesViewDialog } from './languages-view-dialog'
 
 export function LanguagesDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useLanguages()
@@ -23,7 +24,7 @@ export function LanguagesDialogs() {
     <>
       {canCreate && (
         <LanguagesActionDialog
-          key="language-add"
+          key='language-add'
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -33,7 +34,7 @@ export function LanguagesDialogs() {
 
       {canImport && (
         <LanguagesImportDialog
-          key="language-import"
+          key='language-import'
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -43,7 +44,7 @@ export function LanguagesDialogs() {
 
       {canExport && (
         <LanguagesExportDialog
-          key="language-export"
+          key='language-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

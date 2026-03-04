@@ -12,12 +12,12 @@
  * Represents the authenticated user profile returned by the API.
  */
 export interface AuthUser {
-  id: number;
-  name: string;
-  email: string;
-  email_verified_at: string | null;
-  created_at: string;
-  user_permissions: string[];
+  id: number
+  name: string
+  email: string
+  email_verified_at: string | null
+  created_at: string
+  user_permissions: string[]
 }
 
 /**
@@ -25,16 +25,16 @@ export interface AuthUser {
  * Contains the user profile and the API access token.
  */
 export interface AuthResponse {
-  user: AuthUser;
-  token: string;
+  user: AuthUser
+  token: string
 }
 
 /**
  * Payload returned when the auth token is refreshed.
  */
 export interface RefreshTokenResponse {
-  user: AuthUser;
-  token: string;
+  user: AuthUser
+  token: string
 }
 
 /**
@@ -42,40 +42,40 @@ export interface RefreshTokenResponse {
  * Supports login via email or username (`identifier`).
  */
 export interface LoginData {
-  identifier: string;
-  password: string;
+  identifier: string
+  password: string
 }
 
 /**
  * Payload required for registering a new user account.
  */
 export interface RegisterData {
-  name: string;
-  email: string;
-  password: string;
-  password_confirmation: string;
+  name: string
+  email: string
+  password: string
+  password_confirmation: string
 }
 
 /**
  * Payload for initiating the password recovery process.
  */
 export interface ForgotPasswordData {
-  email: string;
+  email: string
 }
 
 /**
  * Payload for completing the password reset process using a token.
  */
 export interface ResetPasswordData {
-  email: string;
-  token: string;
-  password: string;
-  password_confirmation: string;
+  email: string
+  token: string
+  password: string
+  password_confirmation: string
 }
 
 /**
  * Payload required for unlocking the screen.
  */
 export interface LockScreenData {
-  password: string;
+  password: string
 }

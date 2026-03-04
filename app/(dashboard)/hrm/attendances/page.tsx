@@ -1,8 +1,11 @@
+import type { Metadata } from 'next'
+
 import { auth } from '@/auth'
+
+import { hasPermission } from '@/lib/utils/permissions'
+
 import { ForbiddenError } from '@/features/errors/forbidden'
 import { AttendancesClient } from '@/features/hrm/attendances'
-import { hasPermission } from '@/lib/utils/permissions'
-import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Attendance Types | HR Management System',

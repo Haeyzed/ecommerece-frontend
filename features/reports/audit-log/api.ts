@@ -7,10 +7,12 @@
  *
  * @module features/reports/audit-log/api
  */
+import { useMutation, useQuery } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
 
 import { useApiClient } from '@/lib/api/api-client-client'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { toast } from 'sonner'
+
 import type { Audit } from './types'
 
 export const auditKeys = {
@@ -66,7 +68,7 @@ export function useAuditableModels() {
     queryKey: auditKeys.auditableModels(),
     queryFn: async () => {
       const response = await api.get<AuditableModelOption[]>(
-        '/reports/audit-logs/auditable-models',
+        '/reports/audit-logs/auditable-models'
       )
       return response.data ?? []
     },

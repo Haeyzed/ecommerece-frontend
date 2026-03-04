@@ -1,15 +1,16 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { useHotkeys } from 'react-hotkeys-hook'
-import { type Editor } from '@tiptap/react'
 
-// --- Hooks ---
-import { useTiptapEditor } from '@/hooks/use-tiptap-editor'
-import { useIsBreakpoint } from '@/hooks/use-is-breakpoint'
+import { type Editor } from '@tiptap/react'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 // --- Lib ---
 import { isExtensionAvailable } from '@/lib/tiptap-utils'
+
+import { useIsBreakpoint } from '@/hooks/use-is-breakpoint'
+// --- Hooks ---
+import { useTiptapEditor } from '@/hooks/use-tiptap-editor'
 
 // --- Icons ---
 import { ImagePlusIcon } from '@/components/tiptap-icons/image-plus-icon'
@@ -182,7 +183,7 @@ export function useImageUpload(config?: UseImageUploadConfig) {
       enabled: isVisible && canInsert,
       enableOnContentEditable: !isMobile,
       enableOnFormTags: true,
-    },
+    }
   )
 
   return {

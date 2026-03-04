@@ -1,16 +1,9 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { type Editor } from '@tiptap/react'
+
 import { NodeSelection, TextSelection } from '@tiptap/pm/state'
-
-// --- Hooks ---
-import { useTiptapEditor } from '@/hooks/use-tiptap-editor'
-
-// --- Icons ---
-import { ListIcon } from '@/components/tiptap-icons/list-icon'
-import { ListOrderedIcon } from '@/components/tiptap-icons/list-ordered-icon'
-import { ListTodoIcon } from '@/components/tiptap-icons/list-todo-icon'
+import { type Editor } from '@tiptap/react'
 
 // --- Lib ---
 import {
@@ -21,6 +14,14 @@ import {
   isValidPosition,
   selectionWithinConvertibleTypes,
 } from '@/lib/tiptap-utils'
+
+// --- Hooks ---
+import { useTiptapEditor } from '@/hooks/use-tiptap-editor'
+
+// --- Icons ---
+import { ListIcon } from '@/components/tiptap-icons/list-icon'
+import { ListOrderedIcon } from '@/components/tiptap-icons/list-ordered-icon'
+import { ListTodoIcon } from '@/components/tiptap-icons/list-todo-icon'
 
 export type ListType = 'bulletList' | 'orderedList' | 'taskList'
 
@@ -71,7 +72,7 @@ export const LIST_SHORTCUT_KEYS: Record<ListType, string> = {
 export function canToggleList(
   editor: Editor | null,
   type: ListType,
-  turnInto: boolean = true,
+  turnInto: boolean = true
 ): boolean {
   if (!editor || !editor.isEditable) return false
   if (!isNodeInSchema(type, editor) || isNodeTypeSelected(editor, ['image']))

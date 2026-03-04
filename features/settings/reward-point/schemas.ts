@@ -6,7 +6,6 @@
  *
  * @module features/settings/reward-point/schemas
  */
-
 import { z } from 'zod'
 
 export const rewardPointSettingSchema = z.object({
@@ -21,4 +20,6 @@ export const rewardPointSettingSchema = z.object({
   max_redeem_point: z.number().int().min(0).nullable().optional(),
 })
 
-export type RewardPointSettingFormData = z.infer<typeof rewardPointSettingSchema>
+export type RewardPointSettingFormData = z.infer<
+  typeof rewardPointSettingSchema
+>

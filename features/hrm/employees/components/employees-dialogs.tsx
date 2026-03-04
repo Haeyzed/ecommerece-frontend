@@ -1,16 +1,18 @@
 'use client'
 
+import { type Table } from '@tanstack/react-table'
+
+import { useAuthSession } from '@/features/auth/api'
 import {
   EmployeesActionDialog,
   EmployeesDeleteDialog,
   EmployeesExportDialog,
   EmployeesImportDialog,
 } from '@/features/hrm/employees'
-import { EmployeesViewDialog } from './employees-view-dialog'
+
 import { EmployeesIdCardDialog } from './employees-id-card-dialog'
 import { useEmployees } from './employees-provider'
-import { useAuthSession } from '@/features/auth/api'
-import { type Table } from '@tanstack/react-table'
+import { EmployeesViewDialog } from './employees-view-dialog'
 
 type Props = {
   table?: Table<any>
@@ -29,13 +31,15 @@ export function EmployeesDialogs({ table }: Props = {}) {
   const canView = userPermissions.includes('view employees')
 
   // Extract selected rows for bulk printing
-  const selectedRows = table ? table.getFilteredSelectedRowModel().rows.map((r) => r.original) : []
+  const selectedRows = table
+    ? table.getFilteredSelectedRowModel().rows.map((r) => r.original)
+    : []
 
   return (
     <>
       {canCreate && (
         <EmployeesActionDialog
-          key="employee-add"
+          key='employee-add'
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -45,7 +49,7 @@ export function EmployeesDialogs({ table }: Props = {}) {
 
       {canImport && (
         <EmployeesImportDialog
-          key="employee-import"
+          key='employee-import'
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -55,7 +59,7 @@ export function EmployeesDialogs({ table }: Props = {}) {
 
       {canExport && (
         <EmployeesExportDialog
-          key="employee-export"
+          key='employee-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}
@@ -133,7 +137,7 @@ export function EmployeesDialogs({ table }: Props = {}) {
       {/* Bulk Print Dialog */}
       {canExport && selectedRows.length > 0 && (
         <EmployeesIdCardDialog
-          key="employee-bulk-id-card"
+          key='employee-bulk-id-card'
           open={open === 'bulk-id-card'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)

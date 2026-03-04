@@ -6,9 +6,10 @@
  * Context provider for managing the state of audit log dialogs and the
  * currently selected audit for viewing.
  */
-
 import React, { useState } from 'react'
+
 import useDialogState from '@/hooks/use-dialog-state'
+
 import type { Audit } from '../types'
 
 type AuditLogDialogType = 'view' | 'export'
@@ -22,11 +23,7 @@ type AuditLogContextType = {
 
 const AuditLogContext = React.createContext<AuditLogContextType | null>(null)
 
-export function AuditLogProvider({
-                                   children,
-                                 }: {
-  children: React.ReactNode
-}) {
+export function AuditLogProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useDialogState<AuditLogDialogType>(null)
   const [currentRow, setCurrentRow] = useState<Audit | null>(null)
 

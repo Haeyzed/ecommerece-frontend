@@ -1,15 +1,25 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import type { Unit, UnitExportParams, UnitFormData, UnitListParams, UnitOption } from './types'
+
+import type {
+  Unit,
+  UnitExportParams,
+  UnitFormData,
+  UnitListParams,
+  UnitOption,
+} from './types'
 
 export const unitKeys = {
   all: ['units'] as const,
   lists: () => [...unitKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...unitKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...unitKeys.lists(), filters] as const,
   details: () => [...unitKeys.all, 'detail'] as const,
   detail: (id: number) => [...unitKeys.details(), id] as const,
   options: () => [...unitKeys.all, 'options'] as const,
@@ -88,11 +98,13 @@ export function useCreateUnit() {
       }
       if (data.base_unit !== undefined) payload.base_unit = data.base_unit
       if (data.operator !== undefined) payload.operator = data.operator
-      if (data.operation_value !== undefined) payload.operation_value = data.operation_value
+      if (data.operation_value !== undefined)
+        payload.operation_value = data.operation_value
 
       const response = await api.post<{ data: Unit }>(BASE_PATH, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -112,18 +124,29 @@ export function useUpdateUnit() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<UnitFormData> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<UnitFormData>
+    }) => {
       const payload: Record<string, unknown> = {}
       if (data.name !== undefined) payload.name = data.name
       if (data.code !== undefined) payload.code = data.code
       if (data.base_unit !== undefined) payload.base_unit = data.base_unit
       if (data.operator !== undefined) payload.operator = data.operator
-      if (data.operation_value !== undefined) payload.operation_value = data.operation_value
+      if (data.operation_value !== undefined)
+        payload.operation_value = data.operation_value
       if (data.is_active !== undefined) payload.is_active = data.is_active
 
-      const response = await api.put<{ data: Unit }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: Unit }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }
@@ -167,7 +190,7 @@ export function useBulkActivateUnits() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
         `${BASE_PATH}/bulk-activate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -187,7 +210,7 @@ export function useBulkDeactivateUnits() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ deactivated_count: number }>(
         `${BASE_PATH}/bulk-deactivate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response

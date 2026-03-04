@@ -1,15 +1,20 @@
 'use client'
 
 import { useState } from 'react'
-import { HugeiconsIcon } from '@hugeicons/react'
+
 import { Alert02Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { useDeleteEmployee } from '@/features/hrm/employees/api'
-import { type Employee } from '../types'
+
 import { useAuthSession } from '@/features/auth/api'
+import { useDeleteEmployee } from '@/features/hrm/employees/api'
+
+import { type Employee } from '../types'
 
 type EmployeesDeleteDialogProps = {
   open: boolean
@@ -18,10 +23,10 @@ type EmployeesDeleteDialogProps = {
 }
 
 export function EmployeesDeleteDialog({
-                                        open,
-                                        onOpenChange,
-                                        currentRow,
-                                      }: EmployeesDeleteDialogProps) {
+  open,
+  onOpenChange,
+  currentRow,
+}: EmployeesDeleteDialogProps) {
   const [value, setValue] = useState('')
   const { mutate: deleteEmployee, isPending } = useDeleteEmployee()
   const { data: session } = useAuthSession()
@@ -47,10 +52,10 @@ export function EmployeesDeleteDialog({
       handleConfirm={handleDelete}
       disabled={value.trim() !== currentRow.staff_id || isPending}
       title={
-        <span className="text-destructive">
+        <span className='text-destructive'>
           <HugeiconsIcon
             icon={Alert02Icon}
-            className="me-1 inline-block stroke-destructive"
+            className='me-1 inline-block stroke-destructive'
             size={18}
             strokeWidth={2}
           />{' '}
@@ -58,16 +63,16 @@ export function EmployeesDeleteDialog({
         </span>
       }
       desc={
-        <div className="space-y-4">
-          <p className="mb-2">
+        <div className='space-y-4'>
+          <p className='mb-2'>
             Are you sure you want to delete{' '}
-            <span className="font-bold">{currentRow.name}</span>?
+            <span className='font-bold'>{currentRow.name}</span>?
             <br />
             This action will permanently remove the employee from the system.
             This cannot be undone.
           </p>
 
-          <Label className="my-2">
+          <Label className='my-2'>
             Employee Staff ID:
             <Input
               value={value}
@@ -76,7 +81,7 @@ export function EmployeesDeleteDialog({
             />
           </Label>
 
-          <Alert variant="destructive">
+          <Alert variant='destructive'>
             <AlertTitle>Warning!</AlertTitle>
             <AlertDescription>
               Please be careful, this operation can not be rolled back.
@@ -84,7 +89,7 @@ export function EmployeesDeleteDialog({
           </Alert>
         </div>
       }
-      confirmText="Delete"
+      confirmText='Delete'
       destructive
     />
   )

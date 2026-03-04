@@ -11,9 +11,8 @@
  *
  * @module lib/api/api-client
  */
-
 import { AUTH_REDIRECT_MESSAGE_KEY } from '@/lib/auth/constants'
-import type { ApiResponse, NormalizedApiResponse } from './api-types'
+
 import {
   ConflictError,
   ForbiddenError,
@@ -22,6 +21,7 @@ import {
   UnauthorizedError,
   ValidationError,
 } from './api-errors'
+import type { ApiResponse, NormalizedApiResponse } from './api-types'
 
 /**
  * Configuration options for the API client instance.
@@ -32,13 +32,13 @@ export interface ApiClientOptions extends RequestInit {
    * If true, prevents the client from automatically attaching the Bearer token.
    * Useful for public endpoints (e.g., login, register).
    */
-  skipAuth?: boolean;
+  skipAuth?: boolean
 
   /**
    * Base URL override for a specific request.
    * Defaults to `NEXT_PUBLIC_API_URL` environment variable.
    */
-  baseURL?: string;
+  baseURL?: string
 }
 
 /**
@@ -48,7 +48,7 @@ export interface ApiRequestOptions extends ApiClientOptions {
   /**
    * Key-value pairs to be serialized as query parameters in the URL.
    */
-  params?: Record<string, string | number | boolean | null | undefined>;
+  params?: Record<string, string | number | boolean | null | undefined>
 }
 
 /**
@@ -80,7 +80,7 @@ class ApiClient {
    */
   async get<T>(
     url: string,
-    options?: ApiRequestOptions,
+    options?: ApiRequestOptions
   ): Promise<NormalizedApiResponse<T>> {
     return this.request<T>(url, {
       ...options,
@@ -99,7 +99,7 @@ class ApiClient {
   async post<T>(
     url: string,
     body?: unknown,
-    options?: ApiClientOptions,
+    options?: ApiClientOptions
   ): Promise<NormalizedApiResponse<T>> {
     return this.request<T>(url, {
       ...options,
@@ -124,7 +124,7 @@ class ApiClient {
   async put<T>(
     url: string,
     body?: unknown,
-    options?: ApiClientOptions,
+    options?: ApiClientOptions
   ): Promise<NormalizedApiResponse<T>> {
     return this.request<T>(url, {
       ...options,
@@ -149,7 +149,7 @@ class ApiClient {
   async patch<T>(
     url: string,
     body?: unknown,
-    options?: ApiClientOptions,
+    options?: ApiClientOptions
   ): Promise<NormalizedApiResponse<T>> {
     return this.request<T>(url, {
       ...options,
@@ -172,7 +172,7 @@ class ApiClient {
    */
   async delete<T>(
     url: string,
-    options?: ApiClientOptions,
+    options?: ApiClientOptions
   ): Promise<NormalizedApiResponse<T>> {
     return this.request<T>(url, {
       ...options,
@@ -192,7 +192,7 @@ class ApiClient {
   async postBlob(
     url: string,
     body?: unknown,
-    options?: ApiClientOptions,
+    options?: ApiClientOptions
   ): Promise<Blob> {
     const fullURL = this.buildURL(url)
     const isFormData = body instanceof FormData
@@ -219,7 +219,11 @@ class ApiClient {
       method: 'POST',
       headers: requestHeaders,
       body:
-        body instanceof FormData ? body : body ? JSON.stringify(body) : undefined,
+        body instanceof FormData
+          ? body
+          : body
+            ? JSON.stringify(body)
+            : undefined,
     })
 
     if (!response.ok) {
@@ -237,12 +241,13 @@ class ApiClient {
    * @param options - Request options.
    * @returns {Promise<Blob>} The response body as a Blob.
    */
-  async getBlob(
-    url: string,
-    options?: ApiRequestOptions,
-  ): Promise<Blob> {
-    const { skipAuth = false, params, headers = {}, ...fetchOptions } =
-    options || {}
+  async getBlob(url: string, options?: ApiRequestOptions): Promise<Blob> {
+    const {
+      skipAuth = false,
+      params,
+      headers = {},
+      ...fetchOptions
+    } = options || {}
 
     const fullURL = this.buildURL(url, params)
 
@@ -307,7 +312,7 @@ class ApiClient {
    */
   private buildURL(
     url: string,
-    params?: Record<string, string | number | boolean | null | undefined>,
+    params?: Record<string, string | number | boolean | null | undefined>
   ): string {
     const base = url.startsWith('http')
       ? url
@@ -336,7 +341,7 @@ class ApiClient {
    * @returns {NormalizedApiResponse<T>} The normalized response structure.
    */
   private normalizeResponse<T>(
-    response: ApiResponse<T>,
+    response: ApiResponse<T>
   ): NormalizedApiResponse<T> {
     return {
       success: response.success,
@@ -415,7 +420,7 @@ class ApiClient {
    */
   private async request<T>(
     url: string,
-    options: ApiRequestOptions = {},
+    options: ApiRequestOptions = {}
   ): Promise<NormalizedApiResponse<T>> {
     const {
       skipAuth = false,

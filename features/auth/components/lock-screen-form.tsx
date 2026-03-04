@@ -11,21 +11,28 @@
  * @param {Object} props - The component props
  * @param {string} [props.className] - Optional CSS class names
  */
+import { useRouter, useSearchParams } from 'next/navigation'
 
-import { zodResolver } from '@hookform/resolvers/zod'
+import { Controller, useForm } from 'react-hook-form'
+
 import { LockKeyIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { Controller, useForm } from 'react-hook-form'
+
+import { zodResolver } from '@hookform/resolvers/zod'
+
 import { toast } from 'sonner'
 
-import { PasswordInput } from '@/components/password-input'
+import { UnauthorizedError, ValidationError } from '@/lib/api/api-errors'
+import { useLockScreen } from '@/lib/providers/lockscreen-provider'
+
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import { Spinner } from '@/components/ui/spinner'
+
+import { PasswordInput } from '@/components/password-input'
+
 import { useUnlock } from '@/features/auth/api'
-import { UnauthorizedError, ValidationError } from '@/lib/api/api-errors'
-import { useLockScreen } from '@/lib/providers/lockscreen-provider'
+
 import { LockScreenFormData, lockScreenSchema } from '../schemas'
 
 export function LockScreenForm() {
@@ -52,7 +59,6 @@ export function LockScreenForm() {
       } else {
         router.replace('/dashboard')
       }
-
     } catch (error) {
       if (error instanceof ValidationError && error.errors) {
         // Handle server-side validation errors (e.g., incorrect password)
@@ -74,19 +80,17 @@ export function LockScreenForm() {
   }
 
   return (
-    <form
-      onSubmit={form.handleSubmit(onSubmit)}
-    >
+    <form onSubmit={form.handleSubmit(onSubmit)}>
       <Controller
         control={form.control}
-        name="password"
+        name='password'
         render={({ field, fieldState }) => (
           <Field data-invalid={!!fieldState.error}>
             <FieldLabel>Password</FieldLabel>
             <PasswordInput
-              placeholder="Enter your password"
+              placeholder='Enter your password'
               {...field}
-              autoComplete="current-password"
+              autoComplete='current-password'
             />
             {fieldState.error && <FieldError errors={[fieldState.error]} />}
           </Field>
@@ -94,14 +98,14 @@ export function LockScreenForm() {
       />
 
       <Button
-        className="mt-2 w-full"
-        type="submit"
+        className='mt-2 w-full'
+        type='submit'
         disabled={unlockMutation.isPending}
       >
         {unlockMutation.isPending ? (
           <Spinner />
         ) : (
-          <HugeiconsIcon icon={LockKeyIcon} className="size-4" />
+          <HugeiconsIcon icon={LockKeyIcon} className='size-4' />
         )}
         Unlock
       </Button>

@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
 export const employeeSalesTargetSchema = z.object({
@@ -34,45 +35,51 @@ export const employeeDocumentSchema = z.object({
   file: z.any().optional(), // Array of files from FileUpload component
 })
 
-export const employeeSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(255),
-  staff_id: z.string().min(1, 'Staff ID is required').max(100),
-  email: z.string().email().max(255).optional().or(z.literal('')),
-  phone_number: z.string().max(255).optional().or(z.literal('')),
-  address: z.string().max(255).nullable().optional(),
-  department_id: z.number().min(1, 'Department is required'),
-  designation_id: z.number().min(1, 'Designation is required'),
-  shift_id: z.number().min(1, 'Shift is required'),
-  basic_salary: z.number().min(0),
-  country_id: z.number().nullable().optional(),
-  state_id: z.number().nullable().optional(),
-  city_id: z.number().nullable().optional(),
-  image: z.any().optional(),
-  is_active: z.boolean().optional(),
-  is_sale_agent: z.boolean().optional(),
-  sale_commission_percent: z.number().nullable().optional(),
+export const employeeSchema = z
+  .object({
+    name: z.string().min(1, 'Name is required').max(255),
+    staff_id: z.string().min(1, 'Staff ID is required').max(100),
+    email: z.string().email().max(255).optional().or(z.literal('')),
+    phone_number: z.string().max(255).optional().or(z.literal('')),
+    address: z.string().max(255).nullable().optional(),
+    department_id: z.number().min(1, 'Department is required'),
+    designation_id: z.number().min(1, 'Designation is required'),
+    shift_id: z.number().min(1, 'Shift is required'),
+    basic_salary: z.number().min(0),
+    country_id: z.number().nullable().optional(),
+    state_id: z.number().nullable().optional(),
+    city_id: z.number().nullable().optional(),
+    image: z.any().optional(),
+    is_active: z.boolean().optional(),
+    is_sale_agent: z.boolean().optional(),
+    sale_commission_percent: z.number().nullable().optional(),
 
-  onboarding_checklist_template_id: z.number().nullable().optional(),
+    onboarding_checklist_template_id: z.number().nullable().optional(),
 
-  user: employeeUserSchema.optional(),
-  profile: employeeProfileSchema.optional(),
-  sales_target: z.array(employeeSalesTargetSchema).optional(),
-  documents: z.array(employeeDocumentSchema).optional(),
-}).refine((data) => {
-  if (data.sales_target && data.sales_target.length > 0) {
-    let previousTo: number | null = null
-    for (const target of data.sales_target) {
-      if (previousTo !== null && target.sales_from <= previousTo) {
-        return false
+    user: employeeUserSchema.optional(),
+    profile: employeeProfileSchema.optional(),
+    sales_target: z.array(employeeSalesTargetSchema).optional(),
+    documents: z.array(employeeDocumentSchema).optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.sales_target && data.sales_target.length > 0) {
+        let previousTo: number | null = null
+        for (const target of data.sales_target) {
+          if (previousTo !== null && target.sales_from <= previousTo) {
+            return false
+          }
+          previousTo = target.sales_to
+        }
       }
-      previousTo = target.sales_to
+      return true
+    },
+    {
+      message:
+        "Each sales target's 'From' value must be greater than the previous tier's 'To' value.",
+      path: ['sales_target'],
     }
-  }
-  return true
-}, {
-  message: 'Each sales target\'s \'From\' value must be greater than the previous tier\'s \'To\' value.',
-  path: ['sales_target'],
-})
+  )
 
 export const employeeImportSchema = z.object({
   file: z
@@ -107,9 +114,9 @@ export const employeeExportSchema = z
       }
       return true
     },
-    { path: ['user_id'] },
+    { path: ['user_id'] }
   )
 
-export type EmployeeFormData = z.infer<typeof employeeSchema>;
-export type EmployeeImportFormData = z.infer<typeof employeeImportSchema>;
-export type EmployeeExportFormData = z.infer<typeof employeeExportSchema>;
+export type EmployeeFormData = z.infer<typeof employeeSchema>
+export type EmployeeImportFormData = z.infer<typeof employeeImportSchema>
+export type EmployeeExportFormData = z.infer<typeof employeeExportSchema>

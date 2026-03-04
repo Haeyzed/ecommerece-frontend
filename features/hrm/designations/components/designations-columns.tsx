@@ -1,12 +1,17 @@
 'use client'
 
 import { type ColumnDef } from '@tanstack/react-table'
+
 import { cn } from '@/lib/utils'
+
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
+
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
+
 import { type Designation, statusTypes } from '@/features/hrm/designations'
+
 import { DataTableRowActions } from './data-table-row-actions'
 
 export const designationsColumns: ColumnDef<Designation>[] = [
@@ -19,8 +24,8 @@ export const designationsColumns: ColumnDef<Designation>[] = [
           (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
+        aria-label='Select all'
+        className='translate-y-[2px]'
       />
     ),
     meta: {
@@ -30,8 +35,8 @@ export const designationsColumns: ColumnDef<Designation>[] = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
+        aria-label='Select row'
+        className='translate-y-[2px]'
       />
     ),
     enableSorting: false,
@@ -40,17 +45,17 @@ export const designationsColumns: ColumnDef<Designation>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title='Name' />
     ),
     cell: ({ row }) => (
-      <div className="flex items-center gap-3 ps-3">
-        <LongText className="max-w-36">{row.getValue('name')}</LongText>
+      <div className='flex items-center gap-3 ps-3'>
+        <LongText className='max-w-36'>{row.getValue('name')}</LongText>
       </div>
     ),
     meta: {
       className: cn(
         'drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]',
-        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none',
+        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none'
       ),
     },
     enableHiding: false,
@@ -58,11 +63,13 @@ export const designationsColumns: ColumnDef<Designation>[] = [
   {
     accessorKey: 'department_id',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Department" />
+      <DataTableColumnHeader column={column} title='Department' />
     ),
     cell: ({ row }) => (
-      <div className="flex items-center gap-3 ps-3">
-        <LongText className="max-w-36">{row.original.department?.name || '-'}</LongText>
+      <div className='flex items-center gap-3 ps-3'>
+        <LongText className='max-w-36'>
+          {row.original.department?.name || '-'}
+        </LongText>
       </div>
     ),
     meta: { className: 'w-32' },
@@ -70,14 +77,17 @@ export const designationsColumns: ColumnDef<Designation>[] = [
   {
     accessorKey: 'active_status',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title='Status' />
     ),
     cell: ({ row }) => {
       const { active_status } = row.original
       const statusBadgeColor = statusTypes.get(active_status)
       return (
-        <div className="flex justify-center">
-          <Badge variant="outline" className={cn('capitalize', statusBadgeColor)}>
+        <div className='flex justify-center'>
+          <Badge
+            variant='outline'
+            className={cn('capitalize', statusBadgeColor)}
+          >
             {row.getValue('active_status')}
           </Badge>
         </div>

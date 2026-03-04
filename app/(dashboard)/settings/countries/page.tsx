@@ -1,20 +1,20 @@
-import {auth} from "@/auth"
-import {ForbiddenError} from "@/features/errors/forbidden";
-import {CountriesClient} from "@/features/settings/countries";
-import {hasPermission} from "@/lib/utils/permissions"
+import { auth } from '@/auth'
+
+import { hasPermission } from '@/lib/utils/permissions'
+
+import { ForbiddenError } from '@/features/errors/forbidden'
+import { CountriesClient } from '@/features/settings/countries'
 
 export const metadata = {
-    title: "Countries Management",
+  title: 'Countries Management',
 }
 
 export default async function CountriesPage() {
-    const session = await auth()
-    const userPermissions = session?.user?.user_permissions || []
-    const canView = hasPermission(userPermissions, "view countries")
-    if (!canView) {
-        return (
-            <ForbiddenError/>
-        )
-    }
-    return <CountriesClient/>
+  const session = await auth()
+  const userPermissions = session?.user?.user_permissions || []
+  const canView = hasPermission(userPermissions, 'view countries')
+  if (!canView) {
+    return <ForbiddenError />
+  }
+  return <CountriesClient />
 }

@@ -6,7 +6,7 @@
  */
 export function hasPermission(
   userPermissions: string[] | undefined,
-  requiredPermissions: string | string[] | undefined,
+  requiredPermissions: string | string[] | undefined
 ): boolean {
   if (!requiredPermissions || requiredPermissions.length === 0) {
     return true // No permissions required

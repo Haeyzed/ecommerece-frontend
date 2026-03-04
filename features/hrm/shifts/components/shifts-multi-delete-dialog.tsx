@@ -1,16 +1,22 @@
 'use client'
 
 import { useState } from 'react'
-import { HugeiconsIcon } from '@hugeicons/react'
+
 import { Alert02Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
 import { type Table } from '@tanstack/react-table'
+
 import { toast } from 'sonner'
-import { type Shift, useBulkDestroyShifts } from '@/features/hrm/shifts'
+
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+
 import { ConfirmDialog } from '@/components/confirm-dialog'
+
 import { useAuthSession } from '@/features/auth/api'
+import { type Shift, useBulkDestroyShifts } from '@/features/hrm/shifts'
 
 type ShiftsMultiDeleteDialogProps<TData> = {
   open: boolean
@@ -21,13 +27,13 @@ type ShiftsMultiDeleteDialogProps<TData> = {
 const CONFIRM_WORD = 'DELETE'
 
 export function ShiftsMultiDeleteDialog<TData>({
-                                                 open,
-                                                 onOpenChange,
-                                                 table,
-                                               }: ShiftsMultiDeleteDialogProps<TData>) {
+  open,
+  onOpenChange,
+  table,
+}: ShiftsMultiDeleteDialogProps<TData>) {
   const [value, setValue] = useState('')
   const selectedRows = table.getFilteredSelectedRowModel().rows
-  const selectedIds = selectedRows.map(row => (row.original as Shift).id)
+  const selectedIds = selectedRows.map((row) => (row.original as Shift).id)
   const { mutate: bulkDestroy, isPending } = useBulkDestroyShifts()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
@@ -56,10 +62,10 @@ export function ShiftsMultiDeleteDialog<TData>({
       handleConfirm={handleDelete}
       disabled={value.trim() !== CONFIRM_WORD || isPending}
       title={
-        <span className="text-destructive">
+        <span className='text-destructive'>
           <HugeiconsIcon
             icon={Alert02Icon}
-            className="me-1 inline-block stroke-destructive"
+            className='me-1 inline-block stroke-destructive'
             size={18}
             strokeWidth={2}
           />{' '}
@@ -68,14 +74,14 @@ export function ShiftsMultiDeleteDialog<TData>({
         </span>
       }
       desc={
-        <div className="space-y-4">
-          <p className="mb-2">
+        <div className='space-y-4'>
+          <p className='mb-2'>
             Are you sure you want to delete the selected shifts? <br />
             This action cannot be undone.
           </p>
 
-          <Label className="my-4 flex flex-col items-start gap-1.5">
-            <span className="">Confirm by typing "{CONFIRM_WORD}":</span>
+          <Label className='my-4 flex flex-col items-start gap-1.5'>
+            <span className=''>Confirm by typing "{CONFIRM_WORD}":</span>
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
@@ -83,7 +89,7 @@ export function ShiftsMultiDeleteDialog<TData>({
             />
           </Label>
 
-          <Alert variant="destructive">
+          <Alert variant='destructive'>
             <AlertTitle>Warning!</AlertTitle>
             <AlertDescription>
               Please be careful, this operation can not be rolled back.
@@ -91,7 +97,7 @@ export function ShiftsMultiDeleteDialog<TData>({
           </Alert>
         </div>
       }
-      confirmText="Delete"
+      confirmText='Delete'
       destructive
     />
   )

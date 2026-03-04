@@ -1,8 +1,11 @@
 'use client'
 
-import { useApiClient } from '@/lib/api/api-client-client'
 import { useMutation, useQuery } from '@tanstack/react-query'
+
 import { toast } from 'sonner'
+
+import { useApiClient } from '@/lib/api/api-client-client'
+
 import type { CustomerDueReportMeta, CustomerDueReportRow } from './types'
 
 export const customerDueReportKeys = {
@@ -19,11 +22,15 @@ export interface UseCustomerDueReportParams {
   per_page?: number
 }
 
-export function useCustomerDueReport(params: UseCustomerDueReportParams | null) {
+export function useCustomerDueReport(
+  params: UseCustomerDueReportParams | null
+) {
   const { api, sessionStatus } = useApiClient()
 
   const query = useQuery({
-    queryKey: customerDueReportKeys.list((params ?? {}) as Record<string, unknown>),
+    queryKey: customerDueReportKeys.list(
+      (params ?? {}) as Record<string, unknown>
+    ),
     queryFn: async () => {
       const response = await api.get<CustomerDueReportRow[]>(
         '/reports/customer-due',
@@ -35,7 +42,7 @@ export function useCustomerDueReport(params: UseCustomerDueReportParams | null) 
             page: params!.page ?? 1,
             per_page: params!.per_page ?? 15,
           },
-        },
+        }
       )
       return response
     },

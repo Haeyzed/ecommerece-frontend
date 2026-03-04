@@ -1,8 +1,11 @@
 'use client'
 
-import { useApiClient } from '@/lib/api/api-client-client'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
 import { toast } from 'sonner'
+
+import { useApiClient } from '@/lib/api/api-client-client'
+
 import { type IdCardTemplate, type IdCardTemplateFormData } from './types'
 
 const BASE_PATH = '/id-card-templates'
@@ -59,7 +62,13 @@ export function useUpdateIdCardTemplate() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<IdCardTemplateFormData> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<IdCardTemplateFormData>
+    }) => {
       const response = await api.put<IdCardTemplate>(`${BASE_PATH}/${id}`, data)
       if (!response.success) throw new Error(response.message)
       return response
@@ -79,7 +88,9 @@ export function useActivateIdCardTemplate() {
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const response = await api.patch<IdCardTemplate>(`${BASE_PATH}/${id}/activate`)
+      const response = await api.patch<IdCardTemplate>(
+        `${BASE_PATH}/${id}/activate`
+      )
       if (!response.success) throw new Error(response.message)
       return response
     },
@@ -116,7 +127,10 @@ export function useBulkDestroyIdCardTemplates() {
 
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.post<{ deleted_count: number }>(`${BASE_PATH}/bulk-destroy`, { ids })
+      const response = await api.post<{ deleted_count: number }>(
+        `${BASE_PATH}/bulk-destroy`,
+        { ids }
+      )
       if (!response.success) throw new Error(response.message)
       return response
     },

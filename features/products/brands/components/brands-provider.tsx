@@ -1,7 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import useDialogState from '@/hooks/use-dialog-state'
+
 import { type Brand } from '../types'
 
 type BrandsDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
@@ -20,7 +22,9 @@ export function BrandsProvider({ children }: { children: React.ReactNode }) {
   const [currentRow, setCurrentRow] = useState<Brand | null>(null)
 
   return (
-    <BrandsContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <BrandsContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </BrandsContext.Provider>
   )

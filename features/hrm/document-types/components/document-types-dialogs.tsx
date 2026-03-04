@@ -1,14 +1,15 @@
 'use client'
 
+import { useAuthSession } from '@/features/auth/api'
 import {
   DocumentTypesActionDialog,
   DocumentTypesDeleteDialog,
   DocumentTypesExportDialog,
   DocumentTypesImportDialog,
 } from '@/features/hrm/document-types'
-import { DocumentTypesViewDialog } from './document-types-view-dialog'
+
 import { useDocumentTypes } from './document-types-provider'
-import { useAuthSession } from '@/features/auth/api'
+import { DocumentTypesViewDialog } from './document-types-view-dialog'
 
 export function DocumentTypesDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useDocumentTypes()
@@ -26,7 +27,7 @@ export function DocumentTypesDialogs() {
     <>
       {canCreate && (
         <DocumentTypesActionDialog
-          key="document-type-add"
+          key='document-type-add'
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -36,7 +37,7 @@ export function DocumentTypesDialogs() {
 
       {canImport && (
         <DocumentTypesImportDialog
-          key="document-type-import"
+          key='document-type-import'
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -46,7 +47,7 @@ export function DocumentTypesDialogs() {
 
       {canExport && (
         <DocumentTypesExportDialog
-          key="document-type-export"
+          key='document-type-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

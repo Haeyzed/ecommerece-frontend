@@ -1,11 +1,15 @@
 'use client'
 
 import { type ColumnDef } from '@tanstack/react-table'
+
 import { cn } from '@/lib/utils'
+
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
+
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
+
 import { statusTypes } from '../constants'
 import { type Unit } from '../types'
 import { DataTableRowActions } from './data-table-row-actions'
@@ -20,8 +24,8 @@ export const unitsColumns: ColumnDef<Unit>[] = [
           (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
+        aria-label='Select all'
+        className='translate-y-[2px]'
       />
     ),
     meta: {
@@ -31,8 +35,8 @@ export const unitsColumns: ColumnDef<Unit>[] = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
+        aria-label='Select row'
+        className='translate-y-[2px]'
       />
     ),
     enableSorting: false,
@@ -41,17 +45,17 @@ export const unitsColumns: ColumnDef<Unit>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title='Name' />
     ),
     cell: ({ row }) => (
-      <div className="flex items-center gap-3 ps-3">
-        <LongText className="max-w-36">{row.getValue('name')}</LongText>
+      <div className='flex items-center gap-3 ps-3'>
+        <LongText className='max-w-36'>{row.getValue('name')}</LongText>
       </div>
     ),
     meta: {
       className: cn(
         'drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]',
-        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none',
+        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none'
       ),
     },
     enableHiding: false,
@@ -59,26 +63,24 @@ export const unitsColumns: ColumnDef<Unit>[] = [
   {
     accessorKey: 'code',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Code" />
+      <DataTableColumnHeader column={column} title='Code' />
     ),
     cell: ({ row }) => (
-      <div className="ps-3 font-mono text-xs">
-        {row.getValue('code')}
-      </div>
+      <div className='ps-3 font-mono text-xs'>{row.getValue('code')}</div>
     ),
     meta: { className: 'w-24' },
   },
   {
     accessorKey: 'base_unit',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Base Unit" />
+      <DataTableColumnHeader column={column} title='Base Unit' />
     ),
     cell: ({ row }) => {
       const baseUnitName = row.original.base_unit_relation?.name
       const baseUnitId = row.original.base_unit
 
       return (
-        <div className="ps-3 text-muted-foreground">
+        <div className='ps-3 text-muted-foreground'>
           {baseUnitName || baseUnitId || '-'}
         </div>
       )
@@ -88,27 +90,35 @@ export const unitsColumns: ColumnDef<Unit>[] = [
   {
     id: 'operation',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Operation" />
+      <DataTableColumnHeader column={column} title='Operation' />
     ),
     cell: ({ row }) => {
       const op = row.original.operator
       const val = row.original.operation_value
-      if (!op || !val) return <span className="text-muted-foreground ps-3">-</span>
-      return <span className="font-mono text-xs ps-3">{op} {val}</span>
+      if (!op || !val)
+        return <span className='ps-3 text-muted-foreground'>-</span>
+      return (
+        <span className='ps-3 font-mono text-xs'>
+          {op} {val}
+        </span>
+      )
     },
     meta: { className: 'w-36' },
   },
   {
     accessorKey: 'active_status',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title='Status' />
     ),
     cell: ({ row }) => {
       const { active_status } = row.original
       const statusBadgeColor = statusTypes.get(active_status)
       return (
-        <div className="flex justify-center">
-          <Badge variant="outline" className={cn('capitalize', statusBadgeColor)}>
+        <div className='flex justify-center'>
+          <Badge
+            variant='outline'
+            className={cn('capitalize', statusBadgeColor)}
+          >
             {row.getValue('active_status')}
           </Badge>
         </div>

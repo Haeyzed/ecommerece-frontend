@@ -1,5 +1,10 @@
 'use client'
 
+import { CheckmarkCircle02Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
+import { useMediaQuery } from '@/hooks/use-media-query'
+
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -18,11 +23,15 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Spinner } from '@/components/ui/spinner'
-import { useMediaQuery } from '@/hooks/use-media-query'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { CheckmarkCircle02Icon } from '@hugeicons/core-free-icons'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 
 type CustomersCsvPreviewDialogProps = {
   open: boolean
@@ -33,22 +42,22 @@ type CustomersCsvPreviewDialogProps = {
 }
 
 export function CustomersCsvPreviewDialog({
-                                            open,
-                                            onOpenChange,
-                                            data,
-                                            onConfirm,
-                                            isPending,
-                                          }: CustomersCsvPreviewDialogProps) {
+  open,
+  onOpenChange,
+  data,
+  onConfirm,
+  isPending,
+}: CustomersCsvPreviewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const headers = data.length > 0 ? Object.keys(data[0]) : []
 
   const PreviewContent = () => (
-    <div className="rounded-md border">
+    <div className='rounded-md border'>
       <Table>
         <TableHeader>
           <TableRow>
             {headers.map((header) => (
-              <TableHead key={header} className="capitalize">
+              <TableHead key={header} className='capitalize'>
                 {header.replace(/_/g, ' ')}
               </TableHead>
             ))}
@@ -58,7 +67,10 @@ export function CustomersCsvPreviewDialog({
           {data.slice(0, 5).map((row, i) => (
             <TableRow key={i}>
               {headers.map((header) => (
-                <TableCell key={`${i}-${header}`} className="max-w-[200px] truncate">
+                <TableCell
+                  key={`${i}-${header}`}
+                  className='max-w-[200px] truncate'
+                >
                   {row[header]}
                 </TableCell>
               ))}
@@ -66,7 +78,10 @@ export function CustomersCsvPreviewDialog({
           ))}
           {data.length > 5 && (
             <TableRow>
-              <TableCell colSpan={headers.length} className="text-center text-muted-foreground">
+              <TableCell
+                colSpan={headers.length}
+                className='text-center text-muted-foreground'
+              >
                 ... and {data.length - 5} more rows
               </TableCell>
             </TableRow>
@@ -79,30 +94,38 @@ export function CustomersCsvPreviewDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-3xl">
-          <DialogHeader className="text-start">
+        <DialogContent className='sm:max-w-3xl'>
+          <DialogHeader className='text-start'>
             <DialogTitle>Preview Import Data</DialogTitle>
             <DialogDescription>
-              Review the data before importing. Showing first 5 rows of {data.length} entries.
+              Review the data before importing. Showing first 5 rows of{' '}
+              {data.length} entries.
             </DialogDescription>
           </DialogHeader>
-          <div className="max-h-[60vh] overflow-y-auto py-2">
+          <div className='max-h-[60vh] overflow-y-auto py-2'>
             <PreviewContent />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
+            <Button
+              variant='outline'
+              onClick={() => onOpenChange(false)}
+              disabled={isPending}
+            >
               Cancel
             </Button>
             <Button onClick={onConfirm} disabled={isPending}>
               {isPending ? (
                 <>
-                  <Spinner className="mr-2 size-4" />
+                  <Spinner className='mr-2 size-4' />
                   Importing...
                 </>
               ) : (
                 <>
                   Confirm Import
-                  <HugeiconsIcon icon={CheckmarkCircle02Icon} className="ml-2 size-4" />
+                  <HugeiconsIcon
+                    icon={CheckmarkCircle02Icon}
+                    className='ml-2 size-4'
+                  />
                 </>
               )}
             </Button>
@@ -115,31 +138,37 @@ export function CustomersCsvPreviewDialog({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent>
-        <DrawerHeader className="text-left">
+        <DrawerHeader className='text-left'>
           <DrawerTitle>Preview Import Data</DrawerTitle>
           <DrawerDescription>
-            Review the data before importing. Showing first 5 rows of {data.length} entries.
+            Review the data before importing. Showing first 5 rows of{' '}
+            {data.length} entries.
           </DrawerDescription>
         </DrawerHeader>
-        <div className="no-scrollbar max-h-[70vh] overflow-y-auto px-4">
+        <div className='no-scrollbar max-h-[70vh] overflow-y-auto px-4'>
           <PreviewContent />
         </div>
         <DrawerFooter>
           <Button onClick={onConfirm} disabled={isPending}>
             {isPending ? (
               <>
-                <Spinner className="mr-2 size-4" />
+                <Spinner className='mr-2 size-4' />
                 Importing...
               </>
             ) : (
               <>
                 Confirm Import
-                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="ml-2 size-4" />
+                <HugeiconsIcon
+                  icon={CheckmarkCircle02Icon}
+                  className='ml-2 size-4'
+                />
               </>
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant="outline" disabled={isPending}>Cancel</Button>
+            <Button variant='outline' disabled={isPending}>
+              Cancel
+            </Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>

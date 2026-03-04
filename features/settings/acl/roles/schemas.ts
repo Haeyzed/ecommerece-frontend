@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
 export const roleSchema = z.object({
@@ -42,9 +43,9 @@ export const roleExportSchema = z
       }
       return true
     },
-    { path: ['user_id'] },
+    { path: ['user_id'] }
   )
 
-export type RoleFormData = z.infer<typeof roleSchema>;
-export type RoleImportFormData = z.infer<typeof roleImportSchema>;
-export type RoleExportFormData = z.infer<typeof roleExportSchema>;
+export type RoleFormData = z.infer<typeof roleSchema>
+export type RoleImportFormData = z.infer<typeof roleImportSchema>
+export type RoleExportFormData = z.infer<typeof roleExportSchema>

@@ -1,8 +1,10 @@
 'use client'
 
-import { DataTableEmptyState } from '@/components/data-table'
-import { HugeiconsIcon } from '@hugeicons/react'
 import { Download01Icon, PlusSignIcon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
+import { DataTableEmptyState } from '@/components/data-table'
+
 import { useCities } from './cities-provider'
 
 export function CitiesEmptyState() {
@@ -10,17 +12,17 @@ export function CitiesEmptyState() {
 
   return (
     <DataTableEmptyState
-      title="No cities yet"
-      description="There are no cities available yet. Get started by adding your first city."
+      title='No cities yet'
+      description='There are no cities available yet. Get started by adding your first city.'
       primaryAction={{
         label: 'Add City',
         onClick: () => setOpen('add'),
-        icon: <HugeiconsIcon icon={PlusSignIcon} className="size-4 mr-2" />,
+        icon: <HugeiconsIcon icon={PlusSignIcon} className='mr-2 size-4' />,
       }}
       secondaryAction={{
         label: 'Import Cities',
         onClick: () => setOpen('import'),
-        icon: <HugeiconsIcon icon={Download01Icon} className="size-4 mr-2" />,
+        icon: <HugeiconsIcon icon={Download01Icon} className='mr-2 size-4' />,
       }}
       learnMoreLink={{
         href: '#',

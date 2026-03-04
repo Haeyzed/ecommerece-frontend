@@ -1,24 +1,47 @@
 'use client'
 
-import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useTableUrlState } from '@/hooks/use-table-url-state'
-import { cn } from '@/lib/utils'
+import { useEffect, useMemo, useState } from 'react'
+
 import {
+  type SortingState,
+  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
   getSortedRowModel,
-  type SortingState,
   useReactTable,
-  type VisibilityState,
 } from '@tanstack/react-table'
-import { useEffect, useMemo, useState } from 'react'
+
 import { toast } from 'sonner'
+
+import { cn } from '@/lib/utils'
+
+import { useTableUrlState } from '@/hooks/use-table-url-state'
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+
+import {
+  DataTablePagination,
+  DataTableSkeleton,
+  DataTableToolbar,
+} from '@/components/data-table'
+
+import {
+  CountriesEmptyState,
+  DataTableBulkActions,
+  countriesColumns as columns,
+} from '@/features/settings/countries'
+
 import { useCountries } from '../api'
-import { countriesColumns as columns, CountriesEmptyState, DataTableBulkActions } from '@/features/settings/countries'
 
 export function CountriesTable() {
   const [rowSelection, setRowSelection] = useState({})
@@ -100,9 +123,7 @@ export function CountriesTable() {
   }, [pageCount, ensurePageInRange])
 
   if (error) {
-    return (
-      toast.error(error.message)
-    )
+    return toast.error(error.message)
   }
 
   const hasData = data?.meta?.total && data.meta.total > 0
@@ -115,13 +136,13 @@ export function CountriesTable() {
     <div
       className={cn(
         'max-sm:has-[div[role="toolbar"]]:mb-16',
-        'flex flex-1 flex-col gap-4',
+        'flex flex-1 flex-col gap-4'
       )}
     >
       <DataTableToolbar
         table={table}
-        searchPlaceholder="Filter countries..."
-        searchKey="name"
+        searchPlaceholder='Filter countries...'
+        searchKey='name'
         filters={[
           {
             columnId: 'status',
@@ -133,11 +154,11 @@ export function CountriesTable() {
           },
         ]}
       />
-      <div className="overflow-hidden rounded-md border">
+      <div className='overflow-hidden rounded-md border'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="group/row">
+              <TableRow key={headerGroup.id} className='group/row'>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
@@ -146,15 +167,15 @@ export function CountriesTable() {
                       className={cn(
                         'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                         (header.column.columnDef.meta as any)?.className,
-                        (header.column.columnDef.meta as any)?.thClassName,
+                        (header.column.columnDef.meta as any)?.thClassName
                       )}
                     >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   )
                 })}
@@ -170,7 +191,7 @@ export function CountriesTable() {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    className="group/row"
+                    className='group/row'
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
@@ -178,12 +199,12 @@ export function CountriesTable() {
                         className={cn(
                           'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                           (cell.column.columnDef.meta as any)?.className,
-                          (cell.column.columnDef.meta as any)?.tdClassName,
+                          (cell.column.columnDef.meta as any)?.tdClassName
                         )}
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext(),
+                          cell.getContext()
                         )}
                       </TableCell>
                     ))}
@@ -193,7 +214,7 @@ export function CountriesTable() {
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className="h-24 text-center"
+                    className='h-24 text-center'
                   >
                     No results.
                   </TableCell>
@@ -203,7 +224,7 @@ export function CountriesTable() {
           )}
         </Table>
       </div>
-      <DataTablePagination table={table} className="mt-auto" />
+      <DataTablePagination table={table} className='mt-auto' />
       <DataTableBulkActions table={table} />
     </div>
   )

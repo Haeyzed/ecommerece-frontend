@@ -34,7 +34,7 @@ export class ApiError extends Error {
     message: string,
     public statusCode: number,
     public errors?: Record<string, string[]>,
-    public code?: string,
+    public code?: string
   ) {
     super(message)
     this.name = 'ApiError'

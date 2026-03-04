@@ -1,15 +1,20 @@
 'use client'
 
 import { useState } from 'react'
-import { HugeiconsIcon } from '@hugeicons/react'
+
 import { Alert02Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { useDeleteDocumentType } from '@/features/hrm/document-types/api'
-import { type DocumentType } from '../types'
+
 import { useAuthSession } from '@/features/auth/api'
+import { useDeleteDocumentType } from '@/features/hrm/document-types/api'
+
+import { type DocumentType } from '../types'
 
 type DocumentTypesDeleteDialogProps = {
   open: boolean
@@ -18,10 +23,10 @@ type DocumentTypesDeleteDialogProps = {
 }
 
 export function DocumentTypesDeleteDialog({
-                                            open,
-                                            onOpenChange,
-                                            currentRow,
-                                          }: DocumentTypesDeleteDialogProps) {
+  open,
+  onOpenChange,
+  currentRow,
+}: DocumentTypesDeleteDialogProps) {
   const [value, setValue] = useState('')
   const { mutate: deleteDocumentType, isPending } = useDeleteDocumentType()
   const { data: session } = useAuthSession()
@@ -48,10 +53,10 @@ export function DocumentTypesDeleteDialog({
       handleConfirm={handleDelete}
       disabled={value.trim() !== currentRow.name || isPending}
       title={
-        <span className="text-destructive">
+        <span className='text-destructive'>
           <HugeiconsIcon
             icon={Alert02Icon}
-            className="me-1 inline-block stroke-destructive"
+            className='me-1 inline-block stroke-destructive'
             size={18}
             strokeWidth={2}
           />{' '}
@@ -59,25 +64,25 @@ export function DocumentTypesDeleteDialog({
         </span>
       }
       desc={
-        <div className="space-y-4">
-          <p className="mb-2">
+        <div className='space-y-4'>
+          <p className='mb-2'>
             Are you sure you want to delete{' '}
-            <span className="font-bold">{currentRow.name}</span>?
+            <span className='font-bold'>{currentRow.name}</span>?
             <br />
-            This action will permanently remove the document type from the system.
-            This cannot be undone.
+            This action will permanently remove the document type from the
+            system. This cannot be undone.
           </p>
 
-          <Label className="my-2">
+          <Label className='my-2'>
             Document Type Name:
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder="Enter document type name to confirm deletion."
+              placeholder='Enter document type name to confirm deletion.'
             />
           </Label>
 
-          <Alert variant="destructive">
+          <Alert variant='destructive'>
             <AlertTitle>Warning!</AlertTitle>
             <AlertDescription>
               Please be careful, this operation can not be rolled back.
@@ -85,7 +90,7 @@ export function DocumentTypesDeleteDialog({
           </Alert>
         </div>
       }
-      confirmText="Delete"
+      confirmText='Delete'
       destructive
     />
   )

@@ -3,7 +3,6 @@
  *
  * Zod validation for supplier forms. Mirrors backend SupplierRequest where possible.
  */
-
 import { z } from 'zod'
 
 export interface Supplier {
@@ -37,7 +36,12 @@ export const supplierSchema = z.object({
   name: z.string().min(1, 'Name is required').max(255, 'Name is too long'),
   company_name: optionalString,
   vat_number: optionalString,
-  email: z.string().email('Invalid email').max(255).optional().or(z.literal('')),
+  email: z
+    .string()
+    .email('Invalid email')
+    .max(255)
+    .optional()
+    .or(z.literal('')),
   phone_number: optionalString,
   wa_number: optionalString,
   address: optionalString,
@@ -75,7 +79,7 @@ export const supplierExportSchema = z
       if (data.method === 'email') return data.user_id !== undefined
       return true
     },
-    { message: 'Please select a user to send the email to', path: ['user_id'] },
+    { message: 'Please select a user to send the email to', path: ['user_id'] }
   )
 
 export type SupplierExportFormData = z.infer<typeof supplierExportSchema>

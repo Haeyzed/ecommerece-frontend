@@ -1,7 +1,9 @@
 import { auth } from '@/auth'
+
+import { hasPermission } from '@/lib/utils/permissions'
+
 import { ForbiddenError } from '@/features/errors/forbidden'
 import { BrandsClient } from '@/features/products/brands'
-import { hasPermission } from '@/lib/utils/permissions'
 
 export const metadata = {
   title: 'Brands Management',
@@ -12,9 +14,7 @@ export default async function BrandsPage() {
   const userPermissions = session?.user?.user_permissions || []
   const canView = hasPermission(userPermissions, 'view brands')
   if (!canView) {
-    return (
-      <ForbiddenError />
-    )
+    return <ForbiddenError />
   }
   return <BrandsClient />
 }

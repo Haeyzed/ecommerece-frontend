@@ -1,11 +1,15 @@
 import { z } from 'zod'
+
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
 // Regex to strictly enforce HH:MM format
 const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
 
 export const shiftSchema = z.object({
-  name: z.string().min(1, 'Shift name is required').max(255, 'Name is too long'),
+  name: z
+    .string()
+    .min(1, 'Shift name is required')
+    .max(255, 'Name is too long'),
   start_time: z.string().regex(timeRegex, 'Start time must be in HH:MM format'),
   end_time: z.string().regex(timeRegex, 'End time must be in HH:MM format'),
   grace_in: z.number().min(0, 'Grace in must be 0 or more'),
@@ -48,9 +52,9 @@ export const shiftExportSchema = z
       }
       return true
     },
-    { message: 'Please select a user to send the email to', path: ['user_id'] },
+    { message: 'Please select a user to send the email to', path: ['user_id'] }
   )
 
-export type ShiftFormData = z.infer<typeof shiftSchema>;
-export type ShiftImportFormData = z.infer<typeof shiftImportSchema>;
-export type ShiftExportFormData = z.infer<typeof shiftExportSchema>;
+export type ShiftFormData = z.infer<typeof shiftSchema>
+export type ShiftImportFormData = z.infer<typeof shiftImportSchema>
+export type ShiftExportFormData = z.infer<typeof shiftExportSchema>

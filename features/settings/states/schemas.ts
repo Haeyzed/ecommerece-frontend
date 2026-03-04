@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
 export const stateSchema = z.object({
@@ -46,9 +47,9 @@ export const stateExportSchema = z
       }
       return true
     },
-    { message: 'Please select a user to send the email to', path: ['user_id'] },
+    { message: 'Please select a user to send the email to', path: ['user_id'] }
   )
 
-export type StateFormData = z.infer<typeof stateSchema>;
-export type StateImportFormData = z.infer<typeof stateImportSchema>;
-export type StateExportFormData = z.infer<typeof stateExportSchema>;
+export type StateFormData = z.infer<typeof stateSchema>
+export type StateImportFormData = z.infer<typeof stateImportSchema>
+export type StateExportFormData = z.infer<typeof stateExportSchema>

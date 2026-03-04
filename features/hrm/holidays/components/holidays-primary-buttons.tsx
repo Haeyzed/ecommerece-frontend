@@ -1,11 +1,18 @@
 'use client'
 
+import {
+  FileImportIcon,
+  PlusSignIcon,
+  Upload01Icon,
+} from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { FileImportIcon, PlusSignIcon, Upload01Icon } from '@hugeicons/core-free-icons'
-import { Button } from '@/components/ui/button'
+
 import { useMediaQuery } from '@/hooks/use-media-query'
-import { useHolidays } from '@/features/hrm/holidays/components/holidays-provider'
+
+import { Button } from '@/components/ui/button'
+
 import { useAuthSession } from '@/features/auth/api'
+import { useHolidays } from '@/features/hrm/holidays/components/holidays-provider'
 
 export function HolidaysPrimaryButtons() {
   const { setOpen } = useHolidays()
@@ -18,14 +25,14 @@ export function HolidaysPrimaryButtons() {
   if (!canImport && !canExport && !canCreate) return null
 
   return (
-    <div className="flex gap-2">
+    <div className='flex gap-2'>
       {canExport && (
         <Button
-          variant="outline"
+          variant='outline'
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('export')}
-          aria-label="Export Holidays"
+          aria-label='Export Holidays'
         >
           <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} size={18} />
           {!isMobile && <span>Export Holidays</span>}
@@ -33,11 +40,11 @@ export function HolidaysPrimaryButtons() {
       )}
       {canImport && (
         <Button
-          variant="outline"
+          variant='outline'
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('import')}
-          aria-label="Import Holidays"
+          aria-label='Import Holidays'
         >
           <HugeiconsIcon icon={FileImportIcon} strokeWidth={2} size={18} />
           {!isMobile && <span>Import Holidays</span>}
@@ -48,7 +55,7 @@ export function HolidaysPrimaryButtons() {
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('add')}
-          aria-label="Add Holiday"
+          aria-label='Add Holiday'
         >
           <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} size={18} />
           {!isMobile && <span>Add Holiday</span>}

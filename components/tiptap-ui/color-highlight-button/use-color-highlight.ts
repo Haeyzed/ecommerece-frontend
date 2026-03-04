@@ -1,15 +1,20 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+
 import { type Editor } from '@tiptap/react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
+// --- Lib ---
+import {
+  isExtensionAvailable,
+  isMarkInSchema,
+  isNodeTypeSelected,
+} from '@/lib/tiptap-utils'
+
+import { useIsBreakpoint } from '@/hooks/use-is-breakpoint'
 // --- Hooks ---
 import { useTiptapEditor } from '@/hooks/use-tiptap-editor'
-import { useIsBreakpoint } from '@/hooks/use-is-breakpoint'
-
-// --- Lib ---
-import { isExtensionAvailable, isMarkInSchema, isNodeTypeSelected } from '@/lib/tiptap-utils'
 
 // --- Icons ---
 import { HighlighterIcon } from '@/components/tiptap-icons/highlighter-icon'
@@ -118,10 +123,10 @@ export interface UseColorHighlightConfig {
    * Called when the highlight is applied.
    */
   onApplied?: ({
-                 color,
-                 label,
-                 mode,
-               }: {
+    color,
+    label,
+    mode,
+  }: {
     color: string
     label: string
     mode: HighlightMode
@@ -130,7 +135,7 @@ export interface UseColorHighlightConfig {
 
 export function pickHighlightColorsByValue(values: string[]) {
   const colorMap = new Map(
-    HIGHLIGHT_COLORS.map((color) => [color.value, color]),
+    HIGHLIGHT_COLORS.map((color) => [color.value, color])
   )
   return values
     .map((value) => colorMap.get(value))
@@ -142,12 +147,12 @@ export function pickHighlightColorsByValue(values: string[]) {
  */
 export function getHighlightColorValue(
   color: string,
-  useColorValue: boolean = false,
+  useColorValue: boolean = false
 ): string {
   if (!useColorValue) return color
 
   const colorItem = HIGHLIGHT_COLORS.find(
-    (c) => c.value === color || c.colorValue === color,
+    (c) => c.value === color || c.colorValue === color
   )
   return colorItem?.colorValue || color
 }
@@ -157,7 +162,7 @@ export function getHighlightColorValue(
  */
 export function canColorHighlight(
   editor: Editor | null,
-  mode: HighlightMode = 'mark',
+  mode: HighlightMode = 'mark'
 ): boolean {
   if (!editor || !editor.isEditable) return false
 
@@ -186,7 +191,7 @@ export function canColorHighlight(
 export function isColorHighlightActive(
   editor: Editor | null,
   highlightColor?: string,
-  mode: HighlightMode = 'mark',
+  mode: HighlightMode = 'mark'
 ): boolean {
   if (!editor || !editor.isEditable) return false
 
@@ -220,7 +225,7 @@ export function isColorHighlightActive(
  */
 export function removeHighlight(
   editor: Editor | null,
-  mode: HighlightMode = 'mark',
+  mode: HighlightMode = 'mark'
 ): boolean {
   if (!editor || !editor.isEditable) return false
   if (!canColorHighlight(editor, mode)) return false
@@ -307,7 +312,7 @@ export function useColorHighlight(config: UseColorHighlightConfig) {
         const highlightMarkType = editor.schema.marks.highlight
         if (highlightMarkType) {
           editor.view.dispatch(
-            editor.state.tr.removeStoredMark(highlightMarkType),
+            editor.state.tr.removeStoredMark(highlightMarkType)
           )
         }
       }
@@ -357,7 +362,7 @@ export function useColorHighlight(config: UseColorHighlightConfig) {
       enabled: isVisible && canColorHighlightState,
       enableOnContentEditable: !isMobile,
       enableOnFormTags: true,
-    },
+    }
   )
 
   return {

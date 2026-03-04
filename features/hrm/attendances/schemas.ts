@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
 export const attendanceSchema = z.object({
@@ -46,9 +47,9 @@ export const attendanceExportSchema = z
     {
       message: 'User is required when sending an email',
       path: ['user_id'],
-    },
+    }
   )
 
-export type AttendanceFormData = z.infer<typeof attendanceSchema>;
-export type AttendanceImportFormData = z.infer<typeof attendanceImportSchema>;
-export type AttendanceExportFormData = z.infer<typeof attendanceExportSchema>;
+export type AttendanceFormData = z.infer<typeof attendanceSchema>
+export type AttendanceImportFormData = z.infer<typeof attendanceImportSchema>
+export type AttendanceExportFormData = z.infer<typeof attendanceExportSchema>

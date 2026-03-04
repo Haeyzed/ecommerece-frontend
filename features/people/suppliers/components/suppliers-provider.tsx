@@ -1,10 +1,17 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import useDialogState from '@/hooks/use-dialog-state'
+
 import type { Supplier } from '../schemas'
 
-type SuppliersDialogType = 'import' | 'delete' | 'export' | 'view' | 'multi-delete'
+type SuppliersDialogType =
+  | 'import'
+  | 'delete'
+  | 'export'
+  | 'view'
+  | 'multi-delete'
 
 type SuppliersContextType = {
   open: SuppliersDialogType | null
@@ -20,7 +27,9 @@ export function SuppliersProvider({ children }: { children: React.ReactNode }) {
   const [currentRow, setCurrentRow] = useState<Supplier | null>(null)
 
   return (
-    <SuppliersContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <SuppliersContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </SuppliersContext.Provider>
   )

@@ -1,41 +1,65 @@
 'use client'
 
-import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useTableUrlState } from '@/hooks/use-table-url-state'
-import { cn } from '@/lib/utils'
+import { useEffect, useMemo, useState } from 'react'
+
 import {
+  type SortingState,
+  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
   getSortedRowModel,
-  type SortingState,
   useReactTable,
-  type VisibilityState,
 } from '@tanstack/react-table'
-import { useEffect, useMemo, useState } from 'react'
+
 import { toast } from 'sonner'
+
+import { cn } from '@/lib/utils'
+
+import { useTableUrlState } from '@/hooks/use-table-url-state'
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+
+import {
+  DataTablePagination,
+  DataTableSkeleton,
+  DataTableToolbar,
+} from '@/components/data-table'
+
 import { useCustomerGroups } from '@/features/settings/customer-groups/api'
+
+import { customerGroupsColumns as columns } from './customer-groups-columns'
 import { CustomerGroupsEmptyState } from './customer-groups-empty-state'
 import { DataTableBulkActions } from './data-table-bulk-actions'
-import { customerGroupsColumns as columns } from './customer-groups-columns'
 
 export function CustomerGroupsTable() {
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [sorting, setSorting] = useState<SortingState>([])
 
-  const { columnFilters, onColumnFiltersChange, pagination, onPaginationChange, ensurePageInRange } =
-    useTableUrlState({
-      pagination: { defaultPage: 1, defaultPageSize: 10 },
-      globalFilter: { enabled: false },
-      columnFilters: [
-        { columnId: 'name', searchKey: 'search', type: 'string' },
-        { columnId: 'status', searchKey: 'status', type: 'array' },
-      ],
-    })
+  const {
+    columnFilters,
+    onColumnFiltersChange,
+    pagination,
+    onPaginationChange,
+    ensurePageInRange,
+  } = useTableUrlState({
+    pagination: { defaultPage: 1, defaultPageSize: 10 },
+    globalFilter: { enabled: false },
+    columnFilters: [
+      { columnId: 'name', searchKey: 'search', type: 'string' },
+      { columnId: 'status', searchKey: 'status', type: 'array' },
+    ],
+  })
 
   const apiParams = useMemo(() => {
     const page = pagination.pageIndex + 1
@@ -43,10 +67,19 @@ export function CustomerGroupsTable() {
     const nameFilter = columnFilters.find((f) => f.id === 'name')
     const statusFilter = columnFilters.find((f) => f.id === 'status')
     let status: string | undefined
-    if (statusFilter?.value && Array.isArray(statusFilter.value) && statusFilter.value.length === 1) {
+    if (
+      statusFilter?.value &&
+      Array.isArray(statusFilter.value) &&
+      statusFilter.value.length === 1
+    ) {
       status = statusFilter.value[0] as string
     }
-    return { page, per_page: perPage, search: nameFilter?.value as string | undefined, status }
+    return {
+      page,
+      per_page: perPage,
+      search: nameFilter?.value as string | undefined,
+      status,
+    }
   }, [pagination, columnFilters])
 
   const { data, isLoading, error } = useCustomerGroups(apiParams)
@@ -60,7 +93,13 @@ export function CustomerGroupsTable() {
     data: data?.data ?? [],
     columns,
     pageCount,
-    state: { sorting, pagination, rowSelection, columnFilters, columnVisibility },
+    state: {
+      sorting,
+      pagination,
+      rowSelection,
+      columnFilters,
+      columnVisibility,
+    },
     enableRowSelection: true,
     manualPagination: true,
     onPaginationChange,
@@ -86,11 +125,16 @@ export function CustomerGroupsTable() {
   if (!isLoading && !hasData && !isFiltered) return <CustomerGroupsEmptyState />
 
   return (
-    <div className={cn('max-sm:has-[div[role="toolbar"]]:mb-16', 'flex flex-1 flex-col gap-4')}>
+    <div
+      className={cn(
+        'max-sm:has-[div[role="toolbar"]]:mb-16',
+        'flex flex-1 flex-col gap-4'
+      )}
+    >
       <DataTableToolbar
         table={table}
-        searchPlaceholder="Filter customer groups..."
-        searchKey="name"
+        searchPlaceholder='Filter customer groups...'
+        searchKey='name'
         filters={[
           {
             columnId: 'status',
@@ -102,24 +146,29 @@ export function CustomerGroupsTable() {
           },
         ]}
       />
-      <div className="overflow-hidden rounded-md border">
+      <div className='overflow-hidden rounded-md border'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="group/row">
+              <TableRow key={headerGroup.id} className='group/row'>
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
                     colSpan={header.colSpan}
                     className={cn(
                       'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
-                      (header.column.columnDef.meta as { className?: string })?.className,
-                      (header.column.columnDef.meta as { thClassName?: string })?.thClassName,
+                      (header.column.columnDef.meta as { className?: string })
+                        ?.className,
+                      (header.column.columnDef.meta as { thClassName?: string })
+                        ?.thClassName
                     )}
                   >
                     {header.isPlaceholder
                       ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -134,25 +183,36 @@ export function CustomerGroupsTable() {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    className="group/row"
+                    className='group/row'
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
                         className={cn(
                           'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
-                          (cell.column.columnDef.meta as { className?: string })?.className,
-                          (cell.column.columnDef.meta as { tdClassName?: string })?.tdClassName,
+                          (cell.column.columnDef.meta as { className?: string })
+                            ?.className,
+                          (
+                            cell.column.columnDef.meta as {
+                              tdClassName?: string
+                            }
+                          )?.tdClassName
                         )}
                       >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
                       </TableCell>
                     ))}
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                  <TableCell
+                    colSpan={columns.length}
+                    className='h-24 text-center'
+                  >
                     No results.
                   </TableCell>
                 </TableRow>
@@ -161,7 +221,7 @@ export function CustomerGroupsTable() {
           )}
         </Table>
       </div>
-      <DataTablePagination table={table} className="mt-auto" />
+      <DataTablePagination table={table} className='mt-auto' />
       <DataTableBulkActions table={table} />
     </div>
   )

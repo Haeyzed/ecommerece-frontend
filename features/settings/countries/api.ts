@@ -1,19 +1,30 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import type { Country, CountryExportParams, CountryFormData, CountryListParams, CountryOption } from './types'
+
+import type {
+  Country,
+  CountryExportParams,
+  CountryFormData,
+  CountryListParams,
+  CountryOption,
+} from './types'
 
 export const countryKeys = {
   all: ['countries'] as const,
   lists: () => [...countryKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...countryKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...countryKeys.lists(), filters] as const,
   details: () => [...countryKeys.all, 'detail'] as const,
   detail: (id: number) => [...countryKeys.details(), id] as const,
   options: () => [...countryKeys.all, 'options'] as const,
-  states: (countryId: number) => [...countryKeys.all, 'states', countryId] as const,
+  states: (countryId: number) =>
+    [...countryKeys.all, 'states', countryId] as const,
   template: () => [...countryKeys.all, 'template'] as const,
 }
 
@@ -69,7 +80,7 @@ export function useStatesByCountry(countryId: number | null) {
     queryKey: countryKeys.states(countryId ?? 0),
     queryFn: async () => {
       const response = await api.get<{ value: number; label: string }[]>(
-        `${BASE_PATH}/${countryId}/states`,
+        `${BASE_PATH}/${countryId}/states`
       )
       return response.data ?? []
     },
@@ -102,7 +113,8 @@ export function useCreateCountry() {
 
       const response = await api.post<{ data: Country }>(BASE_PATH, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -122,7 +134,13 @@ export function useUpdateCountry() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<CountryFormData> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<CountryFormData>
+    }) => {
       const payload: Record<string, unknown> = {}
 
       Object.keys(data).forEach((key) => {
@@ -132,9 +150,13 @@ export function useUpdateCountry() {
         }
       })
 
-      const response = await api.put<{ data: Country }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: Country }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }
@@ -177,7 +199,7 @@ export function useBulkActivateCountries() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
         `${BASE_PATH}/bulk-activate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -197,7 +219,7 @@ export function useBulkDeactivateCountries() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ deactivated_count: number }>(
         `${BASE_PATH}/bulk-deactivate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response

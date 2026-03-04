@@ -1,15 +1,25 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import type { Biller, BillerExportParams, BillerFormData, BillerListParams, BillerOption } from './types'
+
+import type {
+  Biller,
+  BillerExportParams,
+  BillerFormData,
+  BillerListParams,
+  BillerOption,
+} from './types'
 
 export const billerKeys = {
   all: ['billers'] as const,
   lists: () => [...billerKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...billerKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...billerKeys.lists(), filters] as const,
   details: () => [...billerKeys.all, 'detail'] as const,
   detail: (id: number) => [...billerKeys.details(), id] as const,
   options: () => [...billerKeys.all, 'options'] as const,
@@ -23,10 +33,7 @@ export function useBillers(params?: BillerListParams) {
   const query = useQuery({
     queryKey: billerKeys.list(params),
     queryFn: async () => {
-      const response = await api.get<Biller[]>(
-        BASE_PATH,
-        { params },
-      )
+      const response = await api.get<Biller[]>(BASE_PATH, { params })
       return response
     },
     enabled: sessionStatus !== 'loading',
@@ -79,14 +86,17 @@ export function useCreateBiller() {
       formData.append('email', data.email)
       formData.append('phone_number', data.phone_number)
       formData.append('address', data.address)
-      if (data.country_id != null) formData.append('country_id', String(data.country_id))
-      if (data.state_id != null) formData.append('state_id', String(data.state_id))
+      if (data.country_id != null)
+        formData.append('country_id', String(data.country_id))
+      if (data.state_id != null)
+        formData.append('state_id', String(data.state_id))
       if (data.city_id != null) formData.append('city_id', String(data.city_id))
       if (data.postal_code) formData.append('postal_code', data.postal_code)
       if (data.image && data.image.length > 0) {
         formData.append('image', data.image[0])
       }
-      if (data.is_active !== undefined) formData.append('is_active', data.is_active ? '1' : '0')
+      if (data.is_active !== undefined)
+        formData.append('is_active', data.is_active ? '1' : '0')
 
       const response = await api.post<{ data: Biller }>(BASE_PATH, formData)
       if (!response.success) {
@@ -112,26 +122,50 @@ export function useUpdateBiller() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<BillerFormData> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<BillerFormData>
+    }) => {
       const formData = new FormData()
       formData.append('_method', 'PUT')
 
       if (data.name) formData.append('name', data.name)
       if (data.company_name) formData.append('company_name', data.company_name)
-      if (data.vat_number !== undefined) formData.append('vat_number', data.vat_number ?? '')
+      if (data.vat_number !== undefined)
+        formData.append('vat_number', data.vat_number ?? '')
       if (data.email) formData.append('email', data.email)
       if (data.phone_number) formData.append('phone_number', data.phone_number)
       if (data.address) formData.append('address', data.address)
-      if (data.country_id !== undefined) formData.append('country_id', data.country_id != null ? String(data.country_id) : '')
-      if (data.state_id !== undefined) formData.append('state_id', data.state_id != null ? String(data.state_id) : '')
-      if (data.city_id !== undefined) formData.append('city_id', data.city_id != null ? String(data.city_id) : '')
-      if (data.postal_code !== undefined) formData.append('postal_code', data.postal_code ?? '')
+      if (data.country_id !== undefined)
+        formData.append(
+          'country_id',
+          data.country_id != null ? String(data.country_id) : ''
+        )
+      if (data.state_id !== undefined)
+        formData.append(
+          'state_id',
+          data.state_id != null ? String(data.state_id) : ''
+        )
+      if (data.city_id !== undefined)
+        formData.append(
+          'city_id',
+          data.city_id != null ? String(data.city_id) : ''
+        )
+      if (data.postal_code !== undefined)
+        formData.append('postal_code', data.postal_code ?? '')
       if (data.image && data.image.length > 0) {
         formData.append('image', data.image[0])
       }
-      if (data.is_active !== undefined) formData.append('is_active', data.is_active ? '1' : '0')
+      if (data.is_active !== undefined)
+        formData.append('is_active', data.is_active ? '1' : '0')
 
-      const response = await api.post<{ data: Biller }>(`${BASE_PATH}/${id}`, formData)
+      const response = await api.post<{ data: Biller }>(
+        `${BASE_PATH}/${id}`,
+        formData
+      )
       if (!response.success) {
         if (response.errors) {
           throw new ValidationError(response.message, response.errors)
@@ -178,7 +212,7 @@ export function useBulkActivateBillers() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
         `${BASE_PATH}/bulk-activate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -198,7 +232,7 @@ export function useBulkDeactivateBillers() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ deactivated_count: number }>(
         `${BASE_PATH}/bulk-deactivate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response

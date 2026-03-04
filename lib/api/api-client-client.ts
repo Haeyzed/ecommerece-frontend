@@ -7,8 +7,8 @@
  *
  * @module lib/api/api-client-client
  */
-
 import { useSession } from 'next-auth/react'
+
 import type { ApiClientOptions, ApiRequestOptions } from './api-client'
 import { api } from './api-client'
 import type { NormalizedApiResponse } from './api-types'
@@ -33,8 +33,8 @@ export interface UseApiClientReturn {
      */
     get: <T>(
       url: string,
-      options?: ApiRequestOptions,
-    ) => Promise<NormalizedApiResponse<T>>;
+      options?: ApiRequestOptions
+    ) => Promise<NormalizedApiResponse<T>>
 
     /**
      * Performs a POST request.
@@ -48,8 +48,8 @@ export interface UseApiClientReturn {
     post: <T>(
       url: string,
       body?: unknown,
-      options?: ApiClientOptions,
-    ) => Promise<NormalizedApiResponse<T>>;
+      options?: ApiClientOptions
+    ) => Promise<NormalizedApiResponse<T>>
 
     /**
      * Performs a PUT request.
@@ -63,8 +63,8 @@ export interface UseApiClientReturn {
     put: <T>(
       url: string,
       body?: unknown,
-      options?: ApiClientOptions,
-    ) => Promise<NormalizedApiResponse<T>>;
+      options?: ApiClientOptions
+    ) => Promise<NormalizedApiResponse<T>>
 
     /**
      * Performs a PATCH request.
@@ -78,8 +78,8 @@ export interface UseApiClientReturn {
     patch: <T>(
       url: string,
       body?: unknown,
-      options?: ApiClientOptions,
-    ) => Promise<NormalizedApiResponse<T>>;
+      options?: ApiClientOptions
+    ) => Promise<NormalizedApiResponse<T>>
 
     /**
      * Performs a DELETE request.
@@ -91,8 +91,8 @@ export interface UseApiClientReturn {
      */
     delete: <T>(
       url: string,
-      options?: ApiClientOptions,
-    ) => Promise<NormalizedApiResponse<T>>;
+      options?: ApiClientOptions
+    ) => Promise<NormalizedApiResponse<T>>
 
     /**
      * Performs a POST request and returns the response as a Blob.
@@ -101,18 +101,15 @@ export interface UseApiClientReturn {
     postBlob: (
       url: string,
       body?: unknown,
-      options?: ApiClientOptions,
-    ) => Promise<Blob>;
+      options?: ApiClientOptions
+    ) => Promise<Blob>
 
     /**
      * Performs a GET request and returns the response as a Blob.
      * Used for downloading static files (e.g., CSV templates).
      */
-    getBlob: (
-      url: string,
-      options?: ApiRequestOptions,
-    ) => Promise<Blob>;
-  };
+    getBlob: (url: string, options?: ApiRequestOptions) => Promise<Blob>
+  }
 
   /**
    * The current authentication status of the NextAuth session.
@@ -121,7 +118,7 @@ export interface UseApiClientReturn {
    * - `authenticated`: User is logged in and token is available.
    * - `unauthenticated`: User is not logged in.
    */
-  sessionStatus: 'loading' | 'authenticated' | 'unauthenticated';
+  sessionStatus: 'loading' | 'authenticated' | 'unauthenticated'
 }
 
 /**
@@ -173,7 +170,7 @@ export function useApiClient(): UseApiClientReturn {
   const apiMethods = {
     get: async <T>(
       url: string,
-      options?: ApiRequestOptions,
+      options?: ApiRequestOptions
     ): Promise<NormalizedApiResponse<T>> => {
       return api.get<T>(url, {
         ...options,
@@ -188,7 +185,7 @@ export function useApiClient(): UseApiClientReturn {
     post: async <T>(
       url: string,
       body?: unknown,
-      options?: ApiClientOptions,
+      options?: ApiClientOptions
     ): Promise<NormalizedApiResponse<T>> => {
       // Preserve automatic Content-Type for FormData, otherwise merge headers
       const headers =
@@ -206,7 +203,7 @@ export function useApiClient(): UseApiClientReturn {
     put: async <T>(
       url: string,
       body?: unknown,
-      options?: ApiClientOptions,
+      options?: ApiClientOptions
     ): Promise<NormalizedApiResponse<T>> => {
       return api.put<T>(url, body, {
         ...options,
@@ -221,7 +218,7 @@ export function useApiClient(): UseApiClientReturn {
     patch: async <T>(
       url: string,
       body?: unknown,
-      options?: ApiClientOptions,
+      options?: ApiClientOptions
     ): Promise<NormalizedApiResponse<T>> => {
       return api.patch<T>(url, body, {
         ...options,
@@ -235,7 +232,7 @@ export function useApiClient(): UseApiClientReturn {
 
     delete: async <T>(
       url: string,
-      options?: ApiClientOptions,
+      options?: ApiClientOptions
     ): Promise<NormalizedApiResponse<T>> => {
       return api.delete<T>(url, {
         ...options,
@@ -254,7 +251,7 @@ export function useApiClient(): UseApiClientReturn {
     postBlob: async (
       url: string,
       body?: unknown,
-      options?: ApiClientOptions,
+      options?: ApiClientOptions
     ): Promise<Blob> => {
       const headers =
         body instanceof FormData
@@ -274,7 +271,7 @@ export function useApiClient(): UseApiClientReturn {
      */
     getBlob: async (
       url: string,
-      options?: ApiRequestOptions,
+      options?: ApiRequestOptions
     ): Promise<Blob> => {
       return api.getBlob(url, {
         ...options,

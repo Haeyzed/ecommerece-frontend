@@ -1,8 +1,21 @@
 'use client'
 
+import Image from 'next/image'
+
+import { useTheme } from '@/lib/providers/theme-provider'
+import { cn } from '@/lib/utils'
+
+import { useMediaQuery } from '@/hooks/use-media-query'
+
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import {
   Drawer,
   DrawerClose,
@@ -14,10 +27,7 @@ import {
 } from '@/components/ui/drawer'
 import { ImageZoom } from '@/components/ui/image-zoom'
 import { Separator } from '@/components/ui/separator'
-import { useMediaQuery } from '@/hooks/use-media-query'
-import { useTheme } from '@/lib/providers/theme-provider'
-import { cn } from '@/lib/utils'
-import Image from 'next/image'
+
 import { type Biller } from '../types'
 
 type BillersViewDialogProps = {
@@ -27,10 +37,10 @@ type BillersViewDialogProps = {
 }
 
 export function BillersViewDialog({
-                                    currentRow,
-                                    open,
-                                    onOpenChange,
-                                  }: BillersViewDialogProps) {
+  currentRow,
+  open,
+  onOpenChange,
+}: BillersViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   if (!currentRow) return null
   const handleOpenChange = (value: boolean) => {
@@ -40,18 +50,16 @@ export function BillersViewDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader className="text-start">
+        <DialogContent className='sm:max-w-lg'>
+          <DialogHeader className='text-start'>
             <DialogTitle>Biller Details</DialogTitle>
             <DialogDescription>
               View biller information below.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="max-h-[70vh] overflow-y-auto py-1 pe-2">
-            <BillerView
-              currentRow={currentRow}
-            />
+          <div className='max-h-[70vh] overflow-y-auto py-1 pe-2'>
+            <BillerView currentRow={currentRow} />
           </div>
         </DialogContent>
       </Dialog>
@@ -61,20 +69,18 @@ export function BillersViewDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className="text-left">
+        <DrawerHeader className='text-left'>
           <DrawerTitle>Biller Details</DrawerTitle>
           <DrawerDescription>View biller information below.</DrawerDescription>
         </DrawerHeader>
 
-        <div className="max-h-[80vh] overflow-y-auto px-4">
-          <BillerView
-            currentRow={currentRow}
-          />
+        <div className='max-h-[80vh] overflow-y-auto px-4'>
+          <BillerView currentRow={currentRow} />
         </div>
 
         <DrawerFooter>
           <DrawerClose asChild>
-            <Button variant="outline">Close</Button>
+            <Button variant='outline'>Close</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -96,14 +102,14 @@ function BillerView({ className, currentRow }: BillerViewProps) {
   return (
     <div className={cn('space-y-6', className)}>
       {currentRow.image_url && (
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Image</div>
-          <div className="relative h-48 w-full overflow-hidden rounded-md border bg-muted">
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>Image</div>
+          <div className='relative h-48 w-full overflow-hidden rounded-md border bg-muted'>
             <ImageZoom
               backdropClassName={cn(
                 resolvedTheme === 'dark'
                   ? '[&_[data-rmiz-modal-overlay="visible"]]:bg-white/80'
-                  : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80',
+                  : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80'
               )}
             >
               <Image
@@ -111,7 +117,7 @@ function BillerView({ className, currentRow }: BillerViewProps) {
                 alt={currentRow.name}
                 width={800}
                 height={400}
-                className="h-full w-full object-cover"
+                className='h-full w-full object-cover'
                 unoptimized
               />
             </ImageZoom>
@@ -119,22 +125,26 @@ function BillerView({ className, currentRow }: BillerViewProps) {
         </div>
       )}
 
-      <div className="space-y-2">
-        <div className="text-sm font-medium text-muted-foreground">Name</div>
-        <div className="text-sm font-medium">{currentRow.name}</div>
+      <div className='space-y-2'>
+        <div className='text-sm font-medium text-muted-foreground'>Name</div>
+        <div className='text-sm font-medium'>{currentRow.name}</div>
       </div>
 
       {currentRow.company_name && (
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Company</div>
-          <div className="text-sm">{currentRow.company_name}</div>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
+            Company
+          </div>
+          <div className='text-sm'>{currentRow.company_name}</div>
         </div>
       )}
 
       {(currentRow.email || currentRow.phone_number) && (
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Contact</div>
-          <div className="space-y-1 text-sm">
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
+            Contact
+          </div>
+          <div className='space-y-1 text-sm'>
             {currentRow.email && <p>{currentRow.email}</p>}
             {currentRow.phone_number && <p>{currentRow.phone_number}</p>}
           </div>
@@ -142,17 +152,26 @@ function BillerView({ className, currentRow }: BillerViewProps) {
       )}
 
       {currentRow.vat_number && (
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">VAT Number</div>
-          <div className="text-sm">{currentRow.vat_number}</div>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
+            VAT Number
+          </div>
+          <div className='text-sm'>{currentRow.vat_number}</div>
         </div>
       )}
 
       {currentRow.address && (
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Address</div>
-          <div className="text-sm text-muted-foreground">
-            {[currentRow.address, currentRow.city?.name, currentRow.state?.name, currentRow.postal_code]
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
+            Address
+          </div>
+          <div className='text-sm text-muted-foreground'>
+            {[
+              currentRow.address,
+              currentRow.city?.name,
+              currentRow.state?.name,
+              currentRow.postal_code,
+            ]
               .filter(Boolean)
               .join(', ')}
             {currentRow.country?.name && `, ${currentRow.country.name}`}
@@ -160,28 +179,32 @@ function BillerView({ className, currentRow }: BillerViewProps) {
         </div>
       )}
 
-      <div className="space-y-2">
-        <div className="text-sm font-medium text-muted-foreground">Status</div>
-        <Badge variant="outline" className={cn('capitalize', statusBadgeColor)}>
+      <div className='space-y-2'>
+        <div className='text-sm font-medium text-muted-foreground'>Status</div>
+        <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
           {currentRow.active_status}
         </Badge>
       </div>
 
       <Separator />
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Created At</div>
-          <div className="text-sm text-muted-foreground">
+      <div className='grid grid-cols-2 gap-4'>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
+            Created At
+          </div>
+          <div className='text-sm text-muted-foreground'>
             {currentRow.created_at
               ? new Date(currentRow.created_at).toLocaleString()
               : 'N/A'}
           </div>
         </div>
 
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Updated At</div>
-          <div className="text-sm text-muted-foreground">
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
+            Updated At
+          </div>
+          <div className='text-sm text-muted-foreground'>
             {currentRow.updated_at
               ? new Date(currentRow.updated_at).toLocaleString()
               : 'N/A'}

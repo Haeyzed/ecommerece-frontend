@@ -1,16 +1,21 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+
 import type { Editor } from '@tiptap/react'
+
+// --- Lib ---
+import {
+  isMarkInSchema,
+  isNodeTypeSelected,
+  sanitizeUrl,
+} from '@/lib/tiptap-utils'
 
 // --- Hooks ---
 import { useTiptapEditor } from '@/hooks/use-tiptap-editor'
 
 // --- Icons ---
 import { LinkIcon } from '@/components/tiptap-icons/link-icon'
-
-// --- Lib ---
-import { isMarkInSchema, isNodeTypeSelected, sanitizeUrl } from '@/lib/tiptap-utils'
 
 /**
  * Configuration for the link popover functionality
@@ -174,7 +179,7 @@ export function useLinkHandler(props: LinkHandlerProps) {
         window.open(safeUrl, target, features)
       }
     },
-    [url],
+    [url]
   )
 
   return {
@@ -208,7 +213,7 @@ export function useLinkState(props: {
         shouldShowLinkButton({
           editor,
           hideWhenUnavailable,
-        }),
+        })
       )
     }
 

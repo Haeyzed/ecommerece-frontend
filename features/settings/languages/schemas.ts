@@ -1,8 +1,12 @@
 import { z } from 'zod'
+
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
 export const languageSchema = z.object({
-  code: z.string().min(1, 'Code is required').max(2, 'Code must be 2 characters max'),
+  code: z
+    .string()
+    .min(1, 'Code is required')
+    .max(2, 'Code must be 2 characters max'),
   name: z.string().min(1, 'Name is required').max(255, 'Name is too long'),
   name_native: z.string().max(255).optional().nullable(),
   dir: z.enum(['ltr', 'rtl']).optional().nullable(),
@@ -42,9 +46,9 @@ export const languageExportSchema = z
       }
       return true
     },
-    { message: 'Please select a user to send the email to', path: ['user_id'] },
+    { message: 'Please select a user to send the email to', path: ['user_id'] }
   )
 
-export type LanguageFormData = z.infer<typeof languageSchema>;
-export type LanguageImportFormData = z.infer<typeof languageImportSchema>;
-export type LanguageExportFormData = z.infer<typeof languageExportSchema>;
+export type LanguageFormData = z.infer<typeof languageSchema>
+export type LanguageImportFormData = z.infer<typeof languageImportSchema>
+export type LanguageExportFormData = z.infer<typeof languageExportSchema>

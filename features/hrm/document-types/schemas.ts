@@ -1,8 +1,12 @@
 import { z } from 'zod'
+
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
 export const documentTypeSchema = z.object({
-  name: z.string().min(1, 'Document type name is required').max(255, 'Name is too long'),
+  name: z
+    .string()
+    .min(1, 'Document type name is required')
+    .max(255, 'Name is too long'),
   code: z.string().min(1, 'Code is required').max(64, 'Code is too long'),
   requires_expiry: z.boolean(),
   is_active: z.boolean().nullable().optional(),
@@ -42,9 +46,13 @@ export const documentTypeExportSchema = z
       }
       return true
     },
-    { message: 'Please select a user to send the email to', path: ['user_id'] },
+    { message: 'Please select a user to send the email to', path: ['user_id'] }
   )
 
-export type DocumentTypeFormData = z.infer<typeof documentTypeSchema>;
-export type DocumentTypeImportFormData = z.infer<typeof documentTypeImportSchema>;
-export type DocumentTypeExportFormData = z.infer<typeof documentTypeExportSchema>;
+export type DocumentTypeFormData = z.infer<typeof documentTypeSchema>
+export type DocumentTypeImportFormData = z.infer<
+  typeof documentTypeImportSchema
+>
+export type DocumentTypeExportFormData = z.infer<
+  typeof documentTypeExportSchema
+>

@@ -1,5 +1,6 @@
 'use client'
 
+import { useAuthSession } from '@/features/auth/api'
 import {
   OvertimesActionDialog,
   OvertimesDeleteDialog,
@@ -8,7 +9,6 @@ import {
   OvertimesViewDialog,
   useOvertimes,
 } from '@/features/hrm/overtimes'
-import { useAuthSession } from '@/features/auth/api'
 
 export function OvertimesDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useOvertimes()
@@ -26,7 +26,7 @@ export function OvertimesDialogs() {
     <>
       {canCreate && (
         <OvertimesActionDialog
-          key="overtime-add"
+          key='overtime-add'
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -36,7 +36,7 @@ export function OvertimesDialogs() {
 
       {canImport && (
         <OvertimesImportDialog
-          key="overtime-import"
+          key='overtime-import'
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -46,7 +46,7 @@ export function OvertimesDialogs() {
 
       {canExport && (
         <OvertimesExportDialog
-          key="overtime-export"
+          key='overtime-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

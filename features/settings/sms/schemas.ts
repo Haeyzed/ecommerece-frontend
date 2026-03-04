@@ -5,7 +5,6 @@
  *
  * @module features/settings/sms/schemas
  */
-
 import { z } from 'zod'
 
 export const smsSettingUpdateSchema = z.object({

@@ -1,11 +1,9 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { type Editor } from '@tiptap/react'
-import { NodeSelection, TextSelection } from '@tiptap/pm/state'
 
-// --- Hooks ---
-import { useTiptapEditor } from '@/hooks/use-tiptap-editor'
+import { NodeSelection, TextSelection } from '@tiptap/pm/state'
+import { type Editor } from '@tiptap/react'
 
 // --- Lib ---
 import {
@@ -16,6 +14,9 @@ import {
   isValidPosition,
   selectionWithinConvertibleTypes,
 } from '@/lib/tiptap-utils'
+
+// --- Hooks ---
+import { useTiptapEditor } from '@/hooks/use-tiptap-editor'
 
 // --- Icons ---
 import { CodeBlockIcon } from '@/components/tiptap-icons/code-block-icon'
@@ -46,7 +47,7 @@ export interface UseCodeBlockConfig {
  */
 export function canToggle(
   editor: Editor | null,
-  turnInto: boolean = true,
+  turnInto: boolean = true
 ): boolean {
   if (!editor || !editor.isEditable) return false
   if (

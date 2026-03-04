@@ -1,13 +1,14 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { type Editor } from '@tiptap/react'
 
-// --- Hooks ---
-import { useTiptapEditor } from '@/hooks/use-tiptap-editor'
+import { type Editor } from '@tiptap/react'
 
 // --- Lib ---
 import { isNodeTypeSelected } from '@/lib/tiptap-utils'
+
+// --- Hooks ---
+import { useTiptapEditor } from '@/hooks/use-tiptap-editor'
 
 // --- Icons ---
 import { Redo2Icon } from '@/components/tiptap-icons/redo2-icon'
@@ -58,7 +59,7 @@ export const historyIcons = {
  */
 export function canExecuteUndoRedoAction(
   editor: Editor | null,
-  action: UndoRedoAction,
+  action: UndoRedoAction
 ): boolean {
   if (!editor || !editor.isEditable) return false
   if (isNodeTypeSelected(editor, ['image'])) return false
@@ -71,7 +72,7 @@ export function canExecuteUndoRedoAction(
  */
 export function executeUndoRedoAction(
   editor: Editor | null,
-  action: UndoRedoAction,
+  action: UndoRedoAction
 ): boolean {
   if (!editor || !editor.isEditable) return false
   if (!canExecuteUndoRedoAction(editor, action)) return false

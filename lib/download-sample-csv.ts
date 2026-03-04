@@ -10,10 +10,7 @@
  * @param csvString - CSV content (headers + rows)
  * @param filename - Download filename (e.g. 'brands_sample.csv')
  */
-export function downloadSampleAsCsv(
-  csvString: string,
-  filename: string,
-): void {
+export function downloadSampleAsCsv(csvString: string, filename: string): void {
   const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8' })
   const url = window.URL.createObjectURL(blob)
   const a = document.createElement('a')

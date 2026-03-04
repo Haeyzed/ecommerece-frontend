@@ -1,8 +1,24 @@
 'use client'
 
+import {
+  CheckmarkCircle02Icon,
+  MultiplicationSignIcon,
+} from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
+import { cn } from '@/lib/utils'
+
+import { useMediaQuery } from '@/hooks/use-media-query'
+
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import {
   Drawer,
   DrawerClose,
@@ -13,10 +29,7 @@ import {
   DrawerTitle,
 } from '@/components/ui/drawer'
 import { Separator } from '@/components/ui/separator'
-import { useMediaQuery } from '@/hooks/use-media-query'
-import { cn } from '@/lib/utils'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { CheckmarkCircle02Icon, MultiplicationSignIcon } from '@hugeicons/core-free-icons'
+
 import { statusTypes } from '../constants'
 import type { CustomerGroup } from '../types'
 
@@ -27,10 +40,10 @@ type CustomerGroupsViewDialogProps = {
 }
 
 export function CustomerGroupsViewDialog({
-                                           currentRow,
-                                           open,
-                                           onOpenChange,
-                                         }: CustomerGroupsViewDialogProps) {
+  currentRow,
+  open,
+  onOpenChange,
+}: CustomerGroupsViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   if (!currentRow) return null
 
@@ -41,15 +54,15 @@ export function CustomerGroupsViewDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader className="text-start">
+        <DialogContent className='sm:max-w-lg'>
+          <DialogHeader className='text-start'>
             <DialogTitle>Customer Group Details</DialogTitle>
             <DialogDescription>
               View customer group information below.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="max-h-[70vh] overflow-y-auto py-1 pe-2">
+          <div className='max-h-[70vh] overflow-y-auto py-1 pe-2'>
             <CustomerGroupView currentRow={currentRow} />
           </div>
         </DialogContent>
@@ -60,20 +73,20 @@ export function CustomerGroupsViewDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className="text-left">
+        <DrawerHeader className='text-left'>
           <DrawerTitle>Customer Group Details</DrawerTitle>
           <DrawerDescription>
             View customer group information below.
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className="no-scrollbar max-h-[80vh] overflow-y-auto px-4">
+        <div className='no-scrollbar max-h-[80vh] overflow-y-auto px-4'>
           <CustomerGroupView currentRow={currentRow} />
         </div>
 
         <DrawerFooter>
           <DrawerClose asChild>
-            <Button variant="outline">Close</Button>
+            <Button variant='outline'>Close</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -94,50 +107,55 @@ function CustomerGroupView({ className, currentRow }: CustomerGroupViewProps) {
   const statusBadgeColor = statusTypes.get(status)
 
   const p = currentRow.percentage
-  const percentage =
-    typeof p === 'number' ? p : parseFloat(String(p))
+  const percentage = typeof p === 'number' ? p : parseFloat(String(p))
   const displayPercentage = Number.isNaN(percentage)
     ? String(p)
     : `${percentage}%`
 
   return (
     <div className={cn('space-y-6', className)}>
-      <div className="space-y-2">
-        <div className="text-sm font-medium text-muted-foreground">Name</div>
-        <div className="text-sm font-medium">{currentRow.name}</div>
+      <div className='space-y-2'>
+        <div className='text-sm font-medium text-muted-foreground'>Name</div>
+        <div className='text-sm font-medium'>{currentRow.name}</div>
       </div>
 
-      <div className="space-y-2">
-        <div className="text-sm font-medium text-muted-foreground">Percentage</div>
-        <div className="text-sm">{displayPercentage}</div>
+      <div className='space-y-2'>
+        <div className='text-sm font-medium text-muted-foreground'>
+          Percentage
+        </div>
+        <div className='text-sm'>{displayPercentage}</div>
       </div>
 
-      <div className="space-y-2">
-        <div className="text-sm font-medium text-muted-foreground">Status</div>
+      <div className='space-y-2'>
+        <div className='text-sm font-medium text-muted-foreground'>Status</div>
         <Badge
-          variant="outline"
+          variant='outline'
           className={cn('flex w-fit items-center gap-1.5', statusBadgeColor)}
         >
-          <HugeiconsIcon icon={StatusIcon} className="size-3" />
+          <HugeiconsIcon icon={StatusIcon} className='size-3' />
           {status}
         </Badge>
       </div>
 
       <Separator />
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Created At</div>
-          <div className="text-sm text-muted-foreground">
+      <div className='grid grid-cols-2 gap-4'>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
+            Created At
+          </div>
+          <div className='text-sm text-muted-foreground'>
             {currentRow.created_at
               ? new Date(currentRow.created_at).toLocaleString()
               : 'N/A'}
           </div>
         </div>
 
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Updated At</div>
-          <div className="text-sm text-muted-foreground">
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
+            Updated At
+          </div>
+          <div className='text-sm text-muted-foreground'>
             {currentRow.updated_at
               ? new Date(currentRow.updated_at).toLocaleString()
               : 'N/A'}

@@ -1,11 +1,18 @@
 'use client'
 
 import { type Content, type Root, type Trigger } from '@radix-ui/react-popover'
-import { HugeiconsIcon } from '@hugeicons/react'
+
 import { HelpCircleIcon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
 import { cn } from '@/lib/utils'
+
 import { Button } from '@/components/ui/button'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 
 type LearnMoreProps = React.ComponentProps<typeof Root> & {
   contentProps?: React.ComponentProps<typeof Content>
@@ -13,11 +20,11 @@ type LearnMoreProps = React.ComponentProps<typeof Root> & {
 }
 
 export function LearnMore({
-                            children,
-                            contentProps,
-                            triggerProps,
-                            ...props
-                          }: LearnMoreProps) {
+  children,
+  contentProps,
+  triggerProps,
+  ...props
+}: LearnMoreProps) {
   return (
     <Popover {...props}>
       <PopoverTrigger
@@ -25,21 +32,21 @@ export function LearnMore({
         {...triggerProps}
         className={cn('size-5 rounded-full', triggerProps?.className)}
       >
-        <Button variant="outline" size="icon">
-          <span className="sr-only">Learn more</span>
+        <Button variant='outline' size='icon'>
+          <span className='sr-only'>Learn more</span>
           {/* Note: Removed '[&>circle]:hidden' as it is specific to Lucide's SVG structure.
             HelpCircleIcon renders a question mark inside a circle.
           */}
           <HugeiconsIcon
             icon={HelpCircleIcon}
-            className="size-4"
+            className='size-4'
             strokeWidth={2}
           />
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        side="top"
-        align="start"
+        side='top'
+        align='start'
         {...contentProps}
         className={cn('text-sm text-muted-foreground', contentProps?.className)}
       >

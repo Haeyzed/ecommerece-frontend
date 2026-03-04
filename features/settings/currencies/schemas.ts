@@ -1,10 +1,14 @@
 import { z } from 'zod'
+
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
 export const currencySchema = z.object({
   name: z.string().min(1, 'Name is required').max(255, 'Name is too long'),
   code: z.string().min(1, 'Code is required').max(255, 'Code is too long'),
-  symbol: z.string().min(1, 'Symbol is required').max(255, 'Symbol is too long'),
+  symbol: z
+    .string()
+    .min(1, 'Symbol is required')
+    .max(255, 'Symbol is too long'),
   country_id: z.number().min(1, 'Country selection is required'),
   precision: z.number().nullable().optional(),
   symbol_native: z.string().max(255).optional().nullable(),
@@ -47,9 +51,9 @@ export const currencyExportSchema = z
       }
       return true
     },
-    { message: 'Please select a user to send the email to', path: ['user_id'] },
+    { message: 'Please select a user to send the email to', path: ['user_id'] }
   )
 
-export type CurrencyFormData = z.infer<typeof currencySchema>;
-export type CurrencyImportFormData = z.infer<typeof currencyImportSchema>;
-export type CurrencyExportFormData = z.infer<typeof currencyExportSchema>;
+export type CurrencyFormData = z.infer<typeof currencySchema>
+export type CurrencyImportFormData = z.infer<typeof currencyImportSchema>
+export type CurrencyExportFormData = z.infer<typeof currencyExportSchema>

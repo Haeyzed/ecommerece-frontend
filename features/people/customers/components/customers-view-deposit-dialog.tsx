@@ -1,6 +1,17 @@
 'use client'
 
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { cn } from '@/lib/utils'
+
+import { useMediaQuery } from '@/hooks/use-media-query'
+
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import {
   Drawer,
   DrawerClose,
@@ -10,10 +21,15 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
-import { useMediaQuery } from '@/hooks/use-media-query'
-import { cn } from '@/lib/utils'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+
 import { useCustomerDeposits } from '../api'
 import type { Customer, CustomerDeposit } from '../types'
 
@@ -37,10 +53,10 @@ function formatDate(iso: string | null): string {
 }
 
 export function CustomersViewDepositDialog({
-                                             currentRow,
-                                             open,
-                                             onOpenChange,
-                                           }: CustomersViewDepositDialogProps) {
+  currentRow,
+  open,
+  onOpenChange,
+}: CustomersViewDepositDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   if (!currentRow) return null
 
@@ -51,16 +67,20 @@ export function CustomersViewDepositDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col overflow-hidden">
-          <DialogHeader className="text-start">
+        <DialogContent className='flex max-h-[85vh] max-w-2xl flex-col overflow-hidden'>
+          <DialogHeader className='text-start'>
             <DialogTitle>View Deposits</DialogTitle>
             <DialogDescription>
               Deposit history for {currentRow.name}. Deposited balance:{' '}
-              {(currentRow.deposited_balance ?? currentRow.deposit ?? 0).toFixed(2)}
+              {(
+                currentRow.deposited_balance ??
+                currentRow.deposit ??
+                0
+              ).toFixed(2)}
             </DialogDescription>
           </DialogHeader>
 
-          <div className="max-h-[70vh] overflow-y-auto py-1 pe-2">
+          <div className='max-h-[70vh] overflow-y-auto py-1 pe-2'>
             <DepositListView customerId={currentRow.id} />
           </div>
         </DialogContent>
@@ -70,21 +90,21 @@ export function CustomersViewDepositDialog({
 
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
-      <DrawerContent className="max-h-[85vh] flex flex-col">
-        <DrawerHeader className="text-left">
+      <DrawerContent className='flex max-h-[85vh] flex-col'>
+        <DrawerHeader className='text-left'>
           <DrawerTitle>View Deposits</DrawerTitle>
           <DrawerDescription>
             Deposit history for {currentRow.name}.
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className="no-scrollbar flex-1 min-h-0 overflow-y-auto px-4">
+        <div className='no-scrollbar min-h-0 flex-1 overflow-y-auto px-4'>
           <DepositListView customerId={currentRow.id} />
         </div>
 
         <DrawerFooter>
           <DrawerClose asChild>
-            <Button variant="outline">Close</Button>
+            <Button variant='outline'>Close</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -106,7 +126,7 @@ function DepositListView({ customerId, className }: DepositListViewProps) {
         <TableHeader>
           <TableRow>
             <TableHead>Date</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
+            <TableHead className='text-right'>Amount</TableHead>
             <TableHead>Note</TableHead>
             <TableHead>Created by</TableHead>
           </TableRow>
@@ -116,7 +136,7 @@ function DepositListView({ customerId, className }: DepositListViewProps) {
             <TableRow>
               <TableCell
                 colSpan={4}
-                className="text-center text-muted-foreground"
+                className='text-center text-muted-foreground'
               >
                 Loading…
               </TableCell>
@@ -125,7 +145,7 @@ function DepositListView({ customerId, className }: DepositListViewProps) {
             <TableRow>
               <TableCell
                 colSpan={4}
-                className="text-center text-muted-foreground"
+                className='text-center text-muted-foreground'
               >
                 No deposits yet
               </TableCell>
@@ -134,13 +154,11 @@ function DepositListView({ customerId, className }: DepositListViewProps) {
             deposits.map((d: CustomerDeposit) => (
               <TableRow key={d.id}>
                 <TableCell>{formatDate(d.created_at)}</TableCell>
-                <TableCell className="text-right">
+                <TableCell className='text-right'>
                   {Number(d.amount).toFixed(2)}
                 </TableCell>
                 <TableCell>{d.note ?? '-'}</TableCell>
-                <TableCell>
-                  {d.user?.name ?? d.user?.email ?? '-'}
-                </TableCell>
+                <TableCell>{d.user?.name ?? d.user?.email ?? '-'}</TableCell>
               </TableRow>
             ))
           )}

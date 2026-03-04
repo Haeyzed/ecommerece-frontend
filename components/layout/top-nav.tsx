@@ -1,9 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-import { HugeiconsIcon } from '@hugeicons/react'
+
 import { Menu01Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
 import { cn } from '@/lib/utils'
+
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -24,16 +27,20 @@ type TopNavProps = React.HTMLAttributes<HTMLElement> & {
 export function TopNav({ className, links, ...props }: TopNavProps) {
   return (
     <>
-      <div className="lg:hidden">
+      <div className='lg:hidden'>
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
-            <Button size="icon" variant="outline" className="md:size-7">
+            <Button size='icon' variant='outline' className='md:size-7'>
               <HugeiconsIcon icon={Menu01Icon} strokeWidth={2} />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent side="bottom" align="start">
+          <DropdownMenuContent side='bottom' align='start'>
             {links.map(({ title, href, isActive, disabled }) => (
-              <DropdownMenuItem key={`${title}-${href}`} asChild disabled={disabled}>
+              <DropdownMenuItem
+                key={`${title}-${href}`}
+                asChild
+                disabled={disabled}
+              >
                 <Link
                   href={href}
                   className={!isActive ? 'text-muted-foreground' : ''}
@@ -49,7 +56,7 @@ export function TopNav({ className, links, ...props }: TopNavProps) {
       <nav
         className={cn(
           'hidden items-center space-x-4 lg:flex lg:space-x-4 xl:space-x-6',
-          className,
+          className
         )}
         {...props}
       >
@@ -60,7 +67,7 @@ export function TopNav({ className, links, ...props }: TopNavProps) {
             className={cn(
               'text-sm font-medium transition-colors hover:text-primary',
               !isActive && 'text-muted-foreground',
-              disabled && 'pointer-events-none opacity-50',
+              disabled && 'pointer-events-none opacity-50'
             )}
           >
             {title}

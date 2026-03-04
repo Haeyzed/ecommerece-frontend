@@ -1,6 +1,13 @@
 'use client'
 
-import { createContext, type ReactNode, useContext, useEffect, useState } from 'react'
+import {
+  type ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
+
 import { getCookie, removeCookie, setCookie } from '@/lib/cookies'
 
 const DEFAULT_THEME = 'neutral'
@@ -16,16 +23,16 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ActiveThemeProvider({
-                                      children,
-                                      defaultTheme = DEFAULT_THEME,
-                                      storageKey = THEME_COOKIE_NAME,
-                                    }: {
+  children,
+  defaultTheme = DEFAULT_THEME,
+  storageKey = THEME_COOKIE_NAME,
+}: {
   children: ReactNode
   defaultTheme?: string
   storageKey?: string
 }) {
   const [activeTheme, setActiveThemeState] = useState<string>(
-    () => (getCookie(storageKey) as string) || defaultTheme,
+    () => (getCookie(storageKey) as string) || defaultTheme
   )
 
   useEffect(() => {
@@ -72,4 +79,3 @@ export function useThemeConfig() {
   }
   return context
 }
-

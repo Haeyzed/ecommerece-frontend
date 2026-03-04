@@ -1,13 +1,14 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import type { Editor } from '@tiptap/react'
 
-// --- Hooks ---
-import { useTiptapEditor } from '@/hooks/use-tiptap-editor'
+import type { Editor } from '@tiptap/react'
 
 // --- Lib ---
 import { isMarkInSchema, isNodeTypeSelected } from '@/lib/tiptap-utils'
+
+// --- Hooks ---
+import { useTiptapEditor } from '@/hooks/use-tiptap-editor'
 
 // --- Icons ---
 import { BoldIcon } from '@/components/tiptap-icons/bold-icon'

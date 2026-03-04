@@ -1,14 +1,15 @@
 'use client'
 
+import { useAuthSession } from '@/features/auth/api'
 import {
   PermissionsActionDialog,
   PermissionsDeleteDialog,
   PermissionsExportDialog,
   PermissionsImportDialog,
 } from '@/features/settings/acl/permissions'
-import { PermissionsViewDialog } from './permissions-view-dialog'
+
 import { usePermissions } from './permissions-provider'
-import { useAuthSession } from '@/features/auth/api'
+import { PermissionsViewDialog } from './permissions-view-dialog'
 
 export function PermissionsDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = usePermissions()
@@ -26,7 +27,7 @@ export function PermissionsDialogs() {
     <>
       {canCreate && (
         <PermissionsActionDialog
-          key="permission-add"
+          key='permission-add'
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -36,7 +37,7 @@ export function PermissionsDialogs() {
 
       {canImport && (
         <PermissionsImportDialog
-          key="permission-import"
+          key='permission-import'
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -46,7 +47,7 @@ export function PermissionsDialogs() {
 
       {canExport && (
         <PermissionsExportDialog
-          key="permission-export"
+          key='permission-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

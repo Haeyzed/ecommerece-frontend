@@ -1,8 +1,12 @@
 import { z } from 'zod'
+
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
 export const countrySchema = z.object({
-  iso2: z.string().min(1, 'ISO2 is required').max(2, 'ISO2 must be 2 characters max'),
+  iso2: z
+    .string()
+    .min(1, 'ISO2 is required')
+    .max(2, 'ISO2 must be 2 characters max'),
   name: z.string().min(1, 'Name is required').max(255, 'Name is too long'),
   status: z.boolean().nullable().optional(),
   phone_code: z.string().max(255).optional().nullable(),
@@ -50,9 +54,9 @@ export const countryExportSchema = z
       }
       return true
     },
-    { message: 'Please select a user to send the email to', path: ['user_id'] },
+    { message: 'Please select a user to send the email to', path: ['user_id'] }
   )
 
-export type CountryFormData = z.infer<typeof countrySchema>;
-export type CountryImportFormData = z.infer<typeof countryImportSchema>;
-export type CountryExportFormData = z.infer<typeof countryExportSchema>;
+export type CountryFormData = z.infer<typeof countrySchema>
+export type CountryImportFormData = z.infer<typeof countryImportSchema>
+export type CountryExportFormData = z.infer<typeof countryExportSchema>

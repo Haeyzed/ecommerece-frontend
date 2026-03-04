@@ -1,15 +1,19 @@
 'use client'
 
 import { type ColumnDef } from '@tanstack/react-table'
+
 import { cn } from '@/lib/utils'
+
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
+
 import { DataTableColumnHeader } from '@/components/data-table'
+import { ImageZoomCell } from '@/components/image-zoom'
 import { LongText } from '@/components/long-text'
+
 import { featuredTypes, statusTypes, syncTypes } from '../constants'
 import { type Category } from '../types'
 import { DataTableRowActions } from './data-table-row-actions'
-import { ImageZoomCell } from '@/components/image-zoom'
 
 export const categoriesColumns: ColumnDef<Category>[] = [
   {
@@ -21,8 +25,8 @@ export const categoriesColumns: ColumnDef<Category>[] = [
           (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
+        aria-label='Select all'
+        className='translate-y-[2px]'
       />
     ),
     meta: {
@@ -32,8 +36,8 @@ export const categoriesColumns: ColumnDef<Category>[] = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
+        aria-label='Select row'
+        className='translate-y-[2px]'
       />
     ),
     enableSorting: false,
@@ -42,34 +46,28 @@ export const categoriesColumns: ColumnDef<Category>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title='Name' />
     ),
     cell: ({ row }) => (
-      <div className="flex items-center gap-3 ps-3">
+      <div className='flex items-center gap-3 ps-3'>
         {row.original.image_url ? (
-          <ImageZoomCell
-            src={row.original.image_url}
-            alt={row.original.name}
-          />
+          <ImageZoomCell src={row.original.image_url} alt={row.original.name} />
         ) : row.original.icon_url ? (
-          <ImageZoomCell
-            src={row.original.icon_url}
-            alt={row.original.name}
-          />
+          <ImageZoomCell src={row.original.icon_url} alt={row.original.name} />
         ) : (
-          <div className="flex size-10 items-center justify-center rounded-md bg-muted">
-            <span className="text-xs font-medium">
+          <div className='flex size-10 items-center justify-center rounded-md bg-muted'>
+            <span className='text-xs font-medium'>
               {row.original.name.charAt(0).toUpperCase()}
             </span>
           </div>
         )}
-        <LongText className="max-w-36">{row.getValue('name')}</LongText>
+        <LongText className='max-w-36'>{row.getValue('name')}</LongText>
       </div>
     ),
     meta: {
       className: cn(
         'drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]',
-        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none',
+        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none'
       ),
     },
     enableHiding: false,
@@ -77,22 +75,20 @@ export const categoriesColumns: ColumnDef<Category>[] = [
   {
     accessorKey: 'slug',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Slug" />
+      <DataTableColumnHeader column={column} title='Slug' />
     ),
     cell: ({ row }) => (
-      <LongText className="max-w-36">
-        {row.original.slug || '-'}
-      </LongText>
+      <LongText className='max-w-36'>{row.original.slug || '-'}</LongText>
     ),
     meta: { className: 'w-36' },
   },
   {
     accessorKey: 'short_description',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Description" />
+      <DataTableColumnHeader column={column} title='Description' />
     ),
     cell: ({ row }) => (
-      <LongText className="max-w-48">
+      <LongText className='max-w-48'>
         {row.original.short_description || '-'}
       </LongText>
     ),
@@ -101,10 +97,10 @@ export const categoriesColumns: ColumnDef<Category>[] = [
   {
     accessorKey: 'parent.name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Parent Category" />
+      <DataTableColumnHeader column={column} title='Parent Category' />
     ),
     cell: ({ row }) => (
-      <LongText className="max-w-36">
+      <LongText className='max-w-36'>
         {row.original.parent?.name || '-'}
       </LongText>
     ),
@@ -113,14 +109,17 @@ export const categoriesColumns: ColumnDef<Category>[] = [
   {
     accessorKey: 'active_status',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title='Status' />
     ),
     cell: ({ row }) => {
       const { active_status } = row.original
       const statusBadgeColor = statusTypes.get(active_status)
       return (
-        <div className="flex justify-center">
-          <Badge variant="outline" className={cn('capitalize', statusBadgeColor)}>
+        <div className='flex justify-center'>
+          <Badge
+            variant='outline'
+            className={cn('capitalize', statusBadgeColor)}
+          >
             {row.getValue('active_status')}
           </Badge>
         </div>
@@ -133,14 +132,17 @@ export const categoriesColumns: ColumnDef<Category>[] = [
   {
     accessorKey: 'featured_status',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Featured Status" />
+      <DataTableColumnHeader column={column} title='Featured Status' />
     ),
     cell: ({ row }) => {
       const { featured_status } = row.original
       const featuredStatusBadgeColor = featuredTypes.get(featured_status)
       return (
-        <div className="flex justify-center">
-          <Badge variant="outline" className={cn('capitalize', featuredStatusBadgeColor)}>
+        <div className='flex justify-center'>
+          <Badge
+            variant='outline'
+            className={cn('capitalize', featuredStatusBadgeColor)}
+          >
             {row.getValue('featured_status')}
           </Badge>
         </div>
@@ -153,14 +155,17 @@ export const categoriesColumns: ColumnDef<Category>[] = [
   {
     accessorKey: 'sync_status',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Sync Status" />
+      <DataTableColumnHeader column={column} title='Sync Status' />
     ),
     cell: ({ row }) => {
       const { sync_status } = row.original
       const syncStatusbadgeColor = syncTypes.get(sync_status)
       return (
-        <div className="flex justify-center">
-          <Badge variant="outline" className={cn('capitalize', syncStatusbadgeColor)}>
+        <div className='flex justify-center'>
+          <Badge
+            variant='outline'
+            className={cn('capitalize', syncStatusbadgeColor)}
+          >
             {row.getValue('sync_status')}
           </Badge>
         </div>

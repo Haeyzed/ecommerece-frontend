@@ -1,15 +1,12 @@
 'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
+import { Controller, type UseFormReturn, useForm } from 'react-hook-form'
 
-import { useCreateTimezone, useUpdateTimezone } from '@/features/settings/timezones/api'
-import { type TimezoneFormData, timezoneSchema } from '@/features/settings/timezones/schemas'
-import { useOptionCountries } from '@/features/settings/countries/api'
-import { type Timezone } from '../types'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { cn } from '@/lib/utils'
 
 import { useMediaQuery } from '@/hooks/use-media-query'
-import { cn } from '@/lib/utils'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -29,10 +26,33 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Spinner } from '@/components/ui/spinner'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+
+import { useOptionCountries } from '@/features/settings/countries/api'
+import {
+  useCreateTimezone,
+  useUpdateTimezone,
+} from '@/features/settings/timezones/api'
+import {
+  type TimezoneFormData,
+  timezoneSchema,
+} from '@/features/settings/timezones/schemas'
+
+import { type Timezone } from '../types'
 
 type TimezonesActionDialogProps = {
   currentRow?: Timezone
@@ -41,10 +61,10 @@ type TimezonesActionDialogProps = {
 }
 
 export function TimezonesActionDialog({
-                                        currentRow,
-                                        open,
-                                        onOpenChange,
-                                      }: TimezonesActionDialogProps) {
+  currentRow,
+  open,
+  onOpenChange,
+}: TimezonesActionDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const isEdit = !!currentRow
   const { mutate: createTimezone, isPending: isCreating } = useCreateTimezone()
@@ -53,15 +73,16 @@ export function TimezonesActionDialog({
 
   const form = useForm<TimezoneFormData>({
     resolver: zodResolver(timezoneSchema),
-    defaultValues: isEdit && currentRow
-      ? {
-        name: currentRow.name,
-        country_id: currentRow.country_id,
-      }
-      : {
-        name: '',
-        country_id: 0,
-      },
+    defaultValues:
+      isEdit && currentRow
+        ? {
+            name: currentRow.name,
+            country_id: currentRow.country_id,
+          }
+        : {
+            name: '',
+            country_id: 0,
+          },
   })
 
   const onSubmit = (values: TimezoneFormData) => {
@@ -87,24 +108,28 @@ export function TimezonesActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader className="text-start">
-            <DialogTitle>{isEdit ? 'Edit Timezone' : 'Add New Timezone'}</DialogTitle>
+        <DialogContent className='sm:max-w-lg'>
+          <DialogHeader className='text-start'>
+            <DialogTitle>
+              {isEdit ? 'Edit Timezone' : 'Add New Timezone'}
+            </DialogTitle>
             <DialogDescription>
-              {isEdit ? 'Update the timezone details here. ' : 'Create a new timezone here. '}
+              {isEdit
+                ? 'Update the timezone details here. '
+                : 'Create a new timezone here. '}
               Click save when you&apos;re done.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
-            <TimezoneForm form={form} onSubmit={onSubmit} id="timezone-form" />
+          <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
+            <TimezoneForm form={form} onSubmit={onSubmit} id='timezone-form' />
           </div>
 
           <DialogFooter>
-            <Button type="submit" form="timezone-form" disabled={isLoading}>
+            <Button type='submit' form='timezone-form' disabled={isLoading}>
               {isLoading ? (
                 <>
-                  <Spinner className="mr-2 size-4" />
+                  <Spinner className='mr-2 size-4' />
                   Saving...
                 </>
               ) : (
@@ -120,23 +145,27 @@ export function TimezonesActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className="text-left">
-          <DrawerTitle>{isEdit ? 'Edit Timezone' : 'Add New Timezone'}</DrawerTitle>
+        <DrawerHeader className='text-left'>
+          <DrawerTitle>
+            {isEdit ? 'Edit Timezone' : 'Add New Timezone'}
+          </DrawerTitle>
           <DrawerDescription>
-            {isEdit ? 'Update the timezone details here. ' : 'Create a new timezone here. '}
+            {isEdit
+              ? 'Update the timezone details here. '
+              : 'Create a new timezone here. '}
             Click save when you&apos;re done.
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className="no-scrollbar overflow-y-auto px-4">
-          <TimezoneForm form={form} onSubmit={onSubmit} id="timezone-form" />
+        <div className='no-scrollbar overflow-y-auto px-4'>
+          <TimezoneForm form={form} onSubmit={onSubmit} id='timezone-form' />
         </div>
 
         <DrawerFooter>
-          <Button type="submit" form="timezone-form" disabled={isLoading}>
+          <Button type='submit' form='timezone-form' disabled={isLoading}>
             {isLoading ? (
               <>
-                <Spinner className="mr-2 size-4" />
+                <Spinner className='mr-2 size-4' />
                 Saving...
               </>
             ) : (
@@ -144,7 +173,7 @@ export function TimezonesActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant='outline'>Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -160,7 +189,8 @@ interface TimezoneFormProps {
 }
 
 function TimezoneForm({ form, onSubmit, id, className }: TimezoneFormProps) {
-  const { data: countries = [], isLoading: isLoadingCountries } = useOptionCountries()
+  const { data: countries = [], isLoading: isLoadingCountries } =
+    useOptionCountries()
 
   return (
     <form
@@ -171,11 +201,18 @@ function TimezoneForm({ form, onSubmit, id, className }: TimezoneFormProps) {
       <FieldGroup>
         <Controller
           control={form.control}
-          name="name"
+          name='name'
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor="timezone-name">Name <span className="text-destructive">*</span></FieldLabel>
-              <Input id="timezone-name" placeholder="Africa/Lagos" autoComplete="off" {...field} />
+              <FieldLabel htmlFor='timezone-name'>
+                Name <span className='text-destructive'>*</span>
+              </FieldLabel>
+              <Input
+                id='timezone-name'
+                placeholder='Africa/Lagos'
+                autoComplete='off'
+                {...field}
+              />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -183,21 +220,26 @@ function TimezoneForm({ form, onSubmit, id, className }: TimezoneFormProps) {
 
         <Controller
           control={form.control}
-          name="country_id"
+          name='country_id'
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor="timezone-country">Country <span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel htmlFor='timezone-country'>
+                Country <span className='text-destructive'>*</span>
+              </FieldLabel>
               <Select
                 value={field.value ? String(field.value) : ''}
                 onValueChange={(val) => field.onChange(Number(val))}
                 disabled={isLoadingCountries}
               >
-                <SelectTrigger id="timezone-country">
-                  <SelectValue placeholder="Select a country" />
+                <SelectTrigger id='timezone-country'>
+                  <SelectValue placeholder='Select a country' />
                 </SelectTrigger>
                 <SelectContent>
                   {countries.map((country) => (
-                    <SelectItem key={country.value} value={String(country.value)}>
+                    <SelectItem
+                      key={country.value}
+                      value={String(country.value)}
+                    >
                       {country.label}
                     </SelectItem>
                   ))}

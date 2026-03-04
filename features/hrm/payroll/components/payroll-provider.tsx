@@ -1,10 +1,18 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import useDialogState from '@/hooks/use-dialog-state'
+
 import { type PayrollRun } from '@/features/hrm/payroll/types'
 
-type PayrollDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
+type PayrollDialogType =
+  | 'import'
+  | 'add'
+  | 'edit'
+  | 'delete'
+  | 'export'
+  | 'view'
 
 type PayrollContextType = {
   open: PayrollDialogType | null
@@ -20,7 +28,9 @@ export function PayrollProvider({ children }: { children: React.ReactNode }) {
   const [currentRow, setCurrentRow] = useState<PayrollRun | null>(null)
 
   return (
-    <PayrollContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <PayrollContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </PayrollContext.Provider>
   )

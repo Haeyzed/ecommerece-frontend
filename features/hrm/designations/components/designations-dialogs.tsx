@@ -1,5 +1,6 @@
 'use client'
 
+import { useAuthSession } from '@/features/auth/api'
 import {
   DesignationsActionDialog,
   DesignationsDeleteDialog,
@@ -8,7 +9,6 @@ import {
   DesignationsViewDialog,
   useDesignations,
 } from '@/features/hrm/designations'
-import { useAuthSession } from '@/features/auth/api'
 
 export function DesignationsDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useDesignations()
@@ -25,7 +25,7 @@ export function DesignationsDialogs() {
     <>
       {canCreate && (
         <DesignationsActionDialog
-          key="designation-add"
+          key='designation-add'
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -35,7 +35,7 @@ export function DesignationsDialogs() {
 
       {canImport && (
         <DesignationsImportDialog
-          key="designation-import"
+          key='designation-import'
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -45,7 +45,7 @@ export function DesignationsDialogs() {
 
       {canExport && (
         <DesignationsExportDialog
-          key="designation-export"
+          key='designation-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

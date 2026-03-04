@@ -13,4 +13,3 @@ export const THEMES = [
 ] as const
 
 export type Theme = (typeof THEMES)[number]['name']
-

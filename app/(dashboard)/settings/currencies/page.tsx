@@ -1,20 +1,20 @@
-import {auth} from "@/auth"
-import {ForbiddenError} from "@/features/errors/forbidden";
-import {CurrenciesClient} from "@/features/settings/currencies";
-import {hasPermission} from "@/lib/utils/permissions"
+import { auth } from '@/auth'
+
+import { hasPermission } from '@/lib/utils/permissions'
+
+import { ForbiddenError } from '@/features/errors/forbidden'
+import { CurrenciesClient } from '@/features/settings/currencies'
 
 export const metadata = {
-    title: "Currencies Management",
+  title: 'Currencies Management',
 }
 
 export default async function CurrenciesPage() {
-    const session = await auth()
-    const userPermissions = session?.user?.user_permissions || []
-    const canView = hasPermission(userPermissions, "view currencies")
-    if (!canView) {
-        return (
-            <ForbiddenError/>
-        )
-    }
-    return <CurrenciesClient/>
+  const session = await auth()
+  const userPermissions = session?.user?.user_permissions || []
+  const canView = hasPermission(userPermissions, 'view currencies')
+  if (!canView) {
+    return <ForbiddenError />
+  }
+  return <CurrenciesClient />
 }

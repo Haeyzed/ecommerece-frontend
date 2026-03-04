@@ -1,12 +1,13 @@
 'use client'
 
+import { useAuthSession } from '@/features/auth/api'
+
 import { StatesActionDialog } from './states-action-dialog'
 import { StatesDeleteDialog } from './states-delete-dialog'
 import { StatesExportDialog } from './states-export-dialog'
 import { StatesImportDialog } from './states-import-dialog'
-import { StatesViewDialog } from './states-view-dialog'
 import { useStates } from './states-provider'
-import { useAuthSession } from '@/features/auth/api'
+import { StatesViewDialog } from './states-view-dialog'
 
 export function StatesDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useStates()
@@ -23,7 +24,7 @@ export function StatesDialogs() {
     <>
       {canCreate && (
         <StatesActionDialog
-          key="state-add"
+          key='state-add'
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -33,7 +34,7 @@ export function StatesDialogs() {
 
       {canImport && (
         <StatesImportDialog
-          key="state-import"
+          key='state-import'
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -43,7 +44,7 @@ export function StatesDialogs() {
 
       {canExport && (
         <StatesExportDialog
-          key="state-export"
+          key='state-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

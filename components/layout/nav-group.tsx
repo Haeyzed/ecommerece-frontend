@@ -1,11 +1,20 @@
 'use client'
 
 import { type ReactNode } from 'react'
+
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { HugeiconsIcon } from '@hugeicons/react'
+
 import { ChevronRight } from '@hugeicons/core-free-icons'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { HugeiconsIcon } from '@hugeicons/react'
+
+import { hasPermission } from '@/lib/utils/permissions'
+
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -17,6 +26,9 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from '@/components/ui/sidebar'
+
+import { useAuthSession } from '@/features/auth/api'
+
 import { Badge } from '../ui/badge'
 import {
   DropdownMenu,
@@ -26,9 +38,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
-import { type NavCollapsible, type NavGroup as NavGroupProps, type NavItem, type NavLink } from './types'
-import { useAuthSession } from '@/features/auth/api'
-import { hasPermission } from '@/lib/utils/permissions'
+import {
+  type NavCollapsible,
+  type NavGroup as NavGroupProps,
+  type NavItem,
+  type NavLink,
+} from './types'
 
 export function NavGroup({ title, items }: NavGroupProps) {
   const { state, isMobile } = useSidebar()
@@ -45,8 +60,8 @@ export function NavGroup({ title, items }: NavGroupProps) {
 
     // 2. If it's a collapsible group, check if it has any visible children
     if (item.items) {
-      const visibleChildren = item.items.filter(child =>
-        hasPermission(userPermissions, child.permissions),
+      const visibleChildren = item.items.filter((child) =>
+        hasPermission(userPermissions, child.permissions)
       )
       // Only show group if it has visible children
       return visibleChildren.length > 0
@@ -68,17 +83,30 @@ export function NavGroup({ title, items }: NavGroupProps) {
           // For collapsible items, we need to filter their children inside the map too
           // to ensure restricted children don't show up in the dropdown
           if (item.items) {
-            const filteredChildren = item.items.filter(child =>
-              hasPermission(userPermissions, child.permissions),
+            const filteredChildren = item.items.filter((child) =>
+              hasPermission(userPermissions, child.permissions)
             )
             // Create a new item object with filtered children to pass down
-            const itemWithFilteredChildren = { ...item, items: filteredChildren }
+            const itemWithFilteredChildren = {
+              ...item,
+              items: filteredChildren,
+            }
 
             if (state === 'collapsed' && !isMobile)
               return (
-                <SidebarMenuCollapsedDropdown key={key} item={itemWithFilteredChildren} pathname={pathname} />
+                <SidebarMenuCollapsedDropdown
+                  key={key}
+                  item={itemWithFilteredChildren}
+                  pathname={pathname}
+                />
               )
-            return <SidebarMenuCollapsible key={key} item={itemWithFilteredChildren} pathname={pathname} />
+            return (
+              <SidebarMenuCollapsible
+                key={key}
+                item={itemWithFilteredChildren}
+                pathname={pathname}
+              />
+            )
           }
 
           return <SidebarMenuLink key={key} item={item} pathname={pathname} />
@@ -89,10 +117,16 @@ export function NavGroup({ title, items }: NavGroupProps) {
 }
 
 function NavBadge({ children }: { children: ReactNode }) {
-  return <Badge className="rounded-full px-1 py-0 text-xs">{children}</Badge>
+  return <Badge className='rounded-full px-1 py-0 text-xs'>{children}</Badge>
 }
 
-function SidebarMenuLink({ item, pathname }: { item: NavLink; pathname: string }) {
+function SidebarMenuLink({
+  item,
+  pathname,
+}: {
+  item: NavLink
+  pathname: string
+}) {
   const { setOpenMobile } = useSidebar()
   return (
     <SidebarMenuItem>
@@ -112,9 +146,9 @@ function SidebarMenuLink({ item, pathname }: { item: NavLink; pathname: string }
 }
 
 function SidebarMenuCollapsible({
-                                  item,
-                                  pathname,
-                                }: {
+  item,
+  pathname,
+}: {
   item: NavCollapsible
   pathname: string
 }) {
@@ -123,7 +157,7 @@ function SidebarMenuCollapsible({
     <Collapsible
       asChild
       defaultOpen={checkIsActive(pathname, item, true)}
-      className="group/collapsible"
+      className='group/collapsible'
     >
       <SidebarMenuItem>
         <CollapsibleTrigger asChild>
@@ -134,11 +168,11 @@ function SidebarMenuCollapsible({
             <HugeiconsIcon
               icon={ChevronRight}
               strokeWidth={2}
-              className="ms-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 rtl:rotate-180"
+              className='ms-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 rtl:rotate-180'
             />
           </SidebarMenuButton>
         </CollapsibleTrigger>
-        <CollapsibleContent className="CollapsibleContent">
+        <CollapsibleContent className='CollapsibleContent'>
           <SidebarMenuSub>
             {item.items.map((subItem) => (
               <SidebarMenuSubItem key={subItem.title}>
@@ -162,9 +196,9 @@ function SidebarMenuCollapsible({
 }
 
 function SidebarMenuCollapsedDropdown({
-                                        item,
-                                        pathname,
-                                      }: {
+  item,
+  pathname,
+}: {
   item: NavCollapsible
   pathname: string
 }) {
@@ -182,11 +216,11 @@ function SidebarMenuCollapsedDropdown({
             <HugeiconsIcon
               icon={ChevronRight}
               strokeWidth={2}
-              className="ms-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
+              className='ms-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90'
             />
           </SidebarMenuButton>
         </DropdownMenuTrigger>
-        <DropdownMenuContent side="right" align="start" sideOffset={4}>
+        <DropdownMenuContent side='right' align='start' sideOffset={4}>
           <DropdownMenuLabel>
             {item.title} {item.badge ? `(${item.badge})` : ''}
           </DropdownMenuLabel>
@@ -198,9 +232,9 @@ function SidebarMenuCollapsedDropdown({
                 className={`${checkIsActive(pathname, sub) ? 'bg-secondary' : ''}`}
               >
                 {sub.icon && <sub.icon />}
-                <span className="max-w-52 text-wrap">{sub.title}</span>
+                <span className='max-w-52 text-wrap'>{sub.title}</span>
                 {sub.badge && (
-                  <span className="ms-auto text-xs">{sub.badge}</span>
+                  <span className='ms-auto text-xs'>{sub.badge}</span>
                 )}
               </Link>
             </DropdownMenuItem>

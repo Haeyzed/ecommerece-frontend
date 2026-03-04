@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
 export const unitSchema = z.object({
@@ -44,9 +45,9 @@ export const unitExportSchema = z
       }
       return true
     },
-    { message: 'Please select a user to send the email to', path: ['user_id'] },
+    { message: 'Please select a user to send the email to', path: ['user_id'] }
   )
 
-export type UnitFormData = z.infer<typeof unitSchema>;
-export type UnitImportFormData = z.infer<typeof unitImportSchema>;
-export type UnitExportFormData = z.infer<typeof unitExportSchema>;
+export type UnitFormData = z.infer<typeof unitSchema>
+export type UnitImportFormData = z.infer<typeof unitImportSchema>
+export type UnitExportFormData = z.infer<typeof unitExportSchema>

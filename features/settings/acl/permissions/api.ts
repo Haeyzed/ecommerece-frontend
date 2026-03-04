@@ -1,9 +1,12 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
+
 import type {
   Permission,
   PermissionExportParams,
@@ -15,7 +18,8 @@ import type {
 export const permissionKeys = {
   all: ['permissions'] as const,
   lists: () => [...permissionKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...permissionKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...permissionKeys.lists(), filters] as const,
   details: () => [...permissionKeys.all, 'detail'] as const,
   detail: (id: number) => [...permissionKeys.details(), id] as const,
   options: () => [...permissionKeys.all, 'options'] as const,
@@ -80,11 +84,13 @@ export function useCreatePermission() {
       if (data.guard_name !== undefined) payload.guard_name = data.guard_name
       if (data.module !== undefined) payload.module = data.module
       if (data.description !== undefined) payload.description = data.description
-      if (data.is_active !== undefined && data.is_active !== null) payload.is_active = data.is_active
+      if (data.is_active !== undefined && data.is_active !== null)
+        payload.is_active = data.is_active
 
       const response = await api.post<{ data: Permission }>(BASE_PATH, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -102,25 +108,38 @@ export function useUpdatePermission() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<PermissionFormBody> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<PermissionFormBody>
+    }) => {
       const payload: Record<string, unknown> = {}
 
       if (data.name !== undefined) payload.name = data.name
       if (data.guard_name !== undefined) payload.guard_name = data.guard_name
       if (data.module !== undefined) payload.module = data.module
       if (data.description !== undefined) payload.description = data.description
-      if (data.is_active !== undefined && data.is_active !== null) payload.is_active = data.is_active
+      if (data.is_active !== undefined && data.is_active !== null)
+        payload.is_active = data.is_active
 
-      const response = await api.put<{ data: Permission }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: Permission }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: permissionKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: permissionKeys.detail(data.id) })
+      queryClient.invalidateQueries({
+        queryKey: permissionKeys.detail(data.id),
+      })
       toast.success(data.message)
     },
     onError: (error) => toast.error(error.message),
@@ -152,7 +171,7 @@ export function useBulkActivatePermissions() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
         `${BASE_PATH}/bulk-activate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -172,7 +191,7 @@ export function useBulkDeactivatePermissions() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ deactivated_count: number }>(
         `${BASE_PATH}/bulk-deactivate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response

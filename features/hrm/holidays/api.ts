@@ -1,15 +1,25 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import type { Holiday, HolidayExportParams, HolidayFormBody, HolidayListParams, HolidayOption } from './types'
+
+import type {
+  Holiday,
+  HolidayExportParams,
+  HolidayFormBody,
+  HolidayListParams,
+  HolidayOption,
+} from './types'
 
 export const holidayKeys = {
   all: ['holidays'] as const,
   lists: () => [...holidayKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...holidayKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...holidayKeys.lists(), filters] as const,
   details: () => [...holidayKeys.all, 'detail'] as const,
   detail: (id: number) => [...holidayKeys.details(), id] as const,
   options: () => [...holidayKeys.all, 'options'] as const,
@@ -82,12 +92,15 @@ export function useCreateHoliday() {
 
       if (data.note !== undefined) payload.note = data.note
       if (data.region !== undefined) payload.region = data.region
-      if (data.recurring !== undefined && data.recurring !== null) payload.recurring = data.recurring
-      if (data.is_approved !== undefined && data.is_approved !== null) payload.is_approved = data.is_approved
+      if (data.recurring !== undefined && data.recurring !== null)
+        payload.recurring = data.recurring
+      if (data.is_approved !== undefined && data.is_approved !== null)
+        payload.is_approved = data.is_approved
 
       const response = await api.post<{ data: Holiday }>(BASE_PATH, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -107,7 +120,13 @@ export function useUpdateHoliday() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<HolidayFormBody> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<HolidayFormBody>
+    }) => {
       const payload: Record<string, unknown> = {}
 
       if (data.from_date !== undefined) payload.from_date = data.from_date
@@ -117,9 +136,13 @@ export function useUpdateHoliday() {
       if (data.recurring !== undefined) payload.recurring = data.recurring
       if (data.is_approved !== undefined) payload.is_approved = data.is_approved
 
-      const response = await api.put<{ data: Holiday }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: Holiday }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }
@@ -166,7 +189,7 @@ export function useBulkApproveHolidays() {
     mutationFn: async (ids: number[]) => {
       const response = await api.post<{ approved_count: number }>(
         `${BASE_PATH}/bulk-approve`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -186,7 +209,7 @@ export function useBulkUnapproveHolidays() {
     mutationFn: async (ids: number[]) => {
       const response = await api.post<{ unapproved_count: number }>(
         `${BASE_PATH}/bulk-unapprove`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response

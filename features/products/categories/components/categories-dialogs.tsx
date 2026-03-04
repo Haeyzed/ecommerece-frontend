@@ -1,12 +1,13 @@
 'use client'
 
+import { useAuthSession } from '@/features/auth/api'
+
 import { CategoriesActionDialog } from './categories-action-dialog'
 import { CategoriesDeleteDialog } from './categories-delete-dialog'
 import { CategoriesExportDialog } from './categories-export-dialog'
 import { CategoriesImportDialog } from './categories-import-dialog'
-import { CategoriesViewDialog } from './categories-view-dialog'
 import { useCategories } from './categories-provider'
-import { useAuthSession } from '@/features/auth/api'
+import { CategoriesViewDialog } from './categories-view-dialog'
 
 export function CategoriesDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useCategories()
@@ -23,7 +24,7 @@ export function CategoriesDialogs() {
     <>
       {canCreate && (
         <CategoriesActionDialog
-          key="category-add"
+          key='category-add'
           open={open === 'add'}
           onOpenChange={() => setOpen('add')}
         />
@@ -31,7 +32,7 @@ export function CategoriesDialogs() {
 
       {canImport && (
         <CategoriesImportDialog
-          key="category-import"
+          key='category-import'
           open={open === 'import'}
           onOpenChange={() => setOpen('import')}
         />
@@ -39,7 +40,7 @@ export function CategoriesDialogs() {
 
       {canExport && (
         <CategoriesExportDialog
-          key="category-export"
+          key='category-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

@@ -3,7 +3,6 @@
  * Validation for payment gateway update payload. Mirrors PaymentGatewayRequest.
  * @module features/settings/payment-gateway/schemas
  */
-
 import { z } from 'zod'
 
 export const paymentGatewayModuleStatusSchema = z.object({
@@ -17,4 +16,6 @@ export const paymentGatewayUpdateSchema = z.object({
   module_status: paymentGatewayModuleStatusSchema.optional(),
 })
 
-export type PaymentGatewayUpdateData = z.infer<typeof paymentGatewayUpdateSchema>
+export type PaymentGatewayUpdateData = z.infer<
+  typeof paymentGatewayUpdateSchema
+>

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 interface UseImageUploadProps {
-  onUpload?: (url: string) => void;
+  onUpload?: (url: string) => void
 }
 
 export function useImageUpload({ onUpload }: UseImageUploadProps = {}) {
@@ -17,7 +17,7 @@ export function useImageUpload({ onUpload }: UseImageUploadProps = {}) {
     try {
       setUploading(true)
       // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      await new Promise((resolve) => setTimeout(resolve, 1500))
 
       // Simulate random upload errors (20% chance)
       if (Math.random() < 0.2) {
@@ -60,7 +60,7 @@ export function useImageUpload({ onUpload }: UseImageUploadProps = {}) {
         }
       }
     },
-    [onUpload],
+    [onUpload]
   )
 
   const handleRemove = useCallback(() => {

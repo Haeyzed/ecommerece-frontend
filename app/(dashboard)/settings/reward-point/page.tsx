@@ -1,7 +1,9 @@
 import { auth } from '@/auth'
+
+import { hasPermission } from '@/lib/utils/permissions'
+
 import { ForbiddenError } from '@/features/errors/forbidden'
 import { RewardPointSettingClient } from '@/features/settings/reward-point'
-import { hasPermission } from '@/lib/utils/permissions'
 
 export const metadata = {
   title: 'Reward Point Setting',

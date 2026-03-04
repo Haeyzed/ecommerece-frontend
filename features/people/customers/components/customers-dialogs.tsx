@@ -1,14 +1,15 @@
 'use client'
 
-import { useCustomersContext } from './customers-provider'
 import { useAuthSession } from '@/features/auth/api'
+
 import { CustomersActionDialog } from './customers-action-dialog'
 import { CustomersAddDepositDialog } from './customers-add-deposit-dialog'
 import { CustomersDeleteDialog } from './customers-delete-dialog'
 import { CustomersExportDialog } from './customers-export-dialog'
 import { CustomersImportDialog } from './customers-import-dialog'
-import { CustomersViewDialog } from './customers-view-dialog'
+import { useCustomersContext } from './customers-provider'
 import { CustomersViewDepositDialog } from './customers-view-deposit-dialog'
+import { CustomersViewDialog } from './customers-view-dialog'
 
 export function CustomersDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useCustomersContext()
@@ -26,7 +27,7 @@ export function CustomersDialogs() {
     <>
       {canCreate && (
         <CustomersActionDialog
-          key="customer-add"
+          key='customer-add'
           open={open === 'add'}
           onOpenChange={(value) => setOpen(value ? 'add' : null)}
         />
@@ -34,7 +35,7 @@ export function CustomersDialogs() {
 
       {canImport && (
         <CustomersImportDialog
-          key="customer-import"
+          key='customer-import'
           open={open === 'import'}
           onOpenChange={(value) => setOpen(value ? 'import' : null)}
         />
@@ -42,7 +43,7 @@ export function CustomersDialogs() {
 
       {canExport && (
         <CustomersExportDialog
-          key="customer-export"
+          key='customer-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

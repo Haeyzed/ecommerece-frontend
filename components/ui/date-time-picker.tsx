@@ -1,15 +1,27 @@
 'use client'
 
 import * as React from 'react'
+
 import { format } from 'date-fns'
-import { Calendar } from '@/components/ui/calendar'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Button } from '@/components/ui/button'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
-import { HugeiconsIcon } from '@hugeicons/react'
+
 import { CalendarIcon, Clock03Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
 import { cn } from '@/lib/utils'
+
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import { Field, FieldLabel } from '@/components/ui/field'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from '@/components/ui/input-group'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 
 type DateTimePickerProps = {
   value?: Date
@@ -26,14 +38,14 @@ type DateTimePickerProps = {
  * Value is a single Date; time is stored in the same Date.
  */
 export function DateTimePicker({
-                                 value,
-                                 onChange,
-                                 datePlaceholder = 'Pick date and time',
-                                 disabled,
-                                 id,
-                                 className,
-                                 label,
-                               }: DateTimePickerProps) {
+  value,
+  onChange,
+  datePlaceholder = 'Pick date and time',
+  disabled,
+  id,
+  className,
+  label,
+}: DateTimePickerProps) {
   const [open, setOpen] = React.useState(false)
   const [timeValue, setTimeValue] = React.useState(() => {
     if (value) {
@@ -79,11 +91,15 @@ export function DateTimePicker({
   const trigger = (
     <Button
       id={id}
-      variant="outline"
+      variant='outline'
       className={cn('justify-start px-2.5 font-normal', className)}
       disabled={disabled}
     >
-      <HugeiconsIcon icon={CalendarIcon} strokeWidth={2} data-icon="inline-start" />
+      <HugeiconsIcon
+        icon={CalendarIcon}
+        strokeWidth={2}
+        data-icon='inline-start'
+      />
       {displayLabel}
     </Button>
   )
@@ -91,32 +107,41 @@ export function DateTimePicker({
   const content = (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>{trigger}</PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent className='w-auto p-0' align='start'>
         <Calendar
-          mode="single"
+          mode='single'
           selected={value}
           onSelect={handleDateSelect}
-          className="rounded-b-none border-b"
+          className='rounded-b-none border-b'
         />
-        <div className="p-3">
+        <div className='p-3'>
           <Field>
-            <FieldLabel className="text-xs">Time</FieldLabel>
+            <FieldLabel className='text-xs'>Time</FieldLabel>
             <InputGroup>
               <InputGroupInput
-                type="time"
-                step="1"
+                type='time'
+                step='1'
                 value={timeValue}
                 onChange={handleTimeChange}
-                className="appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                className='appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none'
               />
               <InputGroupAddon>
-                <HugeiconsIcon icon={Clock03Icon} strokeWidth={2} className="text-muted-foreground" />
+                <HugeiconsIcon
+                  icon={Clock03Icon}
+                  strokeWidth={2}
+                  className='text-muted-foreground'
+                />
               </InputGroupAddon>
             </InputGroup>
           </Field>
         </div>
-        <div className="flex gap-2 border-t p-2">
-          <Button variant="outline" size="sm" className="w-full" onClick={() => setOpen(false)}>
+        <div className='flex gap-2 border-t p-2'>
+          <Button
+            variant='outline'
+            size='sm'
+            className='w-full'
+            onClick={() => setOpen(false)}
+          >
             Done
           </Button>
         </div>

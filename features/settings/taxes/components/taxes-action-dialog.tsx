@@ -1,14 +1,12 @@
 'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
+import { Controller, type UseFormReturn, useForm } from 'react-hook-form'
 
-import { useCreateTax, useUpdateTax } from '@/features/settings/taxes/api'
-import { type TaxFormData, taxSchema } from '@/features/settings/taxes/schemas'
-import { type Tax } from '../types'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { cn } from '@/lib/utils'
 
 import { useMediaQuery } from '@/hooks/use-media-query'
-import { cn } from '@/lib/utils'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -28,10 +26,21 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Switch } from '@/components/ui/switch'
 import { Spinner } from '@/components/ui/spinner'
+import { Switch } from '@/components/ui/switch'
+
+import { useCreateTax, useUpdateTax } from '@/features/settings/taxes/api'
+import { type TaxFormData, taxSchema } from '@/features/settings/taxes/schemas'
+
+import { type Tax } from '../types'
 
 type TaxActionDialogProps = {
   currentRow?: Tax
@@ -40,10 +49,10 @@ type TaxActionDialogProps = {
 }
 
 export function TaxesActionDialog({
-                                    currentRow,
-                                    open,
-                                    onOpenChange,
-                                  }: TaxActionDialogProps) {
+  currentRow,
+  open,
+  onOpenChange,
+}: TaxActionDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const isEdit = !!currentRow
   const { mutate: createTax, isPending: isCreating } = useCreateTax()
@@ -54,17 +63,17 @@ export function TaxesActionDialog({
     resolver: zodResolver(taxSchema),
     defaultValues: isEdit
       ? {
-        name: currentRow.name,
-        rate: currentRow.rate,
-        woocommerce_tax_id: currentRow.woocommerce_tax_id,
-        is_active: currentRow.is_active,
-      }
+          name: currentRow.name,
+          rate: currentRow.rate,
+          woocommerce_tax_id: currentRow.woocommerce_tax_id,
+          is_active: currentRow.is_active,
+        }
       : {
-        name: '',
-        rate: 0,
-        woocommerce_tax_id: null,
-        is_active: true,
-      },
+          name: '',
+          rate: 0,
+          woocommerce_tax_id: null,
+          is_active: true,
+        },
   })
 
   const onSubmit = (values: TaxFormData) => {
@@ -90,28 +99,26 @@ export function TaxesActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader className="text-start">
+        <DialogContent className='sm:max-w-lg'>
+          <DialogHeader className='text-start'>
             <DialogTitle>{isEdit ? 'Edit Tax' : 'Add New Tax'}</DialogTitle>
             <DialogDescription>
-              {isEdit ? 'Update the tax details here. ' : 'Create a new tax here. '}
+              {isEdit
+                ? 'Update the tax details here. '
+                : 'Create a new tax here. '}
               Click save when you&apos;re done.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
-            <TaxForm
-              form={form}
-              onSubmit={onSubmit}
-              id="tax-form"
-            />
+          <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
+            <TaxForm form={form} onSubmit={onSubmit} id='tax-form' />
           </div>
 
           <DialogFooter>
-            <Button type="submit" form="tax-form" disabled={isLoading}>
+            <Button type='submit' form='tax-form' disabled={isLoading}>
               {isLoading ? (
                 <>
-                  <Spinner className="mr-2 size-4" />
+                  <Spinner className='mr-2 size-4' />
                   Saving...
                 </>
               ) : (
@@ -127,27 +134,25 @@ export function TaxesActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className="text-left">
+        <DrawerHeader className='text-left'>
           <DrawerTitle>{isEdit ? 'Edit Tax' : 'Add New Tax'}</DrawerTitle>
           <DrawerDescription>
-            {isEdit ? 'Update the tax details here. ' : 'Create a new tax here. '}
+            {isEdit
+              ? 'Update the tax details here. '
+              : 'Create a new tax here. '}
             Click save when you&apos;re done.
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className="no-scrollbar overflow-y-auto px-4">
-          <TaxForm
-            form={form}
-            onSubmit={onSubmit}
-            id="tax-form"
-          />
+        <div className='no-scrollbar overflow-y-auto px-4'>
+          <TaxForm form={form} onSubmit={onSubmit} id='tax-form' />
         </div>
 
         <DrawerFooter>
-          <Button type="submit" form="tax-form" disabled={isLoading}>
+          <Button type='submit' form='tax-form' disabled={isLoading}>
             {isLoading ? (
               <>
-                <Spinner className="mr-2 size-4" />
+                <Spinner className='mr-2 size-4' />
                 Saving...
               </>
             ) : (
@@ -155,7 +160,7 @@ export function TaxesActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant='outline'>Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -180,14 +185,16 @@ function TaxForm({ form, onSubmit, id, className }: TaxFormProps) {
       <FieldGroup>
         <Controller
           control={form.control}
-          name="name"
+          name='name'
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor="tax-name">Name <span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel htmlFor='tax-name'>
+                Name <span className='text-destructive'>*</span>
+              </FieldLabel>
               <Input
-                id="tax-name"
-                placeholder="Tax name (e.g. VAT)"
-                autoComplete="off"
+                id='tax-name'
+                placeholder='Tax name (e.g. VAT)'
+                autoComplete='off'
                 {...field}
               />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
@@ -197,25 +204,27 @@ function TaxForm({ form, onSubmit, id, className }: TaxFormProps) {
 
         <Controller
           control={form.control}
-          name="rate"
+          name='rate'
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor="tax-rate">Rate (%) <span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel htmlFor='tax-rate'>
+                Rate (%) <span className='text-destructive'>*</span>
+              </FieldLabel>
               <Input
-                id="tax-rate"
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="0.00"
-                autoComplete="off"
+                id='tax-rate'
+                type='number'
+                step='0.01'
+                min='0'
+                placeholder='0.00'
+                autoComplete='off'
                 {...field}
                 onChange={(e) => {
-                  field.onChange(e.target.value === '' ? 0 : Number(e.target.value))
+                  field.onChange(
+                    e.target.value === '' ? 0 : Number(e.target.value)
+                  )
                 }}
               />
-              <FieldDescription>
-                The tax percentage rate.
-              </FieldDescription>
+              <FieldDescription>The tax percentage rate.</FieldDescription>
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -223,18 +232,20 @@ function TaxForm({ form, onSubmit, id, className }: TaxFormProps) {
 
         <Controller
           control={form.control}
-          name="woocommerce_tax_id"
+          name='woocommerce_tax_id'
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor="tax-woo-id">WooCommerce Tax ID</FieldLabel>
+              <FieldLabel htmlFor='tax-woo-id'>WooCommerce Tax ID</FieldLabel>
               <Input
-                id="tax-woo-id"
-                type="number"
-                placeholder="ID from WooCommerce"
-                autoComplete="off"
+                id='tax-woo-id'
+                type='number'
+                placeholder='ID from WooCommerce'
+                autoComplete='off'
                 {...field}
                 value={field.value ?? ''}
-                onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                onChange={(e) =>
+                  field.onChange(e.target.value ? Number(e.target.value) : null)
+                }
               />
               <FieldDescription>
                 Optional ID for syncing with WooCommerce.
@@ -246,20 +257,20 @@ function TaxForm({ form, onSubmit, id, className }: TaxFormProps) {
 
         <Controller
           control={form.control}
-          name="is_active"
+          name='is_active'
           render={({ field, fieldState }) => (
             <Field
               data-invalid={!!fieldState.error}
-              className="flex flex-row items-center justify-between rounded-md border p-4"
+              className='flex flex-row items-center justify-between rounded-md border p-4'
             >
-              <div className="space-y-0.5">
-                <FieldLabel htmlFor="tax-active">Active Status</FieldLabel>
+              <div className='space-y-0.5'>
+                <FieldLabel htmlFor='tax-active'>Active Status</FieldLabel>
                 <FieldDescription>
                   Disabling this will hide the tax from calculations.
                 </FieldDescription>
               </div>
               <Switch
-                id="tax-active"
+                id='tax-active'
                 checked={!!field.value}
                 onCheckedChange={field.onChange}
               />

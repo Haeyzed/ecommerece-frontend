@@ -1,6 +1,5 @@
 import { CustomerGroup } from '@/features/settings/customer-groups/types'
 
-
 export interface Customer {
   id: number
   customer_group_id: number | null

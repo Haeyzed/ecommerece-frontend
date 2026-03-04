@@ -1,8 +1,18 @@
 'use client'
 
+import { cn } from '@/lib/utils'
+
+import { useMediaQuery } from '@/hooks/use-media-query'
+
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import {
   Drawer,
   DrawerClose,
@@ -13,8 +23,7 @@ import {
   DrawerTitle,
 } from '@/components/ui/drawer'
 import { Separator } from '@/components/ui/separator'
-import { useMediaQuery } from '@/hooks/use-media-query'
-import { cn } from '@/lib/utils'
+
 import type { Audit } from '../types'
 import { formatAuditValues } from '../utils/format-audit-values'
 
@@ -30,10 +39,10 @@ type AuditLogViewDialogProps = {
 }
 
 export function AuditLogViewDialog({
-                                     currentRow,
-                                     open,
-                                     onOpenChange,
-                                   }: AuditLogViewDialogProps) {
+  currentRow,
+  open,
+  onOpenChange,
+}: AuditLogViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
 
   if (!currentRow) return null
@@ -45,15 +54,15 @@ export function AuditLogViewDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="sm:max-w-xl">
-          <DialogHeader className="text-start">
+        <DialogContent className='sm:max-w-xl'>
+          <DialogHeader className='text-start'>
             <DialogTitle>Audit Details</DialogTitle>
             <DialogDescription>
               View full audit record and value changes.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="max-h-[70vh] overflow-y-auto py-1 pe-2">
+          <div className='max-h-[70vh] overflow-y-auto py-1 pe-2'>
             <AuditView currentRow={currentRow} />
           </div>
         </DialogContent>
@@ -64,20 +73,20 @@ export function AuditLogViewDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className="text-left">
+        <DrawerHeader className='text-left'>
           <DrawerTitle>Audit Details</DrawerTitle>
           <DrawerDescription>
             View full audit record and value changes.
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className="max-h-[80vh] overflow-y-auto px-4">
+        <div className='max-h-[80vh] overflow-y-auto px-4'>
           <AuditView currentRow={currentRow} />
         </div>
 
         <DrawerFooter>
           <DrawerClose asChild>
-            <Button variant="outline">Close</Button>
+            <Button variant='outline'>Close</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -107,58 +116,58 @@ function AuditView({ className, currentRow }: AuditViewProps) {
 
   return (
     <div className={cn('space-y-6', className)}>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Date</div>
-          <div className="text-sm tabular-nums">
+      <div className='grid gap-4 sm:grid-cols-2'>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>Date</div>
+          <div className='text-sm tabular-nums'>
             {currentRow.created_at
               ? new Date(currentRow.created_at).toLocaleString()
               : 'N/A'}
           </div>
         </div>
 
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Event</div>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>Event</div>
           <Badge variant={eventVariant}>{currentRow.event}</Badge>
         </div>
 
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Model</div>
-          <div className="text-sm font-medium">
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>Model</div>
+          <div className='text-sm font-medium'>
             {getAuditableTypeLabel(currentRow.auditable_type)}
           </div>
         </div>
 
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">ID</div>
-          <div className="text-sm tabular-nums">
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>ID</div>
+          <div className='text-sm tabular-nums'>
             {currentRow.auditable_id ?? '-'}
           </div>
         </div>
 
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">User</div>
-          <div className="text-sm">{currentRow.user?.name ?? '—'}</div>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>User</div>
+          <div className='text-sm'>{currentRow.user?.name ?? '—'}</div>
         </div>
 
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
             IP Address
           </div>
-          <div className="text-sm tabular-nums text-muted-foreground">
+          <div className='text-sm text-muted-foreground tabular-nums'>
             {currentRow.ip_address ?? '—'}
           </div>
         </div>
       </div>
 
       {currentRow.url && (
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">URL</div>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>URL</div>
           <a
             href={currentRow.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="break-all text-sm text-primary hover:underline"
+            target='_blank'
+            rel='noopener noreferrer'
+            className='text-sm break-all text-primary hover:underline'
           >
             {currentRow.url}
           </a>
@@ -168,46 +177,46 @@ function AuditView({ className, currentRow }: AuditViewProps) {
       {(hasOld || hasNew) && (
         <>
           <Separator />
-          <div className="space-y-4">
-            <div className="text-sm font-medium text-muted-foreground">
+          <div className='space-y-4'>
+            <div className='text-sm font-medium text-muted-foreground'>
               Value Changes
             </div>
 
             {hasOld && (
-              <div className="space-y-1.5">
-                <p className="text-xs font-semibold text-destructive">
+              <div className='space-y-1.5'>
+                <p className='text-xs font-semibold text-destructive'>
                   Old values
                 </p>
-                <div className="space-y-1 rounded border bg-muted/30 p-3 text-sm">
+                <div className='space-y-1 rounded border bg-muted/30 p-3 text-sm'>
                   {formatAuditValues(currentRow.old_values).map(
                     ({ label, value }) => (
-                      <div key={label} className="flex gap-2">
-                        <span className="shrink-0 font-medium text-muted-foreground">
+                      <div key={label} className='flex gap-2'>
+                        <span className='shrink-0 font-medium text-muted-foreground'>
                           {label}:
                         </span>
-                        <span className="break-all">{value}</span>
+                        <span className='break-all'>{value}</span>
                       </div>
-                    ),
+                    )
                   )}
                 </div>
               </div>
             )}
 
             {hasNew && (
-              <div className="space-y-1.5">
-                <p className="text-xs font-semibold text-green-600 dark:text-green-400">
+              <div className='space-y-1.5'>
+                <p className='text-xs font-semibold text-green-600 dark:text-green-400'>
                   New values
                 </p>
-                <div className="space-y-1 rounded border bg-muted/30 p-3 text-sm">
+                <div className='space-y-1 rounded border bg-muted/30 p-3 text-sm'>
                   {formatAuditValues(currentRow.new_values).map(
                     ({ label, value }) => (
-                      <div key={label} className="flex gap-2">
-                        <span className="shrink-0 font-medium text-muted-foreground">
+                      <div key={label} className='flex gap-2'>
+                        <span className='shrink-0 font-medium text-muted-foreground'>
                           {label}:
                         </span>
-                        <span className="break-all">{value}</span>
+                        <span className='break-all'>{value}</span>
                       </div>
-                    ),
+                    )
                   )}
                 </div>
               </div>
@@ -219,11 +228,11 @@ function AuditView({ className, currentRow }: AuditViewProps) {
       {currentRow.user_agent && (
         <>
           <Separator />
-          <div className="space-y-2">
-            <div className="text-sm font-medium text-muted-foreground">
+          <div className='space-y-2'>
+            <div className='text-sm font-medium text-muted-foreground'>
               User Agent
             </div>
-            <div className="break-all text-xs text-muted-foreground">
+            <div className='text-xs break-all text-muted-foreground'>
               {currentRow.user_agent}
             </div>
           </div>

@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
 export const taxSchema = z.object({
@@ -42,9 +43,9 @@ export const taxExportSchema = z
       }
       return true
     },
-    { message: 'Please select a user to send the email to', path: ['user_id'] },
+    { message: 'Please select a user to send the email to', path: ['user_id'] }
   )
 
-export type TaxFormData = z.infer<typeof taxSchema>;
-export type TaxImportFormData = z.infer<typeof taxImportSchema>;
-export type TaxExportFormData = z.infer<typeof taxExportSchema>;
+export type TaxFormData = z.infer<typeof taxSchema>
+export type TaxImportFormData = z.infer<typeof taxImportSchema>
+export type TaxExportFormData = z.infer<typeof taxExportSchema>

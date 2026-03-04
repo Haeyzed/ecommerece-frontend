@@ -1,15 +1,20 @@
 'use client'
 
 import { useState } from 'react'
-import { HugeiconsIcon } from '@hugeicons/react'
+
 import { Alert02Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { useDeleteAttendance } from '@/features/hrm/attendances/api'
-import { type Attendance } from '../types'
+
 import { useAuthSession } from '@/features/auth/api'
+import { useDeleteAttendance } from '@/features/hrm/attendances/api'
+
+import { type Attendance } from '../types'
 
 type AttendancesDeleteDialogProps = {
   open: boolean
@@ -20,10 +25,10 @@ type AttendancesDeleteDialogProps = {
 const CONFIRM_WORD = 'DELETE'
 
 export function AttendancesDeleteDialog({
-                                          open,
-                                          onOpenChange,
-                                          currentRow,
-                                        }: AttendancesDeleteDialogProps) {
+  open,
+  onOpenChange,
+  currentRow,
+}: AttendancesDeleteDialogProps) {
   const [value, setValue] = useState('')
   const { mutate: deleteAttendance, isPending } = useDeleteAttendance()
   const { data: session } = useAuthSession()
@@ -50,10 +55,10 @@ export function AttendancesDeleteDialog({
       handleConfirm={handleDelete}
       disabled={value.trim() !== CONFIRM_WORD || isPending}
       title={
-        <span className="text-destructive">
+        <span className='text-destructive'>
           <HugeiconsIcon
             icon={Alert02Icon}
-            className="me-1 inline-block stroke-destructive"
+            className='me-1 inline-block stroke-destructive'
             size={18}
             strokeWidth={2}
           />{' '}
@@ -61,18 +66,20 @@ export function AttendancesDeleteDialog({
         </span>
       }
       desc={
-        <div className="space-y-4">
-          <p className="mb-2">
+        <div className='space-y-4'>
+          <p className='mb-2'>
             Are you sure you want to delete the attendance record for{' '}
-            <span className="font-bold">{currentRow.employee?.name || `Emp #${currentRow.employee_id}`}</span> on{' '}
-            <span className="font-bold">{currentRow.date}</span>?
+            <span className='font-bold'>
+              {currentRow.employee?.name || `Emp #${currentRow.employee_id}`}
+            </span>{' '}
+            on <span className='font-bold'>{currentRow.date}</span>?
             <br />
-            This action will permanently remove the record from the system.
-            This cannot be undone.
+            This action will permanently remove the record from the system. This
+            cannot be undone.
           </p>
 
-          <Label className="my-2 flex flex-col items-start gap-1.5">
-            <span className="">Confirm by typing "{CONFIRM_WORD}":</span>
+          <Label className='my-2 flex flex-col items-start gap-1.5'>
+            <span className=''>Confirm by typing "{CONFIRM_WORD}":</span>
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
@@ -80,7 +87,7 @@ export function AttendancesDeleteDialog({
             />
           </Label>
 
-          <Alert variant="destructive">
+          <Alert variant='destructive'>
             <AlertTitle>Warning!</AlertTitle>
             <AlertDescription>
               Please be careful, this operation can not be rolled back.
@@ -88,7 +95,7 @@ export function AttendancesDeleteDialog({
           </Alert>
         </div>
       }
-      confirmText="Delete"
+      confirmText='Delete'
       destructive
     />
   )

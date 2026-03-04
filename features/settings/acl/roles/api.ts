@@ -1,15 +1,25 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import type { Role, RoleExportParams, RoleFormBody, RoleListParams, RoleOption } from './types'
+
+import type {
+  Role,
+  RoleExportParams,
+  RoleFormBody,
+  RoleListParams,
+  RoleOption,
+} from './types'
 
 export const roleKeys = {
   all: ['roles'] as const,
   lists: () => [...roleKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...roleKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...roleKeys.lists(), filters] as const,
   details: () => [...roleKeys.all, 'detail'] as const,
   detail: (id: number) => [...roleKeys.details(), id] as const,
   options: () => [...roleKeys.all, 'options'] as const,
@@ -73,12 +83,14 @@ export function useCreateRole() {
 
       if (data.description !== undefined) payload.description = data.description
       if (data.guard_name !== undefined) payload.guard_name = data.guard_name
-      if (data.is_active !== undefined && data.is_active !== null) payload.is_active = data.is_active
+      if (data.is_active !== undefined && data.is_active !== null)
+        payload.is_active = data.is_active
       if (data.permissions !== undefined) payload.permissions = data.permissions
 
       const response = await api.post<{ data: Role }>(BASE_PATH, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -96,18 +108,29 @@ export function useUpdateRole() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<RoleFormBody> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<RoleFormBody>
+    }) => {
       const payload: Record<string, unknown> = {}
 
       if (data.name !== undefined) payload.name = data.name
       if (data.description !== undefined) payload.description = data.description
       if (data.guard_name !== undefined) payload.guard_name = data.guard_name
-      if (data.is_active !== undefined && data.is_active !== null) payload.is_active = data.is_active
+      if (data.is_active !== undefined && data.is_active !== null)
+        payload.is_active = data.is_active
       if (data.permissions !== undefined) payload.permissions = data.permissions
 
-      const response = await api.put<{ data: Role }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: Role }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }
@@ -146,7 +169,7 @@ export function useBulkActivateRoles() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
         `${BASE_PATH}/bulk-activate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -166,7 +189,7 @@ export function useBulkDeactivateRoles() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ deactivated_count: number }>(
         `${BASE_PATH}/bulk-deactivate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response

@@ -1,16 +1,19 @@
 import { z } from 'zod'
+
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
-export const leaveSchema = z.object({
-  employee_id: z.number().min(1, 'Employee is required'),
-  leave_type_id: z.number().min(1, 'Leave type is required'),
-  start_date: z.string().min(1, 'Start date is required'),
-  end_date: z.string().min(1, 'End date is required'),
-  status: z.enum(['pending', 'approved', 'rejected']).optional(),
-}).refine((data) => new Date(data.end_date) >= new Date(data.start_date), {
-  message: 'End date must be after or equal to start date',
-  path: ['end_date'],
-})
+export const leaveSchema = z
+  .object({
+    employee_id: z.number().min(1, 'Employee is required'),
+    leave_type_id: z.number().min(1, 'Leave type is required'),
+    start_date: z.string().min(1, 'Start date is required'),
+    end_date: z.string().min(1, 'End date is required'),
+    status: z.enum(['pending', 'approved', 'rejected']).optional(),
+  })
+  .refine((data) => new Date(data.end_date) >= new Date(data.start_date), {
+    message: 'End date must be after or equal to start date',
+    path: ['end_date'],
+  })
 
 export const leaveImportSchema = z.object({
   file: z
@@ -49,9 +52,9 @@ export const leaveExportSchema = z
     {
       message: 'User is required when sending an email',
       path: ['user_id'],
-    },
+    }
   )
 
-export type LeaveFormData = z.infer<typeof leaveSchema>;
-export type LeaveImportFormData = z.infer<typeof leaveImportSchema>;
-export type LeaveExportFormData = z.infer<typeof leaveExportSchema>;
+export type LeaveFormData = z.infer<typeof leaveSchema>
+export type LeaveImportFormData = z.infer<typeof leaveImportSchema>
+export type LeaveExportFormData = z.infer<typeof leaveExportSchema>

@@ -8,11 +8,11 @@ export interface SpacerProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function Spacer({
-                         orientation = 'horizontal',
-                         size,
-                         style = {},
-                         ...props
-                       }: SpacerProps) {
+  orientation = 'horizontal',
+  size,
+  style = {},
+  ...props
+}: SpacerProps) {
   const computedStyle = {
     ...style,
     ...(orientation === 'horizontal' && !size && { flex: 1 }),

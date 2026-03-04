@@ -1,11 +1,13 @@
-import { cn } from '@/lib/utils'
+import { getCookie } from '@/lib/cookies'
 import { LayoutProvider } from '@/lib/providers/layout-provider'
+import { LockScreenProvider } from '@/lib/providers/lockscreen-provider'
 import { SearchProvider } from '@/lib/providers/search-provider'
+import { cn } from '@/lib/utils'
+
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
+
 import { AppSidebar } from '@/components/layout/app-sidebar'
 import { SkipToMain } from '@/components/skip-to-main'
-import { getCookie } from '@/lib/cookies'
-import { LockScreenProvider } from '@/lib/providers/lockscreen-provider'
 
 type AuthenticatedLayoutProps = {
   children?: React.ReactNode
@@ -32,7 +34,7 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
 
                 // If layout is fixed and sidebar is inset,
                 // set the height to 100svh - spacing (total margins) to prevent overflow
-                'peer-data-[variant=inset]:has-data-[layout=fixed]:h-[calc(100svh-(var(--spacing)*4))]',
+                'peer-data-[variant=inset]:has-data-[layout=fixed]:h-[calc(100svh-(var(--spacing)*4))]'
               )}
             >
               {children}

@@ -1,18 +1,20 @@
 ﻿'use client'
 
-import { PayrollActionDialog, usePayroll } from '@/features/hrm/payroll'
 import { useAuthSession } from '@/features/auth/api'
+import { PayrollActionDialog, usePayroll } from '@/features/hrm/payroll'
 
 export function PayrollDialogs() {
   const { open, setOpen } = usePayroll()
   const { data: session } = useAuthSession()
   const userPermissions = session?.user?.user_permissions || []
-  const canCreate = userPermissions.includes('create payrolls') || userPermissions.includes('view payroll runs')
+  const canCreate =
+    userPermissions.includes('create payrolls') ||
+    userPermissions.includes('view payroll runs')
   return (
     <>
       {canCreate && (
         <PayrollActionDialog
-          key="payroll-add"
+          key='payroll-add'
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)

@@ -1,10 +1,18 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import useDialogState from '@/hooks/use-dialog-state'
+
 import { type Category } from '../types'
 
-type CategoriesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
+type CategoriesDialogType =
+  | 'import'
+  | 'add'
+  | 'edit'
+  | 'delete'
+  | 'export'
+  | 'view'
 
 type CategoriesContextType = {
   open: CategoriesDialogType | null
@@ -13,14 +21,22 @@ type CategoriesContextType = {
   setCurrentRow: React.Dispatch<React.SetStateAction<Category | null>>
 }
 
-const CategoriesContext = React.createContext<CategoriesContextType | null>(null)
+const CategoriesContext = React.createContext<CategoriesContextType | null>(
+  null
+)
 
-export function CategoriesProvider({ children }: { children: React.ReactNode }) {
+export function CategoriesProvider({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   const [open, setOpen] = useDialogState<CategoriesDialogType>(null)
   const [currentRow, setCurrentRow] = useState<Category | null>(null)
 
   return (
-    <CategoriesContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <CategoriesContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </CategoriesContext.Provider>
   )

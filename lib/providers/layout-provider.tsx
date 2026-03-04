@@ -1,5 +1,6 @@
 'use client'
 import { createContext, useContext, useState } from 'react'
+
 import { getCookie, setCookie } from '@/lib/cookies'
 
 export type Collapsible = 'offcanvas' | 'icon' | 'none'
@@ -48,7 +49,7 @@ export function LayoutProvider({ children }: LayoutProviderProps) {
     setCookie(
       LAYOUT_COLLAPSIBLE_COOKIE_NAME,
       newCollapsible,
-      LAYOUT_COOKIE_MAX_AGE,
+      LAYOUT_COOKIE_MAX_AGE
     )
   }
 

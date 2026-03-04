@@ -1,12 +1,13 @@
 'use client'
 
+import { useAuthSession } from '@/features/auth/api'
+
 import { UnitsActionDialog } from './units-action-dialog'
 import { UnitsDeleteDialog } from './units-delete-dialog'
 import { UnitsExportDialog } from './units-export-dialog'
 import { UnitsImportDialog } from './units-import-dialog'
-import { UnitsViewDialog } from './units-view-dialog'
 import { useUnits } from './units-provider'
-import { useAuthSession } from '@/features/auth/api'
+import { UnitsViewDialog } from './units-view-dialog'
 
 export function UnitsDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useUnits()
@@ -23,7 +24,7 @@ export function UnitsDialogs() {
     <>
       {canCreate && (
         <UnitsActionDialog
-          key="unit-add"
+          key='unit-add'
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -33,7 +34,7 @@ export function UnitsDialogs() {
 
       {canImport && (
         <UnitsImportDialog
-          key="unit-import"
+          key='unit-import'
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -43,7 +44,7 @@ export function UnitsDialogs() {
 
       {canExport && (
         <UnitsExportDialog
-          key="unit-export"
+          key='unit-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

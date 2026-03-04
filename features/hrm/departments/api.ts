@@ -1,9 +1,12 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
+
 import type {
   Department,
   DepartmentExportParams,
@@ -16,11 +19,13 @@ import type {
 export const departmentKeys = {
   all: ['departments'] as const,
   lists: () => [...departmentKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...departmentKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...departmentKeys.lists(), filters] as const,
   details: () => [...departmentKeys.all, 'detail'] as const,
   detail: (id: number) => [...departmentKeys.details(), id] as const,
   options: () => [...departmentKeys.all, 'options'] as const,
-  designations: (departmentId: number) => [...departmentKeys.all, 'designations', departmentId] as const,
+  designations: (departmentId: number) =>
+    [...departmentKeys.all, 'designations', departmentId] as const,
   template: () => [...departmentKeys.all, 'template'] as const,
 }
 
@@ -75,7 +80,7 @@ export function useDesignationsByDepartment(departmentId: number | null) {
     queryKey: departmentKeys.designations(departmentId ?? 0),
     queryFn: async () => {
       const response = await api.get<DesignationOption[]>(
-        `${BASE_PATH}/${departmentId}/designations`,
+        `${BASE_PATH}/${departmentId}/designations`
       )
       return response.data ?? []
     },
@@ -92,11 +97,13 @@ export function useCreateDepartment() {
       const payload: Record<string, unknown> = {
         name: data.name,
       }
-      if (data.is_active !== undefined && data.is_active !== null) payload.is_active = data.is_active
+      if (data.is_active !== undefined && data.is_active !== null)
+        payload.is_active = data.is_active
 
       const response = await api.post<{ data: Department }>(BASE_PATH, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -117,21 +124,33 @@ export function useUpdateDepartment() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<DepartmentFormBody> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<DepartmentFormBody>
+    }) => {
       const payload: Record<string, unknown> = {}
       if (data.name !== undefined) payload.name = data.name
       if (data.is_active !== undefined) payload.is_active = data.is_active
 
-      const response = await api.put<{ data: Department }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: Department }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: departmentKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: departmentKeys.detail(data.id) })
+      queryClient.invalidateQueries({
+        queryKey: departmentKeys.detail(data.id),
+      })
       queryClient.invalidateQueries({ queryKey: departmentKeys.options() })
       toast.success(data.message)
     },
@@ -169,7 +188,7 @@ export function useBulkActivateDepartments() {
     mutationFn: async (ids: number[]) => {
       const response = await api.post<{ activated_count: number }>(
         `${BASE_PATH}/bulk-activate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -190,7 +209,7 @@ export function useBulkDeactivateDepartments() {
     mutationFn: async (ids: number[]) => {
       const response = await api.post<{ deactivated_count: number }>(
         `${BASE_PATH}/bulk-deactivate`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response

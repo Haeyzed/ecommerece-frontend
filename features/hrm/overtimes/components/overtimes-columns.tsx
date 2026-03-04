@@ -1,13 +1,18 @@
 'use client'
 
 import { type ColumnDef } from '@tanstack/react-table'
+
 import { cn } from '@/lib/utils'
+
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
+
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
+
 import { overtimeStatusStyles } from '@/features/hrm/overtimes/constants'
 import { type Overtime } from '@/features/hrm/overtimes/types'
+
 import { DataTableRowActions } from './data-table-row-actions'
 
 export const overtimesColumns: ColumnDef<Overtime>[] = [
@@ -20,8 +25,8 @@ export const overtimesColumns: ColumnDef<Overtime>[] = [
           (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
+        aria-label='Select all'
+        className='translate-y-[2px]'
       />
     ),
     meta: {
@@ -31,8 +36,8 @@ export const overtimesColumns: ColumnDef<Overtime>[] = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
+        aria-label='Select row'
+        className='translate-y-[2px]'
       />
     ),
     enableSorting: false,
@@ -41,17 +46,17 @@ export const overtimesColumns: ColumnDef<Overtime>[] = [
   {
     accessorKey: 'employee_name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Employee" />
+      <DataTableColumnHeader column={column} title='Employee' />
     ),
     cell: ({ row }) => (
-      <LongText className="max-w-36 font-semibold">
+      <LongText className='max-w-36 font-semibold'>
         {row.original.employee?.name || `Emp #${row.original.employee_id}`}
       </LongText>
     ),
     meta: {
       className: cn(
         'drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]',
-        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none',
+        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none'
       ),
     },
     enableHiding: false,
@@ -59,50 +64,56 @@ export const overtimesColumns: ColumnDef<Overtime>[] = [
   {
     accessorKey: 'date',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Date" />
+      <DataTableColumnHeader column={column} title='Date' />
     ),
     cell: ({ row }) => (
-      <span className="font-mono text-muted-foreground">{row.original.date}</span>
+      <span className='font-mono text-muted-foreground'>
+        {row.original.date}
+      </span>
     ),
   },
   {
     accessorKey: 'hours',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Hours" />
+      <DataTableColumnHeader column={column} title='Hours' />
     ),
-    cell: ({ row }) => (
-      <div className="font-mono">{row.original.hours} h</div>
-    ),
+    cell: ({ row }) => <div className='font-mono'>{row.original.hours} h</div>,
   },
   {
     accessorKey: 'rate',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Rate" />
+      <DataTableColumnHeader column={column} title='Rate' />
     ),
     cell: ({ row }) => (
-      <div className="font-mono">${Number(row.original.rate).toFixed(2)}</div>
+      <div className='font-mono'>${Number(row.original.rate).toFixed(2)}</div>
     ),
   },
   {
     accessorKey: 'amount',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Amount" />
+      <DataTableColumnHeader column={column} title='Amount' />
     ),
     cell: ({ row }) => (
-      <Badge variant="secondary" className="font-mono">${Number(row.original.amount).toFixed(2)}</Badge>
+      <Badge variant='secondary' className='font-mono'>
+        ${Number(row.original.amount).toFixed(2)}
+      </Badge>
     ),
   },
   {
     accessorKey: 'status',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title='Status' />
     ),
     cell: ({ row }) => {
       const { status } = row.original
-      const statusBadgeColor = overtimeStatusStyles.get(status) || 'bg-neutral-100/50'
+      const statusBadgeColor =
+        overtimeStatusStyles.get(status) || 'bg-neutral-100/50'
       return (
-        <div className="flex justify-start">
-          <Badge variant="outline" className={cn('capitalize', statusBadgeColor)}>
+        <div className='flex justify-start'>
+          <Badge
+            variant='outline'
+            className={cn('capitalize', statusBadgeColor)}
+          >
             {status}
           </Badge>
         </div>

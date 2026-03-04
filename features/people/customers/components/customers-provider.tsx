@@ -1,7 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import useDialogState from '@/hooks/use-dialog-state'
+
 import type { Customer } from '../types'
 
 type CustomersDialogType =
@@ -29,7 +31,9 @@ export function CustomersProvider({ children }: { children: React.ReactNode }) {
   const [currentRow, setCurrentRow] = useState<Customer | null>(null)
 
   return (
-    <CustomersContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <CustomersContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </CustomersContext.Provider>
   )
@@ -42,4 +46,3 @@ export function useCustomersContext() {
   }
   return ctx
 }
-

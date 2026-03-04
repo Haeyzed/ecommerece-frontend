@@ -1,12 +1,13 @@
 'use client'
 
+import { useAuthSession } from '@/features/auth/api'
+
 import { BrandsActionDialog } from './brands-action-dialog'
 import { BrandsDeleteDialog } from './brands-delete-dialog'
 import { BrandsExportDialog } from './brands-export-dialog'
 import { BrandsImportDialog } from './brands-import-dialog'
-import { BrandsViewDialog } from './brands-view-dialog'
 import { useBrands } from './brands-provider'
-import { useAuthSession } from '@/features/auth/api'
+import { BrandsViewDialog } from './brands-view-dialog'
 
 export function BrandsDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useBrands()
@@ -25,7 +26,7 @@ export function BrandsDialogs() {
     <>
       {canCreate && (
         <BrandsActionDialog
-          key="brand-add"
+          key='brand-add'
           open={open === 'add'}
           onOpenChange={() => setOpen('add')}
         />
@@ -33,7 +34,7 @@ export function BrandsDialogs() {
 
       {canImport && (
         <BrandsImportDialog
-          key="brand-import"
+          key='brand-import'
           open={open === 'import'}
           onOpenChange={() => setOpen('import')}
         />
@@ -41,7 +42,7 @@ export function BrandsDialogs() {
 
       {canExport && (
         <BrandsExportDialog
-          key="brand-export"
+          key='brand-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

@@ -1,14 +1,12 @@
 'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
+import { Controller, type UseFormReturn, useForm } from 'react-hook-form'
 
-import { useCreateWarehouse, useUpdateWarehouse } from '@/features/settings/warehouses/api'
-import { type WarehouseFormData, warehouseSchema } from '@/features/settings/warehouses/schemas'
-import { type Warehouse } from '../types'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { cn } from '@/lib/utils'
 
 import { useMediaQuery } from '@/hooks/use-media-query'
-import { cn } from '@/lib/utils'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -28,12 +26,29 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Switch } from '@/components/ui/switch'
-import { Spinner } from '@/components/ui/spinner'
 import { PhoneInput } from '@/components/ui/phone-input'
+import { Spinner } from '@/components/ui/spinner'
+import { Switch } from '@/components/ui/switch'
+import { Textarea } from '@/components/ui/textarea'
+
+import {
+  useCreateWarehouse,
+  useUpdateWarehouse,
+} from '@/features/settings/warehouses/api'
+import {
+  type WarehouseFormData,
+  warehouseSchema,
+} from '@/features/settings/warehouses/schemas'
+
+import { type Warehouse } from '../types'
 
 type WarehousesActionDialogProps = {
   currentRow?: Warehouse
@@ -42,33 +57,36 @@ type WarehousesActionDialogProps = {
 }
 
 export function WarehousesActionDialog({
-                                         currentRow,
-                                         open,
-                                         onOpenChange,
-                                       }: WarehousesActionDialogProps) {
+  currentRow,
+  open,
+  onOpenChange,
+}: WarehousesActionDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const isEdit = !!currentRow
-  const { mutate: createWarehouse, isPending: isCreating } = useCreateWarehouse()
-  const { mutate: updateWarehouse, isPending: isUpdating } = useUpdateWarehouse()
+  const { mutate: createWarehouse, isPending: isCreating } =
+    useCreateWarehouse()
+  const { mutate: updateWarehouse, isPending: isUpdating } =
+    useUpdateWarehouse()
   const isLoading = isCreating || isUpdating
 
   const form = useForm<WarehouseFormData>({
     resolver: zodResolver(warehouseSchema),
-    defaultValues: isEdit && currentRow
-      ? {
-        name: currentRow.name,
-        phone: currentRow.phone ?? '',
-        email: currentRow.email ?? '',
-        address: currentRow.address ?? '',
-        is_active: currentRow.is_active,
-      }
-      : {
-        name: '',
-        phone: '',
-        email: '',
-        address: '',
-        is_active: true,
-      },
+    defaultValues:
+      isEdit && currentRow
+        ? {
+            name: currentRow.name,
+            phone: currentRow.phone ?? '',
+            email: currentRow.email ?? '',
+            address: currentRow.address ?? '',
+            is_active: currentRow.is_active,
+          }
+        : {
+            name: '',
+            phone: '',
+            email: '',
+            address: '',
+            is_active: true,
+          },
   })
 
   const onSubmit = (values: WarehouseFormData) => {
@@ -94,24 +112,32 @@ export function WarehousesActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader className="text-start">
-            <DialogTitle>{isEdit ? 'Edit Warehouse' : 'Add New Warehouse'}</DialogTitle>
+        <DialogContent className='sm:max-w-lg'>
+          <DialogHeader className='text-start'>
+            <DialogTitle>
+              {isEdit ? 'Edit Warehouse' : 'Add New Warehouse'}
+            </DialogTitle>
             <DialogDescription>
-              {isEdit ? 'Update the warehouse details here. ' : 'Create a new warehouse here. '}
+              {isEdit
+                ? 'Update the warehouse details here. '
+                : 'Create a new warehouse here. '}
               Click save when you&apos;re done.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
-            <WarehouseForm form={form} onSubmit={onSubmit} id="warehouse-form" />
+          <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
+            <WarehouseForm
+              form={form}
+              onSubmit={onSubmit}
+              id='warehouse-form'
+            />
           </div>
 
           <DialogFooter>
-            <Button type="submit" form="warehouse-form" disabled={isLoading}>
+            <Button type='submit' form='warehouse-form' disabled={isLoading}>
               {isLoading ? (
                 <>
-                  <Spinner className="mr-2 size-4" />
+                  <Spinner className='mr-2 size-4' />
                   Saving...
                 </>
               ) : (
@@ -127,23 +153,27 @@ export function WarehousesActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className="text-left">
-          <DrawerTitle>{isEdit ? 'Edit Warehouse' : 'Add New Warehouse'}</DrawerTitle>
+        <DrawerHeader className='text-left'>
+          <DrawerTitle>
+            {isEdit ? 'Edit Warehouse' : 'Add New Warehouse'}
+          </DrawerTitle>
           <DrawerDescription>
-            {isEdit ? 'Update the warehouse details here. ' : 'Create a new warehouse here. '}
+            {isEdit
+              ? 'Update the warehouse details here. '
+              : 'Create a new warehouse here. '}
             Click save when you&apos;re done.
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className="no-scrollbar overflow-y-auto px-4">
-          <WarehouseForm form={form} onSubmit={onSubmit} id="warehouse-form" />
+        <div className='no-scrollbar overflow-y-auto px-4'>
+          <WarehouseForm form={form} onSubmit={onSubmit} id='warehouse-form' />
         </div>
 
         <DrawerFooter>
-          <Button type="submit" form="warehouse-form" disabled={isLoading}>
+          <Button type='submit' form='warehouse-form' disabled={isLoading}>
             {isLoading ? (
               <>
-                <Spinner className="mr-2 size-4" />
+                <Spinner className='mr-2 size-4' />
                 Saving...
               </>
             ) : (
@@ -151,7 +181,7 @@ export function WarehousesActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant='outline'>Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -176,11 +206,18 @@ function WarehouseForm({ form, onSubmit, id, className }: WarehouseFormProps) {
       <FieldGroup>
         <Controller
           control={form.control}
-          name="name"
+          name='name'
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor="warehouse-name">Name <span className="text-destructive">*</span></FieldLabel>
-              <Input id="warehouse-name" placeholder="Warehouse name" autoComplete="off" {...field} />
+              <FieldLabel htmlFor='warehouse-name'>
+                Name <span className='text-destructive'>*</span>
+              </FieldLabel>
+              <Input
+                id='warehouse-name'
+                placeholder='Warehouse name'
+                autoComplete='off'
+                {...field}
+              />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -188,12 +225,17 @@ function WarehouseForm({ form, onSubmit, id, className }: WarehouseFormProps) {
 
         <Controller
           control={form.control}
-          name="phone"
+          name='phone'
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor="warehouse-phone">Phone</FieldLabel>
-              <PhoneInput id="warehouse-phone" placeholder="+1234567890" autoComplete="off" {...field}
-                          value={field.value ?? ''} />
+              <FieldLabel htmlFor='warehouse-phone'>Phone</FieldLabel>
+              <PhoneInput
+                id='warehouse-phone'
+                placeholder='+1234567890'
+                autoComplete='off'
+                {...field}
+                value={field.value ?? ''}
+              />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -201,12 +243,18 @@ function WarehouseForm({ form, onSubmit, id, className }: WarehouseFormProps) {
 
         <Controller
           control={form.control}
-          name="email"
+          name='email'
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor="warehouse-email">Email</FieldLabel>
-              <Input id="warehouse-email" type="email" placeholder="warehouse@example.com" autoComplete="off" {...field}
-                     value={field.value ?? ''} />
+              <FieldLabel htmlFor='warehouse-email'>Email</FieldLabel>
+              <Input
+                id='warehouse-email'
+                type='email'
+                placeholder='warehouse@example.com'
+                autoComplete='off'
+                {...field}
+                value={field.value ?? ''}
+              />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -214,12 +262,18 @@ function WarehouseForm({ form, onSubmit, id, className }: WarehouseFormProps) {
 
         <Controller
           control={form.control}
-          name="address"
+          name='address'
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor="warehouse-address">Address</FieldLabel>
-              <Textarea id="warehouse-address" placeholder="123 Main St" rows={3} className="resize-none" {...field}
-                        value={field.value ?? ''} />
+              <FieldLabel htmlFor='warehouse-address'>Address</FieldLabel>
+              <Textarea
+                id='warehouse-address'
+                placeholder='123 Main St'
+                rows={3}
+                className='resize-none'
+                {...field}
+                value={field.value ?? ''}
+              />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -227,17 +281,25 @@ function WarehouseForm({ form, onSubmit, id, className }: WarehouseFormProps) {
 
         <Controller
           control={form.control}
-          name="is_active"
+          name='is_active'
           render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error}
-                   className="flex flex-row items-center justify-between rounded-md border p-4">
-              <div className="space-y-0.5">
-                <FieldLabel htmlFor="warehouse-active">Active Status</FieldLabel>
+            <Field
+              data-invalid={!!fieldState.error}
+              className='flex flex-row items-center justify-between rounded-md border p-4'
+            >
+              <div className='space-y-0.5'>
+                <FieldLabel htmlFor='warehouse-active'>
+                  Active Status
+                </FieldLabel>
                 <FieldDescription>
                   Disabling this will hide the warehouse from the system.
                 </FieldDescription>
               </div>
-              <Switch id="warehouse-active" checked={!!field.value} onCheckedChange={field.onChange} />
+              <Switch
+                id='warehouse-active'
+                checked={!!field.value}
+                onCheckedChange={field.onChange}
+              />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

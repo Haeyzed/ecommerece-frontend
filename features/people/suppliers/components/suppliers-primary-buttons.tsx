@@ -1,12 +1,21 @@
 'use client'
 
 import Link from 'next/link'
+
+import {
+  FileImportIcon,
+  PlusSignIcon,
+  Upload01Icon,
+} from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { FileImportIcon, PlusSignIcon, Upload01Icon } from '@hugeicons/core-free-icons'
-import { Button } from '@/components/ui/button'
+
 import { useMediaQuery } from '@/hooks/use-media-query'
-import { useSuppliersContext } from './suppliers-provider'
+
+import { Button } from '@/components/ui/button'
+
 import { useAuthSession } from '@/features/auth/api'
+
+import { useSuppliersContext } from './suppliers-provider'
 
 export function SuppliersPrimaryButtons() {
   const { setOpen } = useSuppliersContext()
@@ -21,14 +30,14 @@ export function SuppliersPrimaryButtons() {
   if (!canImport && !canExport && !canCreate) return null
 
   return (
-    <div className="flex gap-2">
+    <div className='flex gap-2'>
       {canExport && (
         <Button
-          variant="outline"
+          variant='outline'
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('export')}
-          aria-label="Export Suppliers"
+          aria-label='Export Suppliers'
         >
           <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} size={18} />
           {!isMobile && <span>Export</span>}
@@ -36,19 +45,23 @@ export function SuppliersPrimaryButtons() {
       )}
       {canImport && (
         <Button
-          variant="outline"
+          variant='outline'
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('import')}
-          aria-label="Import Suppliers"
+          aria-label='Import Suppliers'
         >
           <HugeiconsIcon icon={FileImportIcon} strokeWidth={2} size={18} />
           {!isMobile && <span>Import</span>}
         </Button>
       )}
       {canCreate && (
-        <Button asChild size={isMobile ? 'icon' : 'default'} className={!isMobile ? 'space-x-1' : ''}>
-          <Link href="/people/suppliers/create" aria-label="Add Supplier">
+        <Button
+          asChild
+          size={isMobile ? 'icon' : 'default'}
+          className={!isMobile ? 'space-x-1' : ''}
+        >
+          <Link href='/people/suppliers/create' aria-label='Add Supplier'>
             <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} size={18} />
             {!isMobile && <span>Add Supplier</span>}
           </Link>

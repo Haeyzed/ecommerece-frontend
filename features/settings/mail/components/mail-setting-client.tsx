@@ -1,9 +1,15 @@
 'use client'
 
 import { useEffect } from 'react'
+
 import { useForm } from 'react-hook-form'
+
 import { zodResolver } from '@hookform/resolvers/zod'
+
 import { toast } from 'sonner'
+
+import { Spinner } from '@/components/ui/spinner'
+
 import { ConfigDrawer } from '@/components/config-drawer'
 import { AuthenticatedLayout } from '@/components/layout/authenticated-layout'
 import { Header } from '@/components/layout/header'
@@ -11,13 +17,26 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { Spinner } from '@/components/ui/spinner'
-import { useMailSetting, useUpdateMailSetting } from '@/features/settings/mail/api'
-import { type MailSettingFormData, mailSettingSchema } from '@/features/settings/mail/schemas'
+
+import {
+  useMailSetting,
+  useUpdateMailSetting,
+} from '@/features/settings/mail/api'
+import {
+  type MailSettingFormData,
+  mailSettingSchema,
+} from '@/features/settings/mail/schemas'
+
 import { MailSettingForm } from './mail-setting-form'
 
 export function MailSettingClient() {
-  const { data: setting, isLoading, isSessionLoading, error, isError } = useMailSetting()
+  const {
+    data: setting,
+    isLoading,
+    isSessionLoading,
+    error,
+    isError,
+  } = useMailSetting()
   const { mutate: updateSetting, isPending } = useUpdateMailSetting()
 
   const form = useForm<MailSettingFormData>({
@@ -56,7 +75,9 @@ export function MailSettingClient() {
 
   useEffect(() => {
     if (isError && error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to load mail setting')
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to load mail setting'
+      )
     }
   }, [isError, error])
 
@@ -67,14 +88,14 @@ export function MailSettingClient() {
       <AuthenticatedLayout>
         <Header fixed>
           <Search />
-          <div className="ms-auto flex items-center space-x-4">
+          <div className='ms-auto flex items-center space-x-4'>
             <ThemeSwitch />
             <ConfigDrawer />
             <ProfileDropdown />
           </div>
         </Header>
-        <Main className="flex flex-1 items-center justify-center">
-          <Spinner className="size-8" />
+        <Main className='flex flex-1 items-center justify-center'>
+          <Spinner className='size-8' />
         </Main>
       </AuthenticatedLayout>
     )
@@ -84,25 +105,26 @@ export function MailSettingClient() {
     <AuthenticatedLayout>
       <Header fixed>
         <Search />
-        <div className="ms-auto flex items-center space-x-4">
+        <div className='ms-auto flex items-center space-x-4'>
           <ThemeSwitch />
           <ConfigDrawer />
           <ProfileDropdown />
         </div>
       </Header>
 
-      <Main className="flex flex-1 flex-col gap-4 sm:gap-6">
+      <Main className='flex flex-1 flex-col gap-4 sm:gap-6'>
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Mail Setting</h2>
-          <p className="text-muted-foreground">
-            Configure SMTP for outgoing emails. You can send a test email after saving.
+          <h2 className='text-2xl font-bold tracking-tight'>Mail Setting</h2>
+          <p className='text-muted-foreground'>
+            Configure SMTP for outgoing emails. You can send a test email after
+            saving.
           </p>
         </div>
 
         <MailSettingForm
           form={form}
           onSubmit={onSubmit}
-          id="mail-setting-form"
+          id='mail-setting-form'
           isPending={isPending}
         />
       </Main>

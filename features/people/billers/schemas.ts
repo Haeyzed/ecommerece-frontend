@@ -1,9 +1,13 @@
 import { z } from 'zod'
+
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/utils/mimes'
 
 export const billerSchema = z.object({
   name: z.string().min(1, 'Name is required').max(255, 'Name is too long'),
-  company_name: z.string().min(1, 'Company name is required').max(255, 'Company name is too long'),
+  company_name: z
+    .string()
+    .min(1, 'Company name is required')
+    .max(255, 'Company name is too long'),
   vat_number: z.string().max(255).nullable().optional(),
   email: z.string().min(1, 'Email is required').email('Invalid email').max(255),
   phone_number: z.string().min(1, 'Phone number is required').max(255),
@@ -53,9 +57,9 @@ export const billerExportSchema = z
       }
       return true
     },
-    { message: 'Please select a user to send the email to', path: ['user_id'] },
+    { message: 'Please select a user to send the email to', path: ['user_id'] }
   )
 
-export type BillerFormData = z.infer<typeof billerSchema>;
-export type BillerImportFormData = z.infer<typeof billerImportSchema>;
-export type BillerExportFormData = z.infer<typeof billerExportSchema>;
+export type BillerFormData = z.infer<typeof billerSchema>
+export type BillerImportFormData = z.infer<typeof billerImportSchema>
+export type BillerExportFormData = z.infer<typeof billerExportSchema>

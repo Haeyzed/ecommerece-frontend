@@ -1,15 +1,24 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import type { Overtime, OvertimeExportParams, OvertimeFormBody, OvertimeListParams } from './types'
+
+import type {
+  Overtime,
+  OvertimeExportParams,
+  OvertimeFormBody,
+  OvertimeListParams,
+} from './types'
 
 export const overtimeKeys = {
   all: ['overtimes'] as const,
   lists: () => [...overtimeKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...overtimeKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...overtimeKeys.lists(), filters] as const,
   details: () => [...overtimeKeys.all, 'detail'] as const,
   detail: (id: number) => [...overtimeKeys.details(), id] as const,
   template: () => [...overtimeKeys.all, 'template'] as const,
@@ -67,7 +76,8 @@ export function useCreateOvertime() {
 
       const response = await api.post<{ data: Overtime }>(BASE_PATH, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -87,7 +97,13 @@ export function useUpdateOvertime() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<OvertimeFormBody> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<OvertimeFormBody>
+    }) => {
       const payload: Record<string, unknown> = {}
 
       if (data.employee_id !== undefined) payload.employee_id = data.employee_id
@@ -96,9 +112,13 @@ export function useUpdateOvertime() {
       if (data.rate !== undefined) payload.rate = data.rate
       if (data.status !== undefined) payload.status = data.status
 
-      const response = await api.put<{ data: Overtime }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: Overtime }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }
@@ -141,7 +161,7 @@ export function useBulkApproveOvertimes() {
     mutationFn: async (ids: number[]) => {
       const response = await api.post<{ approved_count: number }>(
         `${BASE_PATH}/bulk-approve`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -161,7 +181,7 @@ export function useBulkRejectOvertimes() {
     mutationFn: async (ids: number[]) => {
       const response = await api.post<{ rejected_count: number }>(
         `${BASE_PATH}/bulk-reject`,
-        { ids },
+        { ids }
       )
       if (!response.success) throw new Error(response.message)
       return response

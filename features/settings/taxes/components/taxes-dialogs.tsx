@@ -1,12 +1,13 @@
 'use client'
 
+import { useAuthSession } from '@/features/auth/api'
+
 import { TaxesActionDialog } from './taxes-action-dialog'
 import { TaxesDeleteDialog } from './taxes-delete-dialog'
 import { TaxesExportDialog } from './taxes-export-dialog'
 import { TaxesImportDialog } from './taxes-import-dialog'
-import { TaxesViewDialog } from './taxes-view-dialog'
 import { useTaxes } from './taxes-provider'
-import { useAuthSession } from '@/features/auth/api'
+import { TaxesViewDialog } from './taxes-view-dialog'
 
 export function TaxesDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useTaxes()
@@ -23,7 +24,7 @@ export function TaxesDialogs() {
     <>
       {canCreate && (
         <TaxesActionDialog
-          key="tax-add"
+          key='tax-add'
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -33,7 +34,7 @@ export function TaxesDialogs() {
 
       {canImport && (
         <TaxesImportDialog
-          key="tax-import"
+          key='tax-import'
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -43,7 +44,7 @@ export function TaxesDialogs() {
 
       {canExport && (
         <TaxesExportDialog
-          key="tax-export"
+          key='tax-export'
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

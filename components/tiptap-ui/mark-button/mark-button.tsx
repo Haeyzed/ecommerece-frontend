@@ -8,14 +8,13 @@ import { parseShortcutKeys } from '@/lib/tiptap-utils'
 // --- Hooks ---
 import { useTiptapEditor } from '@/hooks/use-tiptap-editor'
 
-// --- Tiptap UI ---
-import type { Mark, UseMarkConfig } from '@/components/tiptap-ui/mark-button'
-import { MARK_SHORTCUT_KEYS, useMark } from '@/components/tiptap-ui/mark-button'
-
+import { Badge } from '@/components/tiptap-ui-primitive/badge'
 // --- UI Primitives ---
 import type { ButtonProps } from '@/components/tiptap-ui-primitive/button'
 import { Button } from '@/components/tiptap-ui-primitive/button'
-import { Badge } from '@/components/tiptap-ui-primitive/badge'
+// --- Tiptap UI ---
+import type { Mark, UseMarkConfig } from '@/components/tiptap-ui/mark-button'
+import { MARK_SHORTCUT_KEYS, useMark } from '@/components/tiptap-ui/mark-button'
 
 export interface MarkButtonProps
   extends Omit<ButtonProps, 'type'>, UseMarkConfig {
@@ -31,9 +30,9 @@ export interface MarkButtonProps
 }
 
 export function MarkShortcutBadge({
-                                    type,
-                                    shortcutKeys = MARK_SHORTCUT_KEYS[type],
-                                  }: {
+  type,
+  shortcutKeys = MARK_SHORTCUT_KEYS[type],
+}: {
   type: Mark
   shortcutKeys?: string
 }) {
@@ -58,7 +57,7 @@ export const MarkButton = forwardRef<HTMLButtonElement, MarkButtonProps>(
       children,
       ...buttonProps
     },
-    ref,
+    ref
   ) => {
     const { editor } = useTiptapEditor(providedEditor)
     const {
@@ -82,7 +81,7 @@ export const MarkButton = forwardRef<HTMLButtonElement, MarkButtonProps>(
         if (event.defaultPrevented) return
         handleMark()
       },
-      [handleMark, onClick],
+      [handleMark, onClick]
     )
 
     if (!isVisible) {
@@ -91,12 +90,12 @@ export const MarkButton = forwardRef<HTMLButtonElement, MarkButtonProps>(
 
     return (
       <Button
-        type="button"
+        type='button'
         disabled={!canToggle}
-        variant="ghost"
+        variant='ghost'
         data-active-state={isActive ? 'on' : 'off'}
         data-disabled={!canToggle}
-        role="button"
+        role='button'
         tabIndex={-1}
         aria-label={label}
         aria-pressed={isActive}
@@ -107,8 +106,8 @@ export const MarkButton = forwardRef<HTMLButtonElement, MarkButtonProps>(
       >
         {children ?? (
           <>
-            <Icon className="tiptap-button-icon" />
-            {text && <span className="tiptap-button-text">{text}</span>}
+            <Icon className='tiptap-button-icon' />
+            {text && <span className='tiptap-button-text'>{text}</span>}
             {showShortcut && (
               <MarkShortcutBadge type={type} shortcutKeys={shortcutKeys} />
             )}
@@ -116,7 +115,7 @@ export const MarkButton = forwardRef<HTMLButtonElement, MarkButtonProps>(
         )}
       </Button>
     )
-  },
+  }
 )
 
 MarkButton.displayName = 'MarkButton'

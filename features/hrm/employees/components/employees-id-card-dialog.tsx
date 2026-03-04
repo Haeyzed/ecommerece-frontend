@@ -1,6 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+
+import { Download01Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -9,25 +14,29 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
-import { type Employee } from '../types'
+
 import { useActiveIdCardTemplate } from '@/features/settings/id-card-templates/api'
+
+import { type Employee } from '../types'
 import { generateIdCardsPdf } from '../utils/generate-id-card'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { Download01Icon } from '@hugeicons/core-free-icons'
 
 type Props = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  employees: Employee[];
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  employees: Employee[]
 }
 
-export function EmployeesIdCardDialog({ open, onOpenChange, employees }: Props) {
+export function EmployeesIdCardDialog({
+  open,
+  onOpenChange,
+  employees,
+}: Props) {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
 
-  const { data: activeTemplate, isLoading: isConfigLoading } = useActiveIdCardTemplate()
+  const { data: activeTemplate, isLoading: isConfigLoading } =
+    useActiveIdCardTemplate()
 
   useEffect(() => {
     // Because of the API generic fix, activeTemplate maps cleanly
@@ -91,35 +100,38 @@ export function EmployeesIdCardDialog({ open, onOpenChange, employees }: Props) 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-3xl">
-        <DialogHeader className="flex flex-row justify-between items-center pr-6">
+      <DialogContent className='sm:max-w-3xl'>
+        <DialogHeader className='flex flex-row items-center justify-between pr-6'>
           <div>
             <DialogTitle>ID Card Preview</DialogTitle>
             <DialogDescription>
-              Previewing {employees.length} ID card{employees.length > 1 ? 's' : ''}.
+              Previewing {employees.length} ID card
+              {employees.length > 1 ? 's' : ''}.
             </DialogDescription>
           </div>
         </DialogHeader>
 
-        <div className="flex justify-center bg-muted rounded-md border h-[500px] overflow-hidden relative">
+        <div className='relative flex h-[500px] justify-center overflow-hidden rounded-md border bg-muted'>
           {(isConfigLoading || isGenerating) && (
-            <div className="absolute inset-0 flex items-center justify-center bg-background/50 z-10">
-              <Spinner className="size-8" />
+            <div className='absolute inset-0 z-10 flex items-center justify-center bg-background/50'>
+              <Spinner className='size-8' />
             </div>
           )}
           {pdfUrl && (
             <iframe
               src={`${pdfUrl}#toolbar=0`}
-              className="w-full h-full border-0"
-              title="ID Card Preview"
+              className='h-full w-full border-0'
+              title='ID Card Preview'
             />
           )}
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>Close</Button>
+          <Button variant='outline' onClick={() => onOpenChange(false)}>
+            Close
+          </Button>
           <Button onClick={handleDownload} disabled={!pdfUrl || isGenerating}>
-            <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
+            <HugeiconsIcon icon={Download01Icon} className='mr-2 size-4' />
             Download PDF
           </Button>
         </DialogFooter>

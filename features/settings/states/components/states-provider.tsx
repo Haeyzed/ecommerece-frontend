@@ -1,7 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import useDialogState from '@/hooks/use-dialog-state'
+
 import { type State } from '../types'
 
 type StatesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
@@ -20,7 +22,9 @@ export function StatesProvider({ children }: { children: React.ReactNode }) {
   const [currentRow, setCurrentRow] = useState<State | null>(null)
 
   return (
-    <StatesContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <StatesContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </StatesContext.Provider>
   )

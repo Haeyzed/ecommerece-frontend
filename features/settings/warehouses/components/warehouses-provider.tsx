@@ -1,10 +1,18 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import useDialogState from '@/hooks/use-dialog-state'
+
 import { type Warehouse } from '../types'
 
-type WarehousesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
+type WarehousesDialogType =
+  | 'import'
+  | 'add'
+  | 'edit'
+  | 'delete'
+  | 'export'
+  | 'view'
 
 type WarehousesContextType = {
   open: WarehousesDialogType | null
@@ -13,14 +21,22 @@ type WarehousesContextType = {
   setCurrentRow: React.Dispatch<React.SetStateAction<Warehouse | null>>
 }
 
-const WarehousesContext = React.createContext<WarehousesContextType | null>(null)
+const WarehousesContext = React.createContext<WarehousesContextType | null>(
+  null
+)
 
-export function WarehousesProvider({ children }: { children: React.ReactNode }) {
+export function WarehousesProvider({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   const [open, setOpen] = useDialogState<WarehousesDialogType>(null)
   const [currentRow, setCurrentRow] = useState<Warehouse | null>(null)
 
   return (
-    <WarehousesContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <WarehousesContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </WarehousesContext.Provider>
   )

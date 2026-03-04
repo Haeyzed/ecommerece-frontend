@@ -1,7 +1,10 @@
 'use client'
 
-import { Check, ChevronsUpDown } from 'lucide-react'
 import * as React from 'react'
+
+import { Check, ChevronsUpDown } from 'lucide-react'
+
+import { cn } from '@/lib/utils'
 
 import { Badge } from '@/components/ui/badge'
 import {
@@ -13,21 +16,24 @@ import {
   CommandList,
   CommandSeparator,
 } from '@/components/ui/command'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { cn } from '@/lib/utils'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 
 type FacetedValue<Multiple extends boolean> = Multiple extends true
   ? string[]
-  : string;
+  : string
 
 interface FacetedContextValue<Multiple extends boolean = boolean> {
-  value?: FacetedValue<Multiple>;
-  onItemSelect?: (value: string) => void;
-  multiple?: Multiple;
+  value?: FacetedValue<Multiple>
+  onItemSelect?: (value: string) => void
+  multiple?: Multiple
 }
 
 const FacetedContext = React.createContext<FacetedContextValue<boolean> | null>(
-  null,
+  null
 )
 
 function useFacetedContext(name: string) {
@@ -38,16 +44,17 @@ function useFacetedContext(name: string) {
   return context
 }
 
-interface FacetedProps<Multiple extends boolean = false>
-  extends React.ComponentProps<typeof Popover> {
-  value?: FacetedValue<Multiple>;
-  onValueChange?: (value: FacetedValue<Multiple> | undefined) => void;
-  children?: React.ReactNode;
-  multiple?: Multiple;
+interface FacetedProps<
+  Multiple extends boolean = false,
+> extends React.ComponentProps<typeof Popover> {
+  value?: FacetedValue<Multiple>
+  onValueChange?: (value: FacetedValue<Multiple> | undefined) => void
+  children?: React.ReactNode
+  multiple?: Multiple
 }
 
 function Faceted<Multiple extends boolean = false>(
-  props: FacetedProps<Multiple>,
+  props: FacetedProps<Multiple>
 ) {
   const {
     open: openProp,
@@ -70,7 +77,7 @@ function Faceted<Multiple extends boolean = false>(
       }
       onOpenChangeProp?.(newOpen)
     },
-    [isControlled, onOpenChangeProp],
+    [isControlled, onOpenChangeProp]
   )
 
   const onItemSelect = React.useCallback(
@@ -93,12 +100,12 @@ function Faceted<Multiple extends boolean = false>(
         requestAnimationFrame(() => onOpenChange(false))
       }
     },
-    [multiple, value, onValueChange, onOpenChange],
+    [multiple, value, onValueChange, onOpenChange]
   )
 
   const contextValue = React.useMemo<FacetedContextValue<typeof multiple>>(
     () => ({ value, onItemSelect, multiple }),
-    [value, onItemSelect, multiple],
+    [value, onItemSelect, multiple]
   )
 
   return (
@@ -124,10 +131,10 @@ function FacetedTrigger(props: React.ComponentProps<typeof PopoverTrigger>) {
 }
 
 interface FacetedBadgeListProps extends React.ComponentProps<'div'> {
-  options?: { label: string; value: string }[];
-  max?: number;
-  badgeClassName?: string;
-  placeholder?: string;
+  options?: { label: string; value: string }[]
+  max?: number
+  badgeClassName?: string
+  placeholder?: string
 }
 
 function FacetedBadgeList(props: FacetedBadgeListProps) {
@@ -150,17 +157,17 @@ function FacetedBadgeList(props: FacetedBadgeListProps) {
       const option = options.find((opt) => opt.value === value)
       return option?.label ?? value
     },
-    [options],
+    [options]
   )
 
   if (!values || values.length === 0) {
     return (
       <div
         {...badgeListProps}
-        className="flex w-full items-center gap-1 text-muted-foreground"
+        className='flex w-full items-center gap-1 text-muted-foreground'
       >
         {placeholder}
-        <ChevronsUpDown className="ms-auto size-4 shrink-0 opacity-50" />
+        <ChevronsUpDown className='ms-auto size-4 shrink-0 opacity-50' />
       </div>
     )
   }
@@ -172,7 +179,7 @@ function FacetedBadgeList(props: FacetedBadgeListProps) {
     >
       {values.length > max ? (
         <Badge
-          variant="secondary"
+          variant='secondary'
           className={cn('rounded-sm px-1 font-normal', badgeClassName)}
         >
           {values.length} selected
@@ -181,10 +188,10 @@ function FacetedBadgeList(props: FacetedBadgeListProps) {
         values.map((value) => (
           <Badge
             key={value}
-            variant="secondary"
+            variant='secondary'
             className={cn('rounded-sm px-1 font-normal', badgeClassName)}
           >
-            <span className="truncate">{getLabel(value)}</span>
+            <span className='truncate'>{getLabel(value)}</span>
           </Badge>
         ))
       )}
@@ -198,10 +205,10 @@ function FacetedContent(props: React.ComponentProps<typeof PopoverContent>) {
   return (
     <PopoverContent
       {...contentProps}
-      align="start"
+      align='start'
       className={cn(
         'w-[200px] origin-(--radix-popover-content-transform-origin) p-0',
-        className,
+        className
       )}
     >
       <Command>{children}</Command>
@@ -218,7 +225,7 @@ const FacetedEmpty = CommandEmpty
 const FacetedGroup = CommandGroup
 
 interface FacetedItemProps extends React.ComponentProps<typeof CommandItem> {
-  value: string;
+  value: string
 }
 
 function FacetedItem(props: FacetedItemProps) {
@@ -237,7 +244,7 @@ function FacetedItem(props: FacetedItemProps) {
         context.onItemSelect(currentValue)
       }
     },
-    [onSelect, context],
+    [onSelect, context]
   )
 
   return (
@@ -253,10 +260,10 @@ function FacetedItem(props: FacetedItemProps) {
           'flex size-4 items-center justify-center rounded-sm border border-primary',
           isSelected
             ? 'bg-primary text-primary-foreground'
-            : 'opacity-50 [&_svg]:invisible',
+            : 'opacity-50 [&_svg]:invisible'
         )}
       >
-        <Check className="size-4" />
+        <Check className='size-4' />
       </span>
       {children}
     </CommandItem>

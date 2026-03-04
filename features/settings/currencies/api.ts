@@ -1,15 +1,25 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { toast } from 'sonner'
+
 import { useApiClient } from '@/lib/api/api-client-client'
 import { ValidationError } from '@/lib/api/api-errors'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import type { Currency, CurrencyExportParams, CurrencyFormData, CurrencyListParams, CurrencyOption } from './types'
+
+import type {
+  Currency,
+  CurrencyExportParams,
+  CurrencyFormData,
+  CurrencyListParams,
+  CurrencyOption,
+} from './types'
 
 export const currencyKeys = {
   all: ['currencies'] as const,
   lists: () => [...currencyKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) => [...currencyKeys.lists(), filters] as const,
+  list: (filters?: Record<string, unknown>) =>
+    [...currencyKeys.lists(), filters] as const,
   details: () => [...currencyKeys.all, 'detail'] as const,
   detail: (id: number) => [...currencyKeys.details(), id] as const,
   options: () => [...currencyKeys.all, 'options'] as const,
@@ -75,14 +85,19 @@ export function useCreateCurrency() {
       }
 
       if (data.precision !== undefined) payload.precision = data.precision
-      if (data.symbol_native !== undefined) payload.symbol_native = data.symbol_native
-      if (data.symbol_first !== undefined) payload.symbol_first = data.symbol_first
-      if (data.decimal_mark !== undefined) payload.decimal_mark = data.decimal_mark
-      if (data.thousands_separator !== undefined) payload.thousands_separator = data.thousands_separator
+      if (data.symbol_native !== undefined)
+        payload.symbol_native = data.symbol_native
+      if (data.symbol_first !== undefined)
+        payload.symbol_first = data.symbol_first
+      if (data.decimal_mark !== undefined)
+        payload.decimal_mark = data.decimal_mark
+      if (data.thousands_separator !== undefined)
+        payload.thousands_separator = data.thousands_separator
 
       const response = await api.post<{ data: Currency }>(BASE_PATH, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return response
@@ -102,7 +117,13 @@ export function useUpdateCurrency() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<CurrencyFormData> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number
+      data: Partial<CurrencyFormData>
+    }) => {
       const payload: Record<string, unknown> = {}
 
       Object.keys(data).forEach((key) => {
@@ -112,9 +133,13 @@ export function useUpdateCurrency() {
         }
       })
 
-      const response = await api.put<{ data: Currency }>(`${BASE_PATH}/${id}`, payload)
+      const response = await api.put<{ data: Currency }>(
+        `${BASE_PATH}/${id}`,
+        payload
+      )
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors)
+        if (response.errors)
+          throw new ValidationError(response.message, response.errors)
         throw new Error(response.message)
       }
       return { id, message: response.message }

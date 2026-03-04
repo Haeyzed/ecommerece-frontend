@@ -1,10 +1,13 @@
 'use client'
 
-import { type Row } from '@tanstack/react-table'
-import { HugeiconsIcon } from '@hugeicons/react'
 import { ArrowRight01Icon } from '@hugeicons/core-free-icons'
-import { Button } from '@/components/ui/button'
+import { HugeiconsIcon } from '@hugeicons/react'
+
+import { type Row } from '@tanstack/react-table'
+
 import { cn } from '@/lib/utils'
+
+import { Button } from '@/components/ui/button'
 
 type DataTableExpandButtonProps<TData> = {
   row: Row<TData>
@@ -18,16 +21,16 @@ type DataTableExpandButtonProps<TData> = {
  * the icon rotates to indicate state.
  */
 export function DataTableExpandButton<TData>({
-                                               row,
-                                               canExpand = true,
-                                               className,
-                                             }: DataTableExpandButtonProps<TData>) {
+  row,
+  canExpand = true,
+  className,
+}: DataTableExpandButtonProps<TData>) {
   if (!canExpand) return null
 
   return (
     <Button
-      variant="ghost"
-      size="icon"
+      variant='ghost'
+      size='icon'
       className={cn('size-7', className)}
       onClick={(e) => {
         e.stopPropagation()
@@ -39,7 +42,10 @@ export function DataTableExpandButton<TData>({
       <HugeiconsIcon
         icon={ArrowRight01Icon}
         strokeWidth={2}
-        className={cn('size-4 transition-transform', row.getIsExpanded() && 'rotate-90')}
+        className={cn(
+          'size-4 transition-transform',
+          row.getIsExpanded() && 'rotate-90'
+        )}
       />
     </Button>
   )

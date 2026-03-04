@@ -1,10 +1,20 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import useDialogState from '@/hooks/use-dialog-state'
+
 import { type Employee } from '@/features/hrm/employees/types'
 
-type EmployeesDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view' | 'id-card' | 'bulk-id-card'
+type EmployeesDialogType =
+  | 'import'
+  | 'add'
+  | 'edit'
+  | 'delete'
+  | 'export'
+  | 'view'
+  | 'id-card'
+  | 'bulk-id-card'
 
 type EmployeesContextType = {
   open: EmployeesDialogType | null
@@ -20,7 +30,9 @@ export function EmployeesProvider({ children }: { children: React.ReactNode }) {
   const [currentRow, setCurrentRow] = useState<Employee | null>(null)
 
   return (
-    <EmployeesContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <EmployeesContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </EmployeesContext.Provider>
   )

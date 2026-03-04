@@ -1,28 +1,47 @@
 'use client'
 
-import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useTableUrlState } from '@/hooks/use-table-url-state'
-import { cn } from '@/lib/utils'
+import { useEffect, useMemo, useState } from 'react'
+
 import {
+  type SortingState,
+  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
   getSortedRowModel,
-  type SortingState,
   useReactTable,
-  type VisibilityState,
 } from '@tanstack/react-table'
-import { useEffect, useMemo, useState } from 'react'
+
 import { toast } from 'sonner'
+
+import { ForbiddenError as ForbiddenErrorClass } from '@/lib/api/api-errors'
+import { cn } from '@/lib/utils'
+
+import { useTableUrlState } from '@/hooks/use-table-url-state'
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+
+import {
+  DataTablePagination,
+  DataTableSkeleton,
+  DataTableToolbar,
+} from '@/components/data-table'
+
+import { ForbiddenError } from '@/features/errors/forbidden'
+
 import { useCustomers } from '../api'
 import { customersColumns as columns } from './customers-columns'
 import { CustomersEmptyState } from './customers-empty-state'
 import { DataTableBulkActions } from './data-table-bulk-actions'
-import { ForbiddenError } from '@/features/errors/forbidden'
-import { ForbiddenError as ForbiddenErrorClass } from '@/lib/api/api-errors'
 
 export function CustomersTable() {
   const [rowSelection, setRowSelection] = useState({})
@@ -124,13 +143,13 @@ export function CustomersTable() {
     <div
       className={cn(
         'max-sm:has-[div[role="toolbar"]]:mb-16',
-        'flex flex-1 flex-col gap-4',
+        'flex flex-1 flex-col gap-4'
       )}
     >
       <DataTableToolbar
         table={table}
-        searchPlaceholder="Filter customers..."
-        searchKey="name"
+        searchPlaceholder='Filter customers...'
+        searchKey='name'
         filters={[
           {
             columnId: 'active_status',
@@ -142,24 +161,29 @@ export function CustomersTable() {
           },
         ]}
       />
-      <div className="overflow-hidden rounded-md border">
+      <div className='overflow-hidden rounded-md border'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="group/row">
+              <TableRow key={headerGroup.id} className='group/row'>
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
                     colSpan={header.colSpan}
                     className={cn(
                       'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
-                      (header.column.columnDef.meta as { className?: string })?.className,
-                      (header.column.columnDef.meta as { thClassName?: string })?.thClassName,
+                      (header.column.columnDef.meta as { className?: string })
+                        ?.className,
+                      (header.column.columnDef.meta as { thClassName?: string })
+                        ?.thClassName
                     )}
                   >
                     {header.isPlaceholder
                       ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -174,25 +198,36 @@ export function CustomersTable() {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    className="group/row"
+                    className='group/row'
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
                         className={cn(
                           'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
-                          (cell.column.columnDef.meta as { className?: string })?.className,
-                          (cell.column.columnDef.meta as { tdClassName?: string })?.tdClassName,
+                          (cell.column.columnDef.meta as { className?: string })
+                            ?.className,
+                          (
+                            cell.column.columnDef.meta as {
+                              tdClassName?: string
+                            }
+                          )?.tdClassName
                         )}
                       >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
                       </TableCell>
                     ))}
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                  <TableCell
+                    colSpan={columns.length}
+                    className='h-24 text-center'
+                  >
                     No results.
                   </TableCell>
                 </TableRow>
@@ -201,7 +236,7 @@ export function CustomersTable() {
           )}
         </Table>
       </div>
-      <DataTablePagination table={table} className="mt-auto" />
+      <DataTablePagination table={table} className='mt-auto' />
       <DataTableBulkActions table={table} />
     </div>
   )

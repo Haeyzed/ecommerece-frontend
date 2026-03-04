@@ -1,10 +1,18 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import useDialogState from '@/hooks/use-dialog-state'
+
 import { type Biller } from '../types'
 
-type BillersDialogType = 'import' | 'add' | 'edit' | 'delete' | 'export' | 'view'
+type BillersDialogType =
+  | 'import'
+  | 'add'
+  | 'edit'
+  | 'delete'
+  | 'export'
+  | 'view'
 
 type BillersContextType = {
   open: BillersDialogType | null
@@ -20,7 +28,9 @@ export function BillersProvider({ children }: { children: React.ReactNode }) {
   const [currentRow, setCurrentRow] = useState<Biller | null>(null)
 
   return (
-    <BillersContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <BillersContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </BillersContext.Provider>
   )

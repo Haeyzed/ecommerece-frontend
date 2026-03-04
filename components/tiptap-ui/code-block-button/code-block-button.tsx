@@ -2,20 +2,22 @@
 
 import { forwardRef, useCallback } from 'react'
 
-// --- Hooks ---
-import { useTiptapEditor } from '@/hooks/use-tiptap-editor'
-
 // --- Lib ---
 import { parseShortcutKeys } from '@/lib/tiptap-utils'
 
-// --- Tiptap UI ---
-import type { UseCodeBlockConfig } from '@/components/tiptap-ui/code-block-button'
-import { CODE_BLOCK_SHORTCUT_KEY, useCodeBlock } from '@/components/tiptap-ui/code-block-button'
+// --- Hooks ---
+import { useTiptapEditor } from '@/hooks/use-tiptap-editor'
 
+import { Badge } from '@/components/tiptap-ui-primitive/badge'
 // --- UI Primitives ---
 import type { ButtonProps } from '@/components/tiptap-ui-primitive/button'
 import { Button } from '@/components/tiptap-ui-primitive/button'
-import { Badge } from '@/components/tiptap-ui-primitive/badge'
+// --- Tiptap UI ---
+import type { UseCodeBlockConfig } from '@/components/tiptap-ui/code-block-button'
+import {
+  CODE_BLOCK_SHORTCUT_KEY,
+  useCodeBlock,
+} from '@/components/tiptap-ui/code-block-button'
 
 export interface CodeBlockButtonProps
   extends Omit<ButtonProps, 'type'>, UseCodeBlockConfig {
@@ -31,8 +33,8 @@ export interface CodeBlockButtonProps
 }
 
 export function CodeBlockShortcutBadge({
-                                         shortcutKeys = CODE_BLOCK_SHORTCUT_KEY,
-                                       }: {
+  shortcutKeys = CODE_BLOCK_SHORTCUT_KEY,
+}: {
   shortcutKeys?: string
 }) {
   return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>
@@ -58,7 +60,7 @@ export const CodeBlockButton = forwardRef<
       children,
       ...buttonProps
     },
-    ref,
+    ref
   ) => {
     const { editor } = useTiptapEditor(providedEditor)
     const {
@@ -81,7 +83,7 @@ export const CodeBlockButton = forwardRef<
         if (event.defaultPrevented) return
         handleToggle()
       },
-      [handleToggle, onClick],
+      [handleToggle, onClick]
     )
 
     if (!isVisible) {
@@ -90,24 +92,24 @@ export const CodeBlockButton = forwardRef<
 
     return (
       <Button
-        type="button"
-        variant="ghost"
+        type='button'
+        variant='ghost'
         data-active-state={isActive ? 'on' : 'off'}
-        role="button"
+        role='button'
         disabled={!canToggle}
         data-disabled={!canToggle}
         tabIndex={-1}
         aria-label={label}
         aria-pressed={isActive}
-        tooltip="Code Block"
+        tooltip='Code Block'
         onClick={handleClick}
         {...buttonProps}
         ref={ref}
       >
         {children ?? (
           <>
-            <Icon className="tiptap-button-icon" />
-            {text && <span className="tiptap-button-text">{text}</span>}
+            <Icon className='tiptap-button-icon' />
+            {text && <span className='tiptap-button-text'>{text}</span>}
             {showShortcut && (
               <CodeBlockShortcutBadge shortcutKeys={shortcutKeys} />
             )}
@@ -115,7 +117,7 @@ export const CodeBlockButton = forwardRef<
         )}
       </Button>
     )
-  },
+  }
 )
 
 CodeBlockButton.displayName = 'CodeBlockButton'

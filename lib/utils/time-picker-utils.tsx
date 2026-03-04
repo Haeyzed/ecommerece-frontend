@@ -19,11 +19,11 @@ export function isValidMinuteOrSecond(value: string) {
   return /^[0-5][0-9]$/.test(value)
 }
 
-type GetValidNumberConfig = { max: number; min?: number; loop?: boolean };
+type GetValidNumberConfig = { max: number; min?: number; loop?: boolean }
 
 export function getValidNumber(
   value: string,
-  { max, min = 0, loop = false }: GetValidNumberConfig,
+  { max, min = 0, loop = false }: GetValidNumberConfig
 ) {
   let numericValue = parseInt(value, 10)
 
@@ -57,14 +57,14 @@ export function getValidMinuteOrSecond(value: string) {
 }
 
 type GetValidArrowNumberConfig = {
-  min: number;
-  max: number;
-  step: number;
-};
+  min: number
+  max: number
+  step: number
+}
 
 export function getValidArrowNumber(
   value: string,
-  { min, max, step }: GetValidArrowNumberConfig,
+  { min, max, step }: GetValidArrowNumberConfig
 ) {
   let numericValue = parseInt(value, 10)
   if (!isNaN(numericValue)) {
@@ -111,14 +111,14 @@ export function set12Hours(date: Date, value: string, period: Period) {
   return date
 }
 
-export type TimePickerType = 'minutes' | 'seconds' | 'hours' | '12hours';
-export type Period = 'AM' | 'PM';
+export type TimePickerType = 'minutes' | 'seconds' | 'hours' | '12hours'
+export type Period = 'AM' | 'PM'
 
 export function setDateByType(
   date: Date,
   value: string,
   type: TimePickerType,
-  period?: Period,
+  period?: Period
 ) {
   switch (type) {
     case 'minutes':
@@ -155,7 +155,7 @@ export function getDateByType(date: Date, type: TimePickerType) {
 export function getArrowByType(
   value: string,
   step: number,
-  type: TimePickerType,
+  type: TimePickerType
 ) {
   switch (type) {
     case 'minutes':

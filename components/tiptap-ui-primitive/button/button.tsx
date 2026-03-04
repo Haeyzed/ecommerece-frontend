@@ -1,9 +1,6 @@
 'use client'
 
-import { forwardRef, Fragment, useMemo } from 'react'
-
-// --- Tiptap UI Primitive ---
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tiptap-ui-primitive/tooltip'
+import { Fragment, forwardRef, useMemo } from 'react'
 
 // --- Lib ---
 import { cn, parseShortcutKeys } from '@/lib/tiptap-utils'
@@ -11,6 +8,12 @@ import { cn, parseShortcutKeys } from '@/lib/tiptap-utils'
 import '@/components/tiptap-ui-primitive/button/button-colors.scss'
 import '@/components/tiptap-ui-primitive/button/button-group.scss'
 import '@/components/tiptap-ui-primitive/button/button.scss'
+// --- Tiptap UI Primitive ---
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/tiptap-ui-primitive/tooltip'
 
 export type ButtonVariant = 'ghost' | 'primary'
 export type ButtonSize = 'small' | 'default' | 'large'
@@ -24,8 +27,8 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 export const ShortcutDisplay: React.FC<{ shortcuts: string[] }> = ({
-                                                                     shortcuts,
-                                                                   }) => {
+  shortcuts,
+}) => {
   if (shortcuts.length === 0) return null
 
   return (
@@ -52,11 +55,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       size,
       ...props
     },
-    ref,
+    ref
   ) => {
     const shortcuts = useMemo<string[]>(
       () => parseShortcutKeys({ shortcutKeys }),
-      [shortcutKeys],
+      [shortcutKeys]
     )
 
     if (!tooltip || !showTooltip) {
@@ -90,7 +93,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         </TooltipContent>
       </Tooltip>
     )
-  },
+  }
 )
 
 Button.displayName = 'Button'
@@ -98,15 +101,15 @@ Button.displayName = 'Button'
 export const ButtonGroup = forwardRef<
   HTMLDivElement,
   React.ComponentProps<'div'> & {
-  orientation?: 'horizontal' | 'vertical'
-}
+    orientation?: 'horizontal' | 'vertical'
+  }
 >(({ className, children, orientation = 'vertical', ...props }, ref) => {
   return (
     <div
       ref={ref}
       className={cn('tiptap-button-group', className)}
       data-orientation={orientation}
-      role="group"
+      role='group'
       {...props}
     >
       {children}

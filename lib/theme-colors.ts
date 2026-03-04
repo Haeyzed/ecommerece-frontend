@@ -1,4 +1,7 @@
-export const themeColors: Record<string, { color: string; description?: string }> = {
+export const themeColors: Record<
+  string,
+  { color: string; description?: string }
+> = {
   neutral: { color: '#737373', description: 'Match base color' },
   amber: { color: '#f59e0b' },
   blue: { color: '#3b82f6' },
@@ -11,4 +14,3 @@ export const themeColors: Record<string, { color: string; description?: string }
   orange: { color: '#f97316' },
   pink: { color: '#ec4899' },
 }
-

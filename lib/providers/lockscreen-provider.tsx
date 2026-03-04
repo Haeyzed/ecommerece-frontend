@@ -11,11 +11,20 @@
  * on static pages (like 404) that inherit the RootLayout but cannot
  * handle search params at build time.
  */
+import {
+  Suspense,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 
-import { createContext, Suspense, useCallback, useContext, useEffect, useState } from 'react'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useSession } from 'next-auth/react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+
 import { toast } from 'sonner'
+
 import { useIdle } from '@/hooks/use-idle'
 
 type LockScreenContextType = {
@@ -33,7 +42,13 @@ type LockScreenProviderProps = {
  * Internal component to handle side effects (Idle, URL redirects, Shortcuts).
  * Must be wrapped in Suspense because it uses useSearchParams.
  */
-function LockScreenLogic({ isLocked, setLocked }: { isLocked: boolean; setLocked: (v: boolean) => void }) {
+function LockScreenLogic({
+  isLocked,
+  setLocked,
+}: {
+  isLocked: boolean
+  setLocked: (v: boolean) => void
+}) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()

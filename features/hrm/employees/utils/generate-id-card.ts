@@ -1,7 +1,9 @@
 import { jsPDF } from 'jspdf'
 import QRCode from 'qrcode'
-import { type Employee } from '../types'
+
 import { type IdCardDesignConfig } from '@/features/settings/id-card-templates/types'
+
+import { type Employee } from '../types'
 
 async function getBase64ImageFromUrl(imageUrl: string): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -17,13 +19,20 @@ async function getBase64ImageFromUrl(imageUrl: string): Promise<string> {
       ctx.drawImage(img, 0, 0)
       resolve(canvas.toDataURL('image/png'))
     }
-    img.onerror = error => reject(error)
+    img.onerror = (error) => reject(error)
     img.src = imageUrl
   })
 }
 
-export async function generateIdCardsPdf(employees: Employee[], config: IdCardDesignConfig): Promise<string> {
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'in', format: [2.125, 3.375] })
+export async function generateIdCardsPdf(
+  employees: Employee[],
+  config: IdCardDesignConfig
+): Promise<string> {
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'in',
+    format: [2.125, 3.375],
+  })
 
   for (let i = 0; i < employees.length; i++) {
     const employee = employees[i]
@@ -62,18 +71,22 @@ export async function generateIdCardsPdf(employees: Employee[], config: IdCardDe
 
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(5.5)
-    doc.text(employee.designation?.name || 'Employee', 1.0625, 2.267, { align: 'center' })
+    doc.text(employee.designation?.name || 'Employee', 1.0625, 2.267, {
+      align: 'center',
+    })
 
     doc.setFontSize(6)
     const startY = 2.45
     const lineHeight = 0.12
     const details = [{ label: 'Staff Id', value: employee.staff_id }]
 
-    if (config.show_address && employee.address) details.push({ label: 'Address', value: employee.address })
-    if (config.show_phone && employee.phone_number) details.push({ label: 'Phone', value: employee.phone_number })
+    if (config.show_address && employee.address)
+      details.push({ label: 'Address', value: employee.address })
+    if (config.show_phone && employee.phone_number)
+      details.push({ label: 'Phone', value: employee.phone_number })
 
     details.forEach((detail, idx) => {
-      const y = startY + (idx * lineHeight)
+      const y = startY + idx * lineHeight
       doc.setFont('helvetica', 'bold')
       doc.text(detail.label + ':', 0.1, y)
       doc.setFont('helvetica', 'normal')
@@ -82,7 +95,9 @@ export async function generateIdCardsPdf(employees: Employee[], config: IdCardDe
 
     if (config.show_qr_code && employee.staff_id) {
       try {
-        const qrDataUrl = await QRCode.toDataURL(employee.staff_id, { margin: 1 })
+        const qrDataUrl = await QRCode.toDataURL(employee.staff_id, {
+          margin: 1,
+        })
         doc.addImage(qrDataUrl, 'PNG', 1.6, 2.8, 0.4, 0.4)
       } catch (e) {
         console.warn('QR Code failed')

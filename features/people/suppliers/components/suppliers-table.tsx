@@ -1,26 +1,44 @@
 'use client'
 
-import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useTableUrlState } from '@/hooks/use-table-url-state'
-import { cn } from '@/lib/utils'
+import { useEffect, useMemo, useState } from 'react'
+
 import {
+  type SortingState,
+  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
   getSortedRowModel,
-  type SortingState,
   useReactTable,
-  type VisibilityState,
 } from '@tanstack/react-table'
-import { useEffect, useMemo, useState } from 'react'
+
 import { toast } from 'sonner'
+
+import { cn } from '@/lib/utils'
+
+import { useTableUrlState } from '@/hooks/use-table-url-state'
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+
+import {
+  DataTablePagination,
+  DataTableSkeleton,
+  DataTableToolbar,
+} from '@/components/data-table'
+
 import { useSuppliers } from '../api'
+import { DataTableBulkActions } from './data-table-bulk-actions'
 import { suppliersColumns as columns } from './suppliers-columns'
 import { SuppliersEmptyState } from './suppliers-empty-state'
-import { DataTableBulkActions } from './data-table-bulk-actions'
 
 export function SuppliersTable() {
   const [rowSelection, setRowSelection] = useState({})
@@ -67,7 +85,8 @@ export function SuppliersTable() {
     const meta = data?.meta
     if (meta) return Math.ceil((meta.total || 0) / (meta.per_page || 10))
     const payload = data?.data as { last_page?: number } | undefined
-    if (payload && typeof payload.last_page === 'number') return payload.last_page
+    if (payload && typeof payload.last_page === 'number')
+      return payload.last_page
     return 0
   }, [data?.meta, data?.data])
 
@@ -122,13 +141,13 @@ export function SuppliersTable() {
     <div
       className={cn(
         'max-sm:has-[div[role="toolbar"]]:mb-16',
-        'flex flex-1 flex-col gap-4',
+        'flex flex-1 flex-col gap-4'
       )}
     >
       <DataTableToolbar
         table={table}
-        searchPlaceholder="Filter suppliers..."
-        searchKey="name"
+        searchPlaceholder='Filter suppliers...'
+        searchKey='name'
         filters={[
           {
             columnId: 'status',
@@ -140,24 +159,29 @@ export function SuppliersTable() {
           },
         ]}
       />
-      <div className="overflow-hidden rounded-md border">
+      <div className='overflow-hidden rounded-md border'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="group/row">
+              <TableRow key={headerGroup.id} className='group/row'>
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
                     colSpan={header.colSpan}
                     className={cn(
                       'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
-                      (header.column.columnDef.meta as { className?: string })?.className,
-                      (header.column.columnDef.meta as { thClassName?: string })?.thClassName,
+                      (header.column.columnDef.meta as { className?: string })
+                        ?.className,
+                      (header.column.columnDef.meta as { thClassName?: string })
+                        ?.thClassName
                     )}
                   >
                     {header.isPlaceholder
                       ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -172,25 +196,36 @@ export function SuppliersTable() {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    className="group/row"
+                    className='group/row'
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
                         className={cn(
                           'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
-                          (cell.column.columnDef.meta as { className?: string })?.className,
-                          (cell.column.columnDef.meta as { tdClassName?: string })?.tdClassName,
+                          (cell.column.columnDef.meta as { className?: string })
+                            ?.className,
+                          (
+                            cell.column.columnDef.meta as {
+                              tdClassName?: string
+                            }
+                          )?.tdClassName
                         )}
                       >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
                       </TableCell>
                     ))}
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                  <TableCell
+                    colSpan={columns.length}
+                    className='h-24 text-center'
+                  >
                     No results.
                   </TableCell>
                 </TableRow>
@@ -199,7 +234,7 @@ export function SuppliersTable() {
           )}
         </Table>
       </div>
-      <DataTablePagination table={table} className="mt-auto" />
+      <DataTablePagination table={table} className='mt-auto' />
       <DataTableBulkActions table={table} />
     </div>
   )

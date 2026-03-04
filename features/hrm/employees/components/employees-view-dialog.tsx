@@ -417,13 +417,29 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
         </div>
       </div>
 
-      {/* Meta Timestamps */}
-      <div className='flex items-center justify-between border-t pt-4 text-xs text-muted-foreground'>
-        <div>
-          Created: {currentRow.created_at ? new Date(currentRow.created_at).toLocaleString() : '-'}
+      <Separator />
+
+      <div className='grid grid-cols-2 gap-4'>
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
+            Created At
+          </div>
+          <div className='text-sm text-muted-foreground'>
+            {currentRow.created_at
+              ? new Date(currentRow.created_at).toLocaleString()
+              : 'N/A'}
+          </div>
         </div>
-        <div>
-          Updated: {currentRow.updated_at ? new Date(currentRow.updated_at).toLocaleString() : '-'}
+
+        <div className='space-y-2'>
+          <div className='text-sm font-medium text-muted-foreground'>
+            Updated At
+          </div>
+          <div className='text-sm text-muted-foreground'>
+            {currentRow.updated_at
+              ? new Date(currentRow.updated_at).toLocaleString()
+              : 'N/A'}
+          </div>
         </div>
       </div>
     </div>

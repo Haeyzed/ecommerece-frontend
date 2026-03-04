@@ -27,7 +27,6 @@ import {
   useDesignationsByDepartment,
   useOptionDepartments,
 } from "@/features/hrm/departments/api";
-import { useOptionDesignations } from "@/features/hrm/designations/api";
 import { useOptionShifts } from "@/features/hrm/shifts/api";
 import { useOptionRoles } from "@/features/settings/acl/roles/api";
 import { useOptionPermissions } from "@/features/settings/acl/permissions/api";
@@ -357,7 +356,6 @@ function EmployeeForm({
   const isSaleAgent = form.watch("is_sale_agent");
 
   const { data: optionDepartments } = useOptionDepartments();
-  // const { data: optionDesignations } = useOptionDesignations()
   const { data: optionShifts } = useOptionShifts();
   const { data: optionCountries } = useOptionCountries();
   const { data: optionRoles } = useOptionRoles();

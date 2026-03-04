@@ -1,18 +1,19 @@
-# Ignore everything
-/*
+# Next.js build and dependencies
+.next/
+node_modules/
+dist/
+build/
+out/
+public/
 
-# Except these files & folders
-!/src
-!index.html
-!package.json
-!tailwind.config.js
-!tsconfig.json
-!tsconfig.node.json
-!vite.config.ts
-!.prettierrc
-!README.md
-!eslint.config.js
-!postcss.config.js
+# Lock files
+bun.lockb
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
-# Ignore auto generated routeTree.gen.ts
+# Local env files
+.env*.local
+
+# Auto-generated
 /src/routeTree.gen.ts

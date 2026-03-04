@@ -121,6 +121,8 @@ import {
 import { useCitiesByState } from '@/features/settings/states/api'
 
 import { type Employee } from '../types'
+import { RoleOption } from '@/features/settings/acl/roles'
+import { PermissionOption } from '@/features/settings/acl/permissions'
 
 type EmployeesActionDialogProps = {
   currentRow?: Employee
@@ -696,7 +698,7 @@ function EmployeeForm({
                         </FileUploadTrigger>
                       </FileUploadDropzone>
                       <FileUploadList>
-                        {value?.map((file: any, i: number) => (
+                        {value?.map((file: File, i: number) => (
                           <FileUploadItem key={i} value={file}>
                             <FileUploadItemPreview />
                             <FileUploadItemMetadata />
@@ -1189,7 +1191,7 @@ function EmployeeForm({
                         <ComboboxValue>
                           {(values) => (
                             <React.Fragment>
-                              {values.map((item: any) => (
+                              {values.map((item: RoleOption) => (
                                 <ComboboxChip key={item.value}>
                                   {item.label}
                                 </ComboboxChip>
@@ -1256,7 +1258,7 @@ function EmployeeForm({
                         <ComboboxValue>
                           {(values) => (
                             <React.Fragment>
-                              {values.map((item: any) => (
+                              {values.map((item: PermissionOption) => (
                                 <ComboboxChip key={item.value}>
                                   {item.label}
                                 </ComboboxChip>
@@ -1699,7 +1701,7 @@ function EmployeeForm({
                                 </FileUploadTrigger>
                               </FileUploadDropzone>
                               <FileUploadList>
-                                {value?.map((file: any, i: number) => (
+                                {value?.map((file: File, i: number) => (
                                   <FileUploadItem
                                     key={i}
                                     value={file}

@@ -9,7 +9,7 @@ import { Controller, useFieldArray, useForm, type UseFormReturn } from 'react-ho
 import { format } from 'date-fns'
 
 import { useCreateEmployee, useUpdateEmployee } from '@/features/hrm/employees/api'
-import { useOptionDepartments } from '@/features/hrm/departments/api'
+import { useDesignationsByDepartment, useOptionDepartments } from '@/features/hrm/departments/api'
 import { useOptionDesignations } from '@/features/hrm/designations/api'
 import { useOptionShifts } from '@/features/hrm/shifts/api'
 import { useOptionRoles } from '@/features/settings/acl/roles/api'
@@ -288,16 +288,18 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
   const isSaleAgent = form.watch('is_sale_agent')
 
   const { data: optionDepartments } = useOptionDepartments()
-  const { data: optionDesignations } = useOptionDesignations()
+  // const { data: optionDesignations } = useOptionDesignations()
   const { data: optionShifts } = useOptionShifts()
   const { data: optionCountries } = useOptionCountries()
   const { data: optionRoles } = useOptionRoles()
   const { data: optionPermissions } = useOptionPermissions()
   const { data: optionDocumentTypes } = useOptionDocumentTypes()
 
+  const departmentId = form.watch('department_id')
   const countryId = form.watch('country_id')
   const stateId = form.watch('state_id')
 
+  const { data: optionDesignations } = useDesignationsByDepartment(departmentId ?? null)
   const { data: optionStates } = useStatesByCountry(countryId ?? null)
   const { data: optionCities } = useCitiesByState(stateId ?? null)
 
@@ -373,7 +375,7 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
                     }}
                     isItemEqualToValue={(a, b) => a?.value === b?.value}
                   >
-                    <ComboboxInput placeholder="Select Country" />
+                    <ComboboxInput placeholder="Select Country" showClear/>
                     <ComboboxContent>
                       <ComboboxEmpty>No country found.</ComboboxEmpty>
                       <ComboboxList>
@@ -398,7 +400,7 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
                     isItemEqualToValue={(a, b) => a?.value === b?.value}
                     disabled={!countryId}
                   >
-                    <ComboboxInput placeholder="Select State" />
+                    <ComboboxInput placeholder="Select State" showClear/>
                     <ComboboxContent>
                       <ComboboxEmpty>No state found.</ComboboxEmpty>
                       <ComboboxList>
@@ -408,7 +410,8 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
                   </Combobox>
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
-              )} />
+              )}
+              />
               <Controller control={form.control} name="city_id" render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error} className="flex flex-col">
                   <FieldLabel>City</FieldLabel>
@@ -420,7 +423,7 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
                     isItemEqualToValue={(a, b) => a?.value === b?.value}
                     disabled={!stateId}
                   >
-                    <ComboboxInput placeholder="Select City" />
+                    <ComboboxInput placeholder="Select City" showClear/>
                     <ComboboxContent>
                       <ComboboxEmpty>No city found.</ComboboxEmpty>
                       <ComboboxList>
@@ -580,14 +583,22 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
               <Field data-invalid={!!fieldState.error} className="flex flex-col">
                 <FieldLabel>Department <span className="text-destructive">*</span></FieldLabel>
                 <div className="flex items-center gap-2">
-                  <Combobox items={optionDepartments || []} itemToStringLabel={(i) => i.label}
-                            value={(optionDepartments || []).find((d) => d.value === field.value) ?? null}
-                            onValueChange={(i) => field.onChange(i?.value ?? 0)}>
-                    <ComboboxInput placeholder="Select Department" />
+                  <Combobox
+                    items={optionDepartments || []}
+                    itemToStringLabel={(i) => i.label}
+                    value={(optionDepartments || []).find((d) => d.value === field.value) ?? null}
+                    onValueChange={(item) => {
+                      field.onChange(item?.value ?? null)
+                      form.setValue('designation_id', 0)
+                    }}
+                    isItemEqualToValue={(a, b) => a?.value === b?.value}
+                  >
+                    <ComboboxInput placeholder="Select Department" showClear/>
                     <ComboboxContent>
-                      <ComboboxEmpty>No match.</ComboboxEmpty>
-                      <ComboboxList>{(i) => <ComboboxItem key={i.value}
-                                                          value={i}>{i.label}</ComboboxItem>}</ComboboxList>
+                      <ComboboxEmpty>No department found.</ComboboxEmpty>
+                      <ComboboxList>
+                        {(item) => <ComboboxItem key={item.value} value={item}>{item.label}</ComboboxItem>}
+                      </ComboboxList>
                     </ComboboxContent>
                   </Combobox>
                   {canCreateDepartment && (
@@ -603,14 +614,22 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
               <Field data-invalid={!!fieldState.error} className="flex flex-col">
                 <FieldLabel>Designation <span className="text-destructive">*</span></FieldLabel>
                 <div className="flex items-center gap-2">
-                  <Combobox items={optionDesignations || []} itemToStringLabel={(i) => i.label}
-                            value={(optionDesignations || []).find((d) => d.value === field.value) ?? null}
-                            onValueChange={(i) => field.onChange(i?.value ?? 0)}>
-                    <ComboboxInput placeholder="Select Designation" />
+                  <Combobox
+                    items={optionDesignations || []}
+                    itemToStringLabel={(i) => i.label}
+                    value={(optionDesignations || []).find((d) => d.value === field.value) ?? null}
+                    onValueChange={(item) => {
+                      field.onChange(item?.value ?? null)
+                    }}
+                    isItemEqualToValue={(a, b) => a?.value === b?.value}
+                    disabled={!departmentId}
+                  >
+                    <ComboboxInput placeholder="Select Designation" showClear/>
                     <ComboboxContent>
-                      <ComboboxEmpty>No match.</ComboboxEmpty>
-                      <ComboboxList>{(i) => <ComboboxItem key={i.value}
-                                                          value={i}>{i.label}</ComboboxItem>}</ComboboxList>
+                      <ComboboxEmpty>No designation found.</ComboboxEmpty>
+                      <ComboboxList>
+                        {(item) => <ComboboxItem key={item.value} value={item}>{item.label}</ComboboxItem>}
+                      </ComboboxList>
                     </ComboboxContent>
                   </Combobox>
                   {canCreateDesignation && (
@@ -626,14 +645,21 @@ function EmployeeForm({ form, onSubmit, id, className, isEdit, currentRow }: Emp
               <Field data-invalid={!!fieldState.error} className="flex flex-col">
                 <FieldLabel>Shift <span className="text-destructive">*</span></FieldLabel>
                 <div className="flex items-center gap-2">
-                  <Combobox items={optionShifts || []} itemToStringLabel={(i) => i.label}
-                            value={(optionShifts || []).find((s) => s.value === field.value) ?? null}
-                            onValueChange={(i) => field.onChange(i?.value ?? 0)}>
-                    <ComboboxInput placeholder="Select Shift" />
+                  <Combobox
+                    items={optionShifts || []}
+                    itemToStringLabel={(i) => i.label}
+                    value={(optionShifts || []).find((s) => s.value === field.value) ?? null}
+                    onValueChange={(item) => {
+                      field.onChange(item?.value ?? null)
+                    }}
+                    isItemEqualToValue={(a, b) => a?.value === b?.value}
+                  >
+                    <ComboboxInput placeholder="Select Shift" showClear/>
                     <ComboboxContent>
-                      <ComboboxEmpty>No match.</ComboboxEmpty>
-                      <ComboboxList>{(i) => <ComboboxItem key={i.value}
-                                                          value={i}>{i.label}</ComboboxItem>}</ComboboxList>
+                      <ComboboxEmpty>No shift found.</ComboboxEmpty>
+                      <ComboboxList>
+                        {(item) => <ComboboxItem key={item.value} value={item}>{item.label}</ComboboxItem>}
+                      </ComboboxList>
                     </ComboboxContent>
                   </Combobox>
                   {canCreateShift && (

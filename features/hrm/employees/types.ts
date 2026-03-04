@@ -1,18 +1,23 @@
-export type EmployeeActiveStatus = 'active' | 'inactive'
-export type EmployeeSalesAgentStatus = 'yes' | 'no'
+export type ActiveStatus = 'active' | 'inactive'
+export type SalesAgentStatus = 'yes' | 'no'
 
-export interface EmployeeSalesTarget {
+export interface SalesTarget {
   sales_from: number
   sales_to: number
   percent: number
 }
 
-export interface RolePermission {
+export interface Role {
   id: number
   name: string
 }
 
-export interface EmployeeUser {
+export interface Permission {
+  id: number
+  name: string
+}
+
+export interface User {
   id?: number
   name: string
   email: string
@@ -20,11 +25,11 @@ export interface EmployeeUser {
   phone_number: string | null
   password?: string
   is_active?: boolean
-  roles?: RolePermission[]
-  permissions?: RolePermission[]
+  roles?: Role[]
+  permissions?: Permission[]
 }
 
-export interface EmployeeProfile {
+export interface Profile {
   date_of_birth?: string | null
   gender?: string | null
   marital_status?: string | null
@@ -34,7 +39,7 @@ export interface EmployeeProfile {
   account_number?: string | null
 }
 
-export interface EmployeeDocument {
+export interface Document {
   id: number
   document_type_id: number
   document_type: DocumentType
@@ -58,34 +63,34 @@ export interface DocumentType {
   deleted_at: string
 }
 
-export interface EmployeeDepartment {
+export interface Department {
   id: number
   name: string
 }
 
-export interface EmployeeDesignation {
+export interface Designation {
   id: number
   name: string
 }
 
-export interface EmployeeShift {
+export interface Shift {
   id: number
   name: string
   start_time: string
   end_time: string
 }
 
-export interface EmployeeCountry {
+export interface Country {
   id: number
   name: string
 }
 
-export interface EmployeeState {
+export interface State {
   id: number
   name: string
 }
 
-export interface EmployeeCity {
+export interface City {
   id: number
   name: string
 }
@@ -105,23 +110,23 @@ export interface Employee {
   department_id: number | null
   designation_id: number | null
   shift_id: number | null
-  department?: EmployeeDepartment | null
-  designation?: EmployeeDesignation | null
-  shift?: EmployeeShift | null
-  country?: EmployeeCountry | null
-  state?: EmployeeState | null
-  city?: EmployeeCity | null
+  department?: Department | null
+  designation?: Designation | null
+  shift?: Shift | null
+  country?: Country | null
+  state?: State | null
+  city?: City | null
   image_url: string | null
   is_active: boolean
   is_sale_agent: boolean
   sale_commission_percent: number | null
-  sales_target: EmployeeSalesTarget[]
+  sales_target: SalesTarget[]
   user_id: number | null
-  user?: EmployeeUser | null
-  profile?: EmployeeProfile | null
-  documents?: EmployeeDocument[]
-  active_status: EmployeeActiveStatus
-  sales_agent: EmployeeSalesAgentStatus
+  user?: User | null
+  profile?: Profile | null
+  documents?: Document[]
+  active_status: ActiveStatus
+  sales_agent: SalesAgentStatus
   created_at: string | null
   updated_at: string | null
 }

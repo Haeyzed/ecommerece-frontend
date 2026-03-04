@@ -35,15 +35,27 @@ export interface EmployeeProfile {
 }
 
 export interface EmployeeDocument {
-  id?: number
+  id: number
   document_type_id: number
-  name?: string | null
-  file_path?: string | null
-  file_url?: string | null
-  issue_date?: string | null
-  expiry_date?: string | null
-  notes?: string | null
-  is_expired?: boolean
+  document_type: DocumentType
+  name: string
+  file_path: string
+  file_url: string
+  issue_date: string
+  expiry_date: string
+  notes: string
+  is_expired: boolean
+}
+
+export interface DocumentType {
+  id: number
+  name: string
+  code: string
+  requires_expiry: boolean
+  is_active: boolean
+  created_at: string
+  updated_at: string
+  deleted_at: string
 }
 
 export interface EmployeeDepartment {

@@ -2,8 +2,8 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
-import { useCreateCustomer, useUpdateCustomer, useCustomerGroupsActive } from '../api'
-import { customerSchema, type CustomerFormData } from '../schemas'
+import { useCreateCustomer, useCustomerGroupsActive, useUpdateCustomer } from '../api'
+import { type CustomerFormData, customerSchema } from '../schemas'
 import type { Customer } from '../types'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { cn } from '@/lib/utils'
@@ -25,13 +25,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { PasswordInput } from '@/components/password-input'
@@ -45,8 +39,7 @@ import {
 } from '@/components/ui/combobox'
 import { PhoneInput } from '@/components/ui/phone-input'
 import { Spinner } from '@/components/ui/spinner'
-import { useOptionCountries } from '@/features/settings/countries/api'
-import { useStatesByCountry } from '@/features/settings/countries/api'
+import { useOptionCountries, useStatesByCountry } from '@/features/settings/countries/api'
 import { useCitiesByState } from '@/features/settings/states/api'
 
 type CustomersActionDialogProps = {
@@ -56,10 +49,10 @@ type CustomersActionDialogProps = {
 }
 
 export function CustomersActionDialog({
-  currentRow,
-  open,
-  onOpenChange,
-}: CustomersActionDialogProps) {
+                                        currentRow,
+                                        open,
+                                        onOpenChange,
+                                      }: CustomersActionDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const isEdit = !!currentRow
   const { mutate: createCustomer, isPending: isCreating } = useCreateCustomer()
@@ -70,49 +63,49 @@ export function CustomersActionDialog({
     resolver: zodResolver(customerSchema),
     defaultValues: isEdit && currentRow
       ? {
-          customer_group_id: currentRow.customer_group_id ?? undefined,
-          name: currentRow.name ?? '',
-          company_name: currentRow.company_name ?? '',
-          email: currentRow.email ?? '',
-          phone_number: currentRow.phone_number ?? '',
-          wa_number: currentRow.wa_number ?? '',
-          tax_no: currentRow.tax_no ?? '',
-          address: currentRow.address ?? '',
-          country_id: currentRow.country_id ?? undefined,
-          state_id: currentRow.state_id ?? undefined,
-          city_id: currentRow.city_id ?? undefined,
-          postal_code: currentRow.postal_code ?? '',
-          opening_balance: currentRow.opening_balance ?? 0,
-          credit_limit: currentRow.credit_limit ?? undefined,
-          deposit: currentRow.deposit ?? undefined,
-          pay_term_no: currentRow.pay_term_no ?? undefined,
-          pay_term_period: currentRow.pay_term_period ?? '',
-          is_active: currentRow.is_active ?? true,
-          both: false,
-          user: false,
-        }
+        customer_group_id: currentRow.customer_group_id ?? undefined,
+        name: currentRow.name ?? '',
+        company_name: currentRow.company_name ?? '',
+        email: currentRow.email ?? '',
+        phone_number: currentRow.phone_number ?? '',
+        wa_number: currentRow.wa_number ?? '',
+        tax_no: currentRow.tax_no ?? '',
+        address: currentRow.address ?? '',
+        country_id: currentRow.country_id ?? undefined,
+        state_id: currentRow.state_id ?? undefined,
+        city_id: currentRow.city_id ?? undefined,
+        postal_code: currentRow.postal_code ?? '',
+        opening_balance: currentRow.opening_balance ?? 0,
+        credit_limit: currentRow.credit_limit ?? undefined,
+        deposit: currentRow.deposit ?? undefined,
+        pay_term_no: currentRow.pay_term_no ?? undefined,
+        pay_term_period: currentRow.pay_term_period ?? '',
+        is_active: currentRow.is_active ?? true,
+        both: false,
+        user: false,
+      }
       : {
-          customer_group_id: undefined,
-          name: '',
-          company_name: '',
-          email: '',
-          phone_number: '',
-          wa_number: '',
-          tax_no: '',
-          address: '',
-          country_id: undefined,
-          state_id: undefined,
-          city_id: undefined,
-          postal_code: '',
-          opening_balance: 0,
-          credit_limit: undefined,
-          deposit: undefined,
-          pay_term_no: undefined,
-          pay_term_period: '',
-          is_active: true,
-          both: false,
-          user: false,
-        },
+        customer_group_id: undefined,
+        name: '',
+        company_name: '',
+        email: '',
+        phone_number: '',
+        wa_number: '',
+        tax_no: '',
+        address: '',
+        country_id: undefined,
+        state_id: undefined,
+        city_id: undefined,
+        postal_code: '',
+        opening_balance: 0,
+        credit_limit: undefined,
+        deposit: undefined,
+        pay_term_no: undefined,
+        pay_term_period: '',
+        is_active: true,
+        both: false,
+        user: false,
+      },
   })
 
   const onSubmit = (values: CustomerFormData) => {
@@ -138,8 +131,8 @@ export function CustomersActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange} modal={false}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>{isEdit ? 'Edit Customer' : 'Add New Customer'}</DialogTitle>
             <DialogDescription>
               {isEdit ? 'Update the customer details here. ' : 'Create a new customer here. '}
@@ -147,18 +140,18 @@ export function CustomersActionDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
             <CustomerForm
               form={form}
               onSubmit={onSubmit}
-              id='customer-form'
+              id="customer-form"
               isEdit={isEdit}
               currentRow={currentRow}
             />
           </div>
 
           <DialogFooter>
-            <Button type='submit' form='customer-form' disabled={isLoading}>
+            <Button type="submit" form="customer-form" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Spinner className="mr-2 size-4" />
@@ -177,7 +170,7 @@ export function CustomersActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>{isEdit ? 'Edit Customer' : 'Add New Customer'}</DrawerTitle>
           <DrawerDescription>
             {isEdit ? 'Update the customer details here. ' : 'Create a new customer here. '}
@@ -185,18 +178,18 @@ export function CustomersActionDialog({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className='no-scrollbar overflow-y-auto px-4'>
+        <div className="no-scrollbar overflow-y-auto px-4">
           <CustomerForm
             form={form}
             onSubmit={onSubmit}
-            id='customer-form'
+            id="customer-form"
             isEdit={isEdit}
             currentRow={currentRow}
           />
         </div>
 
         <DrawerFooter>
-          <Button type='submit' form='customer-form' disabled={isLoading}>
+          <Button type="submit" form="customer-form" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Spinner className="mr-2 size-4" />
@@ -207,7 +200,7 @@ export function CustomersActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -248,10 +241,11 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
       <FieldGroup>
         <Controller
           control={form.control}
-          name='customer_group_id'
+          name="customer_group_id"
           render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error} className='flex flex-col'>
-              <FieldLabel htmlFor='customer-group'>Customer group <span className="text-destructive">*</span></FieldLabel>
+            <Field data-invalid={!!fieldState.error} className="flex flex-col">
+              <FieldLabel htmlFor="customer-group">Customer group <span
+                className="text-destructive">*</span></FieldLabel>
               <Combobox
                 items={groupOptions}
                 itemToStringLabel={(item) => item.label}
@@ -259,7 +253,8 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
                 onValueChange={(item) => field.onChange(item?.value ?? undefined)}
                 isItemEqualToValue={(a, b) => a?.value === b?.value}
               >
-                <ComboboxInput id='customer-group' name='customer-group' placeholder='Select customer group...' showClear />
+                <ComboboxInput id="customer-group" name="customer-group" placeholder="Select customer group..."
+                               showClear />
                 <ComboboxContent>
                   <ComboboxEmpty>No customer group found.</ComboboxEmpty>
                   <ComboboxList>
@@ -276,50 +271,53 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
           )}
         />
 
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Controller
             control={form.control}
-            name='name'
+            name="name"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='customer-name'>Name <span className="text-destructive">*</span></FieldLabel>
-                <Input id='customer-name' placeholder='Customer name' autoComplete='off' {...field} />
+                <FieldLabel htmlFor="customer-name">Name <span className="text-destructive">*</span></FieldLabel>
+                <Input id="customer-name" placeholder="Customer name" autoComplete="off" {...field} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
           />
           <Controller
             control={form.control}
-            name='company_name'
+            name="company_name"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='customer-company'>Company name</FieldLabel>
-                <Input id='customer-company' placeholder='Company' autoComplete='off' {...field} value={field.value ?? ''} />
+                <FieldLabel htmlFor="customer-company">Company name</FieldLabel>
+                <Input id="customer-company" placeholder="Company" autoComplete="off" {...field}
+                       value={field.value ?? ''} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
           />
         </div>
 
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Controller
             control={form.control}
-            name='email'
+            name="email"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='customer-email'>Email</FieldLabel>
-                <Input id='customer-email' type='email' placeholder='email@example.com' autoComplete='off' {...field} value={field.value ?? ''} />
+                <FieldLabel htmlFor="customer-email">Email</FieldLabel>
+                <Input id="customer-email" type="email" placeholder="email@example.com" autoComplete="off" {...field}
+                       value={field.value ?? ''} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
           />
           <Controller
             control={form.control}
-            name='phone_number'
+            name="phone_number"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='customer-phone'>Phone</FieldLabel>
-                <PhoneInput id='customer-phone' placeholder='Phone number' autoComplete='off' {...field} value={field.value ?? ''} />
+                <FieldLabel htmlFor="customer-phone">Phone</FieldLabel>
+                <PhoneInput id="customer-phone" placeholder="Phone number" autoComplete="off" {...field}
+                            value={field.value ?? ''} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -328,11 +326,12 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
 
         <Controller
           control={form.control}
-          name='wa_number'
+          name="wa_number"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='customer-wa'>WhatsApp number</FieldLabel>
-              <PhoneInput id='customer-wa' placeholder='WhatsApp' autoComplete='off' {...field} value={field.value ?? ''} />
+              <FieldLabel htmlFor="customer-wa">WhatsApp number</FieldLabel>
+              <PhoneInput id="customer-wa" placeholder="WhatsApp" autoComplete="off" {...field}
+                          value={field.value ?? ''} />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -340,11 +339,11 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
 
         <Controller
           control={form.control}
-          name='tax_no'
+          name="tax_no"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='customer-tax'>Tax number</FieldLabel>
-              <Input id='customer-tax' placeholder='Tax no' autoComplete='off' {...field} value={field.value ?? ''} />
+              <FieldLabel htmlFor="customer-tax">Tax number</FieldLabel>
+              <Input id="customer-tax" placeholder="Tax no" autoComplete="off" {...field} value={field.value ?? ''} />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -352,10 +351,10 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
 
         <Controller
           control={form.control}
-          name='country_id'
+          name="country_id"
           render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error} className='flex flex-col'>
-              <FieldLabel htmlFor='customer-country'>Country</FieldLabel>
+            <Field data-invalid={!!fieldState.error} className="flex flex-col">
+              <FieldLabel htmlFor="customer-country">Country</FieldLabel>
               <Combobox
                 items={countryOptions}
                 itemToStringLabel={(item) => item.label}
@@ -367,7 +366,8 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
                 }}
                 isItemEqualToValue={(a, b) => a?.value === b?.value}
               >
-                <ComboboxInput id='customer-country' name='customer-country' placeholder='Select country...' showClear />
+                <ComboboxInput id="customer-country" name="customer-country" placeholder="Select country..."
+                               showClear />
                 <ComboboxContent>
                   <ComboboxEmpty>No country found.</ComboboxEmpty>
                   <ComboboxList>
@@ -386,10 +386,10 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
 
         <Controller
           control={form.control}
-          name='state_id'
+          name="state_id"
           render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error} className='flex flex-col'>
-              <FieldLabel htmlFor='customer-state'>State</FieldLabel>
+            <Field data-invalid={!!fieldState.error} className="flex flex-col">
+              <FieldLabel htmlFor="customer-state">State</FieldLabel>
               <Combobox
                 items={stateOptions}
                 itemToStringLabel={(item) => item.label}
@@ -400,7 +400,8 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
                 }}
                 isItemEqualToValue={(a, b) => a?.value === b?.value}
               >
-                <ComboboxInput id='customer-state' name='customer-state' placeholder='Select state...' showClear disabled={!countryId} />
+                <ComboboxInput id="customer-state" name="customer-state" placeholder="Select state..." showClear
+                               disabled={!countryId} />
                 <ComboboxContent>
                   <ComboboxEmpty>No state found.</ComboboxEmpty>
                   <ComboboxList>
@@ -419,10 +420,10 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
 
         <Controller
           control={form.control}
-          name='city_id'
+          name="city_id"
           render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error} className='flex flex-col'>
-              <FieldLabel htmlFor='customer-city'>City</FieldLabel>
+            <Field data-invalid={!!fieldState.error} className="flex flex-col">
+              <FieldLabel htmlFor="customer-city">City</FieldLabel>
               <Combobox
                 items={cityOptions}
                 itemToStringLabel={(item) => item.label}
@@ -430,7 +431,8 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
                 onValueChange={(item) => field.onChange(item?.value ?? null)}
                 isItemEqualToValue={(a, b) => a?.value === b?.value}
               >
-                <ComboboxInput id='customer-city' name='customer-city' placeholder='Select city...' showClear disabled={!stateId} />
+                <ComboboxInput id="customer-city" name="customer-city" placeholder="Select city..." showClear
+                               disabled={!stateId} />
                 <ComboboxContent>
                   <ComboboxEmpty>No city found.</ComboboxEmpty>
                   <ComboboxList>
@@ -449,11 +451,12 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
 
         <Controller
           control={form.control}
-          name='address'
+          name="address"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='customer-address'>Address</FieldLabel>
-              <Input id='customer-address' placeholder='Street address' autoComplete='off' {...field} value={field.value ?? ''} />
+              <FieldLabel htmlFor="customer-address">Address</FieldLabel>
+              <Input id="customer-address" placeholder="Street address" autoComplete="off" {...field}
+                     value={field.value ?? ''} />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -461,27 +464,28 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
 
         <Controller
           control={form.control}
-          name='postal_code'
+          name="postal_code"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='customer-postal'>Postal code</FieldLabel>
-              <Input id='customer-postal' placeholder='Postal code' autoComplete='off' {...field} value={field.value ?? ''} />
+              <FieldLabel htmlFor="customer-postal">Postal code</FieldLabel>
+              <Input id="customer-postal" placeholder="Postal code" autoComplete="off" {...field}
+                     value={field.value ?? ''} />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
 
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Controller
             control={form.control}
-            name='opening_balance'
+            name="opening_balance"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='customer-opening'>Opening balance</FieldLabel>
+                <FieldLabel htmlFor="customer-opening">Opening balance</FieldLabel>
                 <Input
-                  id='customer-opening'
-                  type='number'
-                  step='0.01'
+                  id="customer-opening"
+                  type="number"
+                  step="0.01"
                   {...field}
                   value={field.value ?? ''}
                   onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
@@ -492,14 +496,14 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
           />
           <Controller
             control={form.control}
-            name='credit_limit'
+            name="credit_limit"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='customer-credit'>Credit limit</FieldLabel>
+                <FieldLabel htmlFor="customer-credit">Credit limit</FieldLabel>
                 <Input
-                  id='customer-credit'
-                  type='number'
-                  step='0.01'
+                  id="customer-credit"
+                  type="number"
+                  step="0.01"
                   {...field}
                   value={field.value ?? ''}
                   onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
@@ -510,16 +514,16 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
           />
         </div>
 
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Controller
             control={form.control}
-            name='pay_term_no'
+            name="pay_term_no"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='customer-pay-term-no'>Pay term (number)</FieldLabel>
+                <FieldLabel htmlFor="customer-pay-term-no">Pay term (number)</FieldLabel>
                 <Input
-                  id='customer-pay-term-no'
-                  type='number'
+                  id="customer-pay-term-no"
+                  type="number"
                   {...field}
                   value={field.value ?? ''}
                   onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
@@ -530,11 +534,12 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
           />
           <Controller
             control={form.control}
-            name='pay_term_period'
+            name="pay_term_period"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='customer-pay-term-period'>Pay term period</FieldLabel>
-                <Input id='customer-pay-term-period' placeholder='e.g. days' autoComplete='off' {...field} value={field.value ?? ''} />
+                <FieldLabel htmlFor="customer-pay-term-period">Pay term period</FieldLabel>
+                <Input id="customer-pay-term-period" placeholder="e.g. days" autoComplete="off" {...field}
+                       value={field.value ?? ''} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -543,14 +548,14 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
 
         <Controller
           control={form.control}
-          name='deposit'
+          name="deposit"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='customer-deposit'>Deposit</FieldLabel>
+              <FieldLabel htmlFor="customer-deposit">Deposit</FieldLabel>
               <Input
-                id='customer-deposit'
-                type='number'
-                step='0.01'
+                id="customer-deposit"
+                type="number"
+                step="0.01"
                 {...field}
                 value={field.value ?? ''}
                 onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
@@ -562,17 +567,18 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
 
         <Controller
           control={form.control}
-          name='is_active'
+          name="is_active"
           render={({ field, fieldState }) => (
             <Field
               data-invalid={!!fieldState.error}
-              className='flex flex-row items-center justify-between rounded-md border p-4'
+              className="flex flex-row items-center justify-between rounded-md border p-4"
             >
-              <div className='space-y-0.5'>
-                <FieldLabel htmlFor='customer-active'>Active Status</FieldLabel>
-                <span className='text-xs text-muted-foreground'>Disabling this will hide the customer from the system.</span>
+              <div className="space-y-0.5">
+                <FieldLabel htmlFor="customer-active">Active Status</FieldLabel>
+                <span
+                  className="text-xs text-muted-foreground">Disabling this will hide the customer from the system.</span>
               </div>
-              <Switch id='customer-active' checked={!!field.value} onCheckedChange={field.onChange} />
+              <Switch id="customer-active" checked={!!field.value} onCheckedChange={field.onChange} />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -580,32 +586,32 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
 
         <Controller
           control={form.control}
-          name='both'
+          name="both"
           render={({ field }) => (
-            <Field className='flex flex-row items-center justify-between rounded-md border p-4'>
-              <div className='space-y-0.5'>
-                <FieldLabel htmlFor='customer-both'>Also register as supplier</FieldLabel>
+            <Field className="flex flex-row items-center justify-between rounded-md border p-4">
+              <div className="space-y-0.5">
+                <FieldLabel htmlFor="customer-both">Also register as supplier</FieldLabel>
                 <FieldDescription>
                   Create a supplier record for this contact so they can be used for purchases.
                 </FieldDescription>
               </div>
-              <Switch id='customer-both' checked={!!field.value} onCheckedChange={field.onChange} />
+              <Switch id="customer-both" checked={!!field.value} onCheckedChange={field.onChange} />
             </Field>
           )}
         />
 
         <Controller
           control={form.control}
-          name='user'
+          name="user"
           render={({ field }) => (
-            <Field className='flex flex-row items-center justify-between rounded-md border p-4'>
-              <div className='space-y-0.5'>
-                <FieldLabel htmlFor='customer-user'>Create portal login</FieldLabel>
+            <Field className="flex flex-row items-center justify-between rounded-md border p-4">
+              <div className="space-y-0.5">
+                <FieldLabel htmlFor="customer-user">Create portal login</FieldLabel>
                 <FieldDescription>
                   Allow this customer to sign in with a username and password to access their account.
                 </FieldDescription>
               </div>
-              <Switch id='customer-user' checked={!!field.value} onCheckedChange={field.onChange} />
+              <Switch id="customer-user" checked={!!field.value} onCheckedChange={field.onChange} />
             </Field>
           )}
         />
@@ -614,25 +620,28 @@ function CustomerForm({ form, onSubmit, id, className, isEdit, currentRow }: Cus
           <>
             <Controller
               control={form.control}
-              name='username'
+              name="username"
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
-                  <FieldLabel htmlFor='customer-username'>Username <span className="text-destructive">*</span></FieldLabel>
-                  <Input id='customer-username' placeholder='Username' autoComplete='off' {...field} value={field.value ?? ''} />
+                  <FieldLabel htmlFor="customer-username">Username <span
+                    className="text-destructive">*</span></FieldLabel>
+                  <Input id="customer-username" placeholder="Username" autoComplete="off" {...field}
+                         value={field.value ?? ''} />
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
             <Controller
               control={form.control}
-              name='password'
+              name="password"
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
-                  <FieldLabel htmlFor='customer-password'>{isEdit ? 'New password (leave blank to keep)' : 'Password *'}</FieldLabel>
+                  <FieldLabel
+                    htmlFor="customer-password">{isEdit ? 'New password (leave blank to keep)' : 'Password *'}</FieldLabel>
                   <PasswordInput
-                    id='customer-password'
+                    id="customer-password"
                     placeholder={isEdit ? 'Leave blank to keep current' : 'Min 8 characters'}
-                    autoComplete='off'
+                    autoComplete="off"
                     {...field}
                     value={field.value ?? ''}
                   />

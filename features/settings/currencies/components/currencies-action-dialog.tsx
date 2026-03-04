@@ -3,11 +3,8 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 
-import {
-  useCreateCurrency,
-  useUpdateCurrency,
-} from '@/features/settings/currencies/api'
-import { currencySchema, type CurrencyFormData } from '@/features/settings/currencies/schemas'
+import { useCreateCurrency, useUpdateCurrency } from '@/features/settings/currencies/api'
+import { type CurrencyFormData, currencySchema } from '@/features/settings/currencies/schemas'
 import { useOptionCountries } from '@/features/settings/countries/api'
 import { type Currency } from '../types'
 
@@ -32,23 +29,11 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-  FieldDescription,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Spinner } from '@/components/ui/spinner'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 type CurrenciesActionDialogProps = {
   currentRow?: Currency
@@ -117,8 +102,8 @@ export function CurrenciesActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>{isEdit ? 'Edit Currency' : 'Add New Currency'}</DialogTitle>
             <DialogDescription>
               {isEdit ? 'Update the currency details here. ' : 'Create a new currency here. '}
@@ -126,15 +111,15 @@ export function CurrenciesActionDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
-            <CurrencyForm form={form} onSubmit={onSubmit} id='currency-form' />
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
+            <CurrencyForm form={form} onSubmit={onSubmit} id="currency-form" />
           </div>
 
           <DialogFooter>
-            <Button type='submit' form='currency-form' disabled={isLoading}>
+            <Button type="submit" form="currency-form" disabled={isLoading}>
               {isLoading ? (
                 <>
-                  <Spinner className='mr-2 size-4' />
+                  <Spinner className="mr-2 size-4" />
                   Saving...
                 </>
               ) : (
@@ -150,7 +135,7 @@ export function CurrenciesActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>{isEdit ? 'Edit Currency' : 'Add New Currency'}</DrawerTitle>
           <DrawerDescription>
             {isEdit ? 'Update the currency details here. ' : 'Create a new currency here. '}
@@ -158,15 +143,15 @@ export function CurrenciesActionDialog({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className='no-scrollbar overflow-y-auto px-4'>
-          <CurrencyForm form={form} onSubmit={onSubmit} id='currency-form' />
+        <div className="no-scrollbar overflow-y-auto px-4">
+          <CurrencyForm form={form} onSubmit={onSubmit} id="currency-form" />
         </div>
 
         <DrawerFooter>
-          <Button type='submit' form='currency-form' disabled={isLoading}>
+          <Button type="submit" form="currency-form" disabled={isLoading}>
             {isLoading ? (
               <>
-                <Spinner className='mr-2 size-4' />
+                <Spinner className="mr-2 size-4" />
                 Saving...
               </>
             ) : (
@@ -174,7 +159,7 @@ export function CurrenciesActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -190,7 +175,7 @@ interface CurrencyFormProps {
 }
 
 function CurrencyForm({ form, onSubmit, id, className }: CurrencyFormProps) {
-  const { data: countries = [], isLoading: isLoadingCountries } = useOptionCountries();
+  const { data: countries = [], isLoading: isLoadingCountries } = useOptionCountries()
 
   return (
     <form
@@ -201,11 +186,11 @@ function CurrencyForm({ form, onSubmit, id, className }: CurrencyFormProps) {
       <FieldGroup>
         <Controller
           control={form.control}
-          name='name'
+          name="name"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='currency-name'>Name <span className='text-destructive'>*</span></FieldLabel>
-              <Input id='currency-name' placeholder='US Dollar' autoComplete='off' {...field} />
+              <FieldLabel htmlFor="currency-name">Name <span className="text-destructive">*</span></FieldLabel>
+              <Input id="currency-name" placeholder="US Dollar" autoComplete="off" {...field} />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -214,11 +199,11 @@ function CurrencyForm({ form, onSubmit, id, className }: CurrencyFormProps) {
         <div className="grid grid-cols-2 gap-4">
           <Controller
             control={form.control}
-            name='code'
+            name="code"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='currency-code'>Code <span className='text-destructive'>*</span></FieldLabel>
-                <Input id='currency-code' placeholder='USD' className="uppercase" autoComplete='off' {...field} />
+                <FieldLabel htmlFor="currency-code">Code <span className="text-destructive">*</span></FieldLabel>
+                <Input id="currency-code" placeholder="USD" className="uppercase" autoComplete="off" {...field} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -226,11 +211,11 @@ function CurrencyForm({ form, onSubmit, id, className }: CurrencyFormProps) {
 
           <Controller
             control={form.control}
-            name='symbol'
+            name="symbol"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='currency-symbol'>Symbol <span className='text-destructive'>*</span></FieldLabel>
-                <Input id='currency-symbol' placeholder='$' autoComplete='off' {...field} />
+                <FieldLabel htmlFor="currency-symbol">Symbol <span className="text-destructive">*</span></FieldLabel>
+                <Input id="currency-symbol" placeholder="$" autoComplete="off" {...field} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -239,16 +224,16 @@ function CurrencyForm({ form, onSubmit, id, className }: CurrencyFormProps) {
 
         <Controller
           control={form.control}
-          name='country_id'
+          name="country_id"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='currency-country'>Country <span className='text-destructive'>*</span></FieldLabel>
+              <FieldLabel htmlFor="currency-country">Country <span className="text-destructive">*</span></FieldLabel>
               <Select
                 value={field.value ? String(field.value) : ''}
                 onValueChange={(val) => field.onChange(Number(val))}
                 disabled={isLoadingCountries}
               >
-                <SelectTrigger id='currency-country'>
+                <SelectTrigger id="currency-country">
                   <SelectValue placeholder="Select a country" />
                 </SelectTrigger>
                 <SelectContent>
@@ -267,14 +252,14 @@ function CurrencyForm({ form, onSubmit, id, className }: CurrencyFormProps) {
         <div className="grid grid-cols-2 gap-4">
           <Controller
             control={form.control}
-            name='precision'
+            name="precision"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='currency-precision'>Precision</FieldLabel>
+                <FieldLabel htmlFor="currency-precision">Precision</FieldLabel>
                 <Input
-                  id='currency-precision'
+                  id="currency-precision"
                   type="number"
-                  placeholder='2'
+                  placeholder="2"
                   {...field}
                   value={field.value ?? ''}
                   onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
@@ -286,11 +271,12 @@ function CurrencyForm({ form, onSubmit, id, className }: CurrencyFormProps) {
 
           <Controller
             control={form.control}
-            name='symbol_native'
+            name="symbol_native"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='currency-symbol-native'>Native Symbol</FieldLabel>
-                <Input id='currency-symbol-native' placeholder='$' autoComplete='off' {...field} value={field.value ?? ''} />
+                <FieldLabel htmlFor="currency-symbol-native">Native Symbol</FieldLabel>
+                <Input id="currency-symbol-native" placeholder="$" autoComplete="off" {...field}
+                       value={field.value ?? ''} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -300,11 +286,12 @@ function CurrencyForm({ form, onSubmit, id, className }: CurrencyFormProps) {
         <div className="grid grid-cols-2 gap-4">
           <Controller
             control={form.control}
-            name='decimal_mark'
+            name="decimal_mark"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='currency-decimal-mark'>Decimal Mark</FieldLabel>
-                <Input id='currency-decimal-mark' placeholder='.' autoComplete='off' {...field} value={field.value ?? ''} />
+                <FieldLabel htmlFor="currency-decimal-mark">Decimal Mark</FieldLabel>
+                <Input id="currency-decimal-mark" placeholder="." autoComplete="off" {...field}
+                       value={field.value ?? ''} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -312,11 +299,12 @@ function CurrencyForm({ form, onSubmit, id, className }: CurrencyFormProps) {
 
           <Controller
             control={form.control}
-            name='thousands_separator'
+            name="thousands_separator"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='currency-thousands-separator'>Thousands Separator</FieldLabel>
-                <Input id='currency-thousands-separator' placeholder=',' autoComplete='off' {...field} value={field.value ?? ''} />
+                <FieldLabel htmlFor="currency-thousands-separator">Thousands Separator</FieldLabel>
+                <Input id="currency-thousands-separator" placeholder="," autoComplete="off" {...field}
+                       value={field.value ?? ''} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -325,16 +313,17 @@ function CurrencyForm({ form, onSubmit, id, className }: CurrencyFormProps) {
 
         <Controller
           control={form.control}
-          name='symbol_first'
+          name="symbol_first"
           render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error} className='flex flex-row items-center justify-between rounded-md border p-4'>
-              <div className='space-y-0.5'>
-                <FieldLabel htmlFor='currency-symbol-first'>Symbol First</FieldLabel>
+            <Field data-invalid={!!fieldState.error}
+                   className="flex flex-row items-center justify-between rounded-md border p-4">
+              <div className="space-y-0.5">
+                <FieldLabel htmlFor="currency-symbol-first">Symbol First</FieldLabel>
                 <FieldDescription>
                   Enable to place symbol before the amount (e.g. $100 vs 100$).
                 </FieldDescription>
               </div>
-              <Switch id='currency-symbol-first' checked={!!field.value} onCheckedChange={field.onChange} />
+              <Switch id="currency-symbol-first" checked={!!field.value} onCheckedChange={field.onChange} />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

@@ -1,14 +1,8 @@
-"use client"
+'use client'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import {
   Drawer,
   DrawerClose,
@@ -34,10 +28,10 @@ type BrandsViewDialogProps = {
 }
 
 export function BrandsViewDialog({
-  currentRow,
-  open,
-  onOpenChange,
-}: BrandsViewDialogProps) {
+                                   currentRow,
+                                   open,
+                                   onOpenChange,
+                                 }: BrandsViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   if (!currentRow) return null
   const handleOpenChange = (value: boolean) => {
@@ -47,15 +41,15 @@ export function BrandsViewDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>Brand Details</DialogTitle>
             <DialogDescription>
               View brand information below.
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-2'>
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-2">
             <BrandView
               currentRow={currentRow}
             />
@@ -68,12 +62,12 @@ export function BrandsViewDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>Brand Details</DrawerTitle>
           <DrawerDescription>View brand information below.</DrawerDescription>
         </DrawerHeader>
 
-        <div className='max-h-[80vh] overflow-y-auto px-4'>
+        <div className="max-h-[80vh] overflow-y-auto px-4">
           <BrandView
             currentRow={currentRow}
           />
@@ -81,7 +75,7 @@ export function BrandsViewDialog({
 
         <DrawerFooter>
           <DrawerClose asChild>
-            <Button variant='outline'>Close</Button>
+            <Button variant="outline">Close</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -101,14 +95,14 @@ function BrandView({ className, currentRow }: BrandViewProps) {
   return (
     <div className={cn('space-y-6', className)}>
       {currentRow.image_url && (
-        <div className='space-y-2'>
-          <div className='text-sm font-medium text-muted-foreground'>Image</div>
-          <div className='relative h-48 w-full overflow-hidden rounded-md border bg-muted'>
+        <div className="space-y-2">
+          <div className="text-sm font-medium text-muted-foreground">Image</div>
+          <div className="relative h-48 w-full overflow-hidden rounded-md border bg-muted">
             <ImageZoom
               backdropClassName={cn(
                 resolvedTheme === 'dark'
                   ? '[&_[data-rmiz-modal-overlay="visible"]]:bg-white/80'
-                  : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80'
+                  : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80',
               )}
             >
               <Image
@@ -116,7 +110,7 @@ function BrandView({ className, currentRow }: BrandViewProps) {
                 alt={currentRow.name}
                 width={800}
                 height={400}
-                className='h-full w-full object-cover'
+                className="h-full w-full object-cover"
                 unoptimized
               />
             </ImageZoom>
@@ -124,56 +118,56 @@ function BrandView({ className, currentRow }: BrandViewProps) {
         </div>
       )}
 
-      <div className='space-y-2'>
-        <div className='text-sm font-medium text-muted-foreground'>Name</div>
-        <div className='text-sm font-medium'>{currentRow.name}</div>
+      <div className="space-y-2">
+        <div className="text-sm font-medium text-muted-foreground">Name</div>
+        <div className="text-sm font-medium">{currentRow.name}</div>
       </div>
 
       {currentRow.slug && (
-        <div className='space-y-2'>
-          <div className='text-sm font-medium text-muted-foreground'>Slug</div>
-          <div className='text-sm font-mono text-muted-foreground'>{currentRow.slug}</div>
+        <div className="space-y-2">
+          <div className="text-sm font-medium text-muted-foreground">Slug</div>
+          <div className="text-sm font-mono text-muted-foreground">{currentRow.slug}</div>
         </div>
       )}
 
       {currentRow.short_description && (
-        <div className='space-y-2'>
-          <div className='text-sm font-medium text-muted-foreground'>Description</div>
-          <div className='text-sm text-muted-foreground whitespace-pre-wrap'>
+        <div className="space-y-2">
+          <div className="text-sm font-medium text-muted-foreground">Description</div>
+          <div className="text-sm text-muted-foreground whitespace-pre-wrap">
             {currentRow.short_description}
           </div>
         </div>
       )}
 
       {currentRow.page_title && (
-        <div className='space-y-2'>
-          <div className='text-sm font-medium text-muted-foreground'>Page Title</div>
-          <div className='text-sm'>{currentRow.page_title}</div>
+        <div className="space-y-2">
+          <div className="text-sm font-medium text-muted-foreground">Page Title</div>
+          <div className="text-sm">{currentRow.page_title}</div>
         </div>
       )}
 
-      <div className='space-y-2'>
-        <div className='text-sm font-medium text-muted-foreground'>Status</div>
-        <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
+      <div className="space-y-2">
+        <div className="text-sm font-medium text-muted-foreground">Status</div>
+        <Badge variant="outline" className={cn('capitalize', statusBadgeColor)}>
           {currentRow.active_status}
         </Badge>
       </div>
 
       <Separator />
 
-      <div className='grid grid-cols-2 gap-4'>
-        <div className='space-y-2'>
-          <div className='text-sm font-medium text-muted-foreground'>Created At</div>
-          <div className='text-sm text-muted-foreground'>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <div className="text-sm font-medium text-muted-foreground">Created At</div>
+          <div className="text-sm text-muted-foreground">
             {currentRow.created_at
               ? new Date(currentRow.created_at).toLocaleString()
               : 'N/A'}
           </div>
         </div>
 
-        <div className='space-y-2'>
-          <div className='text-sm font-medium text-muted-foreground'>Updated At</div>
-          <div className='text-sm text-muted-foreground'>
+        <div className="space-y-2">
+          <div className="text-sm font-medium text-muted-foreground">Updated At</div>
+          <div className="text-sm text-muted-foreground">
             {currentRow.updated_at
               ? new Date(currentRow.updated_at).toLocaleString()
               : 'N/A'}

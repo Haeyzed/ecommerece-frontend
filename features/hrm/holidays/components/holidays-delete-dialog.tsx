@@ -39,7 +39,7 @@ export function HolidaysDeleteDialog({
       onSuccess: () => {
         onOpenChange(false)
         setValue('')
-      }
+      },
     })
   }
 
@@ -50,10 +50,10 @@ export function HolidaysDeleteDialog({
       handleConfirm={handleDelete}
       disabled={value.trim() !== CONFIRM_WORD || isPending}
       title={
-        <span className='text-destructive'>
+        <span className="text-destructive">
           <HugeiconsIcon
             icon={Alert02Icon}
-            className='me-1 inline-block stroke-destructive'
+            className="me-1 inline-block stroke-destructive"
             size={18}
             strokeWidth={2}
           />{' '}
@@ -61,8 +61,8 @@ export function HolidaysDeleteDialog({
         </span>
       }
       desc={
-        <div className='space-y-4'>
-          <p className='mb-2'>
+        <div className="space-y-4">
+          <p className="mb-2">
             Are you sure you want to delete this holiday?
             <br />
             <strong>Date:</strong> {currentRow.from_date} to {currentRow.to_date}
@@ -71,7 +71,7 @@ export function HolidaysDeleteDialog({
             This cannot be undone.
           </p>
 
-          <Label className='my-2'>
+          <Label className="my-2">
             Confirm Deletion:
             <Input
               value={value}
@@ -80,7 +80,7 @@ export function HolidaysDeleteDialog({
             />
           </Label>
 
-          <Alert variant='destructive'>
+          <Alert variant="destructive">
             <AlertTitle>Warning!</AlertTitle>
             <AlertDescription>
               Please be careful, this operation can not be rolled back.
@@ -88,7 +88,7 @@ export function HolidaysDeleteDialog({
           </Alert>
         </div>
       }
-      confirmText='Delete'
+      confirmText="Delete"
       destructive
     />
   )

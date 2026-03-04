@@ -2,27 +2,14 @@
 
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  CheckmarkCircle02Icon,
-  Delete02Icon,
-  Alert02Icon, // Used for 'Mark Late'
-  Upload01Icon,
-} from '@hugeicons/core-free-icons'
+import { Alert02Icon, CheckmarkCircle02Icon, Delete02Icon, Upload01Icon } from '@hugeicons/core-free-icons'
 import { type Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
-import {
-  useBulkMarkPresentAttendances,
-  useBulkMarkLateAttendances
-} from '@/features/hrm/attendances/api'
+import { useBulkMarkLateAttendances, useBulkMarkPresentAttendances } from '@/features/hrm/attendances/api'
 import { type Attendance } from '@/features/hrm/attendances/types'
-import { AttendancesExportDialog } from '@/features/hrm/attendances'
-import { AttendancesMultiDeleteDialog } from '@/features/hrm/attendances'
+import { AttendancesExportDialog, AttendancesMultiDeleteDialog } from '@/features/hrm/attendances'
 import { useAuthSession } from '@/features/auth/api'
 import { Spinner } from '@/components/ui/spinner'
 
@@ -62,21 +49,21 @@ export function DataTableBulkActions<TData>({
 
   return (
     <>
-      <BulkActionsToolbar table={table} entityName='attendance'>
+      <BulkActionsToolbar table={table} entityName="attendance">
         {canUpdateStatus && (
           <>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant='outline'
-                  size='icon'
+                  variant="outline"
+                  size="icon"
                   onClick={() => handleBulkStatusChange('present')}
                   disabled={isBusy}
-                  className='size-8 text-teal-600 hover:text-teal-700 hover:bg-teal-50'
-                  aria-label='Mark selected as present'
+                  className="size-8 text-teal-600 hover:text-teal-700 hover:bg-teal-50"
+                  aria-label="Mark selected as present"
                 >
                   {isMarkingPresent ? (
-                    <Spinner className='size-4' />
+                    <Spinner className="size-4" />
                   ) : (
                     <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
                   )}
@@ -88,15 +75,15 @@ export function DataTableBulkActions<TData>({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant='outline'
-                  size='icon'
+                  variant="outline"
+                  size="icon"
                   onClick={() => handleBulkStatusChange('late')}
                   disabled={isBusy}
-                  className='size-8 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50'
-                  aria-label='Mark selected as late'
+                  className="size-8 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50"
+                  aria-label="Mark selected as late"
                 >
                   {isMarkingLate ? (
-                    <Spinner className='size-4' />
+                    <Spinner className="size-4" />
                   ) : (
                     <HugeiconsIcon icon={Alert02Icon} strokeWidth={2} />
                   )}
@@ -111,12 +98,12 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant='outline'
-                size='icon'
+                variant="outline"
+                size="icon"
                 onClick={() => setShowExportDialog(true)}
                 disabled={isBusy}
-                className='size-8'
-                aria-label='Export selected attendances'
+                className="size-8"
+                aria-label="Export selected attendances"
               >
                 <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} />
               </Button>
@@ -129,12 +116,12 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant='destructive'
-                size='icon'
+                variant="destructive"
+                size="icon"
                 onClick={() => setShowDeleteConfirm(true)}
                 disabled={isBusy}
-                className='size-8'
-                aria-label='Delete selected attendances'
+                className="size-8"
+                aria-label="Delete selected attendances"
               >
                 <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} />
               </Button>

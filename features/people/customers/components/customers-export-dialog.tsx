@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Upload01Icon } from '@hugeicons/core-free-icons'
 import { useCustomersExport } from '../api'
-import { customerExportSchema, type CustomerExportFormData } from '../schemas'
+import { type CustomerExportFormData, customerExportSchema } from '../schemas'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -24,22 +24,10 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { useQuery } from '@tanstack/react-query'
 import { useApiClient } from '@/lib/api/api-client-client'
@@ -71,10 +59,10 @@ type CustomersExportDialogProps = {
 }
 
 export function CustomersExportDialog({
-  open,
-  onOpenChange,
-  ids = [],
-}: CustomersExportDialogProps) {
+                                        open,
+                                        onOpenChange,
+                                        ids = [],
+                                      }: CustomersExportDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: exportCustomers, isPending } = useCustomersExport()
   const { api } = useApiClient()
@@ -119,7 +107,7 @@ export function CustomersExportDialog({
         start_date: data.start_date,
         end_date: data.end_date,
       },
-      { onSuccess: () => handleOpenChange(false) }
+      { onSuccess: () => handleOpenChange(false) },
     )
   }
 
@@ -132,7 +120,7 @@ export function CustomersExportDialog({
   }
 
   const ExportContent = () => (
-    <form id='export-form' onSubmit={form.handleSubmit(onSubmit)} className='grid gap-4 py-4'>
+    <form id="export-form" onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
       <FieldGroup>
         <Controller
           control={form.control}
@@ -152,11 +140,11 @@ export function CustomersExportDialog({
                 onChange={(range) => {
                   form.setValue(
                     'start_date',
-                    range?.from ? format(range.from, 'yyyy-MM-dd') : undefined
+                    range?.from ? format(range.from, 'yyyy-MM-dd') : undefined,
                   )
                   form.setValue(
                     'end_date',
-                    range?.to ? format(range.to, 'yyyy-MM-dd') : undefined
+                    range?.to ? format(range.to, 'yyyy-MM-dd') : undefined,
                   )
                 }}
               />
@@ -277,9 +265,9 @@ export function CustomersExportDialog({
                   </Button>
                 </div>
               </div>
-              <div className='grid grid-cols-2 gap-3 rounded-md border p-3 max-h-60 overflow-y-auto'>
+              <div className="grid grid-cols-2 gap-3 rounded-md border p-3 max-h-60 overflow-y-auto">
                 {AVAILABLE_COLUMNS.map((column) => (
-                  <div key={column.value} className='flex items-center space-x-2'>
+                  <div key={column.value} className="flex items-center space-x-2">
                     <Checkbox
                       id={`column-${column.value}`}
                       checked={field.value?.includes(column.value) ?? false}
@@ -294,7 +282,7 @@ export function CustomersExportDialog({
                     />
                     <label
                       htmlFor={`column-${column.value}`}
-                      className='text-sm font-medium cursor-pointer'
+                      className="text-sm font-medium cursor-pointer"
                     >
                       {column.label}
                     </label>
@@ -318,19 +306,19 @@ export function CustomersExportDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className='sm:max-w-2xl max-h-[90vh] overflow-y-auto'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader className="text-start">
             <DialogTitle>Export Customers</DialogTitle>
             <DialogDescription>{description}</DialogDescription>
           </DialogHeader>
           <ExportContent />
-          <DialogFooter className='gap-y-2'>
-            <Button variant='outline' onClick={() => handleOpenChange(false)}>
+          <DialogFooter className="gap-y-2">
+            <Button variant="outline" onClick={() => handleOpenChange(false)}>
               Cancel
             </Button>
             <Button
-              type='submit'
-              form='export-form'
+              type="submit"
+              form="export-form"
               disabled={isPending || (method === 'email' && isLoadingUsers)}
             >
               {isPending ? (
@@ -354,15 +342,15 @@ export function CustomersExportDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>Export Customers</DrawerTitle>
           <DrawerDescription>{description}</DrawerDescription>
         </DrawerHeader>
-        <div className='no-scrollbar overflow-y-auto px-4'><ExportContent /></div>
+        <div className="no-scrollbar overflow-y-auto px-4"><ExportContent /></div>
         <DrawerFooter>
           <Button
-            type='submit'
-            form='export-form'
+            type="submit"
+            form="export-form"
             disabled={isPending || (method === 'email' && isLoadingUsers)}
           >
             {isPending ? (
@@ -378,7 +366,7 @@ export function CustomersExportDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>

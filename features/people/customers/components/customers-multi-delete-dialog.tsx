@@ -21,10 +21,10 @@ type CustomersMultiDeleteDialogProps<TData> = {
 const CONFIRM_WORD = 'DELETE'
 
 export function CustomersMultiDeleteDialog<TData>({
-  open,
-  onOpenChange,
-  table,
-}: CustomersMultiDeleteDialogProps<TData>) {
+                                                    open,
+                                                    onOpenChange,
+                                                    table,
+                                                  }: CustomersMultiDeleteDialogProps<TData>) {
   const [value, setValue] = useState('')
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map((row) => (row.original as Customer).id)

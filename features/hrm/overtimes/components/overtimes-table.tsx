@@ -1,40 +1,28 @@
-"use client"
+'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { format } from 'date-fns'
 import { type DateRange } from 'react-day-picker'
 import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useTableUrlState } from '@/hooks/use-table-url-state'
 import { cn } from '@/lib/utils'
 import {
-  type SortingState,
-  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
   getSortedRowModel,
-  useReactTable
+  type SortingState,
+  useReactTable,
+  type VisibilityState,
 } from '@tanstack/react-table'
 import { toast } from 'sonner'
 
 import { usePaginatedOvertimes } from '@/features/hrm/overtimes/api'
-import {
-  OvertimesEmptyState,
-  DataTableBulkActions,
-  overtimesColumns as columns
-} from '@/features/hrm/overtimes'
+import { DataTableBulkActions, overtimesColumns as columns, OvertimesEmptyState } from '@/features/hrm/overtimes'
 import { useOptionEmployees } from '@/features/hrm/employees/api'
-import { DateRangePicker } from '@/components/date-range-picker'
 
 export function OvertimesTable() {
   const [rowSelection, setRowSelection] = useState({})
@@ -153,14 +141,14 @@ export function OvertimesTable() {
             columnId: 'employee_id',
             title: 'Employee',
             options: optionEmployees?.map(emp => ({ label: emp.label, value: emp.value.toString() })) || [],
-          }
+          },
         ]}
       />
-      <div className='overflow-hidden rounded-md border'>
+      <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className='group/row'>
+              <TableRow key={headerGroup.id} className="group/row">
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
@@ -169,14 +157,14 @@ export function OvertimesTable() {
                       className={cn(
                         'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                         (header.column.columnDef.meta as any)?.className,
-                        (header.column.columnDef.meta as any)?.thClassName
+                        (header.column.columnDef.meta as any)?.thClassName,
                       )}
                     >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                     </TableHead>
                   )
@@ -193,7 +181,7 @@ export function OvertimesTable() {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    className='group/row'
+                    className="group/row"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
@@ -201,12 +189,12 @@ export function OvertimesTable() {
                         className={cn(
                           'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                           (cell.column.columnDef.meta as any)?.className,
-                          (cell.column.columnDef.meta as any)?.tdClassName
+                          (cell.column.columnDef.meta as any)?.tdClassName,
                         )}
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext()
+                          cell.getContext(),
                         )}
                       </TableCell>
                     ))}
@@ -216,7 +204,7 @@ export function OvertimesTable() {
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className='h-24 text-center'
+                    className="h-24 text-center"
                   >
                     No results.
                   </TableCell>
@@ -226,7 +214,7 @@ export function OvertimesTable() {
           )}
         </Table>
       </div>
-      <DataTablePagination table={table} className='mt-auto' />
+      <DataTablePagination table={table} className="mt-auto" />
       <DataTableBulkActions table={table} />
     </div>
   )

@@ -5,11 +5,26 @@ import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { useCreateCustomerGroup, useUpdateCustomerGroup } from '../api'
-import { customerGroupSchema, type CustomerGroupFormData } from '../schemas'
+import { type CustomerGroupFormData, customerGroupSchema } from '../schemas'
 import type { CustomerGroup } from '../types'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
@@ -38,7 +53,12 @@ export function CustomerGroupsActionDialog(props: CustomerGroupsActionDialogProp
       : { name: '', percentage: 0, is_active: true },
   })
   const onSubmit = (values: CustomerGroupFormData) => {
-    const opts = { onSuccess: () => { form.reset(); onOpenChange(false) } }
+    const opts = {
+      onSuccess: () => {
+        form.reset()
+        onOpenChange(false)
+      },
+    }
     if (isEdit && currentRow) update({ id: currentRow.id, data: values }, opts)
     else create(values, opts)
   }
@@ -59,13 +79,15 @@ export function CustomerGroupsActionDialog(props: CustomerGroupsActionDialogProp
         <Controller control={form.control} name="percentage" render={({ field, fieldState }) => (
           <Field data-invalid={!!fieldState.error}>
             <FieldLabel>Percentage (%)</FieldLabel>
-            <Input type="number" min={0} max={100} step={0.01} {...field} value={field.value ?? ''} onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)} />
+            <Input type="number" min={0} max={100} step={0.01} {...field} value={field.value ?? ''}
+                   onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)} />
             {fieldState.error && <FieldError errors={[fieldState.error]} />}
           </Field>
         )} />
         <Controller control={form.control} name="is_active" render={({ field }) => (
           <Field>
-            <div className="flex items-center justify-between"><FieldLabel>Active</FieldLabel><Switch checked={field.value ?? true} onCheckedChange={field.onChange} /></div>
+            <div className="flex items-center justify-between"><FieldLabel>Active</FieldLabel><Switch
+              checked={field.value ?? true} onCheckedChange={field.onChange} /></div>
           </Field>
         )} />
       </FieldGroup>

@@ -23,7 +23,7 @@ export function StatesDialogs() {
     <>
       {canCreate && (
         <StatesActionDialog
-          key='state-add'
+          key="state-add"
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -33,7 +33,7 @@ export function StatesDialogs() {
 
       {canImport && (
         <StatesImportDialog
-          key='state-import'
+          key="state-import"
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -43,7 +43,7 @@ export function StatesDialogs() {
 
       {canExport && (
         <StatesExportDialog
-          key='state-export'
+          key="state-export"
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

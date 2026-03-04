@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 /**
  * ForgotPasswordForm
@@ -9,41 +9,26 @@
  * @component
  */
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import Link from "next/link"
-import { useState } from "react"
-import { Controller, useForm } from "react-hook-form"
+import { zodResolver } from '@hookform/resolvers/zod'
+import Link from 'next/link'
+import { useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 
-import { Button } from "@/components/ui/button"
-import {
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  Field,
-  FieldContent,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { Spinner } from "@/components/ui/spinner"
-import { useForgotPassword } from "@/features/auth/api"
-import {
-  type ForgotPasswordFormData,
-  forgotPasswordSchema,
-} from "@/features/auth/schemas"
-import { ValidationError } from "@/lib/api/api-errors"
+import { Button } from '@/components/ui/button'
+import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
+import { Spinner } from '@/components/ui/spinner'
+import { useForgotPassword } from '@/features/auth/api'
+import { type ForgotPasswordFormData, forgotPasswordSchema } from '@/features/auth/schemas'
+import { ValidationError } from '@/lib/api/api-errors'
 
 export function ForgotPasswordForm() {
   const [success, setSuccess] = useState(false)
 
   const form = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
-    defaultValues: { email: "" },
+    defaultValues: { email: '' },
   })
 
   const forgotPasswordMutation = useForgotPassword()
@@ -56,14 +41,14 @@ export function ForgotPasswordForm() {
       if (error instanceof ValidationError && error.errors) {
         Object.entries(error.errors).forEach(([field, messages]) => {
           form.setError(field as keyof ForgotPasswordFormData, {
-            type: "server",
+            type: 'server',
             message: messages[0],
           })
         })
       } else {
-        form.setError("root", {
-          type: "server",
-          message: error instanceof Error ? error.message : "An error occurred",
+        form.setError('root', {
+          type: 'server',
+          message: error instanceof Error ? error.message : 'An error occurred',
         })
       }
     }
@@ -152,7 +137,7 @@ export function ForgotPasswordForm() {
                 Sending...
               </>
             ) : (
-              "Send reset link"
+              'Send reset link'
             )}
           </Button>
         </form>

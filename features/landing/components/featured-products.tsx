@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Star, ShoppingCart } from 'lucide-react'
+import { ShoppingCart, Star } from 'lucide-react'
 
 const products = [
   {
@@ -50,52 +50,52 @@ const products = [
 
 export function FeaturedProducts() {
   return (
-    <section className='w-full bg-muted/30 py-12 sm:py-16 lg:py-20'>
-      <div className='container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
+    <section className="w-full bg-muted/30 py-12 sm:py-16 lg:py-20">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className='mb-12 flex items-center justify-between'>
+        <div className="mb-12 flex items-center justify-between">
           <div>
-            <h2 className='mb-4 text-2xl font-bold text-foreground sm:text-3xl md:text-4xl'>
+            <h2 className="mb-4 text-2xl font-bold text-foreground sm:text-3xl md:text-4xl">
               Featured Products
             </h2>
-            <p className='text-base text-muted-foreground sm:text-lg'>
+            <p className="text-base text-muted-foreground sm:text-lg">
               Check out our best-selling and newest items
             </p>
           </div>
-          <Button variant='outline' className='hidden sm:flex'>
+          <Button variant="outline" className="hidden sm:flex">
             View All Products
           </Button>
         </div>
 
         {/* Products Grid */}
-        <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4'>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {products.map((product) => (
             <Card
               key={product.id}
-              className='group relative flex flex-col overflow-hidden transition-all duration-300 hover:shadow-lg'
+              className="group relative flex flex-col overflow-hidden transition-all duration-300 hover:shadow-lg"
             >
               {/* Product Image */}
-              <div className='relative aspect-square w-full overflow-hidden bg-muted'>
+              <div className="relative aspect-square w-full overflow-hidden bg-muted">
                 <img
                   src={product.image}
                   alt={product.name}
-                  className='h-full w-full object-cover transition-transform duration-300 group-hover:scale-110'
-                  loading='lazy'
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  loading="lazy"
                 />
                 {product.badge && (
-                  <Badge className='absolute right-3 top-3 bg-primary text-primary-foreground'>
+                  <Badge className="absolute right-3 top-3 bg-primary text-primary-foreground">
                     {product.badge}
                   </Badge>
                 )}
               </div>
 
               {/* Product Details */}
-              <CardHeader className='flex-1'>
-                <CardTitle className='line-clamp-2 text-base'>
+              <CardHeader className="flex-1">
+                <CardTitle className="line-clamp-2 text-base">
                   {product.name}
                 </CardTitle>
-                <div className='flex items-center gap-1'>
-                  <div className='flex'>
+                <div className="flex items-center gap-1">
+                  <div className="flex">
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
@@ -107,30 +107,30 @@ export function FeaturedProducts() {
                       />
                     ))}
                   </div>
-                  <span className='text-xs text-muted-foreground'>
+                  <span className="text-xs text-muted-foreground">
                     ({product.reviews})
                   </span>
                 </div>
               </CardHeader>
 
               {/* Pricing */}
-              <CardContent className='flex flex-col gap-4'>
-                <div className='flex items-baseline gap-2'>
-                  <span className='text-lg font-bold text-primary'>
+              <CardContent className="flex flex-col gap-4">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-lg font-bold text-primary">
                     ${product.price}
                   </span>
-                  <span className='text-sm text-muted-foreground line-through'>
+                  <span className="text-sm text-muted-foreground line-through">
                     ${product.originalPrice}
                   </span>
                 </div>
 
                 {/* Add to Cart Button */}
                 <Button
-                  size='sm'
-                  className='w-full gap-2'
-                  variant='default'
+                  size="sm"
+                  className="w-full gap-2"
+                  variant="default"
                 >
-                  <ShoppingCart className='size-4' />
+                  <ShoppingCart className="size-4" />
                   Add to Cart
                 </Button>
               </CardContent>
@@ -139,8 +139,8 @@ export function FeaturedProducts() {
         </div>
 
         {/* Mobile View All Button */}
-        <div className='mt-8 flex sm:hidden'>
-          <Button variant='outline' className='w-full'>
+        <div className="mt-8 flex sm:hidden">
+          <Button variant="outline" className="w-full">
             View All Products
           </Button>
         </div>

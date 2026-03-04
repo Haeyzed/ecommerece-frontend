@@ -1,13 +1,7 @@
 'use client'
 
 import { Controller, type UseFormReturn } from 'react-hook-form'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -23,11 +17,11 @@ type MailSettingFormProps = {
 }
 
 export function MailSettingForm({
-  form,
-  onSubmit,
-  id,
-  isPending = false,
-}: MailSettingFormProps) {
+                                  form,
+                                  onSubmit,
+                                  id,
+                                  isPending = false,
+                                }: MailSettingFormProps) {
   return (
     <form id={id} onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       <Card>
@@ -86,7 +80,8 @@ export function MailSettingForm({
                   <FieldLabel htmlFor="from_address">
                     From Address <span className="text-destructive">*</span>
                   </FieldLabel>
-                  <Input id="from_address" type="email" placeholder="noreply@example.com" {...field} value={field.value ?? ''} />
+                  <Input id="from_address" type="email" placeholder="noreply@example.com" {...field}
+                         value={field.value ?? ''} />
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}

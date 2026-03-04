@@ -3,11 +3,8 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 
-import {
-  useCreateLanguage,
-  useUpdateLanguage,
-} from '@/features/settings/languages/api'
-import { languageSchema, type LanguageFormData } from '@/features/settings/languages/schemas'
+import { useCreateLanguage, useUpdateLanguage } from '@/features/settings/languages/api'
+import { type LanguageFormData, languageSchema } from '@/features/settings/languages/schemas'
 import { type Language } from '../types'
 
 import { useMediaQuery } from '@/hooks/use-media-query'
@@ -31,21 +28,10 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 type LanguagesActionDialogProps = {
   currentRow?: Language
@@ -104,8 +90,8 @@ export function LanguagesActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>{isEdit ? 'Edit Language' : 'Add New Language'}</DialogTitle>
             <DialogDescription>
               {isEdit ? 'Update the language details here. ' : 'Create a new language here. '}
@@ -113,15 +99,15 @@ export function LanguagesActionDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
-            <LanguageForm form={form} onSubmit={onSubmit} id='language-form' />
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
+            <LanguageForm form={form} onSubmit={onSubmit} id="language-form" />
           </div>
 
           <DialogFooter>
-            <Button type='submit' form='language-form' disabled={isLoading}>
+            <Button type="submit" form="language-form" disabled={isLoading}>
               {isLoading ? (
                 <>
-                  <Spinner className='mr-2 size-4' />
+                  <Spinner className="mr-2 size-4" />
                   Saving...
                 </>
               ) : (
@@ -137,7 +123,7 @@ export function LanguagesActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>{isEdit ? 'Edit Language' : 'Add New Language'}</DrawerTitle>
           <DrawerDescription>
             {isEdit ? 'Update the language details here. ' : 'Create a new language here. '}
@@ -145,15 +131,15 @@ export function LanguagesActionDialog({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className='no-scrollbar overflow-y-auto px-4'>
-          <LanguageForm form={form} onSubmit={onSubmit} id='language-form' />
+        <div className="no-scrollbar overflow-y-auto px-4">
+          <LanguageForm form={form} onSubmit={onSubmit} id="language-form" />
         </div>
 
         <DrawerFooter>
-          <Button type='submit' form='language-form' disabled={isLoading}>
+          <Button type="submit" form="language-form" disabled={isLoading}>
             {isLoading ? (
               <>
-                <Spinner className='mr-2 size-4' />
+                <Spinner className="mr-2 size-4" />
                 Saving...
               </>
             ) : (
@@ -161,7 +147,7 @@ export function LanguagesActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -187,11 +173,11 @@ function LanguageForm({ form, onSubmit, id, className }: LanguageFormProps) {
         <div className="grid grid-cols-2 gap-4">
           <Controller
             control={form.control}
-            name='name'
+            name="name"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='language-name'>Name <span className='text-destructive'>*</span></FieldLabel>
-                <Input id='language-name' placeholder='English' autoComplete='off' {...field} />
+                <FieldLabel htmlFor="language-name">Name <span className="text-destructive">*</span></FieldLabel>
+                <Input id="language-name" placeholder="English" autoComplete="off" {...field} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -199,11 +185,12 @@ function LanguageForm({ form, onSubmit, id, className }: LanguageFormProps) {
 
           <Controller
             control={form.control}
-            name='code'
+            name="code"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='language-code'>Code <span className='text-destructive'>*</span></FieldLabel>
-                <Input id='language-code' placeholder='en' maxLength={2} className="lowercase" autoComplete='off' {...field} />
+                <FieldLabel htmlFor="language-code">Code <span className="text-destructive">*</span></FieldLabel>
+                <Input id="language-code" placeholder="en" maxLength={2} className="lowercase"
+                       autoComplete="off" {...field} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -213,11 +200,12 @@ function LanguageForm({ form, onSubmit, id, className }: LanguageFormProps) {
         <div className="grid grid-cols-2 gap-4">
           <Controller
             control={form.control}
-            name='name_native'
+            name="name_native"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='language-name-native'>Native Name</FieldLabel>
-                <Input id='language-name-native' placeholder='English' autoComplete='off' {...field} value={field.value ?? ''} />
+                <FieldLabel htmlFor="language-name-native">Native Name</FieldLabel>
+                <Input id="language-name-native" placeholder="English" autoComplete="off" {...field}
+                       value={field.value ?? ''} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -225,15 +213,15 @@ function LanguageForm({ form, onSubmit, id, className }: LanguageFormProps) {
 
           <Controller
             control={form.control}
-            name='dir'
+            name="dir"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='language-dir'>Text Direction</FieldLabel>
+                <FieldLabel htmlFor="language-dir">Text Direction</FieldLabel>
                 <Select
                   value={field.value ? String(field.value) : ''}
                   onValueChange={field.onChange}
                 >
-                  <SelectTrigger id='language-dir'>
+                  <SelectTrigger id="language-dir">
                     <SelectValue placeholder="Select direction" />
                   </SelectTrigger>
                   <SelectContent>

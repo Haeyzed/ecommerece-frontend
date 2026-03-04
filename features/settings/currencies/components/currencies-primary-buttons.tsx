@@ -18,14 +18,14 @@ export function CurrenciesPrimaryButtons() {
   if (!canImport && !canExport && !canCreate) return null
 
   return (
-    <div className='flex gap-2'>
+    <div className="flex gap-2">
       {canExport && (
         <Button
-          variant='outline'
+          variant="outline"
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('export')}
-          aria-label='Export Currencies'
+          aria-label="Export Currencies"
         >
           <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} size={18} />
           {!isMobile && <span>Export Currencies</span>}
@@ -33,11 +33,11 @@ export function CurrenciesPrimaryButtons() {
       )}
       {canImport && (
         <Button
-          variant='outline'
+          variant="outline"
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('import')}
-          aria-label='Import Currencies'
+          aria-label="Import Currencies"
         >
           <HugeiconsIcon icon={FileImportIcon} strokeWidth={2} size={18} />
           {!isMobile && <span>Import Currencies</span>}
@@ -48,7 +48,7 @@ export function CurrenciesPrimaryButtons() {
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('add')}
-          aria-label='Add Currency'
+          aria-label="Add Currency"
         >
           <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} size={18} />
           {!isMobile && <span>Add Currency</span>}

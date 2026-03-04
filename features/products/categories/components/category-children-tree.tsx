@@ -1,8 +1,8 @@
 'use client'
 
 import { Spinner } from '@/components/ui/spinner'
-import { TreeView } from '@/components/tree-view'
 import type { TreeDataItem } from '@/components/tree-view'
+import { TreeView } from '@/components/tree-view'
 import { useReparentCategory } from '../api'
 import type { CategoryTreeItem } from '../types'
 
@@ -25,9 +25,9 @@ type CategoryChildrenTreeProps = {
 }
 
 export function CategoryChildrenTree({
-  children: categoryChildren = [],
-  parentId,
-}: CategoryChildrenTreeProps) {
+                                       children: categoryChildren = [],
+                                       parentId,
+                                     }: CategoryChildrenTreeProps) {
   const { mutate: reparent, isPending } = useReparentCategory()
 
   if (!categoryChildren.length) {

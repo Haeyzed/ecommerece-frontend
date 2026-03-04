@@ -1,27 +1,24 @@
-"use client"
+'use client'
 
-import { forwardRef, useCallback } from "react"
+import { forwardRef, useCallback } from 'react'
 
 // --- Tiptap UI ---
-import type { UseBlockquoteConfig } from "@/components/tiptap-ui/blockquote-button"
-import {
-  BLOCKQUOTE_SHORTCUT_KEY,
-  useBlockquote,
-} from "@/components/tiptap-ui/blockquote-button"
+import type { UseBlockquoteConfig } from '@/components/tiptap-ui/blockquote-button'
+import { BLOCKQUOTE_SHORTCUT_KEY, useBlockquote } from '@/components/tiptap-ui/blockquote-button'
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditor } from '@/hooks/use-tiptap-editor'
 
 // --- Lib ---
-import { parseShortcutKeys } from "@/lib/tiptap-utils"
+import { parseShortcutKeys } from '@/lib/tiptap-utils'
 
 // --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap-ui-primitive/button"
-import { Button } from "@/components/tiptap-ui-primitive/button"
-import { Badge } from "@/components/tiptap-ui-primitive/badge"
+import type { ButtonProps } from '@/components/tiptap-ui-primitive/button'
+import { Button } from '@/components/tiptap-ui-primitive/button'
+import { Badge } from '@/components/tiptap-ui-primitive/badge'
 
 export interface BlockquoteButtonProps
-  extends Omit<ButtonProps, "type">, UseBlockquoteConfig {
+  extends Omit<ButtonProps, 'type'>, UseBlockquoteConfig {
   /**
    * Optional text to display alongside the icon.
    */
@@ -34,8 +31,8 @@ export interface BlockquoteButtonProps
 }
 
 export function BlockquoteShortcutBadge({
-  shortcutKeys = BLOCKQUOTE_SHORTCUT_KEY,
-}: {
+                                          shortcutKeys = BLOCKQUOTE_SHORTCUT_KEY,
+                                        }: {
   shortcutKeys?: string
 }) {
   return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>
@@ -61,7 +58,7 @@ export const BlockquoteButton = forwardRef<
       children,
       ...buttonProps
     },
-    ref
+    ref,
   ) => {
     const { editor } = useTiptapEditor(providedEditor)
     const {
@@ -84,7 +81,7 @@ export const BlockquoteButton = forwardRef<
         if (event.defaultPrevented) return
         handleToggle()
       },
-      [handleToggle, onClick]
+      [handleToggle, onClick],
     )
 
     if (!isVisible) {
@@ -95,7 +92,7 @@ export const BlockquoteButton = forwardRef<
       <Button
         type="button"
         variant="ghost"
-        data-active-state={isActive ? "on" : "off"}
+        data-active-state={isActive ? 'on' : 'off'}
         role="button"
         tabIndex={-1}
         disabled={!canToggle}
@@ -118,7 +115,7 @@ export const BlockquoteButton = forwardRef<
         )}
       </Button>
     )
-  }
+  },
 )
 
-BlockquoteButton.displayName = "BlockquoteButton"
+BlockquoteButton.displayName = 'BlockquoteButton'

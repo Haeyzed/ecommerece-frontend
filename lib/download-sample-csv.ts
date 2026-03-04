@@ -12,7 +12,7 @@
  */
 export function downloadSampleAsCsv(
   csvString: string,
-  filename: string
+  filename: string,
 ): void {
   const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8' })
   const url = window.URL.createObjectURL(blob)

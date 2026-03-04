@@ -12,7 +12,7 @@
  * handle search params at build time.
  */
 
-import { createContext, useContext, useEffect, useState, useCallback, Suspense } from 'react'
+import { createContext, Suspense, useCallback, useContext, useEffect, useState } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { toast } from 'sonner'
@@ -38,7 +38,7 @@ function LockScreenLogic({ isLocked, setLocked }: { isLocked: boolean; setLocked
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const { status } = useSession()
-  
+
   // 1 minute idle timer for testing
   const idle = useIdle(60 * 60 * 1000)
 
@@ -49,9 +49,9 @@ function LockScreenLogic({ isLocked, setLocked }: { isLocked: boolean; setLocked
     const currentUrl = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`
     const params = new URLSearchParams()
     if (currentUrl !== '/dashboard' && currentUrl !== '/') {
-        params.set('returnUrl', currentUrl)
+      params.set('returnUrl', currentUrl)
     }
-    
+
     setLocked(true)
     router.replace(`/lock-screen?${params.toString()}`)
   }, [pathname, searchParams, router, setLocked])
@@ -83,10 +83,10 @@ function LockScreenLogic({ isLocked, setLocked }: { isLocked: boolean; setLocked
   // Security Guard: Redirect if locked and trying to access other pages
   useEffect(() => {
     if (isLocked && pathname !== '/lock-screen') {
-       const currentUrl = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`
-       const params = new URLSearchParams()
-       params.set('returnUrl', currentUrl)
-       router.replace(`/lock-screen?${params.toString()}`)
+      const currentUrl = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`
+      const params = new URLSearchParams()
+      params.set('returnUrl', currentUrl)
+      router.replace(`/lock-screen?${params.toString()}`)
     }
   }, [isLocked, pathname, searchParams, router])
 

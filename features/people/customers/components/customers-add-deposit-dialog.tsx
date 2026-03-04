@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 
 import { useAddCustomerDeposit } from '../api'
-import { addDepositSchema, type AddDepositFormData } from '../schemas'
+import { type AddDepositFormData, addDepositSchema } from '../schemas'
 import type { Customer } from '../types'
 
 import { useMediaQuery } from '@/hooks/use-media-query'
@@ -28,12 +28,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
 import { Textarea } from '@/components/ui/textarea'
@@ -45,10 +40,10 @@ type CustomersAddDepositDialogProps = {
 }
 
 export function CustomersAddDepositDialog({
-  customer,
-  open,
-  onOpenChange,
-}: CustomersAddDepositDialogProps) {
+                                            customer,
+                                            open,
+                                            onOpenChange,
+                                          }: CustomersAddDepositDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: addDeposit, isPending } = useAddCustomerDeposit(customer.id)
 
@@ -65,7 +60,7 @@ export function CustomersAddDepositDialog({
           form.reset({ amount: 0, note: '' })
           onOpenChange(false)
         },
-      }
+      },
     )
   }
 

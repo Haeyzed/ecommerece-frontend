@@ -20,9 +20,9 @@ export function TimezonesDialogs() {
   const canView = userPermissions.includes('view timezones')
 
   return (
-    <>\n      {canCreate && (
+    <>\n {canCreate && (
       <TimezonesActionDialog
-        key='timezone-add'
+        key="timezone-add"
         open={open === 'add'}
         onOpenChange={(isOpen) => {
           if (!isOpen) setOpen(null)
@@ -32,7 +32,7 @@ export function TimezonesDialogs() {
 
       {canImport && (
         <TimezonesImportDialog
-          key='timezone-import'
+          key="timezone-import"
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -42,7 +42,7 @@ export function TimezonesDialogs() {
 
       {canExport && (
         <TimezonesExportDialog
-          key='timezone-export'
+          key="timezone-export"
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

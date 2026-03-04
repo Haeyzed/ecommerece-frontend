@@ -23,8 +23,8 @@ type CustomerDueReportToolbarProps<TData> = {
 }
 
 export function CustomerDueReportToolbar<TData>({
-  table,
-}: CustomerDueReportToolbarProps<TData>) {
+                                                  table,
+                                                }: CustomerDueReportToolbarProps<TData>) {
   const { data: customersResponse } = useCustomers({ per_page: 100 })
   const customers = customersResponse?.data ?? []
   const customerOptions = useMemo(
@@ -34,7 +34,7 @@ export function CustomerDueReportToolbar<TData>({
         label: c.name ?? `Customer #${c.id}`,
         id: c.id,
       })),
-    [customers]
+    [customers],
   )
 
   const dateFromRaw = (table.getColumn('date_from')?.getFilterValue() as string) ?? ''
@@ -50,15 +50,15 @@ export function CustomerDueReportToolbar<TData>({
 
   const handleDateRangeChange = (range: DateRange | undefined) => {
     table.getColumn('date_from')?.setFilterValue(
-      range?.from ? format(range.from, 'yyyy-MM-dd') : ''
+      range?.from ? format(range.from, 'yyyy-MM-dd') : '',
     )
     table.getColumn('date_to')?.setFilterValue(
-      range?.to ? format(range.to, 'yyyy-MM-dd') : ''
+      range?.to ? format(range.to, 'yyyy-MM-dd') : '',
     )
   }
 
   const selectedCustomer = customerOptions.find(
-    (o) => o.id === Number(customerIdRaw) || o.value === String(customerIdRaw)
+    (o) => o.id === Number(customerIdRaw) || o.value === String(customerIdRaw),
   ) ?? null
 
   const isFiltered =

@@ -18,14 +18,14 @@ export function CountriesPrimaryButtons() {
   if (!canImport && !canExport && !canCreate) return null
 
   return (
-    <div className='flex gap-2'>
+    <div className="flex gap-2">
       {canExport && (
         <Button
-          variant='outline'
+          variant="outline"
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('export')}
-          aria-label='Export Countries'
+          aria-label="Export Countries"
         >
           <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} size={18} />
           {!isMobile && <span>Export Countries</span>}
@@ -33,11 +33,11 @@ export function CountriesPrimaryButtons() {
       )}
       {canImport && (
         <Button
-          variant='outline'
+          variant="outline"
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('import')}
-          aria-label='Import Countries'
+          aria-label="Import Countries"
         >
           <HugeiconsIcon icon={FileImportIcon} strokeWidth={2} size={18} />
           {!isMobile && <span>Import Countries</span>}
@@ -48,7 +48,7 @@ export function CountriesPrimaryButtons() {
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('add')}
-          aria-label='Add Country'
+          aria-label="Add Country"
         >
           <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} size={18} />
           {!isMobile && <span>Add Country</span>}

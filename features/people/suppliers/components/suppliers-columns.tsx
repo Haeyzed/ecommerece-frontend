@@ -11,7 +11,7 @@ import { DataTableRowActions } from './data-table-row-actions'
 import { SUPPLIER_STATUS_OPTIONS } from '../constants'
 
 const statusMap = Object.fromEntries(
-  SUPPLIER_STATUS_OPTIONS.filter((o) => o.value).map((o) => [o.value, o.label])
+  SUPPLIER_STATUS_OPTIONS.filter((o) => o.value).map((o) => [o.value, o.label]),
 )
 
 export const suppliersColumns: ColumnDef<Supplier>[] = [
@@ -64,7 +64,7 @@ export const suppliersColumns: ColumnDef<Supplier>[] = [
     meta: {
       className: cn(
         'drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]',
-        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none'
+        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none',
       ),
     },
     enableHiding: false,
@@ -128,7 +128,7 @@ export const suppliersColumns: ColumnDef<Supplier>[] = [
               'capitalize',
               status === 'active'
                 ? 'border-green-500/50 text-green-700 dark:text-green-400'
-                : 'border-muted-foreground/50'
+                : 'border-muted-foreground/50',
             )}
           >
             {label}

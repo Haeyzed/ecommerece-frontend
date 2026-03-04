@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 /**
  * LoginForm
@@ -10,52 +10,46 @@
  * @component
  */
 
-import { IconFacebook, IconGithub } from "@/assets/brand-icons";
-import { PasswordInput } from "@/components/password-input";
-import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldContent,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
-import { useLogin } from "@/features/auth/api";
-import { type LoginFormData, loginSchema } from "@/features/auth/schemas";
-import { ValidationError } from "@/lib/api/api-errors";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { Controller, useForm } from "react-hook-form";
+import { IconFacebook, IconGithub } from '@/assets/brand-icons'
+import { PasswordInput } from '@/components/password-input'
+import { Button } from '@/components/ui/button'
+import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
+import { Spinner } from '@/components/ui/spinner'
+import { useLogin } from '@/features/auth/api'
+import { type LoginFormData, loginSchema } from '@/features/auth/schemas'
+import { ValidationError } from '@/lib/api/api-errors'
+import { zodResolver } from '@hookform/resolvers/zod'
+import Link from 'next/link'
+import { Controller, useForm } from 'react-hook-form'
 
 export function LoginForm() {
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { identifier: "", password: "" },
-  });
+    defaultValues: { identifier: '', password: '' },
+  })
 
-  const loginMutation = useLogin();
+  const loginMutation = useLogin()
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await loginMutation.mutateAsync(data);
+      await loginMutation.mutateAsync(data)
     } catch (error) {
       if (error instanceof ValidationError && error.errors) {
         Object.entries(error.errors).forEach(([field, messages]) => {
           form.setError(field as keyof LoginFormData, {
-            type: "server",
+            type: 'server',
             message: messages[0],
-          });
-        });
+          })
+        })
       } else {
-        form.setError("root", {
-          type: "server",
-          message: error instanceof Error ? error.message : "An error occurred",
-        });
+        form.setError('root', {
+          type: 'server',
+          message: error instanceof Error ? error.message : 'An error occurred',
+        })
       }
     }
-  };
+  }
 
   return (
     <form
@@ -135,12 +129,12 @@ export function LoginForm() {
             Logging in...
           </>
         ) : (
-          "Login"
+          'Login'
         )}
       </Button>
 
       <div className="text-center text-sm">
-        Don&apos;t have an account?{" "}
+        Don&apos;t have an account?{' '}
         <Link href="/register" className="text-primary hover:underline">
           Sign up
         </Link>
@@ -174,5 +168,5 @@ export function LoginForm() {
         </Button>
       </div>
     </form>
-  );
+  )
 }

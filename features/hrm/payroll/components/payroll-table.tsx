@@ -1,36 +1,25 @@
-"use client"
+'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useTableUrlState } from '@/hooks/use-table-url-state'
 import { cn } from '@/lib/utils'
 import {
-  type SortingState,
-  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
   getSortedRowModel,
-  useReactTable
+  type SortingState,
+  useReactTable,
+  type VisibilityState,
 } from '@tanstack/react-table'
 import { toast } from 'sonner'
 
 import { usePaginatedPayrollRuns } from '@/features/hrm/payroll/api'
-import {
-  PayrollEmptyState,
-  DataTableBulkActions,
-  payrollColumns as columns
-} from '@/features/hrm/payroll'
+import { DataTableBulkActions, payrollColumns as columns, PayrollEmptyState } from '@/features/hrm/payroll'
 
 export function PayrollTable() {
   const [rowSelection, setRowSelection] = useState({})
@@ -135,11 +124,11 @@ export function PayrollTable() {
           },
         ]}
       />
-      <div className='overflow-hidden rounded-md border'>
+      <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className='group/row'>
+              <TableRow key={headerGroup.id} className="group/row">
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
@@ -148,14 +137,14 @@ export function PayrollTable() {
                       className={cn(
                         'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                         (header.column.columnDef.meta as { className?: string })?.className,
-                        (header.column.columnDef.meta as { thClassName?: string })?.thClassName
+                        (header.column.columnDef.meta as { thClassName?: string })?.thClassName,
                       )}
                     >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                     </TableHead>
                   )
@@ -172,7 +161,7 @@ export function PayrollTable() {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    className='group/row'
+                    className="group/row"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
@@ -180,12 +169,12 @@ export function PayrollTable() {
                         className={cn(
                           'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                           (cell.column.columnDef.meta as { className?: string })?.className,
-                          (cell.column.columnDef.meta as { tdClassName?: string })?.tdClassName
+                          (cell.column.columnDef.meta as { tdClassName?: string })?.tdClassName,
                         )}
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext()
+                          cell.getContext(),
                         )}
                       </TableCell>
                     ))}
@@ -195,7 +184,7 @@ export function PayrollTable() {
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className='h-24 text-center'
+                    className="h-24 text-center"
                   >
                     No results.
                   </TableCell>
@@ -205,7 +194,7 @@ export function PayrollTable() {
           )}
         </Table>
       </div>
-      <DataTablePagination table={table} className='mt-auto' />
+      <DataTablePagination table={table} className="mt-auto" />
       <DataTableBulkActions table={table} />
     </div>
   )

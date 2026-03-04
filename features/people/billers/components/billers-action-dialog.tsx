@@ -1,21 +1,13 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  CancelCircleIcon,
-  CloudUploadIcon,
-  Edit01Icon,
-} from '@hugeicons/core-free-icons'
+import { CancelCircleIcon, CloudUploadIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
-import { useState } from 'react'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 
-import {
-  useCreateBiller,
-  useUpdateBiller
-} from '../api'
-import { billerSchema, type BillerFormData } from '../schemas'
+import { useCreateBiller, useUpdateBiller } from '../api'
+import { type BillerFormData, billerSchema } from '../schemas'
 import { type Biller } from '../types'
 
 import { useMediaQuery } from '@/hooks/use-media-query'
@@ -40,13 +32,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import {
   FileUpload,
   FileUploadDropzone,
@@ -71,8 +57,7 @@ import {
   ComboboxItem,
   ComboboxList,
 } from '@/components/ui/combobox'
-import { useOptionCountries } from '@/features/settings/countries/api'
-import { useStatesByCountry } from '@/features/settings/countries/api'
+import { useOptionCountries, useStatesByCountry } from '@/features/settings/countries/api'
 import { useCitiesByState } from '@/features/settings/states/api'
 
 type BillerActionDialogProps = {
@@ -96,33 +81,33 @@ export function BillersActionDialog({
     resolver: zodResolver(billerSchema),
     defaultValues: isEdit
       ? {
-          name: currentRow?.name ?? '',
-          company_name: currentRow?.company_name ?? '',
-          vat_number: currentRow?.vat_number ?? '',
-          email: currentRow?.email ?? '',
-          phone_number: currentRow?.phone_number ?? '',
-          address: currentRow?.address ?? '',
-          country_id: currentRow?.country_id ?? undefined,
-          state_id: currentRow?.state_id ?? undefined,
-          city_id: currentRow?.city_id ?? undefined,
-          postal_code: currentRow?.postal_code ?? '',
-          is_active: currentRow?.is_active ?? true,
-          image: [],
-        }
+        name: currentRow?.name ?? '',
+        company_name: currentRow?.company_name ?? '',
+        vat_number: currentRow?.vat_number ?? '',
+        email: currentRow?.email ?? '',
+        phone_number: currentRow?.phone_number ?? '',
+        address: currentRow?.address ?? '',
+        country_id: currentRow?.country_id ?? undefined,
+        state_id: currentRow?.state_id ?? undefined,
+        city_id: currentRow?.city_id ?? undefined,
+        postal_code: currentRow?.postal_code ?? '',
+        is_active: currentRow?.is_active ?? true,
+        image: [],
+      }
       : {
-          name: '',
-          company_name: '',
-          vat_number: '',
-          email: '',
-          phone_number: '',
-          address: '',
-          country_id: undefined,
-          state_id: undefined,
-          city_id: undefined,
-          postal_code: '',
-          is_active: true,
-          image: [],
-        },
+        name: '',
+        company_name: '',
+        vat_number: '',
+        email: '',
+        phone_number: '',
+        address: '',
+        country_id: undefined,
+        state_id: undefined,
+        city_id: undefined,
+        postal_code: '',
+        is_active: true,
+        image: [],
+      },
   })
 
   const onSubmit = (values: BillerFormData) => {
@@ -148,8 +133,8 @@ export function BillersActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange} modal={false}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>{isEdit ? 'Edit Biller' : 'Add New Biller'}</DialogTitle>
             <DialogDescription>
               {isEdit ? 'Update the biller details here. ' : 'Create a new biller here. '}
@@ -157,18 +142,18 @@ export function BillersActionDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
             <BillerForm
               form={form}
               onSubmit={onSubmit}
-              id='biller-form'
+              id="biller-form"
               isEdit={isEdit}
               currentRow={currentRow}
             />
           </div>
 
           <DialogFooter>
-            <Button type='submit' form='biller-form' disabled={isLoading}>
+            <Button type="submit" form="biller-form" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Spinner className="mr-2 size-4" />
@@ -187,7 +172,7 @@ export function BillersActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>{isEdit ? 'Edit Biller' : 'Add New Biller'}</DrawerTitle>
           <DrawerDescription>
             {isEdit ? 'Update the biller details here. ' : 'Create a new biller here. '}
@@ -195,18 +180,18 @@ export function BillersActionDialog({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className='no-scrollbar overflow-y-auto px-4'>
+        <div className="no-scrollbar overflow-y-auto px-4">
           <BillerForm
             form={form}
             onSubmit={onSubmit}
-            id='biller-form'
+            id="biller-form"
             isEdit={isEdit}
             currentRow={currentRow}
           />
         </div>
 
         <DrawerFooter>
-          <Button type='submit' form='biller-form' disabled={isLoading}>
+          <Button type="submit" form="biller-form" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Spinner className="mr-2 size-4" />
@@ -217,7 +202,7 @@ export function BillersActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -256,23 +241,23 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
       <FieldGroup>
         <Controller
           control={form.control}
-          name='image'
+          name="image"
           render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
             const existingImageUrl = isEdit && currentRow?.image_url ? currentRow.image_url : null
             const hasNewImage = value instanceof File || (Array.isArray(value) && value.length > 0)
 
             return (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='biller-image'>Image</FieldLabel>
+                <FieldLabel htmlFor="biller-image">Image</FieldLabel>
 
                 {existingImageUrl && !hasNewImage && (
-                  <div className='mb-3 flex items-center gap-3 rounded-md border p-3'>
-                    <div className='relative size-16 overflow-hidden rounded-md bg-muted'>
+                  <div className="mb-3 flex items-center gap-3 rounded-md border p-3">
+                    <div className="relative size-16 overflow-hidden rounded-md bg-muted">
                       <ImageZoom
                         backdropClassName={cn(
                           resolvedTheme === 'dark'
                             ? '[&_[data-rmiz-modal-overlay="visible"]]:bg-white/80'
-                            : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80'
+                            : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80',
                         )}
                       >
                         <Image
@@ -280,14 +265,14 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
                           alt={currentRow?.name || 'Biller image'}
                           width={64}
                           height={64}
-                          className='h-full w-full object-cover'
+                          className="h-full w-full object-cover"
                           unoptimized
                         />
                       </ImageZoom>
                     </div>
-                    <div className='flex-1'>
-                      <p className='text-sm font-medium'>Current Image</p>
-                      <p className='text-xs text-muted-foreground'>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">Current Image</p>
+                      <p className="text-xs text-muted-foreground">
                         Upload a new image to replace this one
                       </p>
                     </div>
@@ -297,7 +282,7 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
                 <FileUpload
                   value={value as File[] | undefined}
                   onValueChange={onChange}
-                  accept='image/*'
+                  accept="image/*"
                   maxFiles={1}
                   maxSize={5 * 1024 * 1024}
                   onFileReject={(_, message) => {
@@ -306,11 +291,11 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
                     })
                   }}
                 >
-                  <FileUploadDropzone className='flex-row flex-wrap border-dotted text-center'>
-                    <HugeiconsIcon icon={CloudUploadIcon} className='size-4' />
+                  <FileUploadDropzone className="flex-row flex-wrap border-dotted text-center">
+                    <HugeiconsIcon icon={CloudUploadIcon} className="size-4" />
                     Drag and drop or
                     <FileUploadTrigger asChild>
-                      <Button variant='link' size='sm' className='p-0'>
+                      <Button variant="link" size="sm" className="p-0">
                         choose file
                       </Button>
                     </FileUploadTrigger>
@@ -323,12 +308,12 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
                         <FileUploadItemMetadata />
                         <FileUploadItemDelete asChild>
                           <Button
-                            variant='ghost'
-                            size='icon'
-                            className='size-7'
+                            variant="ghost"
+                            size="icon"
+                            className="size-7"
                           >
-                            <HugeiconsIcon icon={CancelCircleIcon} className='size-4' />
-                            <span className='sr-only'>Delete</span>
+                            <HugeiconsIcon icon={CancelCircleIcon} className="size-4" />
+                            <span className="sr-only">Delete</span>
                           </Button>
                         </FileUploadItemDelete>
                       </FileUploadItem>
@@ -344,17 +329,17 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
           }}
         />
 
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Controller
             control={form.control}
-            name='name'
+            name="name"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='biller-name'>Name <span className="text-destructive">*</span></FieldLabel>
+                <FieldLabel htmlFor="biller-name">Name <span className="text-destructive">*</span></FieldLabel>
                 <Input
-                  id='biller-name'
-                  placeholder='Biller name'
-                  autoComplete='off'
+                  id="biller-name"
+                  placeholder="Biller name"
+                  autoComplete="off"
                   {...field}
                 />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
@@ -364,14 +349,14 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
 
           <Controller
             control={form.control}
-            name='company_name'
+            name="company_name"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='company-name'>Company Name <span className="text-destructive">*</span></FieldLabel>
+                <FieldLabel htmlFor="company-name">Company Name <span className="text-destructive">*</span></FieldLabel>
                 <Input
-                  id='company-name'
-                  placeholder='Company name'
-                  autoComplete='off'
+                  id="company-name"
+                  placeholder="Company name"
+                  autoComplete="off"
                   {...field}
                 />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
@@ -380,17 +365,17 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
           />
         </div>
 
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Controller
             control={form.control}
-            name='email'
+            name="email"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='biller-email'>Email <span className="text-destructive">*</span></FieldLabel>
+                <FieldLabel htmlFor="biller-email">Email <span className="text-destructive">*</span></FieldLabel>
                 <Input
-                  id='biller-email'
-                  placeholder='Email address'
-                  autoComplete='off'
+                  id="biller-email"
+                  placeholder="Email address"
+                  autoComplete="off"
                   {...field}
                 />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
@@ -400,14 +385,14 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
 
           <Controller
             control={form.control}
-            name='phone_number'
+            name="phone_number"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='biller-phone'>Phone Number <span className="text-destructive">*</span></FieldLabel>
+                <FieldLabel htmlFor="biller-phone">Phone Number <span className="text-destructive">*</span></FieldLabel>
                 <PhoneInput
-                  id='biller-phone'
-                  placeholder='Phone number'
-                  autoComplete='off'
+                  id="biller-phone"
+                  placeholder="Phone number"
+                  autoComplete="off"
                   {...field}
                 />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
@@ -418,14 +403,14 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
 
         <Controller
           control={form.control}
-          name='vat_number'
+          name="vat_number"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='vat-number'>VAT Number</FieldLabel>
+              <FieldLabel htmlFor="vat-number">VAT Number</FieldLabel>
               <Input
-                id='vat-number'
-                placeholder='VAT number'
-                autoComplete='off'
+                id="vat-number"
+                placeholder="VAT number"
+                autoComplete="off"
                 {...field}
                 value={field.value || ''}
               />
@@ -436,10 +421,10 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
 
         <Controller
           control={form.control}
-          name='country_id'
+          name="country_id"
           render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error} className='flex flex-col'>
-              <FieldLabel htmlFor='biller-country'>Country</FieldLabel>
+            <Field data-invalid={!!fieldState.error} className="flex flex-col">
+              <FieldLabel htmlFor="biller-country">Country</FieldLabel>
               <Combobox
                 items={countryOptions}
                 itemToStringLabel={(item) => item.label}
@@ -451,7 +436,7 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
                 }}
                 isItemEqualToValue={(a, b) => a?.value === b?.value}
               >
-                <ComboboxInput id='biller-country' name='biller-country' placeholder='Select country...' showClear />
+                <ComboboxInput id="biller-country" name="biller-country" placeholder="Select country..." showClear />
                 <ComboboxContent>
                   <ComboboxEmpty>No country found.</ComboboxEmpty>
                   <ComboboxList>
@@ -470,10 +455,10 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
 
         <Controller
           control={form.control}
-          name='state_id'
+          name="state_id"
           render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error} className='flex flex-col'>
-              <FieldLabel htmlFor='biller-state'>State</FieldLabel>
+            <Field data-invalid={!!fieldState.error} className="flex flex-col">
+              <FieldLabel htmlFor="biller-state">State</FieldLabel>
               <Combobox
                 items={stateOptions}
                 itemToStringLabel={(item) => item.label}
@@ -484,7 +469,8 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
                 }}
                 isItemEqualToValue={(a, b) => a?.value === b?.value}
               >
-                <ComboboxInput id='biller-state' name='biller-state' placeholder='Select state...' showClear disabled={!countryId} />
+                <ComboboxInput id="biller-state" name="biller-state" placeholder="Select state..." showClear
+                               disabled={!countryId} />
                 <ComboboxContent>
                   <ComboboxEmpty>No state found.</ComboboxEmpty>
                   <ComboboxList>
@@ -503,10 +489,10 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
 
         <Controller
           control={form.control}
-          name='city_id'
+          name="city_id"
           render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error} className='flex flex-col'>
-              <FieldLabel htmlFor='biller-city'>City</FieldLabel>
+            <Field data-invalid={!!fieldState.error} className="flex flex-col">
+              <FieldLabel htmlFor="biller-city">City</FieldLabel>
               <Combobox
                 items={cityOptions}
                 itemToStringLabel={(item) => item.label}
@@ -516,7 +502,8 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
                 }}
                 isItemEqualToValue={(a, b) => a?.value === b?.value}
               >
-                <ComboboxInput id='biller-city' name='biller-city' placeholder='Select city...' showClear disabled={!stateId} />
+                <ComboboxInput id="biller-city" name="biller-city" placeholder="Select city..." showClear
+                               disabled={!stateId} />
                 <ComboboxContent>
                   <ComboboxEmpty>No city found.</ComboboxEmpty>
                   <ComboboxList>
@@ -535,15 +522,15 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
 
         <Controller
           control={form.control}
-          name='address'
+          name="address"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='biller-address'>Address <span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel htmlFor="biller-address">Address <span className="text-destructive">*</span></FieldLabel>
               <Textarea
-                id='biller-address'
-                placeholder='Full address'
+                id="biller-address"
+                placeholder="Full address"
                 rows={3}
-                className='resize-none'
+                className="resize-none"
                 {...field}
               />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
@@ -551,17 +538,17 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
           )}
         />
 
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Controller
             control={form.control}
-            name='postal_code'
+            name="postal_code"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='postal-code'>Postal Code</FieldLabel>
+                <FieldLabel htmlFor="postal-code">Postal Code</FieldLabel>
                 <Input
-                  id='postal-code'
-                  placeholder='Postal Code'
-                  autoComplete='off'
+                  id="postal-code"
+                  placeholder="Postal Code"
+                  autoComplete="off"
                   {...field}
                   value={field.value || ''}
                 />
@@ -573,20 +560,20 @@ function BillerForm({ form, onSubmit, id, className, isEdit, currentRow }: Bille
 
         <Controller
           control={form.control}
-          name='is_active'
+          name="is_active"
           render={({ field, fieldState }) => (
             <Field
               data-invalid={!!fieldState.error}
-              className='flex flex-row items-center justify-between rounded-md border p-4'
+              className="flex flex-row items-center justify-between rounded-md border p-4"
             >
-              <div className='space-y-0.5'>
-                <FieldLabel htmlFor='biller-active'>Active Status</FieldLabel>
+              <div className="space-y-0.5">
+                <FieldLabel htmlFor="biller-active">Active Status</FieldLabel>
                 <FieldDescription>
                   Disabling this will hide the biller from the system.
                 </FieldDescription>
               </div>
               <Switch
-                id='biller-active'
+                id="biller-active"
                 checked={!!field.value}
                 onCheckedChange={field.onChange}
               />

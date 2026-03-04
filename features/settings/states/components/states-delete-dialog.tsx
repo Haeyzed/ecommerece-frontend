@@ -36,7 +36,7 @@ export function StatesDeleteDialog({
       onSuccess: () => {
         onOpenChange(false)
         setValue('')
-      }
+      },
     })
   }
 
@@ -47,10 +47,10 @@ export function StatesDeleteDialog({
       handleConfirm={handleDelete}
       disabled={value.trim() !== currentRow.name || isPending}
       title={
-        <span className='text-destructive'>
+        <span className="text-destructive">
           <HugeiconsIcon
             icon={Alert02Icon}
-            className='me-1 inline-block stroke-destructive'
+            className="me-1 inline-block stroke-destructive"
             size={18}
             strokeWidth={2}
           />{' '}
@@ -58,25 +58,25 @@ export function StatesDeleteDialog({
         </span>
       }
       desc={
-        <div className='space-y-4'>
-          <p className='mb-2'>
+        <div className="space-y-4">
+          <p className="mb-2">
             Are you sure you want to delete{' '}
-            <span className='font-bold'>{currentRow.name}</span>?
+            <span className="font-bold">{currentRow.name}</span>?
             <br />
             This action will permanently remove the state from the system.
             This cannot be undone.
           </p>
 
-          <Label className='my-2'>
+          <Label className="my-2">
             State Name:
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder='Enter state name to confirm deletion.'
+              placeholder="Enter state name to confirm deletion."
             />
           </Label>
 
-          <Alert variant='destructive'>
+          <Alert variant="destructive">
             <AlertTitle>Warning!</AlertTitle>
             <AlertDescription>
               Please be careful, this operation can not be rolled back.
@@ -84,7 +84,7 @@ export function StatesDeleteDialog({
           </Alert>
         </div>
       }
-      confirmText='Delete'
+      confirmText="Delete"
       destructive
     />
   )

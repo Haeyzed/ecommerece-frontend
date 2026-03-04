@@ -1,53 +1,47 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { AuthenticatedLayout } from '@/components/layout/authenticated-layout';
-import { Header } from '@/components/layout/header';
-import { Main } from '@/components/layout/main';
-import { ProfileDropdown } from '@/components/profile-dropdown';
-import { Search } from '@/components/search';
-import { ThemeSwitch } from '@/components/theme-switch';
-import { ConfigDrawer } from '@/components/config-drawer';
-import { Spinner } from '@/components/ui/spinner';
-import { usePaginatedEmployees } from '@/features/hrm/employees/api';
-import { usePaginatedAttendances } from '@/features/hrm/attendances/api';
-import { usePaginatedLeaves } from '@/features/hrm/leaves/api';
-import { usePaginatedPayrollRuns } from '@/features/hrm/payroll/api';
+import Link from 'next/link'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { AuthenticatedLayout } from '@/components/layout/authenticated-layout'
+import { Header } from '@/components/layout/header'
+import { Main } from '@/components/layout/main'
+import { ProfileDropdown } from '@/components/profile-dropdown'
+import { Search } from '@/components/search'
+import { ThemeSwitch } from '@/components/theme-switch'
+import { ConfigDrawer } from '@/components/config-drawer'
+import { Spinner } from '@/components/ui/spinner'
+import { usePaginatedEmployees } from '@/features/hrm/employees/api'
+import { usePaginatedAttendances } from '@/features/hrm/attendances/api'
+import { usePaginatedLeaves } from '@/features/hrm/leaves/api'
+import { usePaginatedPayrollRuns } from '@/features/hrm/payroll/api'
 
 function useHrmDashboardCounts() {
-  const now = new Date();
-  const today = now.toISOString().slice(0, 10);
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const year = now.getFullYear();
+  const now = new Date()
+  const today = now.toISOString().slice(0, 10)
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const year = now.getFullYear()
 
-  const employees = usePaginatedEmployees({ per_page: 1 });
+  const employees = usePaginatedEmployees({ per_page: 1 })
   const attendances = usePaginatedAttendances({
     per_page: 1,
     start_date: today,
     end_date: today,
-  });
+  })
   const pendingLeaves = usePaginatedLeaves({
     per_page: 1,
     status: 'pending',
-  });
+  })
   const payrollRuns = usePaginatedPayrollRuns({
     per_page: 1,
     month,
     year,
-  });
+  })
 
   const isLoading =
     employees.isLoading ||
     attendances.isLoading ||
     pendingLeaves.isLoading ||
-    payrollRuns.isLoading;
+    payrollRuns.isLoading
 
   return {
     isLoading,
@@ -55,7 +49,7 @@ function useHrmDashboardCounts() {
     attendanceToday: attendances.data?.meta?.total ?? 0,
     pendingLeaves: pendingLeaves.data?.meta?.total ?? 0,
     payrollRunsThisMonth: payrollRuns.data?.meta?.total ?? 0,
-  };
+  }
 }
 
 export function HrmDashboardClient() {
@@ -65,7 +59,7 @@ export function HrmDashboardClient() {
     attendanceToday,
     pendingLeaves,
     payrollRunsThisMonth,
-  } = useHrmDashboardCounts();
+  } = useHrmDashboardCounts()
 
   if (isLoading) {
     return (
@@ -82,7 +76,7 @@ export function HrmDashboardClient() {
           <Spinner className="size-6" />
         </Main>
       </AuthenticatedLayout>
-    );
+    )
   }
 
   return (
@@ -216,5 +210,5 @@ export function HrmDashboardClient() {
         </Card>
       </Main>
     </AuthenticatedLayout>
-  );
+  )
 }

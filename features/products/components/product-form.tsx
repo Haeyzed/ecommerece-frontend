@@ -1,19 +1,19 @@
-"use client";
+'use client'
 
 /**
  * Product Form Component
  * Reusable form for create/edit using React Hook Form + Zod
  */
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { productSchema, type ProductFormData } from "../schemas";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Field, FieldLabel, FieldError, FieldContent } from "@/components/ui/field";
-import { Textarea } from "@/components/ui/textarea";
-import type { Product } from "../types";
-import { ValidationError } from "@/lib/api/api-errors";
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { type ProductFormData, productSchema } from '../schemas'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/field'
+import { Textarea } from '@/components/ui/textarea'
+import type { Product } from '../types'
+import { ValidationError } from '@/lib/api/api-errors'
 
 interface ProductFormProps {
   product?: Product;
@@ -23,11 +23,11 @@ interface ProductFormProps {
 }
 
 export function ProductForm({
-  product,
-  onSubmit,
-  onCancel,
-  isLoading = false,
-}: ProductFormProps) {
+                              product,
+                              onSubmit,
+                              onCancel,
+                              isLoading = false,
+                            }: ProductFormProps) {
   const {
     register,
     handleSubmit,
@@ -37,34 +37,34 @@ export function ProductForm({
     resolver: zodResolver(productSchema),
     defaultValues: product
       ? {
-          name: product.name,
-          description: product.description,
-          price: product.price,
-          stock: product.stock,
-        }
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        stock: product.stock,
+      }
       : undefined,
-  });
+  })
 
   const handleFormSubmit = async (data: ProductFormData) => {
     try {
-      await onSubmit(data);
+      await onSubmit(data)
     } catch (error) {
       if (error instanceof ValidationError && error.errors) {
         // Map API validation errors to form fields
         Object.entries(error.errors).forEach(([field, messages]) => {
           setError(field as keyof ProductFormData, {
-            type: "server",
+            type: 'server',
             message: messages[0],
-          });
-        });
+          })
+        })
       } else {
-        setError("root", {
-          type: "server",
-          message: error instanceof Error ? error.message : "An error occurred",
-        });
+        setError('root', {
+          type: 'server',
+          message: error instanceof Error ? error.message : 'An error occurred',
+        })
       }
     }
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
@@ -74,7 +74,7 @@ export function ProductForm({
         </FieldLabel>
         <FieldContent>
           <Input
-            {...register("name")}
+            {...register('name')}
             disabled={isSubmitting || isLoading}
             placeholder="Product name"
           />
@@ -88,7 +88,7 @@ export function ProductForm({
         </FieldLabel>
         <FieldContent>
           <Textarea
-            {...register("description")}
+            {...register('description')}
             disabled={isSubmitting || isLoading}
             placeholder="Product description"
             rows={4}
@@ -106,7 +106,7 @@ export function ProductForm({
             <Input
               type="number"
               step="0.01"
-              {...register("price", { valueAsNumber: true })}
+              {...register('price', { valueAsNumber: true })}
               disabled={isSubmitting || isLoading}
               placeholder="0.00"
             />
@@ -121,7 +121,7 @@ export function ProductForm({
           <FieldContent>
             <Input
               type="number"
-              {...register("stock", { valueAsNumber: true })}
+              {...register('stock', { valueAsNumber: true })}
               disabled={isSubmitting || isLoading}
               placeholder="0"
             />
@@ -138,7 +138,7 @@ export function ProductForm({
 
       <div className="flex gap-4">
         <Button type="submit" disabled={isSubmitting || isLoading}>
-          {isSubmitting ? "Saving..." : product ? "Update" : "Create"}
+          {isSubmitting ? 'Saving...' : product ? 'Update' : 'Create'}
         </Button>
         {onCancel && (
           <Button type="button" variant="outline" onClick={onCancel}>
@@ -147,5 +147,5 @@ export function ProductForm({
         )}
       </div>
     </form>
-  );
+  )
 }

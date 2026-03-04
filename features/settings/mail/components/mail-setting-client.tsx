@@ -13,7 +13,7 @@ import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { Spinner } from '@/components/ui/spinner'
 import { useMailSetting, useUpdateMailSetting } from '@/features/settings/mail/api'
-import { mailSettingSchema, type MailSettingFormData } from '@/features/settings/mail/schemas'
+import { type MailSettingFormData, mailSettingSchema } from '@/features/settings/mail/schemas'
 import { MailSettingForm } from './mail-setting-form'
 
 export function MailSettingClient() {

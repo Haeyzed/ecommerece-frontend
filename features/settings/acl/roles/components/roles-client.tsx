@@ -8,10 +8,7 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { Spinner } from '@/components/ui/spinner'
-import { RolesDialogs } from '@/features/settings/acl/roles'
-import { RolesPrimaryButtons } from '@/features/settings/acl/roles'
-import { RolesProvider } from '@/features/settings/acl/roles'
-import { RolesTable } from '@/features/settings/acl/roles'
+import { RolesDialogs, RolesPrimaryButtons, RolesProvider, RolesTable } from '@/features/settings/acl/roles'
 import { Suspense } from 'react'
 
 export function RolesClient() {
@@ -20,18 +17,18 @@ export function RolesClient() {
       <RolesProvider>
         <Header fixed>
           <Search />
-          <div className='ms-auto flex items-center space-x-4'>
+          <div className="ms-auto flex items-center space-x-4">
             <ThemeSwitch />
             <ConfigDrawer />
             <ProfileDropdown />
           </div>
         </Header>
 
-        <Main className='flex flex-1 flex-col gap-4 sm:gap-6'>
-          <div className='flex flex-wrap items-end justify-between gap-2'>
+        <Main className="flex flex-1 flex-col gap-4 sm:gap-6">
+          <div className="flex flex-wrap items-end justify-between gap-2">
             <div>
-              <h2 className='text-2xl font-bold tracking-tight'>Roles List</h2>
-              <p className='text-muted-foreground'>
+              <h2 className="text-2xl font-bold tracking-tight">Roles List</h2>
+              <p className="text-muted-foreground">
                 Manage system roles, guards, and their permissions here.
               </p>
             </div>

@@ -1,11 +1,7 @@
-"use client"
+'use client'
 
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-  TableBody,
-  TableCell,
-  TableRow,
-} from '@/components/ui/table'
+import { TableBody, TableCell, TableRow } from '@/components/ui/table'
 
 interface DataTableSkeletonProps {
   columnCount: number

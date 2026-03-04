@@ -5,11 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 import { format } from 'date-fns'
 
-import {
-  useCreateAttendance,
-  useUpdateAttendance
-} from '@/features/hrm/attendances/api'
-import { attendanceSchema, type AttendanceFormData } from '@/features/hrm/attendances/schemas'
+import { useCreateAttendance, useUpdateAttendance } from '@/features/hrm/attendances/api'
+import { type AttendanceFormData, attendanceSchema } from '@/features/hrm/attendances/schemas'
 import { type Attendance } from '../types'
 import { useOptionEmployees } from '@/features/hrm/employees/api'
 
@@ -35,18 +32,12 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Spinner } from '@/components/ui/spinner'
 import { DatePicker } from '@/components/date-picker'
-import { TimePickerInput } from "@/components/time-picker-input"
-import { TimePeriodSelect } from "@/components/period-select"
-import { Period } from "@/lib/utils/time-picker-utils"
+import { TimePickerInput } from '@/components/time-picker-input'
+import { TimePeriodSelect } from '@/components/period-select'
+import { Period } from '@/lib/utils/time-picker-utils'
 import { Label } from '@/components/ui/label'
 
 import {
@@ -64,35 +55,35 @@ import {
 
 // --- TIME PICKER WRAPPER ---
 function TimePickerWrapper({ value, onChange }: { value: string, onChange: (val: string) => void }) {
-  const [period, setPeriod] = React.useState<Period>("AM");
+  const [period, setPeriod] = React.useState<Period>('AM')
 
   const [date, setDate] = React.useState<Date | undefined>(() => {
-    if (!value) return undefined;
-    const [hours, minutes] = value.split(':').map(Number);
-    const d = new Date();
-    d.setHours(hours, minutes, 0, 0);
-    return d;
-  });
+    if (!value) return undefined
+    const [hours, minutes] = value.split(':').map(Number)
+    const d = new Date()
+    d.setHours(hours, minutes, 0, 0)
+    return d
+  })
 
   React.useEffect(() => {
     if (value) {
-      const [hours] = value.split(':').map(Number);
-      setPeriod(hours >= 12 ? "PM" : "AM");
+      const [hours] = value.split(':').map(Number)
+      setPeriod(hours >= 12 ? 'PM' : 'AM')
     }
-  }, [value]);
+  }, [value])
 
   const handleSetDate = (newDate: Date | undefined) => {
-    setDate(newDate);
+    setDate(newDate)
     if (newDate) {
-      onChange(format(newDate, 'HH:mm'));
+      onChange(format(newDate, 'HH:mm'))
     } else {
-      onChange('');
+      onChange('')
     }
-  };
+  }
 
-  const minuteRef = React.useRef<HTMLInputElement>(null);
-  const hourRef = React.useRef<HTMLInputElement>(null);
-  const periodRef = React.useRef<HTMLButtonElement>(null);
+  const minuteRef = React.useRef<HTMLInputElement>(null)
+  const hourRef = React.useRef<HTMLInputElement>(null)
+  const periodRef = React.useRef<HTMLButtonElement>(null)
 
   return (
     <div className="flex items-end gap-2">
@@ -139,7 +130,7 @@ function TimePickerWrapper({ value, onChange }: { value: string, onChange: (val:
         />
       </div>
     </div>
-  );
+  )
 }
 
 type AttendancesActionDialogProps = {
@@ -203,8 +194,8 @@ export function AttendancesActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange} modal={false}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>{isEdit ? 'Edit Attendance' : 'Add New Attendance'}</DialogTitle>
             <DialogDescription>
               {isEdit ? 'Update the attendance details here. ' : 'Record attendance for employees here. '}
@@ -212,15 +203,15 @@ export function AttendancesActionDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
-            <AttendanceForm form={form} onSubmit={onSubmit} id='attendance-form' isEdit={isEdit} />
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
+            <AttendanceForm form={form} onSubmit={onSubmit} id="attendance-form" isEdit={isEdit} />
           </div>
 
           <DialogFooter>
-            <Button type='submit' form='attendance-form' disabled={isLoading}>
+            <Button type="submit" form="attendance-form" disabled={isLoading}>
               {isLoading ? (
                 <>
-                  <Spinner className='mr-2 size-4' />
+                  <Spinner className="mr-2 size-4" />
                   Saving...
                 </>
               ) : (
@@ -236,7 +227,7 @@ export function AttendancesActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange} modal={false}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>{isEdit ? 'Edit Attendance' : 'Add New Attendance'}</DrawerTitle>
           <DrawerDescription>
             {isEdit ? 'Update the attendance details here. ' : 'Record attendance for employees here. '}
@@ -244,15 +235,15 @@ export function AttendancesActionDialog({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className='no-scrollbar overflow-y-auto px-4'>
-          <AttendanceForm form={form} onSubmit={onSubmit} id='attendance-form' isEdit={isEdit} />
+        <div className="no-scrollbar overflow-y-auto px-4">
+          <AttendanceForm form={form} onSubmit={onSubmit} id="attendance-form" isEdit={isEdit} />
         </div>
 
         <DrawerFooter>
-          <Button type='submit' form='attendance-form' disabled={isLoading}>
+          <Button type="submit" form="attendance-form" disabled={isLoading}>
             {isLoading ? (
               <>
-                <Spinner className='mr-2 size-4' />
+                <Spinner className="mr-2 size-4" />
                 Saving...
               </>
             ) : (
@@ -260,7 +251,7 @@ export function AttendancesActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -316,7 +307,8 @@ function AttendanceForm({ form, onSubmit, id, className, isEdit }: AttendanceFor
                   }}
                   isItemEqualToValue={(a, b) => Number(a?.value) === Number(b?.value)}
                 >
-                  <ComboboxChips ref={anchor} id="attendance-employees" className={cn(isEdit && "opacity-50 cursor-not-allowed")}>
+                  <ComboboxChips ref={anchor} id="attendance-employees"
+                                 className={cn(isEdit && 'opacity-50 cursor-not-allowed')}>
                     <ComboboxValue>
                       {(values) => (
                         <React.Fragment>
@@ -324,7 +316,7 @@ function AttendanceForm({ form, onSubmit, id, className, isEdit }: AttendanceFor
                             <ComboboxChip key={item.value}>{item.label}</ComboboxChip>
                           ))}
                           <ComboboxChipsInput
-                            placeholder={isEdit ? "Cannot change employee" : "Select employees..."}
+                            placeholder={isEdit ? 'Cannot change employee' : 'Select employees...'}
                             disabled={isEdit}
                           />
                         </React.Fragment>
@@ -343,7 +335,7 @@ function AttendanceForm({ form, onSubmit, id, className, isEdit }: AttendanceFor
                   </ComboboxContent>
                 </Combobox>
                 <FieldDescription>
-                  {isEdit ? "You cannot modify the employee during an edit." : "Select one or more employees to mark attendance."}
+                  {isEdit ? 'You cannot modify the employee during an edit.' : 'Select one or more employees to mark attendance.'}
                 </FieldDescription>
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
@@ -354,7 +346,7 @@ function AttendanceForm({ form, onSubmit, id, className, isEdit }: AttendanceFor
         {/* Date */}
         <Controller
           control={form.control}
-          name='date'
+          name="date"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error} className="flex flex-col">
               <FieldLabel>Date <span className="text-destructive">*</span></FieldLabel>
@@ -372,7 +364,7 @@ function AttendanceForm({ form, onSubmit, id, className, isEdit }: AttendanceFor
         {/* Check-In Time */}
         <Controller
           control={form.control}
-          name='checkin'
+          name="checkin"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
               <FieldLabel>Check-In Time <span className="text-destructive">*</span></FieldLabel>
@@ -385,7 +377,7 @@ function AttendanceForm({ form, onSubmit, id, className, isEdit }: AttendanceFor
         {/* Check-Out Time */}
         <Controller
           control={form.control}
-          name='checkout'
+          name="checkout"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
               <FieldLabel>Check-Out Time</FieldLabel>
@@ -399,14 +391,14 @@ function AttendanceForm({ form, onSubmit, id, className, isEdit }: AttendanceFor
         {/* Note */}
         <Controller
           control={form.control}
-          name='note'
+          name="note"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='attendance-note'>Note / Reason</FieldLabel>
+              <FieldLabel htmlFor="attendance-note">Note / Reason</FieldLabel>
               <Textarea
-                id='attendance-note'
-                placeholder='Any additional details...'
-                className='resize-none'
+                id="attendance-note"
+                placeholder="Any additional details..."
+                className="resize-none"
                 {...field}
                 value={field.value || ''}
               />

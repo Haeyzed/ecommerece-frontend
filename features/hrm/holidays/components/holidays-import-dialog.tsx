@@ -4,16 +4,10 @@ import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  CloudUploadIcon,
-  Download01Icon,
-  File02Icon,
-  ViewIcon,
-  CancelCircleIcon
-} from '@hugeicons/core-free-icons'
+import { CancelCircleIcon, CloudUploadIcon, Download01Icon, File02Icon, ViewIcon } from '@hugeicons/core-free-icons'
 
 import { useHolidaysImport, useHolidaysTemplateDownload } from '@/features/hrm/holidays/api'
-import { holidayImportSchema, type HolidayImportFormData } from '@/features/hrm/holidays/schemas'
+import { type HolidayImportFormData, holidayImportSchema } from '@/features/hrm/holidays/schemas'
 import { HolidaysCsvPreviewDialog } from '@/features/hrm/holidays'
 
 import { Button } from '@/components/ui/button'
@@ -33,14 +27,8 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-} from "@/components/ui/drawer"
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+} from '@/components/ui/drawer'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import {
   FileUpload,
   FileUploadDropzone,
@@ -51,7 +39,7 @@ import {
   FileUploadList,
   FileUploadTrigger,
 } from '@/components/ui/file-upload'
-import { useMediaQuery } from "@/hooks/use-media-query"
+import { useMediaQuery } from '@/hooks/use-media-query'
 import { Spinner } from '@/components/ui/spinner'
 
 type HolidaysImportDialogProps = {
@@ -63,7 +51,7 @@ export function HolidaysImportDialog({
                                        open,
                                        onOpenChange,
                                      }: HolidaysImportDialogProps) {
-  const isDesktop = useMediaQuery("(min-width: 768px)")
+  const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: importHolidays, isPending } = useHolidaysImport()
   const { mutate: downloadTemplate, isPending: isDownloading } = useHolidaysTemplateDownload()
 
@@ -130,7 +118,7 @@ export function HolidaysImportDialog({
   }
 
   const importFormContent = (
-    <form id='import-form' onSubmit={form.handleSubmit(handlePreview)} className="grid gap-4 py-4">
+    <form id="import-form" onSubmit={form.handleSubmit(handlePreview)} className="grid gap-4 py-4">
       <div className="flex justify-end">
         <Button
           type="button"
@@ -155,49 +143,53 @@ export function HolidaysImportDialog({
       </div>
 
       <FieldGroup>
-        <div className='space-y-2 rounded-md border bg-muted/50 p-3 text-sm'>
-          <div className='font-medium'>Required Fields:</div>
-          <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>from_date*</code> - YYYY-MM-DD</li>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>to_date*</code> - YYYY-MM-DD</li>
+        <div className="space-y-2 rounded-md border bg-muted/50 p-3 text-sm">
+          <div className="font-medium">Required Fields:</div>
+          <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+            <li><code className="rounded bg-background px-1 py-0.5 text-xs">from_date*</code> - YYYY-MM-DD</li>
+            <li><code className="rounded bg-background px-1 py-0.5 text-xs">to_date*</code> - YYYY-MM-DD</li>
           </ul>
-          <div className='font-medium mt-3'>Optional Fields:</div>
-          <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>note</code> - Reason / name for the holiday</li>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>region</code> - Specific region if applicable</li>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>recurring</code> - Boolean (1 or 0)</li>
-            <li><code className='rounded bg-background px-1 py-0.5 text-xs'>is_approved</code> - Boolean (1 or 0)</li>
+          <div className="font-medium mt-3">Optional Fields:</div>
+          <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+            <li><code className="rounded bg-background px-1 py-0.5 text-xs">note</code> - Reason / name for the holiday
+            </li>
+            <li><code className="rounded bg-background px-1 py-0.5 text-xs">region</code> - Specific region if
+              applicable
+            </li>
+            <li><code className="rounded bg-background px-1 py-0.5 text-xs">recurring</code> - Boolean (1 or 0)</li>
+            <li><code className="rounded bg-background px-1 py-0.5 text-xs">is_approved</code> - Boolean (1 or 0)</li>
           </ul>
         </div>
         <Controller
           control={form.control}
-          name='file'
+          name="file"
           render={({ field: { value, onChange, ...fieldProps }, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='import-file'>Upload File</FieldLabel>
+              <FieldLabel htmlFor="import-file">Upload File</FieldLabel>
 
               <FileUpload
                 value={value}
                 onValueChange={onChange}
-                accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
+                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                 maxFiles={1}
                 maxSize={5 * 1024 * 1024} // 5MB
                 onFileReject={(_, message) => {
                   form.setError('file', { message })
                 }}
               >
-                <FileUploadDropzone className='flex-col items-center justify-center gap-2 border-dashed p-8 text-center'>
+                <FileUploadDropzone
+                  className="flex-col items-center justify-center gap-2 border-dashed p-8 text-center">
                   <div className="flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-                    <HugeiconsIcon icon={CloudUploadIcon} className='size-5' />
+                    <HugeiconsIcon icon={CloudUploadIcon} className="size-5" />
                   </div>
                   <div className="text-sm">
                     <span className="font-semibold text-primary">Click to upload</span>
-                    {" "}or drag and drop
+                    {' '}or drag and drop
                     <br />
                     <span className="text-muted-foreground">CSV or Excel (max 5MB)</span>
                   </div>
                   <FileUploadTrigger asChild>
-                    <Button variant='link' size='sm' className='sr-only'>
+                    <Button variant="link" size="sm" className="sr-only">
                       Select file
                     </Button>
                   </FileUploadTrigger>
@@ -213,12 +205,12 @@ export function HolidaysImportDialog({
                       <FileUploadItemMetadata className="ml-2 flex-1" />
                       <FileUploadItemDelete asChild>
                         <Button
-                          variant='ghost'
-                          size='icon'
-                          className='size-7 text-muted-foreground hover:text-destructive'
+                          variant="ghost"
+                          size="icon"
+                          className="size-7 text-muted-foreground hover:text-destructive"
                         >
-                          <HugeiconsIcon icon={CancelCircleIcon} className='size-4' />
-                          <span className='sr-only'>Remove</span>
+                          <HugeiconsIcon icon={CancelCircleIcon} className="size-4" />
+                          <span className="sr-only">Remove</span>
                         </Button>
                       </FileUploadItemDelete>
                     </FileUploadItem>
@@ -241,8 +233,8 @@ export function HolidaysImportDialog({
     <>
       {isDesktop ? (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-          <DialogContent className='sm:max-w-md'>
-            <DialogHeader className='text-start'>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader className="text-start">
               <DialogTitle>Import Holidays</DialogTitle>
               <DialogDescription>
                 Bulk create holidays by uploading a CSV or Excel file.
@@ -251,8 +243,8 @@ export function HolidaysImportDialog({
 
             {importFormContent}
 
-            <DialogFooter className='gap-y-2'>
-              <Button variant='outline' onClick={() => handleOpenChange(false)}>
+            <DialogFooter className="gap-y-2">
+              <Button variant="outline" onClick={() => handleOpenChange(false)}>
                 Cancel
               </Button>
               <Button type="submit" form="import-form" disabled={!form.formState.isValid || isPending}>

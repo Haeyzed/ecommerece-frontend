@@ -4,16 +4,10 @@ import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  CloudUploadIcon,
-  Download01Icon,
-  File02Icon,
-  ViewIcon,
-  CancelCircleIcon,
-} from '@hugeicons/core-free-icons'
+import { CancelCircleIcon, CloudUploadIcon, Download01Icon, File02Icon, ViewIcon } from '@hugeicons/core-free-icons'
 
 import { useSuppliersImport } from '../api'
-import { supplierImportSchema, type SupplierImportFormData } from '../schemas'
+import { type SupplierImportFormData, supplierImportSchema } from '../schemas'
 import { downloadSampleAsCsv } from '@/lib/download-sample-csv'
 import { SAMPLE_SUPPLIERS_CSV } from '../constants'
 import { SuppliersCsvPreviewDialog } from './suppliers-csv-preview-dialog'
@@ -36,13 +30,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import {
   FileUpload,
   FileUploadDropzone,
@@ -61,9 +49,9 @@ type SuppliersImportDialogProps = {
 }
 
 export function SuppliersImportDialog({
-  open,
-  onOpenChange,
-}: SuppliersImportDialogProps) {
+                                        open,
+                                        onOpenChange,
+                                      }: SuppliersImportDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: importSuppliers, isPending } = useSuppliersImport()
   const [previewOpen, setPreviewOpen] = useState(false)
@@ -144,7 +132,9 @@ export function SuppliersImportDialog({
       </div>
       <FieldGroup>
         <div className="space-y-2 rounded-md border bg-muted/50 p-3 text-sm">
-          <div className="font-medium">Required: name. Optional: company_name, vat_number, email, phone_number, wa_number, address, city, state, postal_code, country, opening_balance</div>
+          <div className="font-medium">Required: name. Optional: company_name, vat_number, email, phone_number,
+            wa_number, address, city, state, postal_code, country, opening_balance
+          </div>
         </div>
         <Controller
           control={form.control}
@@ -160,7 +150,8 @@ export function SuppliersImportDialog({
                 maxSize={5 * 1024 * 1024}
                 onFileReject={(_, msg) => form.setError('file', { message: msg })}
               >
-                <FileUploadDropzone className="flex-col items-center justify-center gap-2 border-dashed p-8 text-center">
+                <FileUploadDropzone
+                  className="flex-col items-center justify-center gap-2 border-dashed p-8 text-center">
                   <div className="flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
                     <HugeiconsIcon icon={CloudUploadIcon} className="size-5" />
                   </div>
@@ -212,10 +203,10 @@ export function SuppliersImportDialog({
         <Dialog open={open} onOpenChange={handleOpenChange}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader className="text-start">
-            <DialogTitle>Import Suppliers</DialogTitle>
-            <DialogDescription>
-              Bulk create suppliers by uploading a CSV or Excel file.
-            </DialogDescription>
+              <DialogTitle>Import Suppliers</DialogTitle>
+              <DialogDescription>
+                Bulk create suppliers by uploading a CSV or Excel file.
+              </DialogDescription>
             </DialogHeader>
             <ImportContent />
             <DialogFooter className="gap-y-2">
@@ -233,10 +224,10 @@ export function SuppliersImportDialog({
         <Drawer open={open} onOpenChange={handleOpenChange}>
           <DrawerContent>
             <DrawerHeader className="text-left">
-            <DrawerTitle>Import Suppliers</DrawerTitle>
-            <DrawerDescription>
-              Bulk create suppliers by uploading a CSV or Excel file.
-            </DrawerDescription>
+              <DrawerTitle>Import Suppliers</DrawerTitle>
+              <DrawerDescription>
+                Bulk create suppliers by uploading a CSV or Excel file.
+              </DrawerDescription>
             </DrawerHeader>
             <div className="no-scrollbar overflow-y-auto px-4">
               <ImportContent />

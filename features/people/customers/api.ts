@@ -5,13 +5,7 @@ import { ValidationError } from '@/lib/api/api-errors'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import type { CustomerFormData } from './schemas'
-import type {
-  Customer,
-  CustomerDeposit,
-  CustomerExportParams,
-  CustomerListParams,
-  CustomerOption,
-} from './types'
+import type { Customer, CustomerDeposit, CustomerExportParams, CustomerListParams, CustomerOption } from './types'
 
 export const customerKeys = {
   all: ['customers'] as const,
@@ -78,7 +72,7 @@ export function useCustomerDeposits(customerId: number) {
     queryKey: customerKeys.deposits(customerId),
     queryFn: async () => {
       const response = await api.get<CustomerDeposit[]>(
-        `${BASE_PATH}/${customerId}/deposits`
+        `${BASE_PATH}/${customerId}/deposits`,
       )
       return response.data ?? []
     },
@@ -94,7 +88,7 @@ export function useAddCustomerDeposit(customerId: number) {
     mutationFn: async (payload: { amount: number; note?: string | null }) => {
       const response = await api.post<CustomerDeposit>(
         `${BASE_PATH}/${customerId}/deposits`,
-        payload
+        payload,
       )
       if (!response.success || !response.data) {
         throw new Error(response.message ?? 'Failed to add deposit')
@@ -123,7 +117,7 @@ export function useCustomerGroupsActive() {
     queryKey: ['customer-groups', 'options'] as const,
     queryFn: async () => {
       const response = await api.get<Array<{ value: number; label: string }>>(
-        '/customer-groups/options'
+        '/customer-groups/options',
       )
       const list = response.data ?? []
       return list.map((o) => ({ id: o.value, name: o.label }))
@@ -163,9 +157,9 @@ export function useUpdateCustomer() {
 
   return useMutation({
     mutationFn: async ({
-      id,
-      data,
-    }: {
+                         id,
+                         data,
+                       }: {
       id: number
       data: Partial<CustomerFormData>
     }) => {
@@ -216,7 +210,7 @@ export function useBulkActivateCustomers() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
         `${BASE_PATH}/bulk-activate`,
-        { ids }
+        { ids },
       )
       if (!response.success) throw new Error(response.message)
       return response
@@ -236,7 +230,7 @@ export function useBulkDeactivateCustomers() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ deactivated_count: number }>(
         `${BASE_PATH}/bulk-deactivate`,
-        { ids }
+        { ids },
       )
       if (!response.success) throw new Error(response.message)
       return response

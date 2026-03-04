@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 /**
  * ResetPasswordForm
@@ -10,49 +10,40 @@
  * @component
  */
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useSearchParams } from "next/navigation"
-import { useEffect } from "react"
-import { Controller, useForm } from "react-hook-form"
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useSearchParams } from 'next/navigation'
+import { useEffect } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 
-import { PasswordInput } from "@/components/password-input"
-import { Button } from "@/components/ui/button"
-import {
-  Field,
-  FieldContent,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { Spinner } from "@/components/ui/spinner"
-import { useResetPassword } from "@/features/auth/api"
-import {
-  type ResetPasswordFormData,
-  resetPasswordSchema,
-} from "@/features/auth"
-import { ValidationError } from "@/lib/api/api-errors"
+import { PasswordInput } from '@/components/password-input'
+import { Button } from '@/components/ui/button'
+import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
+import { Spinner } from '@/components/ui/spinner'
+import { useResetPassword } from '@/features/auth/api'
+import { type ResetPasswordFormData, resetPasswordSchema } from '@/features/auth'
+import { ValidationError } from '@/lib/api/api-errors'
 
 export function ResetPasswordForm() {
   const searchParams = useSearchParams()
-  const token = searchParams.get("token")
-  const email = searchParams.get("email")
+  const token = searchParams.get('token')
+  const email = searchParams.get('email')
 
   const form = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
-      email: email ?? "",
-      token: token ?? "",
-      password: "",
-      password_confirmation: "",
+      email: email ?? '',
+      token: token ?? '',
+      password: '',
+      password_confirmation: '',
     },
   })
 
   const resetPasswordMutation = useResetPassword()
 
   useEffect(() => {
-    if (token) form.setValue("token", token)
-    if (email) form.setValue("email", email)
+    if (token) form.setValue('token', token)
+    if (email) form.setValue('email', email)
   }, [token, email, form.setValue])
 
   const onSubmit = async (data: ResetPasswordFormData) => {
@@ -62,14 +53,14 @@ export function ResetPasswordForm() {
       if (error instanceof ValidationError && error.errors) {
         Object.entries(error.errors).forEach(([field, messages]) => {
           form.setError(field as keyof ResetPasswordFormData, {
-            type: "server",
+            type: 'server',
             message: messages[0],
           })
         })
       } else {
-        form.setError("root", {
-          type: "server",
-          message: error instanceof Error ? error.message : "An error occurred",
+        form.setError('root', {
+          type: 'server',
+          message: error instanceof Error ? error.message : 'An error occurred',
         })
       }
     }
@@ -177,7 +168,7 @@ export function ResetPasswordForm() {
             Resetting...
           </>
         ) : (
-          "Reset password"
+          'Reset password'
         )}
       </Button>
     </form>

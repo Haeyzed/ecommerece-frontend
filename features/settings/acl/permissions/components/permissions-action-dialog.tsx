@@ -3,11 +3,8 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 
-import {
-  useCreatePermission,
-  useUpdatePermission
-} from '@/features/settings/acl/permissions/api'
-import { permissionSchema, type PermissionFormData } from '@/features/settings/acl/permissions/schemas'
+import { useCreatePermission, useUpdatePermission } from '@/features/settings/acl/permissions/api'
+import { type PermissionFormData, permissionSchema } from '@/features/settings/acl/permissions/schemas'
 import { type Permission } from '../types'
 
 import { useMediaQuery } from '@/hooks/use-media-query'
@@ -31,13 +28,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
@@ -102,8 +93,8 @@ export function PermissionsActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>{isEdit ? 'Edit Permission' : 'Add New Permission'}</DialogTitle>
             <DialogDescription>
               {isEdit ? 'Update the permission details here. ' : 'Create a new permission here. '}
@@ -111,12 +102,12 @@ export function PermissionsActionDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
-            <PermissionForm form={form} onSubmit={onSubmit} id='permission-form' />
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
+            <PermissionForm form={form} onSubmit={onSubmit} id="permission-form" />
           </div>
 
           <DialogFooter>
-            <Button type='submit' form='permission-form' disabled={isLoading}>
+            <Button type="submit" form="permission-form" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Spinner className="mr-2 size-4" />
@@ -135,7 +126,7 @@ export function PermissionsActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>{isEdit ? 'Edit Permission' : 'Add New Permission'}</DrawerTitle>
           <DrawerDescription>
             {isEdit ? 'Update the permission details here. ' : 'Create a new permission here. '}
@@ -143,12 +134,12 @@ export function PermissionsActionDialog({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className='no-scrollbar overflow-y-auto px-4'>
-          <PermissionForm form={form} onSubmit={onSubmit} id='permission-form' />
+        <div className="no-scrollbar overflow-y-auto px-4">
+          <PermissionForm form={form} onSubmit={onSubmit} id="permission-form" />
         </div>
 
         <DrawerFooter>
-          <Button type='submit' form='permission-form' disabled={isLoading}>
+          <Button type="submit" form="permission-form" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Spinner className="mr-2 size-4" />
@@ -159,7 +150,7 @@ export function PermissionsActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -184,14 +175,14 @@ function PermissionForm({ form, onSubmit, id, className }: PermissionFormProps) 
       <FieldGroup>
         <Controller
           control={form.control}
-          name='name'
+          name="name"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='permission-name'>Name <span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel htmlFor="permission-name">Name <span className="text-destructive">*</span></FieldLabel>
               <Input
-                id='permission-name'
-                placeholder='e.g. view employees'
-                autoComplete='off'
+                id="permission-name"
+                placeholder="e.g. view employees"
+                autoComplete="off"
                 {...field}
               />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
@@ -202,14 +193,14 @@ function PermissionForm({ form, onSubmit, id, className }: PermissionFormProps) 
         <div className="grid grid-cols-2 gap-4">
           <Controller
             control={form.control}
-            name='guard_name'
+            name="guard_name"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='permission-guard'>Guard Name</FieldLabel>
+                <FieldLabel htmlFor="permission-guard">Guard Name</FieldLabel>
                 <Input
-                  id='permission-guard'
-                  placeholder='e.g. web'
-                  autoComplete='off'
+                  id="permission-guard"
+                  placeholder="e.g. web"
+                  autoComplete="off"
                   {...field}
                   value={field.value || ''}
                 />
@@ -220,14 +211,14 @@ function PermissionForm({ form, onSubmit, id, className }: PermissionFormProps) 
 
           <Controller
             control={form.control}
-            name='module'
+            name="module"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='permission-module'>Module</FieldLabel>
+                <FieldLabel htmlFor="permission-module">Module</FieldLabel>
                 <Input
-                  id='permission-module'
-                  placeholder='e.g. hrm'
-                  autoComplete='off'
+                  id="permission-module"
+                  placeholder="e.g. hrm"
+                  autoComplete="off"
                   {...field}
                   value={field.value || ''}
                 />
@@ -239,15 +230,15 @@ function PermissionForm({ form, onSubmit, id, className }: PermissionFormProps) 
 
         <Controller
           control={form.control}
-          name='description'
+          name="description"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='permission-description'>Description</FieldLabel>
+              <FieldLabel htmlFor="permission-description">Description</FieldLabel>
               <Textarea
-                id='permission-description'
-                placeholder='Describe the permission...'
-                className='resize-none'
-                autoComplete='off'
+                id="permission-description"
+                placeholder="Describe the permission..."
+                className="resize-none"
+                autoComplete="off"
                 {...field}
                 value={field.value || ''}
               />
@@ -258,20 +249,20 @@ function PermissionForm({ form, onSubmit, id, className }: PermissionFormProps) 
 
         <Controller
           control={form.control}
-          name='is_active'
+          name="is_active"
           render={({ field, fieldState }) => (
             <Field
               data-invalid={!!fieldState.error}
-              className='flex flex-row items-center justify-between rounded-md border p-4'
+              className="flex flex-row items-center justify-between rounded-md border p-4"
             >
-              <div className='space-y-0.5'>
-                <FieldLabel htmlFor='permission-active'>Active Status</FieldLabel>
+              <div className="space-y-0.5">
+                <FieldLabel htmlFor="permission-active">Active Status</FieldLabel>
                 <FieldDescription>
                   Disabling this will hide the permission from the system.
                 </FieldDescription>
               </div>
               <Switch
-                id='permission-active'
+                id="permission-active"
                 checked={!!field.value}
                 onCheckedChange={field.onChange}
               />

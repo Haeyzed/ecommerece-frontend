@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { type ColumnDef } from '@tanstack/react-table'
 import { cn } from '@/lib/utils'
@@ -9,7 +9,6 @@ import { LongText } from '@/components/long-text'
 import { statusTypes } from '../constants'
 import { type Brand } from '../types'
 import { DataTableRowActions } from './data-table-row-actions'
-import { HugeiconsIcon } from '@hugeicons/react'
 import { ImageZoomCell } from '@/components/image-zoom'
 
 export const brandsColumns: ColumnDef<Brand>[] = [
@@ -22,8 +21,8 @@ export const brandsColumns: ColumnDef<Brand>[] = [
           (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label='Select all'
-        className='translate-y-[2px]'
+        aria-label="Select all"
+        className="translate-y-[2px]"
       />
     ),
     meta: {
@@ -33,8 +32,8 @@ export const brandsColumns: ColumnDef<Brand>[] = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label='Select row'
-        className='translate-y-[2px]'
+        aria-label="Select row"
+        className="translate-y-[2px]"
       />
     ),
     enableSorting: false,
@@ -43,29 +42,29 @@ export const brandsColumns: ColumnDef<Brand>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Name' />
+      <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => (
-      <div className='flex items-center gap-3 ps-3'>
+      <div className="flex items-center gap-3 ps-3">
         {row.original.image_url ? (
           <ImageZoomCell
             src={row.original.image_url}
             alt={row.original.name}
           />
         ) : (
-          <div className='flex size-10 items-center justify-center rounded-md bg-muted'>
-            <span className='text-xs font-medium'>
+          <div className="flex size-10 items-center justify-center rounded-md bg-muted">
+            <span className="text-xs font-medium">
               {row.original.name.charAt(0).toUpperCase()}
             </span>
           </div>
         )}
-        <LongText className='max-w-36'>{row.getValue('name')}</LongText>
+        <LongText className="max-w-36">{row.getValue('name')}</LongText>
       </div>
     ),
     meta: {
       className: cn(
         'drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]',
-        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none'
+        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none',
       ),
     },
     enableHiding: false,
@@ -73,10 +72,10 @@ export const brandsColumns: ColumnDef<Brand>[] = [
   {
     accessorKey: 'slug',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Slug' />
+      <DataTableColumnHeader column={column} title="Slug" />
     ),
     cell: ({ row }) => (
-      <LongText className='max-w-36'>
+      <LongText className="max-w-36">
         {row.original.slug || '-'}
       </LongText>
     ),
@@ -85,10 +84,10 @@ export const brandsColumns: ColumnDef<Brand>[] = [
   {
     accessorKey: 'short_description',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Description' />
+      <DataTableColumnHeader column={column} title="Description" />
     ),
     cell: ({ row }) => (
-      <LongText className='max-w-48'>
+      <LongText className="max-w-48">
         {row.original.short_description || '-'}
       </LongText>
     ),
@@ -97,14 +96,14 @@ export const brandsColumns: ColumnDef<Brand>[] = [
   {
     accessorKey: 'active_status',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Status' />
+      <DataTableColumnHeader column={column} title="Status" />
     ),
     cell: ({ row }) => {
       const { active_status } = row.original
       const statusBadgeColor = statusTypes.get(active_status)
       return (
-        <div className='flex justify-center'>
-          <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
+        <div className="flex justify-center">
+          <Badge variant="outline" className={cn('capitalize', statusBadgeColor)}>
             {row.getValue('active_status')}
           </Badge>
         </div>

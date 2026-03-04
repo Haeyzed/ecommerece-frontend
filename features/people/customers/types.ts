@@ -1,4 +1,4 @@
-import { CustomerGroup } from "@/features/settings/customer-groups/types"
+import { CustomerGroup } from '@/features/settings/customer-groups/types'
 
 
 export interface Customer {

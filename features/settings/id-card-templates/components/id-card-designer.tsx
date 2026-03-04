@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {PaintBoardIcon, FloppyDiskIcon, Image01Icon, Delete02Icon, Date} from '@hugeicons/core-free-icons'
+import { Delete02Icon, FloppyDiskIcon, Image01Icon, PaintBoardIcon } from '@hugeicons/core-free-icons'
 
 import { useActiveIdCardTemplate, useUpdateIdCardTemplate } from '../api'
 import { generateIdCardsPdf } from '@/features/hrm/employees/utils/generate-id-card'
@@ -34,7 +34,7 @@ type DesignFormData = z.infer<typeof idCardDesignSchema>
 const DUMMY_EMPLOYEE: Employee = {
   created_at: null,
   updated_at: null,
-  employee_code: "123",
+  employee_code: '123',
   id: 0,
   staff_id: 'EMP-00123',
   name: 'John Doe',
@@ -62,7 +62,7 @@ const DUMMY_EMPLOYEE: Employee = {
   is_sale_agent: false,
   sales_agent: 'no',
   sales_target: [],
-  user: null
+  user: null,
   // created_at: new Date().toISOString(),
   // updated_at: new Date().toISOString()
 }
@@ -83,7 +83,7 @@ export function IdCardDesigner() {
       show_phone: true,
       show_address: true,
       show_qr_code: true,
-    }
+    },
   })
 
   // activeTemplate is now strongly typed as IdCardTemplate because of the api.ts fix
@@ -96,46 +96,46 @@ export function IdCardDesigner() {
   const watchedValues = form.watch()
 
   useEffect(() => {
-    let isMounted = true;
+    let isMounted = true
 
     const timer = setTimeout(async () => {
-      await Promise.resolve(); // Microtask prevents ESLint cascading renders warning
-      if (!isMounted) return;
+      await Promise.resolve() // Microtask prevents ESLint cascading renders warning
+      if (!isMounted) return
 
       setIsGenerating(true)
       try {
         const generated = await generateIdCardsPdf([DUMMY_EMPLOYEE], watchedValues as any)
 
         // Ensure TS understands this is definitely a string
-        const finalUrlString: string = String(generated);
+        const finalUrlString: string = String(generated)
 
         if (isMounted) {
           setPdfUrl(prev => {
             if (prev) window.URL.revokeObjectURL(prev)
-            return finalUrlString;
+            return finalUrlString
           })
         } else {
-          window.URL.revokeObjectURL(finalUrlString);
+          window.URL.revokeObjectURL(finalUrlString)
         }
       } catch (error) {
-        console.error("Failed to generate PDF:", error)
+        console.error('Failed to generate PDF:', error)
       } finally {
         if (isMounted) setIsGenerating(false)
       }
     }, 500)
 
     return () => {
-      isMounted = false;
+      isMounted = false
       clearTimeout(timer)
     }
   }, [watchedValues])
 
   const onSubmit = (data: DesignFormData) => {
-    if (!activeTemplate) return;
+    if (!activeTemplate) return
 
     updateTemplate({
       id: activeTemplate.id,
-      data: { design_config: data }
+      data: { design_config: data },
     })
   }
 
@@ -172,7 +172,8 @@ export function IdCardDesigner() {
                   </CardDescription>
                 </div>
                 <Button type="submit" disabled={isSaving || !form.formState.isDirty}>
-                  {isSaving ? <Spinner className="mr-2 size-4" /> : <HugeiconsIcon icon={FloppyDiskIcon} className="mr-2 size-4" />}
+                  {isSaving ? <Spinner className="mr-2 size-4" /> :
+                    <HugeiconsIcon icon={FloppyDiskIcon} className="mr-2 size-4" />}
                   Save Design
                 </Button>
               </div>
@@ -182,7 +183,8 @@ export function IdCardDesigner() {
 
               {/* Colors */}
               <div>
-                <h3 className="text-sm font-semibold mb-4 text-muted-foreground uppercase tracking-wider">Brand Colors</h3>
+                <h3 className="text-sm font-semibold mb-4 text-muted-foreground uppercase tracking-wider">Brand
+                  Colors</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <Controller control={form.control} name="primary_color" render={({ field }) => (
                     <div className="space-y-2">
@@ -210,23 +212,27 @@ export function IdCardDesigner() {
 
               {/* Logo */}
               <div>
-                <h3 className="text-sm font-semibold mb-4 text-muted-foreground uppercase tracking-wider">Company Logo</h3>
+                <h3 className="text-sm font-semibold mb-4 text-muted-foreground uppercase tracking-wider">Company
+                  Logo</h3>
                 <Controller control={form.control} name="logo_url" render={({ field }) => (
                   <div className="space-y-4">
                     {field.value ? (
                       <div className="flex items-center gap-4 p-4 border rounded-md bg-muted/20">
                         <img src={field.value} alt="Logo" className="h-12 object-contain" />
-                        <Button type="button" variant="destructive" size="sm" onClick={() => form.setValue('logo_url', null, { shouldDirty: true })}>
+                        <Button type="button" variant="destructive" size="sm"
+                                onClick={() => form.setValue('logo_url', null, { shouldDirty: true })}>
                           <HugeiconsIcon icon={Delete02Icon} className="mr-2 size-4" /> Remove Logo
                         </Button>
                       </div>
                     ) : (
                       <div className="space-y-2">
-                        <Label htmlFor="logo-upload" className="cursor-pointer flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-md hover:bg-muted/50 transition-colors">
+                        <Label htmlFor="logo-upload"
+                               className="cursor-pointer flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-md hover:bg-muted/50 transition-colors">
                           <HugeiconsIcon icon={Image01Icon} className="size-8 text-muted-foreground mb-2" />
                           <span className="text-sm font-medium">Click to upload logo (PNG/JPG)</span>
                         </Label>
-                        <Input id="logo-upload" type="file" accept="image/png, image/jpeg" className="hidden" onChange={handleLogoUpload} />
+                        <Input id="logo-upload" type="file" accept="image/png, image/jpeg" className="hidden"
+                               onChange={handleLogoUpload} />
                       </div>
                     )}
                   </div>
@@ -237,7 +243,8 @@ export function IdCardDesigner() {
 
               {/* Toggles */}
               <div>
-                <h3 className="text-sm font-semibold mb-4 text-muted-foreground uppercase tracking-wider">Visible Fields</h3>
+                <h3 className="text-sm font-semibold mb-4 text-muted-foreground uppercase tracking-wider">Visible
+                  Fields</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Controller control={form.control} name="show_phone" render={({ field }) => (
                     <div className="flex items-center justify-between p-4 border rounded-md">
@@ -277,7 +284,8 @@ export function IdCardDesigner() {
                 {isGenerating && <Spinner className="size-4" />}
               </CardTitle>
             </CardHeader>
-            <CardContent className="flex-1 p-0 bg-neutral-100 dark:bg-neutral-900 flex items-center justify-center relative overflow-hidden">
+            <CardContent
+              className="flex-1 p-0 bg-neutral-100 dark:bg-neutral-900 flex items-center justify-center relative overflow-hidden">
               {pdfUrl ? (
                 <iframe
                   src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`} // Hides PDF viewer toolbars

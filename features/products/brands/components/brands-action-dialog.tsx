@@ -1,21 +1,14 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  CancelCircleIcon,
-  CloudUploadIcon,
-  Edit01Icon,
-} from '@hugeicons/core-free-icons'
+import { CancelCircleIcon, CloudUploadIcon, Edit01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 import { useState } from 'react'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 
-import {
-  useCreateBrand,
-  useUpdateBrand
-} from '@/features/products/brands/api'
-import { brandSchema, type BrandFormData } from '@/features/products/brands/schemas'
+import { useCreateBrand, useUpdateBrand } from '@/features/products/brands/api'
+import { type BrandFormData, brandSchema } from '@/features/products/brands/schemas'
 import { type Brand } from '../types'
 
 import { useMediaQuery } from '@/hooks/use-media-query'
@@ -41,13 +34,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import {
   FileUpload,
   FileUploadDropzone,
@@ -71,10 +58,10 @@ type BrandActionDialogProps = {
 }
 
 export function BrandsActionDialog({
-  currentRow,
-  open,
-  onOpenChange,
-}: BrandActionDialogProps) {
+                                     currentRow,
+                                     open,
+                                     onOpenChange,
+                                   }: BrandActionDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const isEdit = !!currentRow
   const { mutate: createBrand, isPending: isCreating } = useCreateBrand()
@@ -125,8 +112,8 @@ export function BrandsActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>{isEdit ? 'Edit Brand' : 'Add New Brand'}</DialogTitle>
             <DialogDescription>
               {isEdit ? 'Update the brand details here. ' : 'Create a new brand here. '}
@@ -134,18 +121,18 @@ export function BrandsActionDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
             <BrandForm
               form={form}
               onSubmit={onSubmit}
-              id='brand-form'
+              id="brand-form"
               isEdit={isEdit}
               currentRow={currentRow}
             />
           </div>
 
           <DialogFooter>
-            <Button type='submit' form='brand-form' disabled={isLoading}>
+            <Button type="submit" form="brand-form" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Spinner className="mr-2 size-4" />
@@ -164,7 +151,7 @@ export function BrandsActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>{isEdit ? 'Edit Brand' : 'Add New Brand'}</DrawerTitle>
           <DrawerDescription>
             {isEdit ? 'Update the brand details here. ' : 'Create a new brand here. '}
@@ -172,18 +159,18 @@ export function BrandsActionDialog({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className='no-scrollbar overflow-y-auto px-4'>
+        <div className="no-scrollbar overflow-y-auto px-4">
           <BrandForm
             form={form}
             onSubmit={onSubmit}
-            id='brand-form'
+            id="brand-form"
             isEdit={isEdit}
             currentRow={currentRow}
           />
         </div>
 
         <DrawerFooter>
-          <Button type='submit' form='brand-form' disabled={isLoading}>
+          <Button type="submit" form="brand-form" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Spinner className="mr-2 size-4" />
@@ -194,7 +181,7 @@ export function BrandsActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -224,14 +211,14 @@ function BrandForm({ form, onSubmit, id, className, isEdit, currentRow }: BrandF
       <FieldGroup>
         <Controller
           control={form.control}
-          name='name'
+          name="name"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='brand-name'>Name <span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel htmlFor="brand-name">Name <span className="text-destructive">*</span></FieldLabel>
               <Input
-                id='brand-name'
-                placeholder='Brand name'
-                autoComplete='off'
+                id="brand-name"
+                placeholder="Brand name"
+                autoComplete="off"
                 {...field}
                 onChange={(e) => {
                   field.onChange(e.target.value)
@@ -247,28 +234,28 @@ function BrandForm({ form, onSubmit, id, className, isEdit, currentRow }: BrandF
 
         <Controller
           control={form.control}
-          name='slug'
+          name="slug"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='brand-slug'>Slug</FieldLabel>
-              <div className='flex gap-2'>
+              <FieldLabel htmlFor="brand-slug">Slug</FieldLabel>
+              <div className="flex gap-2">
                 <Input
-                  id='brand-slug'
-                  placeholder='brand-slug'
-                  autoComplete='off'
+                  id="brand-slug"
+                  placeholder="brand-slug"
+                  autoComplete="off"
                   {...field}
                   value={field.value || ''}
                   disabled={isSlugDisabled}
                 />
                 <Button
-                  type='button'
-                  variant='outline'
-                  size='icon'
-                  className='shrink-0'
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="shrink-0"
                   onClick={() => setIsSlugDisabled((prev) => !prev)}
-                  title={isSlugDisabled ? "Enable editing" : "Disable editing"}
+                  title={isSlugDisabled ? 'Enable editing' : 'Disable editing'}
                 >
-                  <HugeiconsIcon icon={Edit01Icon} className='size-4' />
+                  <HugeiconsIcon icon={Edit01Icon} className="size-4" />
                 </Button>
               </div>
               <FieldDescription>
@@ -281,15 +268,15 @@ function BrandForm({ form, onSubmit, id, className, isEdit, currentRow }: BrandF
 
         <Controller
           control={form.control}
-          name='short_description'
+          name="short_description"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='brand-description'>Description</FieldLabel>
+              <FieldLabel htmlFor="brand-description">Description</FieldLabel>
               <Textarea
-                id='brand-description'
-                placeholder='Brand description'
+                id="brand-description"
+                placeholder="Brand description"
                 rows={3}
-                className='resize-none'
+                className="resize-none"
                 {...field}
                 value={field.value || ''}
               />
@@ -300,14 +287,14 @@ function BrandForm({ form, onSubmit, id, className, isEdit, currentRow }: BrandF
 
         <Controller
           control={form.control}
-          name='page_title'
+          name="page_title"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='brand-page-title'>Page Title</FieldLabel>
+              <FieldLabel htmlFor="brand-page-title">Page Title</FieldLabel>
               <Input
-                id='brand-page-title'
-                placeholder='SEO Page Title'
-                autoComplete='off'
+                id="brand-page-title"
+                placeholder="SEO Page Title"
+                autoComplete="off"
                 {...field}
                 value={field.value || ''}
               />
@@ -318,23 +305,23 @@ function BrandForm({ form, onSubmit, id, className, isEdit, currentRow }: BrandF
 
         <Controller
           control={form.control}
-          name='image'
+          name="image"
           render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
             const existingImageUrl = isEdit && currentRow?.image_url ? currentRow.image_url : null
             const hasNewImage = value instanceof File || (Array.isArray(value) && value.length > 0)
 
             return (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='brand-image'>Image</FieldLabel>
+                <FieldLabel htmlFor="brand-image">Image</FieldLabel>
 
                 {existingImageUrl && !hasNewImage && (
-                  <div className='mb-3 flex items-center gap-3 rounded-md border p-3'>
-                    <div className='relative size-16 overflow-hidden rounded-md bg-muted'>
+                  <div className="mb-3 flex items-center gap-3 rounded-md border p-3">
+                    <div className="relative size-16 overflow-hidden rounded-md bg-muted">
                       <ImageZoom
                         backdropClassName={cn(
                           resolvedTheme === 'dark'
                             ? '[&_[data-rmiz-modal-overlay="visible"]]:bg-white/80'
-                            : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80'
+                            : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80',
                         )}
                       >
                         <Image
@@ -342,14 +329,14 @@ function BrandForm({ form, onSubmit, id, className, isEdit, currentRow }: BrandF
                           alt={currentRow?.name || 'Brand image'}
                           width={64}
                           height={64}
-                          className='h-full w-full object-cover'
+                          className="h-full w-full object-cover"
                           unoptimized
                         />
                       </ImageZoom>
                     </div>
-                    <div className='flex-1'>
-                      <p className='text-sm font-medium'>Current Image</p>
-                      <p className='text-xs text-muted-foreground'>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">Current Image</p>
+                      <p className="text-xs text-muted-foreground">
                         Upload a new image to replace this one
                       </p>
                     </div>
@@ -359,7 +346,7 @@ function BrandForm({ form, onSubmit, id, className, isEdit, currentRow }: BrandF
                 <FileUpload
                   value={value as File[] | undefined}
                   onValueChange={onChange}
-                  accept='image/*'
+                  accept="image/*"
                   maxFiles={1}
                   maxSize={5 * 1024 * 1024}
                   onFileReject={(_, message) => {
@@ -368,11 +355,11 @@ function BrandForm({ form, onSubmit, id, className, isEdit, currentRow }: BrandF
                     })
                   }}
                 >
-                  <FileUploadDropzone className='flex-row flex-wrap border-dotted text-center'>
-                    <HugeiconsIcon icon={CloudUploadIcon} className='size-4' />
+                  <FileUploadDropzone className="flex-row flex-wrap border-dotted text-center">
+                    <HugeiconsIcon icon={CloudUploadIcon} className="size-4" />
                     Drag and drop or
                     <FileUploadTrigger asChild>
-                      <Button variant='link' size='sm' className='p-0'>
+                      <Button variant="link" size="sm" className="p-0">
                         choose file
                       </Button>
                     </FileUploadTrigger>
@@ -385,12 +372,12 @@ function BrandForm({ form, onSubmit, id, className, isEdit, currentRow }: BrandF
                         <FileUploadItemMetadata />
                         <FileUploadItemDelete asChild>
                           <Button
-                            variant='ghost'
-                            size='icon'
-                            className='size-7'
+                            variant="ghost"
+                            size="icon"
+                            className="size-7"
                           >
-                            <HugeiconsIcon icon={CancelCircleIcon} className='size-4' />
-                            <span className='sr-only'>Delete</span>
+                            <HugeiconsIcon icon={CancelCircleIcon} className="size-4" />
+                            <span className="sr-only">Delete</span>
                           </Button>
                         </FileUploadItemDelete>
                       </FileUploadItem>
@@ -408,20 +395,20 @@ function BrandForm({ form, onSubmit, id, className, isEdit, currentRow }: BrandF
 
         <Controller
           control={form.control}
-          name='is_active'
+          name="is_active"
           render={({ field, fieldState }) => (
             <Field
               data-invalid={!!fieldState.error}
-              className='flex flex-row items-center justify-between rounded-md border p-4'
+              className="flex flex-row items-center justify-between rounded-md border p-4"
             >
-              <div className='space-y-0.5'>
-                <FieldLabel htmlFor='brand-active'>Active Status</FieldLabel>
+              <div className="space-y-0.5">
+                <FieldLabel htmlFor="brand-active">Active Status</FieldLabel>
                 <FieldDescription>
                   Disabling this will hide the brand from public view.
                 </FieldDescription>
               </div>
               <Switch
-                id='brand-active'
+                id="brand-active"
                 checked={!!field.value}
                 onCheckedChange={field.onChange}
               />

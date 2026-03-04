@@ -31,8 +31,8 @@ export type LanguageListParams = {
 
 export type LanguageExportParams = {
   ids?: number[];
-  format: "excel" | "pdf";
-  method: "download" | "email";
+  format: 'excel' | 'pdf';
+  method: 'download' | 'email';
   columns: string[];
   user_id?: number;
   start_date?: string;

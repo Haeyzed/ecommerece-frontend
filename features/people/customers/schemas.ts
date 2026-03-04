@@ -32,7 +32,11 @@ export const customerSchema = z
   .superRefine((data, ctx) => {
     if (data.both) {
       if (!data.company_name?.trim()) {
-        ctx.addIssue({ code: 'custom', message: 'Company name is required when also adding as supplier', path: ['company_name'] })
+        ctx.addIssue({
+          code: 'custom',
+          message: 'Company name is required when also adding as supplier',
+          path: ['company_name'],
+        })
       }
       if (!data.email?.trim()) {
         ctx.addIssue({ code: 'custom', message: 'Email is required when also adding as supplier', path: ['email'] })
@@ -72,7 +76,7 @@ export const customerExportSchema = z
       if (data.method === 'email') return data.user_id !== undefined
       return true
     },
-    { message: 'Please select a user to send the email to', path: ['user_id'] }
+    { message: 'Please select a user to send the email to', path: ['user_id'] },
   )
 
 export const addDepositSchema = z.object({

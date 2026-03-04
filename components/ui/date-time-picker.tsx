@@ -3,17 +3,9 @@
 import * as React from 'react'
 import { format } from 'date-fns'
 import { Calendar } from '@/components/ui/calendar'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from '@/components/ui/input-group'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { CalendarIcon, Clock03Icon } from '@hugeicons/core-free-icons'
 import { cn } from '@/lib/utils'
@@ -34,14 +26,14 @@ type DateTimePickerProps = {
  * Value is a single Date; time is stored in the same Date.
  */
 export function DateTimePicker({
-  value,
-  onChange,
-  datePlaceholder = 'Pick date and time',
-  disabled,
-  id,
-  className,
-  label,
-}: DateTimePickerProps) {
+                                 value,
+                                 onChange,
+                                 datePlaceholder = 'Pick date and time',
+                                 disabled,
+                                 id,
+                                 className,
+                                 label,
+                               }: DateTimePickerProps) {
   const [open, setOpen] = React.useState(false)
   const [timeValue, setTimeValue] = React.useState(() => {
     if (value) {

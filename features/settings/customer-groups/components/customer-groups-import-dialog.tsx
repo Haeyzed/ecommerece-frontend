@@ -4,16 +4,10 @@ import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  CloudUploadIcon,
-  Download01Icon,
-  File02Icon,
-  ViewIcon,
-  CancelCircleIcon,
-} from '@hugeicons/core-free-icons'
+import { CancelCircleIcon, CloudUploadIcon, Download01Icon, File02Icon, ViewIcon } from '@hugeicons/core-free-icons'
 
 import { useCustomerGroupsImport, useCustomerGroupsTemplateDownload } from '../api'
-import { customerGroupImportSchema, type CustomerGroupImportFormData } from '../schemas'
+import { type CustomerGroupImportFormData, customerGroupImportSchema } from '../schemas'
 import { CustomerGroupsCsvPreviewDialog } from './customer-groups-csv-preview-dialog'
 
 import { Button } from '@/components/ui/button'
@@ -35,13 +29,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import {
   FileUpload,
   FileUploadDropzone,
@@ -60,9 +48,9 @@ type CustomerGroupsImportDialogProps = {
 }
 
 export function CustomerGroupsImportDialog({
-  open,
-  onOpenChange,
-}: CustomerGroupsImportDialogProps) {
+                                             open,
+                                             onOpenChange,
+                                           }: CustomerGroupsImportDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: importCustomerGroups, isPending } = useCustomerGroupsImport()
   const { mutate: downloadTemplate, isPending: isDownloading } = useCustomerGroupsTemplateDownload()
@@ -171,7 +159,8 @@ export function CustomerGroupsImportDialog({
                 maxSize={5 * 1024 * 1024}
                 onFileReject={(_, msg) => form.setError('file', { message: msg })}
               >
-                <FileUploadDropzone className="flex-col items-center justify-center gap-2 border-dashed p-8 text-center">
+                <FileUploadDropzone
+                  className="flex-col items-center justify-center gap-2 border-dashed p-8 text-center">
                   <div className="flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
                     <HugeiconsIcon icon={CloudUploadIcon} className="size-5" />
                   </div>

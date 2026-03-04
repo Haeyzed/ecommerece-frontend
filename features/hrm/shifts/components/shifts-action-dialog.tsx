@@ -5,11 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 import { format } from 'date-fns'
 
-import {
-  useCreateShift,
-  useUpdateShift
-} from '@/features/hrm/shifts/api'
-import { shiftSchema, type ShiftFormData } from '@/features/hrm/shifts/schemas'
+import { useCreateShift, useUpdateShift } from '@/features/hrm/shifts/api'
+import { type ShiftFormData, shiftSchema } from '@/features/hrm/shifts/schemas'
 import { type Shift } from '../types'
 
 import { useMediaQuery } from '@/hooks/use-media-query'
@@ -33,51 +30,45 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Spinner } from '@/components/ui/spinner'
-import { TimePickerInput } from "@/components/time-picker-input"
-import { TimePeriodSelect } from "@/components/period-select"
-import { Period } from "@/lib/utils/time-picker-utils"
+import { TimePickerInput } from '@/components/time-picker-input'
+import { TimePeriodSelect } from '@/components/period-select'
+import { Period } from '@/lib/utils/time-picker-utils'
 import { Label } from '@/components/ui/label'
 
 function TimePickerWrapper({ value, onChange }: { value: string, onChange: (val: string) => void }) {
-  const [period, setPeriod] = React.useState<Period>("AM");
+  const [period, setPeriod] = React.useState<Period>('AM')
 
   const [date, setDate] = React.useState<Date | undefined>(() => {
-    if (!value) return undefined;
-    const [hours, minutes] = value.split(':').map(Number);
-    const d = new Date();
-    d.setHours(hours, minutes, 0, 0);
-    return d;
-  });
+    if (!value) return undefined
+    const [hours, minutes] = value.split(':').map(Number)
+    const d = new Date()
+    d.setHours(hours, minutes, 0, 0)
+    return d
+  })
 
   React.useEffect(() => {
     if (value) {
-      const [hours] = value.split(':').map(Number);
-      setPeriod(hours >= 12 ? "PM" : "AM");
+      const [hours] = value.split(':').map(Number)
+      setPeriod(hours >= 12 ? 'PM' : 'AM')
     }
-  }, [value]);
+  }, [value])
 
   const handleSetDate = (newDate: Date | undefined) => {
-    setDate(newDate);
+    setDate(newDate)
     if (newDate) {
-      onChange(format(newDate, 'HH:mm'));
+      onChange(format(newDate, 'HH:mm'))
     } else {
-      onChange('');
+      onChange('')
     }
-  };
+  }
 
-  const minuteRef = React.useRef<HTMLInputElement>(null);
-  const hourRef = React.useRef<HTMLInputElement>(null);
-  const periodRef = React.useRef<HTMLButtonElement>(null);
+  const minuteRef = React.useRef<HTMLInputElement>(null)
+  const hourRef = React.useRef<HTMLInputElement>(null)
+  const periodRef = React.useRef<HTMLButtonElement>(null)
 
   return (
     <div className="flex items-end gap-2">
@@ -124,7 +115,7 @@ function TimePickerWrapper({ value, onChange }: { value: string, onChange: (val:
         />
       </div>
     </div>
-  );
+  )
 }
 
 type ShiftsActionDialogProps = {
@@ -190,8 +181,8 @@ export function ShiftsActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>{isEdit ? 'Edit Shift' : 'Add New Shift'}</DialogTitle>
             <DialogDescription>
               {isEdit ? 'Update the shift details here. ' : 'Create a new shift here. '}
@@ -199,15 +190,15 @@ export function ShiftsActionDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
-            <ShiftForm form={form} onSubmit={onSubmit} id='shift-form' />
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
+            <ShiftForm form={form} onSubmit={onSubmit} id="shift-form" />
           </div>
 
           <DialogFooter>
-            <Button type='submit' form='shift-form' disabled={isLoading}>
+            <Button type="submit" form="shift-form" disabled={isLoading}>
               {isLoading ? (
                 <>
-                  <Spinner className='mr-2 size-4' />
+                  <Spinner className="mr-2 size-4" />
                   Saving...
                 </>
               ) : (
@@ -223,7 +214,7 @@ export function ShiftsActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>{isEdit ? 'Edit Shift' : 'Add New Shift'}</DrawerTitle>
           <DrawerDescription>
             {isEdit ? 'Update the shift details here. ' : 'Create a new shift here. '}
@@ -231,15 +222,15 @@ export function ShiftsActionDialog({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className='no-scrollbar overflow-y-auto px-4'>
-          <ShiftForm form={form} onSubmit={onSubmit} id='shift-form' />
+        <div className="no-scrollbar overflow-y-auto px-4">
+          <ShiftForm form={form} onSubmit={onSubmit} id="shift-form" />
         </div>
 
         <DrawerFooter>
-          <Button type='submit' form='shift-form' disabled={isLoading}>
+          <Button type="submit" form="shift-form" disabled={isLoading}>
             {isLoading ? (
               <>
-                <Spinner className='mr-2 size-4' />
+                <Spinner className="mr-2 size-4" />
                 Saving...
               </>
             ) : (
@@ -247,7 +238,7 @@ export function ShiftsActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -272,14 +263,14 @@ function ShiftForm({ form, onSubmit, id, className }: ShiftFormProps) {
       <FieldGroup>
         <Controller
           control={form.control}
-          name='name'
+          name="name"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='shift-name'>Shift Name <span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel htmlFor="shift-name">Shift Name <span className="text-destructive">*</span></FieldLabel>
               <Input
-                id='shift-name'
-                placeholder='e.g. Morning Shift'
-                autoComplete='off'
+                id="shift-name"
+                placeholder="e.g. Morning Shift"
+                autoComplete="off"
                 {...field}
               />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
@@ -287,101 +278,101 @@ function ShiftForm({ form, onSubmit, id, className }: ShiftFormProps) {
           )}
         />
 
-          <Controller
-            control={form.control}
-            name='start_time'
-            render={({ field, fieldState }) => (
-              <Field data-invalid={!!fieldState.error}>
-                <FieldLabel>Start Time <span className="text-destructive">*</span></FieldLabel>
-                <TimePickerWrapper value={field.value} onChange={field.onChange} />
-                {fieldState.error && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
-
-          <Controller
-            control={form.control}
-            name='end_time'
-            render={({ field, fieldState }) => (
-              <Field data-invalid={!!fieldState.error}>
-                <FieldLabel>End Time <span className="text-destructive">*</span></FieldLabel>
-                <TimePickerWrapper value={field.value} onChange={field.onChange} />
-                {fieldState.error && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
-
-          <Controller
-            control={form.control}
-            name='grace_in'
-            render={({ field, fieldState }) => (
-              <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='grace-in'>Grace In (mins) <span className="text-destructive">*</span></FieldLabel>
-                <Input
-                  id='grace-in'
-                  type="number"
-                  min={0}
-                  {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                />
-                {fieldState.error && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
-
-          <Controller
-            control={form.control}
-            name='grace_out'
-            render={({ field, fieldState }) => (
-              <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='grace-out'>Grace Out (mins) <span className="text-destructive">*</span></FieldLabel>
-                <Input
-                  id='grace-out'
-                  type="number"
-                  min={0}
-                  {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                />
-                {fieldState.error && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
-
-          <Controller
-            control={form.control}
-            name='total_hours'
-            render={({ field, fieldState }) => (
-              <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='total-hours'>Total Hours <span className="text-destructive">*</span></FieldLabel>
-                <Input
-                  id='total-hours'
-                  type="number"
-                  step="0.5"
-                  min={0}
-                  {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                />
-                {fieldState.error && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
+        <Controller
+          control={form.control}
+          name="start_time"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={!!fieldState.error}>
+              <FieldLabel>Start Time <span className="text-destructive">*</span></FieldLabel>
+              <TimePickerWrapper value={field.value} onChange={field.onChange} />
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
 
         <Controller
           control={form.control}
-          name='is_active'
+          name="end_time"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={!!fieldState.error}>
+              <FieldLabel>End Time <span className="text-destructive">*</span></FieldLabel>
+              <TimePickerWrapper value={field.value} onChange={field.onChange} />
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="grace_in"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={!!fieldState.error}>
+              <FieldLabel htmlFor="grace-in">Grace In (mins) <span className="text-destructive">*</span></FieldLabel>
+              <Input
+                id="grace-in"
+                type="number"
+                min={0}
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              />
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="grace_out"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={!!fieldState.error}>
+              <FieldLabel htmlFor="grace-out">Grace Out (mins) <span className="text-destructive">*</span></FieldLabel>
+              <Input
+                id="grace-out"
+                type="number"
+                min={0}
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              />
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="total_hours"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={!!fieldState.error}>
+              <FieldLabel htmlFor="total-hours">Total Hours <span className="text-destructive">*</span></FieldLabel>
+              <Input
+                id="total-hours"
+                type="number"
+                step="0.5"
+                min={0}
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              />
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="is_active"
           render={({ field, fieldState }) => (
             <Field
               data-invalid={!!fieldState.error}
-              className='flex flex-row items-center justify-between rounded-md border p-4'
+              className="flex flex-row items-center justify-between rounded-md border p-4"
             >
-              <div className='space-y-0.5'>
-                <FieldLabel htmlFor='shift-active'>Active Status</FieldLabel>
+              <div className="space-y-0.5">
+                <FieldLabel htmlFor="shift-active">Active Status</FieldLabel>
                 <FieldDescription>
                   Disabling this will hide the shift from the system.
                 </FieldDescription>
               </div>
               <Switch
-                id='shift-active'
+                id="shift-active"
                 checked={!!field.value}
                 onCheckedChange={field.onChange}
               />

@@ -1,33 +1,23 @@
 'use client'
 
-import {
-  DataTablePagination,
-  DataTableSkeleton,
-} from '@/components/data-table'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { DataTablePagination, DataTableSkeleton } from '@/components/data-table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useTableUrlState } from '@/hooks/use-table-url-state'
 import { cn } from '@/lib/utils'
 import {
-  type SortingState,
-  type VisibilityState,
+  type ColumnDef,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
+  type SortingState,
   useReactTable,
+  type VisibilityState,
 } from '@tanstack/react-table'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { useCustomerDueReport } from '@/features/reports/customer-due/api'
 import type { CustomerDueReportRow } from '@/features/reports/customer-due/types'
-import { type ColumnDef } from '@tanstack/react-table'
 import { customerDueReportColumns } from './customer-due-report-columns'
 import { CustomerDueReportToolbar } from './customer-due-report-toolbar'
 import { CustomerDueReportEmptyState } from './customer-due-report-empty-state'
@@ -124,15 +114,15 @@ export function CustomerDueReportTable() {
                     colSpan={header.colSpan}
                     className={cn(
                       'bg-background group-hover/row:bg-muted',
-                      (header.column.columnDef.meta as { thClassName?: string })?.thClassName
+                      (header.column.columnDef.meta as { thClassName?: string })?.thClassName,
                     )}
                   >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -151,7 +141,7 @@ export function CustomerDueReportTable() {
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

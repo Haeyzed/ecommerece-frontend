@@ -1,12 +1,13 @@
-import { mergeAttributes, Node } from "@tiptap/react"
-import { ReactNodeViewRenderer } from "@tiptap/react"
-import { ImageUploadNode as ImageUploadNodeComponent } from "@/components/tiptap-node/image-upload-node/image-upload-node"
-import type { NodeType } from "@tiptap/pm/model"
+import { mergeAttributes, Node, ReactNodeViewRenderer } from '@tiptap/react'
+import {
+  ImageUploadNode as ImageUploadNodeComponent,
+} from '@/components/tiptap-node/image-upload-node/image-upload-node'
+import type { NodeType } from '@tiptap/pm/model'
 
 export type UploadFunction = (
   file: File,
   onProgress?: (event: { progress: number }) => void,
-  abortSignal?: AbortSignal
+  abortSignal?: AbortSignal,
 ) => Promise<string>
 
 export interface ImageUploadNodeOptions {
@@ -51,7 +52,7 @@ export interface ImageUploadNodeOptions {
   HTMLAttributes: Record<string, any>
 }
 
-declare module "@tiptap/react" {
+declare module '@tiptap/react' {
   interface Commands<ReturnType> {
     imageUpload: {
       setImageUploadNode: (options?: ImageUploadNodeOptions) => ReturnType
@@ -64,9 +65,9 @@ declare module "@tiptap/react" {
  * @see registry/tiptap-node/image-upload-node/image-upload-node
  */
 export const ImageUploadNode = Node.create<ImageUploadNodeOptions>({
-  name: "imageUpload",
+  name: 'imageUpload',
 
-  group: "block",
+  group: 'block',
 
   draggable: true,
 
@@ -76,8 +77,8 @@ export const ImageUploadNode = Node.create<ImageUploadNodeOptions>({
 
   addOptions() {
     return {
-      type: "image",
-      accept: "image/*",
+      type: 'image',
+      accept: 'image/*',
       limit: 1,
       maxSize: 0,
       upload: undefined,
@@ -107,8 +108,8 @@ export const ImageUploadNode = Node.create<ImageUploadNodeOptions>({
 
   renderHTML({ HTMLAttributes }) {
     return [
-      "div",
-      mergeAttributes({ "data-type": "image-upload" }, HTMLAttributes),
+      'div',
+      mergeAttributes({ 'data-type': 'image-upload' }, HTMLAttributes),
     ]
   },
 
@@ -120,12 +121,12 @@ export const ImageUploadNode = Node.create<ImageUploadNodeOptions>({
     return {
       setImageUploadNode:
         (options) =>
-        ({ commands }) => {
-          return commands.insertContent({
-            type: this.name,
-            attrs: options,
-          })
-        },
+          ({ commands }) => {
+            return commands.insertContent({
+              type: this.name,
+              attrs: options,
+            })
+          },
     }
   },
 
@@ -140,8 +141,8 @@ export const ImageUploadNode = Node.create<ImageUploadNodeOptions>({
 
         if (
           nodeAfter &&
-          nodeAfter.type.name === "imageUpload" &&
-          editor.isActive("imageUpload")
+          nodeAfter.type.name === 'imageUpload' &&
+          editor.isActive('imageUpload')
         ) {
           const nodeEl = editor.view.nodeDOM(selection.$from.pos)
           if (nodeEl && nodeEl instanceof HTMLElement) {

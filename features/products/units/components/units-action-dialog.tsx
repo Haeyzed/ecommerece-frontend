@@ -2,14 +2,10 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
-import { useState, useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
-import {
-  useCreateUnit,
-  useUpdateUnit,
-  useBaseUnits
-} from '@/features/products/units/api'
-import { unitSchema, type UnitFormData } from '@/features/products/units/schemas'
+import { useBaseUnits, useCreateUnit, useUpdateUnit } from '@/features/products/units/api'
+import { type UnitFormData, unitSchema } from '@/features/products/units/schemas'
 import { type Unit, type UnitOption } from '../types'
 
 import { useMediaQuery } from '@/hooks/use-media-query'
@@ -33,21 +29,9 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Spinner } from '@/components/ui/spinner'
 import {
@@ -57,7 +41,7 @@ import {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-} from "@/components/ui/combobox"
+} from '@/components/ui/combobox'
 
 type UnitActionDialogProps = {
   currentRow?: Unit
@@ -66,16 +50,16 @@ type UnitActionDialogProps = {
 }
 
 export function UnitsActionDialog({
-  currentRow,
-  open,
-  onOpenChange,
-}: UnitActionDialogProps) {
+                                    currentRow,
+                                    open,
+                                    onOpenChange,
+                                  }: UnitActionDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const isEdit = !!currentRow
   const { mutate: createUnit, isPending: isCreating } = useCreateUnit()
   const { mutate: updateUnit, isPending: isUpdating } = useUpdateUnit()
   const { data: baseUnits = [], isLoading: isLoadingBaseUnits } = useBaseUnits()
-  
+
   const isLoading = isCreating || isUpdating
 
   const form = useForm<UnitFormData>({
@@ -122,8 +106,8 @@ export function UnitsActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange} modal={false}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>{isEdit ? 'Edit Unit' : 'Add New Unit'}</DialogTitle>
             <DialogDescription>
               {isEdit ? 'Update the unit details here. ' : 'Create a new unit here. '}
@@ -131,11 +115,11 @@ export function UnitsActionDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
             <UnitForm
               form={form}
               onSubmit={onSubmit}
-              id='unit-form'
+              id="unit-form"
               baseUnits={baseUnits}
               isLoadingBaseUnits={isLoadingBaseUnits}
               isEdit={isEdit}
@@ -144,7 +128,7 @@ export function UnitsActionDialog({
           </div>
 
           <DialogFooter>
-            <Button type='submit' form='unit-form' disabled={isLoading}>
+            <Button type="submit" form="unit-form" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Spinner className="mr-2 size-4" />
@@ -163,7 +147,7 @@ export function UnitsActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>{isEdit ? 'Edit Unit' : 'Add New Unit'}</DrawerTitle>
           <DrawerDescription>
             {isEdit ? 'Update the unit details here. ' : 'Create a new unit here. '}
@@ -171,11 +155,11 @@ export function UnitsActionDialog({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className='no-scrollbar overflow-y-auto px-4'>
+        <div className="no-scrollbar overflow-y-auto px-4">
           <UnitForm
             form={form}
             onSubmit={onSubmit}
-            id='unit-form'
+            id="unit-form"
             baseUnits={baseUnits}
             isLoadingBaseUnits={isLoadingBaseUnits}
             isEdit={isEdit}
@@ -184,7 +168,7 @@ export function UnitsActionDialog({
         </div>
 
         <DrawerFooter>
-          <Button type='submit' form='unit-form' disabled={isLoading}>
+          <Button type="submit" form="unit-form" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Spinner className="mr-2 size-4" />
@@ -195,7 +179,7 @@ export function UnitsActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -214,16 +198,16 @@ interface UnitFormProps {
   currentRow?: Unit
 }
 
-function UnitForm({ 
-  form, 
-  onSubmit, 
-  id, 
-  className, 
-  baseUnits, 
-  isLoadingBaseUnits,
-  isEdit, 
-  currentRow 
-}: UnitFormProps) {
+function UnitForm({
+                    form,
+                    onSubmit,
+                    id,
+                    className,
+                    baseUnits,
+                    isLoadingBaseUnits,
+                    isEdit,
+                    currentRow,
+                  }: UnitFormProps) {
   const [openCombobox, setOpenCombobox] = useState(false)
   const availableBaseUnits = useMemo(() => {
     return baseUnits.filter(u => !isEdit || u.value !== currentRow?.id)
@@ -239,9 +223,9 @@ function UnitForm({
   const operator = form.watch('operator')
   const operationValue = form.watch('operation_value')
 
-  const selectedBaseUnitForPreview = useMemo(() => 
-    unitItems.find(u => u.id === baseUnitId),
-    [unitItems, baseUnitId]
+  const selectedBaseUnitForPreview = useMemo(() =>
+      unitItems.find(u => u.id === baseUnitId),
+    [unitItems, baseUnitId],
   )
 
   return (
@@ -253,14 +237,14 @@ function UnitForm({
       <FieldGroup>
         <Controller
           control={form.control}
-          name='name'
+          name="name"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='unit-name'>Name <span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel htmlFor="unit-name">Name <span className="text-destructive">*</span></FieldLabel>
               <Input
-                id='unit-name'
-                placeholder='Unit name (e.g. Kilogram)'
-                autoComplete='off'
+                id="unit-name"
+                placeholder="Unit name (e.g. Kilogram)"
+                autoComplete="off"
                 {...field}
               />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
@@ -270,14 +254,14 @@ function UnitForm({
 
         <Controller
           control={form.control}
-          name='code'
+          name="code"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='unit-code'>Code <span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel htmlFor="unit-code">Code <span className="text-destructive">*</span></FieldLabel>
               <Input
-                id='unit-code'
-                placeholder='Short code (e.g. kg)'
-                autoComplete='off'
+                id="unit-code"
+                placeholder="Short code (e.g. kg)"
+                autoComplete="off"
                 {...field}
               />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
@@ -287,13 +271,13 @@ function UnitForm({
 
         <Controller
           control={form.control}
-          name='base_unit'
+          name="base_unit"
           render={({ field, fieldState }) => {
             const selectedUnit = unitItems.find((unit) => unit.id === field.value)
 
             return (
               <Field data-invalid={!!fieldState.error} className="flex flex-col">
-                <FieldLabel htmlFor='unit-base-unit'>Base Unit</FieldLabel>
+                <FieldLabel htmlFor="unit-base-unit">Base Unit</FieldLabel>
                 <Combobox
                   items={unitItems}
                   value={selectedUnit || null}
@@ -310,9 +294,9 @@ function UnitForm({
                   itemToStringValue={(item) => String(item.id)}
                 >
                   <ComboboxInput
-                    id='unit-base-unit'
-                    placeholder='Select base unit (optional)'
-                    autoComplete='off'
+                    id="unit-base-unit"
+                    placeholder="Select base unit (optional)"
+                    autoComplete="off"
                     showClear
                     value={selectedUnit ? selectedUnit.label : ''}
                     data-invalid={!!fieldState.error}
@@ -326,7 +310,7 @@ function UnitForm({
                           Loading units...
                         </div>
                       )}
-                      
+
                       {!isLoadingBaseUnits && unitItems.map((item) => (
                         <ComboboxItem key={item.id} value={item}>
                           {item.label}
@@ -342,15 +326,15 @@ function UnitForm({
           }}
         />
 
-        {form.watch("base_unit") && (
+        {form.watch('base_unit') && (
           <>
             <div className="grid gap-4 sm:grid-cols-2">
               <Controller
                 control={form.control}
-                name='operator'
+                name="operator"
                 render={({ field, fieldState }) => (
                   <Field data-invalid={!!fieldState.error}>
-                    <FieldLabel htmlFor='operator'>Operator</FieldLabel>
+                    <FieldLabel htmlFor="operator">Operator</FieldLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value || undefined}
@@ -374,20 +358,20 @@ function UnitForm({
 
               <Controller
                 control={form.control}
-                name='operation_value'
+                name="operation_value"
                 render={({ field, fieldState }) => (
                   <Field data-invalid={!!fieldState.error}>
-                    <FieldLabel htmlFor='operation-value'>Operation Value</FieldLabel>
+                    <FieldLabel htmlFor="operation-value">Operation Value</FieldLabel>
                     <Input
-                      id='operation-value'
+                      id="operation-value"
                       type="number"
                       step="0.001"
-                      placeholder='e.g. 1000'
-                      autoComplete='off'
+                      placeholder="e.g. 1000"
+                      autoComplete="off"
                       {...field}
                       value={field.value ?? ''}
                       onChange={(e) => {
-                        const val = e.target.value;
+                        const val = e.target.value
                         field.onChange(val === '' ? null : Number(val))
                       }}
                     />
@@ -396,12 +380,14 @@ function UnitForm({
                   </Field>
                 )}
               />
-            </div><div className="rounded-md border bg-muted/50 p-3 text-sm text-muted-foreground">
+            </div>
+            <div className="rounded-md border bg-muted/50 p-3 text-sm text-muted-foreground">
               {name && operator && operationValue && selectedBaseUnitForPreview && (
                 <div className="mb-3 border-b border-border/50 pb-3 text-foreground">
                   <div className="font-semibold mb-1">Preview:</div>
                   <div className="font-mono bg-background px-2 py-1 rounded border inline-block">
-                    1 {name} = 1 <span className="text-primary font-bold">{operator}</span> {operationValue} {selectedBaseUnitForPreview.label}
+                    1 {name} = 1 <span
+                    className="text-primary font-bold">{operator}</span> {operationValue} {selectedBaseUnitForPreview.label}
                   </div>
                 </div>
               )}
@@ -419,20 +405,20 @@ function UnitForm({
 
         <Controller
           control={form.control}
-          name='is_active'
+          name="is_active"
           render={({ field, fieldState }) => (
             <Field
               data-invalid={!!fieldState.error}
-              className='flex flex-row items-center justify-between rounded-md border p-4'
+              className="flex flex-row items-center justify-between rounded-md border p-4"
             >
-              <div className='space-y-0.5'>
-                <FieldLabel htmlFor='unit-active'>Active Status</FieldLabel>
+              <div className="space-y-0.5">
+                <FieldLabel htmlFor="unit-active">Active Status</FieldLabel>
                 <FieldDescription>
                   Disabling this will hide the unit from selection.
                 </FieldDescription>
               </div>
               <Switch
-                id='unit-active'
+                id="unit-active"
                 checked={!!field.value}
                 onCheckedChange={field.onChange}
               />

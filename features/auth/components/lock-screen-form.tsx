@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 /**
  * LockScreenForm
@@ -12,21 +12,21 @@
  * @param {string} [props.className] - Optional CSS class names
  */
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { LockKeyIcon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { useRouter, useSearchParams } from "next/navigation"
-import { Controller, useForm } from "react-hook-form"
-import { toast } from "sonner"
+import { zodResolver } from '@hookform/resolvers/zod'
+import { LockKeyIcon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Controller, useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 
-import { PasswordInput } from "@/components/password-input"
-import { Button } from "@/components/ui/button"
-import { Field, FieldError, FieldLabel } from "@/components/ui/field"
-import { Spinner } from "@/components/ui/spinner"
-import { useUnlock } from "@/features/auth/api"
-import { UnauthorizedError, ValidationError } from "@/lib/api/api-errors"
-import { useLockScreen } from "@/lib/providers/lockscreen-provider"
-import { LockScreenFormData, lockScreenSchema } from "../schemas"
+import { PasswordInput } from '@/components/password-input'
+import { Button } from '@/components/ui/button'
+import { Field, FieldError, FieldLabel } from '@/components/ui/field'
+import { Spinner } from '@/components/ui/spinner'
+import { useUnlock } from '@/features/auth/api'
+import { UnauthorizedError, ValidationError } from '@/lib/api/api-errors'
+import { useLockScreen } from '@/lib/providers/lockscreen-provider'
+import { LockScreenFormData, lockScreenSchema } from '../schemas'
 
 export function LockScreenForm() {
   const router = useRouter()
@@ -36,39 +36,39 @@ export function LockScreenForm() {
 
   const form = useForm<LockScreenFormData>({
     resolver: zodResolver(lockScreenSchema),
-    defaultValues: { password: "" },
+    defaultValues: { password: '' },
   })
 
   const onSubmit = async (data: LockScreenFormData) => {
     try {
       await unlockMutation.mutateAsync({ password: data.password })
       setLocked(false)
-      toast.success("Unlocked successfully")
-      
+      toast.success('Unlocked successfully')
+
       // Check for returnUrl in query params
       const returnUrl = searchParams.get('returnUrl')
       if (returnUrl) {
         router.replace(returnUrl)
       } else {
-        router.replace("/dashboard")
+        router.replace('/dashboard')
       }
-      
+
     } catch (error) {
       if (error instanceof ValidationError && error.errors) {
         // Handle server-side validation errors (e.g., incorrect password)
         Object.entries(error.errors).forEach(([field, messages]) => {
           form.setError(field as keyof LockScreenFormData, {
-            type: "server",
+            type: 'server',
             message: messages[0],
-          });
-        });
+          })
+        })
       } else if (error instanceof UnauthorizedError) {
         // If session is completely dead/invalid, force a full login
         setLocked(false)
-        router.push("/login")
+        router.push('/login')
       } else {
         // Fallback for generic errors
-        toast.error(error instanceof Error ? error.message : "Unlock failed")
+        toast.error(error instanceof Error ? error.message : 'Unlock failed')
       }
     }
   }

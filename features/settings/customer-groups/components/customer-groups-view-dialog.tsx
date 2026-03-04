@@ -2,13 +2,7 @@
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import {
   Drawer,
   DrawerClose,
@@ -22,10 +16,7 @@ import { Separator } from '@/components/ui/separator'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { cn } from '@/lib/utils'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  CheckmarkCircle02Icon,
-  MultiplicationSignIcon,
-} from '@hugeicons/core-free-icons'
+import { CheckmarkCircle02Icon, MultiplicationSignIcon } from '@hugeicons/core-free-icons'
 import { statusTypes } from '../constants'
 import type { CustomerGroup } from '../types'
 
@@ -36,10 +27,10 @@ type CustomerGroupsViewDialogProps = {
 }
 
 export function CustomerGroupsViewDialog({
-  currentRow,
-  open,
-  onOpenChange,
-}: CustomerGroupsViewDialogProps) {
+                                           currentRow,
+                                           open,
+                                           onOpenChange,
+                                         }: CustomerGroupsViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   if (!currentRow) return null
 

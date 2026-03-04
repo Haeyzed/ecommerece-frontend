@@ -11,9 +11,8 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { Spinner } from '@/components/ui/spinner'
 import { useCreateSupplier } from '../api'
-import { supplierSchema, type SupplierFormData } from '../schemas'
+import { type SupplierFormData, supplierSchema } from '../schemas'
 import { SupplierForm } from './supplier-form'
 
 const defaultValues: Partial<SupplierFormData> = {

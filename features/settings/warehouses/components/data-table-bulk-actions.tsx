@@ -2,24 +2,12 @@
 
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  CheckmarkCircle02Icon,
-  Delete02Icon,
-  UnavailableIcon,
-  Upload01Icon,
-} from '@hugeicons/core-free-icons'
+import { CheckmarkCircle02Icon, Delete02Icon, UnavailableIcon, Upload01Icon } from '@hugeicons/core-free-icons'
 import { type Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
-import {
-  useBulkActivateWarehouses,
-  useBulkDeactivateWarehouses
-} from '../api'
+import { useBulkActivateWarehouses, useBulkDeactivateWarehouses } from '../api'
 import { type Warehouse } from '../types'
 import { WarehousesExportDialog } from './warehouses-export-dialog'
 import { WarehousesMultiDeleteDialog } from './warehouses-multi-delete-dialog'
@@ -66,26 +54,26 @@ export function DataTableBulkActions<TData>({
 
   return (
     <>
-      <BulkActionsToolbar table={table} entityName='warehouse'>
+      <BulkActionsToolbar table={table} entityName="warehouse">
         {canUpdate && (
           <>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant='outline'
-                  size='icon'
+                  variant="outline"
+                  size="icon"
                   onClick={() => handleBulkStatusChange('active')}
                   disabled={isBusy}
-                  className='size-8'
-                  aria-label='Activate selected warehouses'
-                  title='Activate selected warehouses'
+                  className="size-8"
+                  aria-label="Activate selected warehouses"
+                  title="Activate selected warehouses"
                 >
                   {isActivating ? (
-                    <Spinner className='size-4' />
+                    <Spinner className="size-4" />
                   ) : (
                     <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
                   )}
-                  <span className='sr-only'>Activate selected warehouses</span>
+                  <span className="sr-only">Activate selected warehouses</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -96,20 +84,20 @@ export function DataTableBulkActions<TData>({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant='outline'
-                  size='icon'
+                  variant="outline"
+                  size="icon"
                   onClick={() => handleBulkStatusChange('inactive')}
                   disabled={isBusy}
-                  className='size-8'
-                  aria-label='Deactivate selected warehouses'
-                  title='Deactivate selected warehouses'
+                  className="size-8"
+                  aria-label="Deactivate selected warehouses"
+                  title="Deactivate selected warehouses"
                 >
                   {isDeactivating ? (
-                    <Spinner className='size-4' />
+                    <Spinner className="size-4" />
                   ) : (
                     <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
                   )}
-                  <span className='sr-only'>Deactivate selected warehouses</span>
+                  <span className="sr-only">Deactivate selected warehouses</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -123,16 +111,16 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant='outline'
-                size='icon'
+                variant="outline"
+                size="icon"
                 onClick={() => setShowExportDialog(true)}
                 disabled={isBusy}
-                className='size-8'
-                aria-label='Export selected warehouses'
-                title='Export selected warehouses'
+                className="size-8"
+                aria-label="Export selected warehouses"
+                title="Export selected warehouses"
               >
                 <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} />
-                <span className='sr-only'>Export selected warehouses</span>
+                <span className="sr-only">Export selected warehouses</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
@@ -145,16 +133,16 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant='destructive'
-                size='icon'
+                variant="destructive"
+                size="icon"
                 onClick={() => setShowDeleteConfirm(true)}
                 disabled={isBusy}
-                className='size-8'
-                aria-label='Delete selected warehouses'
-                title='Delete selected warehouses'
+                className="size-8"
+                aria-label="Delete selected warehouses"
+                title="Delete selected warehouses"
               >
                 <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} />
-                <span className='sr-only'>Delete selected warehouses</span>
+                <span className="sr-only">Delete selected warehouses</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>

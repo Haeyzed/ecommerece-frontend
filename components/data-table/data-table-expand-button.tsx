@@ -18,10 +18,10 @@ type DataTableExpandButtonProps<TData> = {
  * the icon rotates to indicate state.
  */
 export function DataTableExpandButton<TData>({
-  row,
-  canExpand = true,
-  className,
-}: DataTableExpandButtonProps<TData>) {
+                                               row,
+                                               canExpand = true,
+                                               className,
+                                             }: DataTableExpandButtonProps<TData>) {
   if (!canExpand) return null
 
   return (

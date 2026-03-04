@@ -1,16 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import {
-  format,
-  subDays,
-  startOfMonth,
-  endOfMonth,
-  subMonths,
-  startOfYear,
-  endOfYear,
-  isSameDay
-} from 'date-fns'
+import { endOfMonth, endOfYear, format, isSameDay, startOfMonth, startOfYear, subDays, subMonths } from 'date-fns'
 import { type DateRange } from 'react-day-picker'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { CalendarIcon } from '@hugeicons/core-free-icons'
@@ -33,10 +24,10 @@ interface DateRangePickerProps {
 export function DateRangePicker({
                                   value,
                                   onChange,
-                                  placeholder = "Pick a date range",
+                                  placeholder = 'Pick a date range',
                                   disabled,
                                   error,
-                                  className
+                                  className,
                                 }: DateRangePickerProps) {
   const [isOpen, setIsOpen] = React.useState(false)
   const isDesktop = useMediaQuery('(min-width: 768px)')
@@ -44,33 +35,33 @@ export function DateRangePicker({
   const today = new Date()
   const presets = [
     {
-      label: "Today",
-      range: { from: today, to: today }
+      label: 'Today',
+      range: { from: today, to: today },
     },
     {
-      label: "Yesterday",
-      range: { from: subDays(today, 1), to: subDays(today, 1) }
+      label: 'Yesterday',
+      range: { from: subDays(today, 1), to: subDays(today, 1) },
     },
     {
-      label: "Last 7 days",
-      range: { from: subDays(today, 6), to: today }
+      label: 'Last 7 days',
+      range: { from: subDays(today, 6), to: today },
     },
     {
-      label: "Last 30 days",
-      range: { from: subDays(today, 29), to: today }
+      label: 'Last 30 days',
+      range: { from: subDays(today, 29), to: today },
     },
     {
-      label: "This Month",
-      range: { from: startOfMonth(today), to: endOfMonth(today) }
+      label: 'This Month',
+      range: { from: startOfMonth(today), to: endOfMonth(today) },
     },
     {
-      label: "Last Month",
-      range: { from: startOfMonth(subMonths(today, 1)), to: endOfMonth(subMonths(today, 1)) }
+      label: 'Last Month',
+      range: { from: startOfMonth(subMonths(today, 1)), to: endOfMonth(subMonths(today, 1)) },
     },
     {
-      label: "This Year",
-      range: { from: startOfYear(today), to: endOfYear(today) }
-    }
+      label: 'This Year',
+      range: { from: startOfYear(today), to: endOfYear(today) },
+    },
   ]
 
   const handlePresetClick = (range: DateRange) => {
@@ -80,8 +71,8 @@ export function DateRangePicker({
 
   // Helper to check if a preset is currently selected
   const checkIsActive = (presetRange: DateRange) => {
-    if (!value?.from || !value?.to || !presetRange.from || !presetRange.to) return false;
-    return isSameDay(value.from, presetRange.from) && isSameDay(value.to, presetRange.to);
+    if (!value?.from || !value?.to || !presetRange.from || !presetRange.to) return false
+    return isSameDay(value.from, presetRange.from) && isSameDay(value.to, presetRange.to)
   }
 
   return (
@@ -92,10 +83,10 @@ export function DateRangePicker({
           variant="outline"
           disabled={disabled}
           className={cn(
-            "justify-start text-left font-normal px-2.5",
-            !value && "text-muted-foreground",
-            error && "border-destructive",
-            className
+            'justify-start text-left font-normal px-2.5',
+            !value && 'text-muted-foreground',
+            error && 'border-destructive',
+            className,
           )}
         >
           <HugeiconsIcon
@@ -132,12 +123,12 @@ export function DateRangePicker({
               return (
                 <Button
                   key={preset.label}
-                  variant={isActive ? "default" : "ghost"}
+                  variant={isActive ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => handlePresetClick(preset.range)}
                   className={cn(
-                    "justify-start font-normal transition-all",
-                    isActive && "font-medium"
+                    'justify-start font-normal transition-all',
+                    isActive && 'font-medium',
                   )}
                 >
                   {preset.label}

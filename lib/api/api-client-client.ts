@@ -8,10 +8,10 @@
  * @module lib/api/api-client-client
  */
 
-import { useSession } from "next-auth/react";
-import { api } from "./api-client";
-import type { ApiClientOptions, ApiRequestOptions } from "./api-client";
-import type { NormalizedApiResponse } from "./api-types";
+import { useSession } from 'next-auth/react'
+import type { ApiClientOptions, ApiRequestOptions } from './api-client'
+import { api } from './api-client'
+import type { NormalizedApiResponse } from './api-types'
 
 /**
  * Return type definition for the `useApiClient` hook.
@@ -33,7 +33,7 @@ export interface UseApiClientReturn {
      */
     get: <T>(
       url: string,
-      options?: ApiRequestOptions
+      options?: ApiRequestOptions,
     ) => Promise<NormalizedApiResponse<T>>;
 
     /**
@@ -48,7 +48,7 @@ export interface UseApiClientReturn {
     post: <T>(
       url: string,
       body?: unknown,
-      options?: ApiClientOptions
+      options?: ApiClientOptions,
     ) => Promise<NormalizedApiResponse<T>>;
 
     /**
@@ -63,7 +63,7 @@ export interface UseApiClientReturn {
     put: <T>(
       url: string,
       body?: unknown,
-      options?: ApiClientOptions
+      options?: ApiClientOptions,
     ) => Promise<NormalizedApiResponse<T>>;
 
     /**
@@ -78,7 +78,7 @@ export interface UseApiClientReturn {
     patch: <T>(
       url: string,
       body?: unknown,
-      options?: ApiClientOptions
+      options?: ApiClientOptions,
     ) => Promise<NormalizedApiResponse<T>>;
 
     /**
@@ -91,7 +91,7 @@ export interface UseApiClientReturn {
      */
     delete: <T>(
       url: string,
-      options?: ApiClientOptions
+      options?: ApiClientOptions,
     ) => Promise<NormalizedApiResponse<T>>;
 
     /**
@@ -101,7 +101,7 @@ export interface UseApiClientReturn {
     postBlob: (
       url: string,
       body?: unknown,
-      options?: ApiClientOptions
+      options?: ApiClientOptions,
     ) => Promise<Blob>;
 
     /**
@@ -110,7 +110,7 @@ export interface UseApiClientReturn {
      */
     getBlob: (
       url: string,
-      options?: ApiRequestOptions
+      options?: ApiRequestOptions,
     ) => Promise<Blob>;
   };
 
@@ -121,7 +121,7 @@ export interface UseApiClientReturn {
    * - `authenticated`: User is logged in and token is available.
    * - `unauthenticated`: User is not logged in.
    */
-  sessionStatus: "loading" | "authenticated" | "unauthenticated";
+  sessionStatus: 'loading' | 'authenticated' | 'unauthenticated';
 }
 
 /**
@@ -150,7 +150,7 @@ export interface UseApiClientReturn {
  * ```
  */
 export function useApiClient(): UseApiClientReturn {
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSession()
 
   /**
    * Constructs the request headers, injecting the Authorization token
@@ -159,12 +159,12 @@ export function useApiClient(): UseApiClientReturn {
    * @returns {HeadersInit} Headers object containing the Bearer token.
    */
   const getHeaders = (): HeadersInit => {
-    const headers: HeadersInit = {};
+    const headers: HeadersInit = {}
     if (session?.user?.token) {
-      headers.Authorization = `Bearer ${session.user.token}`;
+      headers.Authorization = `Bearer ${session.user.token}`
     }
-    return headers;
-  };
+    return headers
+  }
 
   /**
    * Session-aware API method wrappers.
@@ -173,7 +173,7 @@ export function useApiClient(): UseApiClientReturn {
   const apiMethods = {
     get: async <T>(
       url: string,
-      options?: ApiRequestOptions
+      options?: ApiRequestOptions,
     ): Promise<NormalizedApiResponse<T>> => {
       return api.get<T>(url, {
         ...options,
@@ -182,31 +182,31 @@ export function useApiClient(): UseApiClientReturn {
           ...options?.headers,
         },
         skipAuth: true,
-      });
+      })
     },
 
     post: async <T>(
       url: string,
       body?: unknown,
-      options?: ApiClientOptions
+      options?: ApiClientOptions,
     ): Promise<NormalizedApiResponse<T>> => {
       // Preserve automatic Content-Type for FormData, otherwise merge headers
       const headers =
         body instanceof FormData
           ? getHeaders()
-          : { ...getHeaders(), ...options?.headers };
+          : { ...getHeaders(), ...options?.headers }
 
       return api.post<T>(url, body, {
         ...options,
         headers,
         skipAuth: true,
-      });
+      })
     },
 
     put: async <T>(
       url: string,
       body?: unknown,
-      options?: ApiClientOptions
+      options?: ApiClientOptions,
     ): Promise<NormalizedApiResponse<T>> => {
       return api.put<T>(url, body, {
         ...options,
@@ -215,13 +215,13 @@ export function useApiClient(): UseApiClientReturn {
           ...options?.headers,
         },
         skipAuth: true,
-      });
+      })
     },
 
     patch: async <T>(
       url: string,
       body?: unknown,
-      options?: ApiClientOptions
+      options?: ApiClientOptions,
     ): Promise<NormalizedApiResponse<T>> => {
       return api.patch<T>(url, body, {
         ...options,
@@ -230,12 +230,12 @@ export function useApiClient(): UseApiClientReturn {
           ...options?.headers,
         },
         skipAuth: true,
-      });
+      })
     },
 
     delete: async <T>(
       url: string,
-      options?: ApiClientOptions
+      options?: ApiClientOptions,
     ): Promise<NormalizedApiResponse<T>> => {
       return api.delete<T>(url, {
         ...options,
@@ -244,7 +244,7 @@ export function useApiClient(): UseApiClientReturn {
           ...options?.headers,
         },
         skipAuth: true,
-      });
+      })
     },
 
     /**
@@ -254,18 +254,18 @@ export function useApiClient(): UseApiClientReturn {
     postBlob: async (
       url: string,
       body?: unknown,
-      options?: ApiClientOptions
+      options?: ApiClientOptions,
     ): Promise<Blob> => {
       const headers =
         body instanceof FormData
           ? getHeaders()
-          : { ...getHeaders(), ...options?.headers };
+          : { ...getHeaders(), ...options?.headers }
 
       return api.postBlob(url, body, {
         ...options,
         headers,
         skipAuth: true,
-      });
+      })
     },
 
     /**
@@ -274,7 +274,7 @@ export function useApiClient(): UseApiClientReturn {
      */
     getBlob: async (
       url: string,
-      options?: ApiRequestOptions
+      options?: ApiRequestOptions,
     ): Promise<Blob> => {
       return api.getBlob(url, {
         ...options,
@@ -283,9 +283,9 @@ export function useApiClient(): UseApiClientReturn {
           ...options?.headers,
         },
         skipAuth: true,
-      });
+      })
     },
-  };
+  }
 
-  return { api: apiMethods, sessionStatus: status };
+  return { api: apiMethods, sessionStatus: status }
 }

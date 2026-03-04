@@ -1,7 +1,7 @@
-import { useTheme } from "@/lib/providers/theme-provider"
-import { cn } from "@/lib/utils"
-import { ImageZoom } from "@/components/ui/image-zoom"
-import Image from "next/image"
+import { useTheme } from '@/lib/providers/theme-provider'
+import { cn } from '@/lib/utils'
+import { ImageZoom } from '@/components/ui/image-zoom'
+import Image from 'next/image'
 
 function ImageZoomCell({ src, alt }: { src: string; alt: string }) {
   const { resolvedTheme } = useTheme()
@@ -10,7 +10,7 @@ function ImageZoomCell({ src, alt }: { src: string; alt: string }) {
       backdropClassName={cn(
         resolvedTheme === 'dark'
           ? '[&_[data-rmiz-modal-overlay="visible"]]:bg-white/80'
-          : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80'
+          : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80',
       )}
     >
       <Image
@@ -18,7 +18,7 @@ function ImageZoomCell({ src, alt }: { src: string; alt: string }) {
         alt={alt}
         width={40}
         height={40}
-        className='size-10 rounded-md object-cover'
+        className="size-10 rounded-md object-cover"
         unoptimized
       />
     </ImageZoom>
@@ -32,7 +32,7 @@ function ImageZoomView({ src, alt }: { src: string; alt: string }) {
       backdropClassName={cn(
         resolvedTheme === 'dark'
           ? '[&_[data-rmiz-modal-overlay="visible"]]:bg-white/80'
-          : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80'
+          : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80',
       )}
     >
       <Image
@@ -40,7 +40,7 @@ function ImageZoomView({ src, alt }: { src: string; alt: string }) {
         alt={alt}
         width={40}
         height={40}
-        className='size-10 rounded-md object-cover'
+        className="size-10 rounded-md object-cover"
         unoptimized
       />
     </ImageZoom>

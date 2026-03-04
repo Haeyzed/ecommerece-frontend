@@ -3,11 +3,8 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 
-import {
-  useCreateDepartment,
-  useUpdateDepartment
-} from '@/features/hrm/departments/api'
-import { departmentSchema, type DepartmentFormData } from '@/features/hrm/departments/schemas'
+import { useCreateDepartment, useUpdateDepartment } from '@/features/hrm/departments/api'
+import { type DepartmentFormData, departmentSchema } from '@/features/hrm/departments/schemas'
 import { type Department } from '../types'
 
 import { useMediaQuery } from '@/hooks/use-media-query'
@@ -31,13 +28,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Spinner } from '@/components/ui/spinner'
@@ -49,10 +40,10 @@ type DepartmentsActionDialogProps = {
 }
 
 export function DepartmentsActionDialog({
-  currentRow,
-  open,
-  onOpenChange,
-}: DepartmentsActionDialogProps) {
+                                          currentRow,
+                                          open,
+                                          onOpenChange,
+                                        }: DepartmentsActionDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const isEdit = !!currentRow
   const { mutate: createDepartment, isPending: isCreating } = useCreateDepartment()
@@ -95,8 +86,8 @@ export function DepartmentsActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>{isEdit ? 'Edit Department' : 'Add New Department'}</DialogTitle>
             <DialogDescription>
               {isEdit ? 'Update the department details here. ' : 'Create a new department here. '}
@@ -104,16 +95,16 @@ export function DepartmentsActionDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
             <DepartmentForm
               form={form}
               onSubmit={onSubmit}
-              id='department-form'
+              id="department-form"
             />
           </div>
 
           <DialogFooter>
-            <Button type='submit' form='department-form' disabled={isLoading}>
+            <Button type="submit" form="department-form" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Spinner className="mr-2 size-4" />
@@ -132,7 +123,7 @@ export function DepartmentsActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>{isEdit ? 'Edit Department' : 'Add New Department'}</DrawerTitle>
           <DrawerDescription>
             {isEdit ? 'Update the department details here. ' : 'Create a new department here. '}
@@ -140,16 +131,16 @@ export function DepartmentsActionDialog({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className='no-scrollbar overflow-y-auto px-4'>
+        <div className="no-scrollbar overflow-y-auto px-4">
           <DepartmentForm
             form={form}
             onSubmit={onSubmit}
-            id='department-form'
+            id="department-form"
           />
         </div>
 
         <DrawerFooter>
-          <Button type='submit' form='department-form' disabled={isLoading}>
+          <Button type="submit" form="department-form" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Spinner className="mr-2 size-4" />
@@ -160,7 +151,7 @@ export function DepartmentsActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -185,14 +176,14 @@ function DepartmentForm({ form, onSubmit, id, className }: DepartmentFormProps) 
       <FieldGroup>
         <Controller
           control={form.control}
-          name='name'
+          name="name"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='department-name'>Name <span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel htmlFor="department-name">Name <span className="text-destructive">*</span></FieldLabel>
               <Input
-                id='department-name'
-                placeholder='e.g. Accounting'
-                autoComplete='off'
+                id="department-name"
+                placeholder="e.g. Accounting"
+                autoComplete="off"
                 {...field}
               />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
@@ -202,20 +193,20 @@ function DepartmentForm({ form, onSubmit, id, className }: DepartmentFormProps) 
 
         <Controller
           control={form.control}
-          name='is_active'
+          name="is_active"
           render={({ field, fieldState }) => (
             <Field
               data-invalid={!!fieldState.error}
-              className='flex flex-row items-center justify-between rounded-md border p-4'
+              className="flex flex-row items-center justify-between rounded-md border p-4"
             >
-              <div className='space-y-0.5'>
-                <FieldLabel htmlFor='department-active'>Active Status</FieldLabel>
+              <div className="space-y-0.5">
+                <FieldLabel htmlFor="department-active">Active Status</FieldLabel>
                 <FieldDescription>
                   Disabling this will hide the department from the system.
                 </FieldDescription>
               </div>
               <Switch
-                id='department-active'
+                id="department-active"
                 checked={!!field.value}
                 onCheckedChange={field.onChange}
               />

@@ -19,7 +19,7 @@ export interface Category {
   created_at: string | null;
   updated_at: string | null;
   deleted_at: string | null;
-  parent?: Pick<Category, "id" | "name"> | null;
+  parent?: Pick<Category, 'id' | 'name'> | null;
   children?: CategoryTreeItem[];
 }
 
@@ -58,8 +58,8 @@ export type CategoryListParams = {
 
 export type CategoryExportParams = {
   ids?: number[];
-  format: "excel" | "pdf";
-  method: "download" | "email";
+  format: 'excel' | 'pdf';
+  method: 'download' | 'email';
   columns: string[];
   user_id?: number;
   start_date?: string;

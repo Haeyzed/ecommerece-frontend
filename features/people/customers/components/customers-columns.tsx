@@ -52,7 +52,7 @@ export const customersColumns: ColumnDef<Customer>[] = [
     meta: {
       className: cn(
         'drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]',
-        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none'
+        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none',
       ),
     },
     enableHiding: false,
@@ -153,15 +153,15 @@ export const customersColumns: ColumnDef<Customer>[] = [
   {
     accessorKey: 'active_status',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Status' />
+      <DataTableColumnHeader column={column} title="Status" />
     ),
     cell: ({ row }) => {
       const { active_status } = row.original
       const statusBadgeColor = statusTypes.get(active_status ?? 'inactive')
       return (
-        <div className='flex justify-center'>
+        <div className="flex justify-center">
           <Badge
-            variant='outline'
+            variant="outline"
             className={cn('capitalize', statusBadgeColor)}
           >
             {row.getValue('active_status') ?? 'inactive'}

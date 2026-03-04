@@ -17,13 +17,13 @@ export function PayrollPrimaryButtons() {
   if (!canCreate) return null
 
   return (
-    <div className='flex gap-2'>
+    <div className="flex gap-2">
       {canCreate && (
         <Button
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('add')}
-          aria-label='New payroll run'
+          aria-label="New payroll run"
         >
           <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} size={18} />
           {!isMobile && <span>New payroll run</span>}

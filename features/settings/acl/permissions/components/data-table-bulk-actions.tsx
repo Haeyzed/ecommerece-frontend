@@ -2,27 +2,14 @@
 
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  CheckmarkCircle02Icon,
-  Delete02Icon,
-  UnavailableIcon,
-  Upload01Icon,
-} from '@hugeicons/core-free-icons'
+import { CheckmarkCircle02Icon, Delete02Icon, UnavailableIcon, Upload01Icon } from '@hugeicons/core-free-icons'
 import { type Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
-import {
-  useBulkActivatePermissions,
-  useBulkDeactivatePermissions
-} from '@/features/settings/acl/permissions/api'
+import { useBulkActivatePermissions, useBulkDeactivatePermissions } from '@/features/settings/acl/permissions/api'
 import { type Permission } from '@/features/settings/acl/permissions/types'
-import { PermissionsExportDialog } from '@/features/settings/acl/permissions'
-import { PermissionsMultiDeleteDialog } from '@/features/settings/acl/permissions'
+import { PermissionsExportDialog, PermissionsMultiDeleteDialog } from '@/features/settings/acl/permissions'
 import { useAuthSession } from '@/features/auth/api'
 import { Spinner } from '@/components/ui/spinner'
 
@@ -66,26 +53,26 @@ export function DataTableBulkActions<TData>({
 
   return (
     <>
-      <BulkActionsToolbar table={table} entityName='permission'>
+      <BulkActionsToolbar table={table} entityName="permission">
         {canUpdate && (
           <>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant='outline'
-                  size='icon'
+                  variant="outline"
+                  size="icon"
                   onClick={() => handleBulkStatusChange('active')}
                   disabled={isBusy}
-                  className='size-8'
-                  aria-label='Activate selected permissions'
-                  title='Activate selected permissions'
+                  className="size-8"
+                  aria-label="Activate selected permissions"
+                  title="Activate selected permissions"
                 >
                   {isActivating ? (
-                    <Spinner className='size-4' />
+                    <Spinner className="size-4" />
                   ) : (
                     <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
                   )}
-                  <span className='sr-only'>Activate selected permissions</span>
+                  <span className="sr-only">Activate selected permissions</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -96,20 +83,20 @@ export function DataTableBulkActions<TData>({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant='outline'
-                  size='icon'
+                  variant="outline"
+                  size="icon"
                   onClick={() => handleBulkStatusChange('inactive')}
                   disabled={isBusy}
-                  className='size-8'
-                  aria-label='Deactivate selected permissions'
-                  title='Deactivate selected permissions'
+                  className="size-8"
+                  aria-label="Deactivate selected permissions"
+                  title="Deactivate selected permissions"
                 >
                   {isDeactivating ? (
-                    <Spinner className='size-4' />
+                    <Spinner className="size-4" />
                   ) : (
                     <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
                   )}
-                  <span className='sr-only'>Deactivate selected permissions</span>
+                  <span className="sr-only">Deactivate selected permissions</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -123,16 +110,16 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant='outline'
-                size='icon'
+                variant="outline"
+                size="icon"
                 onClick={() => setShowExportDialog(true)}
                 disabled={isBusy}
-                className='size-8'
-                aria-label='Export selected permissions'
-                title='Export selected permissions'
+                className="size-8"
+                aria-label="Export selected permissions"
+                title="Export selected permissions"
               >
                 <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} />
-                <span className='sr-only'>Export selected permissions</span>
+                <span className="sr-only">Export selected permissions</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
@@ -145,16 +132,16 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant='destructive'
-                size='icon'
+                variant="destructive"
+                size="icon"
                 onClick={() => setShowDeleteConfirm(true)}
                 disabled={isBusy}
-                className='size-8'
-                aria-label='Delete selected permissions'
-                title='Delete selected permissions'
+                className="size-8"
+                aria-label="Delete selected permissions"
+                title="Delete selected permissions"
               >
                 <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} />
-                <span className='sr-only'>Delete selected permissions</span>
+                <span className="sr-only">Delete selected permissions</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>

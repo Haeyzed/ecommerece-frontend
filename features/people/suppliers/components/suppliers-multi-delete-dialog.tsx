@@ -21,10 +21,10 @@ type SuppliersMultiDeleteDialogProps<TData> = {
 const CONFIRM_WORD = 'DELETE'
 
 export function SuppliersMultiDeleteDialog<TData>({
-  open,
-  onOpenChange,
-  table,
-}: SuppliersMultiDeleteDialogProps<TData>) {
+                                                    open,
+                                                    onOpenChange,
+                                                    table,
+                                                  }: SuppliersMultiDeleteDialogProps<TData>) {
   const [value, setValue] = useState('')
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map((row) => (row.original as Supplier).id)

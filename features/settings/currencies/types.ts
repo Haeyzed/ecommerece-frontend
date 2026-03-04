@@ -43,8 +43,8 @@ export type CurrencyListParams = {
 
 export type CurrencyExportParams = {
   ids?: number[];
-  format: "excel" | "pdf";
-  method: "download" | "email";
+  format: 'excel' | 'pdf';
+  method: 'download' | 'email';
   columns: string[];
   user_id?: number;
   start_date?: string;

@@ -2,27 +2,14 @@
 
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  CheckmarkCircle02Icon,
-  Delete02Icon,
-  UnavailableIcon,
-  Upload01Icon,
-} from '@hugeicons/core-free-icons'
+import { CheckmarkCircle02Icon, Delete02Icon, UnavailableIcon, Upload01Icon } from '@hugeicons/core-free-icons'
 import { type Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
-import {
-  useBulkActivateShifts,
-  useBulkDeactivateShifts
-} from '../api'
+import { useBulkActivateShifts, useBulkDeactivateShifts } from '../api'
 import { type Shift } from '../types'
-import { ShiftsExportDialog } from '@/features/hrm/shifts'
-import { ShiftsMultiDeleteDialog } from '@/features/hrm/shifts'
+import { ShiftsExportDialog, ShiftsMultiDeleteDialog } from '@/features/hrm/shifts'
 import { useAuthSession } from '@/features/auth/api'
 import { Spinner } from '@/components/ui/spinner'
 
@@ -54,22 +41,23 @@ export function DataTableBulkActions<TData>({
 
   return (
     <>
-      <BulkActionsToolbar table={table} entityName='shift'>
+      <BulkActionsToolbar table={table} entityName="shift">
         {canUpdate && (
           <>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant='outline'
-                  size='icon'
+                  variant="outline"
+                  size="icon"
                   onClick={() => bulkActivate(selectedIds, { onSuccess: () => table.resetRowSelection() })}
                   disabled={isBusy}
-                  className='size-8'
-                  aria-label='Activate selected shifts'
-                  title='Activate selected shifts'
+                  className="size-8"
+                  aria-label="Activate selected shifts"
+                  title="Activate selected shifts"
                 >
-                  {isActivating ? <Spinner className='size-4' /> : <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />}
-                  <span className='sr-only'>Activate selected shifts</span>
+                  {isActivating ? <Spinner className="size-4" /> :
+                    <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />}
+                  <span className="sr-only">Activate selected shifts</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -80,16 +68,17 @@ export function DataTableBulkActions<TData>({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant='outline'
-                  size='icon'
+                  variant="outline"
+                  size="icon"
                   onClick={() => bulkDeactivate(selectedIds, { onSuccess: () => table.resetRowSelection() })}
                   disabled={isBusy}
-                  className='size-8'
-                  aria-label='Deactivate selected shifts'
-                  title='Deactivate selected shifts'
+                  className="size-8"
+                  aria-label="Deactivate selected shifts"
+                  title="Deactivate selected shifts"
                 >
-                  {isDeactivating ? <Spinner className='size-4' /> : <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />}
-                  <span className='sr-only'>Deactivate selected shifts</span>
+                  {isDeactivating ? <Spinner className="size-4" /> :
+                    <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />}
+                  <span className="sr-only">Deactivate selected shifts</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -103,16 +92,16 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant='outline'
-                size='icon'
+                variant="outline"
+                size="icon"
                 onClick={() => setShowExportDialog(true)}
                 disabled={isBusy}
-                className='size-8'
-                aria-label='Export selected shifts'
-                title='Export selected shifts'
+                className="size-8"
+                aria-label="Export selected shifts"
+                title="Export selected shifts"
               >
                 <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} />
-                <span className='sr-only'>Export selected shifts</span>
+                <span className="sr-only">Export selected shifts</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
@@ -125,16 +114,16 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant='destructive'
-                size='icon'
+                variant="destructive"
+                size="icon"
                 onClick={() => setShowDeleteConfirm(true)}
                 disabled={isBusy}
-                className='size-8'
-                aria-label='Delete selected shifts'
-                title='Delete selected shifts'
+                className="size-8"
+                aria-label="Delete selected shifts"
+                title="Delete selected shifts"
               >
                 <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} />
-                <span className='sr-only'>Delete selected shifts</span>
+                <span className="sr-only">Delete selected shifts</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>

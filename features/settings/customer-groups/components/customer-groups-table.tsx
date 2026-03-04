@@ -5,15 +5,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useTableUrlState } from '@/hooks/use-table-url-state'
 import { cn } from '@/lib/utils'
 import {
-  type SortingState,
-  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
   getSortedRowModel,
+  type SortingState,
   useReactTable,
+  type VisibilityState,
 } from '@tanstack/react-table'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
@@ -89,8 +89,8 @@ export function CustomerGroupsTable() {
     <div className={cn('max-sm:has-[div[role="toolbar"]]:mb-16', 'flex flex-1 flex-col gap-4')}>
       <DataTableToolbar
         table={table}
-        searchPlaceholder='Filter customer groups...'
-        searchKey='name'
+        searchPlaceholder="Filter customer groups..."
+        searchKey="name"
         filters={[
           {
             columnId: 'status',
@@ -102,11 +102,11 @@ export function CustomerGroupsTable() {
           },
         ]}
       />
-      <div className='overflow-hidden rounded-md border'>
+      <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className='group/row'>
+              <TableRow key={headerGroup.id} className="group/row">
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
@@ -114,7 +114,7 @@ export function CustomerGroupsTable() {
                     className={cn(
                       'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                       (header.column.columnDef.meta as { className?: string })?.className,
-                      (header.column.columnDef.meta as { thClassName?: string })?.thClassName
+                      (header.column.columnDef.meta as { thClassName?: string })?.thClassName,
                     )}
                   >
                     {header.isPlaceholder
@@ -134,7 +134,7 @@ export function CustomerGroupsTable() {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    className='group/row'
+                    className="group/row"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
@@ -142,7 +142,7 @@ export function CustomerGroupsTable() {
                         className={cn(
                           'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                           (cell.column.columnDef.meta as { className?: string })?.className,
-                          (cell.column.columnDef.meta as { tdClassName?: string })?.tdClassName
+                          (cell.column.columnDef.meta as { tdClassName?: string })?.tdClassName,
                         )}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -152,7 +152,7 @@ export function CustomerGroupsTable() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={columns.length} className='h-24 text-center'>
+                  <TableCell colSpan={columns.length} className="h-24 text-center">
                     No results.
                   </TableCell>
                 </TableRow>
@@ -161,7 +161,7 @@ export function CustomerGroupsTable() {
           )}
         </Table>
       </div>
-      <DataTablePagination table={table} className='mt-auto' />
+      <DataTablePagination table={table} className="mt-auto" />
       <DataTableBulkActions table={table} />
     </div>
   )

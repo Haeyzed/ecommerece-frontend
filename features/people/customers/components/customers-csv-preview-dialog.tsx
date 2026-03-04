@@ -18,14 +18,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Spinner } from '@/components/ui/spinner'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -40,22 +33,22 @@ type CustomersCsvPreviewDialogProps = {
 }
 
 export function CustomersCsvPreviewDialog({
-  open,
-  onOpenChange,
-  data,
-  onConfirm,
-  isPending,
-}: CustomersCsvPreviewDialogProps) {
+                                            open,
+                                            onOpenChange,
+                                            data,
+                                            onConfirm,
+                                            isPending,
+                                          }: CustomersCsvPreviewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const headers = data.length > 0 ? Object.keys(data[0]) : []
 
   const PreviewContent = () => (
-    <div className='rounded-md border'>
+    <div className="rounded-md border">
       <Table>
         <TableHeader>
           <TableRow>
             {headers.map((header) => (
-              <TableHead key={header} className='capitalize'>
+              <TableHead key={header} className="capitalize">
                 {header.replace(/_/g, ' ')}
               </TableHead>
             ))}
@@ -65,7 +58,7 @@ export function CustomersCsvPreviewDialog({
           {data.slice(0, 5).map((row, i) => (
             <TableRow key={i}>
               {headers.map((header) => (
-                <TableCell key={`${i}-${header}`} className='max-w-[200px] truncate'>
+                <TableCell key={`${i}-${header}`} className="max-w-[200px] truncate">
                   {row[header]}
                 </TableCell>
               ))}
@@ -97,7 +90,7 @@ export function CustomersCsvPreviewDialog({
             <PreviewContent />
           </div>
           <DialogFooter>
-            <Button variant='outline' onClick={() => onOpenChange(false)} disabled={isPending}>
+            <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
               Cancel
             </Button>
             <Button onClick={onConfirm} disabled={isPending}>
@@ -146,7 +139,7 @@ export function CustomersCsvPreviewDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline' disabled={isPending}>Cancel</Button>
+            <Button variant="outline" disabled={isPending}>Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>

@@ -4,17 +4,15 @@ import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  CloudUploadIcon,
-  Download01Icon,
-  File02Icon,
-  ViewIcon,
-  CancelCircleIcon
-} from '@hugeicons/core-free-icons'
+import { CancelCircleIcon, CloudUploadIcon, Download01Icon, File02Icon, ViewIcon } from '@hugeicons/core-free-icons'
 
-import { useDocumentTypesImport, useDocumentTypesTemplateDownload } from '@/features/hrm/document-types'
-import { documentTypeImportSchema, type DocumentTypeImportFormData } from '@/features/hrm/document-types'
-import { DocumentTypesCsvPreviewDialog } from '@/features/hrm/document-types'
+import {
+  type DocumentTypeImportFormData,
+  documentTypeImportSchema,
+  DocumentTypesCsvPreviewDialog,
+  useDocumentTypesImport,
+  useDocumentTypesTemplateDownload,
+} from '@/features/hrm/document-types'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -33,14 +31,8 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-} from "@/components/ui/drawer"
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+} from '@/components/ui/drawer'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import {
   FileUpload,
   FileUploadDropzone,
@@ -51,7 +43,7 @@ import {
   FileUploadList,
   FileUploadTrigger,
 } from '@/components/ui/file-upload'
-import { useMediaQuery } from "@/hooks/use-media-query"
+import { useMediaQuery } from '@/hooks/use-media-query'
 import { Spinner } from '@/components/ui/spinner'
 
 type DocumentTypesImportDialogProps = {
@@ -60,10 +52,10 @@ type DocumentTypesImportDialogProps = {
 }
 
 export function DocumentTypesImportDialog({
-                                         open,
-                                         onOpenChange,
-                                       }: DocumentTypesImportDialogProps) {
-  const isDesktop = useMediaQuery("(min-width: 768px)")
+                                            open,
+                                            onOpenChange,
+                                          }: DocumentTypesImportDialogProps) {
+  const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: importDocumentTypes, isPending } = useDocumentTypesImport()
   const { mutate: downloadTemplate, isPending: isDownloading } = useDocumentTypesTemplateDownload()
 
@@ -131,170 +123,174 @@ export function DocumentTypesImportDialog({
 
   // Pre-rendered JSX variable to prevent ESLint "Component in render" errors
   const importFormContent = (
-      <form id='import-form' onSubmit={form.handleSubmit(handlePreview)} className="grid gap-4 py-4">
-        <div className="flex justify-end">
-          <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={handleDownloadSample}
-              disabled={isDownloading}
-              className="text-muted-foreground"
-          >
-            {isDownloading ? (
-                <>
-                  <Spinner className="mr-2 size-4" />
-                  Downloading...
-                </>
-            ) : (
-                <>
-                  <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
-                  Download Sample CSV
-                </>
-            )}
-          </Button>
+    <form id="import-form" onSubmit={form.handleSubmit(handlePreview)} className="grid gap-4 py-4">
+      <div className="flex justify-end">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={handleDownloadSample}
+          disabled={isDownloading}
+          className="text-muted-foreground"
+        >
+          {isDownloading ? (
+            <>
+              <Spinner className="mr-2 size-4" />
+              Downloading...
+            </>
+          ) : (
+            <>
+              <HugeiconsIcon icon={Download01Icon} className="mr-2 size-4" />
+              Download Sample CSV
+            </>
+          )}
+        </Button>
+      </div>
+
+      <FieldGroup>
+        <div className="space-y-2 rounded-md border bg-muted/50 p-3 text-sm">
+          <div className="font-medium">Required Fields:</div>
+          <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+            <li><code className="rounded bg-background px-1 py-0.5 text-xs">name*</code> - Document type name</li>
+            <li><code className="rounded bg-background px-1 py-0.5 text-xs">code*</code> - Document type code</li>
+            <li><code className="rounded bg-background px-1 py-0.5 text-xs">requires_expiry*</code> - Boolean (true or
+              false)
+            </li>
+          </ul>
+          <div className="font-medium mt-3">Optional Fields:</div>
+          <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+            <li><code className="rounded bg-background px-1 py-0.5 text-xs">is_active</code> - Boolean (true or false)
+            </li>
+          </ul>
         </div>
+        <Controller
+          control={form.control}
+          name="file"
+          render={({ field: { value, onChange, ...fieldProps }, fieldState }) => (
+            <Field data-invalid={!!fieldState.error}>
+              <FieldLabel htmlFor="import-file">Upload File</FieldLabel>
 
-        <FieldGroup>
-          <div className='space-y-2 rounded-md border bg-muted/50 p-3 text-sm'>
-            <div className='font-medium'>Required Fields:</div>
-            <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
-              <li><code className='rounded bg-background px-1 py-0.5 text-xs'>name*</code> - Document type name</li>
-              <li><code className='rounded bg-background px-1 py-0.5 text-xs'>code*</code> - Document type code</li>
-              <li><code className='rounded bg-background px-1 py-0.5 text-xs'>requires_expiry*</code> - Boolean (true or false)</li>
-            </ul>
-            <div className='font-medium mt-3'>Optional Fields:</div>
-            <ul className='list-disc list-inside space-y-1 text-muted-foreground'>
-              <li><code className='rounded bg-background px-1 py-0.5 text-xs'>is_active</code> - Boolean (true or false)</li>
-            </ul>
-          </div>
-          <Controller
-              control={form.control}
-              name='file'
-              render={({ field: { value, onChange, ...fieldProps }, fieldState }) => (
-                  <Field data-invalid={!!fieldState.error}>
-                    <FieldLabel htmlFor='import-file'>Upload File</FieldLabel>
+              <FileUpload
+                value={value}
+                onValueChange={onChange}
+                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                maxFiles={1}
+                maxSize={5 * 1024 * 1024} // 5MB
+                onFileReject={(_, message) => {
+                  form.setError('file', { message })
+                }}
+              >
+                <FileUploadDropzone
+                  className="flex-col items-center justify-center gap-2 border-dashed p-8 text-center">
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                    <HugeiconsIcon icon={CloudUploadIcon} className="size-5" />
+                  </div>
+                  <div className="text-sm">
+                    <span className="font-semibold text-primary">Click to upload</span>
+                    {' '}or drag and drop
+                    <br />
+                    <span className="text-muted-foreground">CSV or Excel (max 5MB)</span>
+                  </div>
+                  <FileUploadTrigger asChild>
+                    <Button variant="link" size="sm" className="sr-only">
+                      Select file
+                    </Button>
+                  </FileUploadTrigger>
+                </FileUploadDropzone>
 
-                    <FileUpload
-                        value={value}
-                        onValueChange={onChange}
-                        accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
-                        maxFiles={1}
-                        maxSize={5 * 1024 * 1024} // 5MB
-                        onFileReject={(_, message) => {
-                          form.setError('file', { message })
-                        }}
-                    >
-                      <FileUploadDropzone className='flex-col items-center justify-center gap-2 border-dashed p-8 text-center'>
-                        <div className="flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-                          <HugeiconsIcon icon={CloudUploadIcon} className='size-5' />
-                        </div>
-                        <div className="text-sm">
-                          <span className="font-semibold text-primary">Click to upload</span>
-                          {" "}or drag and drop
-                          <br />
-                          <span className="text-muted-foreground">CSV or Excel (max 5MB)</span>
-                        </div>
-                        <FileUploadTrigger asChild>
-                          <Button variant='link' size='sm' className='sr-only'>
-                            Select file
-                          </Button>
-                        </FileUploadTrigger>
-                      </FileUploadDropzone>
+                <FileUploadList>
+                  {value?.map((file, index) => (
+                    <FileUploadItem key={index} value={file} className="w-full">
+                      <div className="flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary">
+                        <HugeiconsIcon icon={File02Icon} className="size-4" />
+                      </div>
+                      <FileUploadItemPreview className="hidden" />
+                      <FileUploadItemMetadata className="ml-2 flex-1" />
+                      <FileUploadItemDelete asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="size-7 text-muted-foreground hover:text-destructive"
+                        >
+                          <HugeiconsIcon icon={CancelCircleIcon} className="size-4" />
+                          <span className="sr-only">Remove</span>
+                        </Button>
+                      </FileUploadItemDelete>
+                    </FileUploadItem>
+                  ))}
+                </FileUploadList>
+              </FileUpload>
 
-                      <FileUploadList>
-                        {value?.map((file, index) => (
-                            <FileUploadItem key={index} value={file} className="w-full">
-                              <div className="flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary">
-                                <HugeiconsIcon icon={File02Icon} className="size-4" />
-                              </div>
-                              <FileUploadItemPreview className="hidden" />
-                              <FileUploadItemMetadata className="ml-2 flex-1" />
-                              <FileUploadItemDelete asChild>
-                                <Button
-                                    variant='ghost'
-                                    size='icon'
-                                    className='size-7 text-muted-foreground hover:text-destructive'
-                                >
-                                  <HugeiconsIcon icon={CancelCircleIcon} className='size-4' />
-                                  <span className='sr-only'>Remove</span>
-                                </Button>
-                              </FileUploadItemDelete>
-                            </FileUploadItem>
-                        ))}
-                      </FileUploadList>
-                    </FileUpload>
-
-                    <FieldDescription>
-                      Upload the file containing your document types data.
-                    </FieldDescription>
-                    {fieldState.error && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-              )}
-          />
-        </FieldGroup>
-      </form>
+              <FieldDescription>
+                Upload the file containing your document types data.
+              </FieldDescription>
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+      </FieldGroup>
+    </form>
   )
 
   return (
-      <>
-        {isDesktop ? (
-            <Dialog open={open} onOpenChange={handleOpenChange}>
-              <DialogContent className='sm:max-w-md'>
-                <DialogHeader className='text-start'>
-                  <DialogTitle>Import Leave Types</DialogTitle>
-                  <DialogDescription>
-                    Bulk create document types by uploading a CSV or Excel file.
-                  </DialogDescription>
-                </DialogHeader>
+    <>
+      {isDesktop ? (
+        <Dialog open={open} onOpenChange={handleOpenChange}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader className="text-start">
+              <DialogTitle>Import Leave Types</DialogTitle>
+              <DialogDescription>
+                Bulk create document types by uploading a CSV or Excel file.
+              </DialogDescription>
+            </DialogHeader>
 
-                {importFormContent}
+            {importFormContent}
 
-                <DialogFooter className='gap-y-2'>
-                  <Button variant='outline' onClick={() => handleOpenChange(false)}>
-                    Cancel
-                  </Button>
-                  <Button type="submit" form="import-form" disabled={!form.formState.isValid || isPending}>
-                    Preview Data
-                    <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-        ) : (
-            <Drawer open={open} onOpenChange={handleOpenChange}>
-              <DrawerContent>
-                <DrawerHeader className="text-left">
-                  <DrawerTitle>Import Leave Types</DrawerTitle>
-                  <DrawerDescription>
-                    Bulk create document types by uploading a CSV or Excel file.
-                  </DrawerDescription>
-                </DrawerHeader>
+            <DialogFooter className="gap-y-2">
+              <Button variant="outline" onClick={() => handleOpenChange(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" form="import-form" disabled={!form.formState.isValid || isPending}>
+                Preview Data
+                <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <Drawer open={open} onOpenChange={handleOpenChange}>
+          <DrawerContent>
+            <DrawerHeader className="text-left">
+              <DrawerTitle>Import Leave Types</DrawerTitle>
+              <DrawerDescription>
+                Bulk create document types by uploading a CSV or Excel file.
+              </DrawerDescription>
+            </DrawerHeader>
 
-                <div className="no-scrollbar overflow-y-auto px-4">
-                  {importFormContent}
-                </div>
+            <div className="no-scrollbar overflow-y-auto px-4">
+              {importFormContent}
+            </div>
 
-                <DrawerFooter>
-                  <Button type="submit" form="import-form" disabled={!form.formState.isValid || isPending}>
-                    Preview Data
-                    <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
-                  </Button>
-                  <DrawerClose asChild>
-                    <Button variant="outline">Cancel</Button>
-                  </DrawerClose>
-                </DrawerFooter>
-              </DrawerContent>
-            </Drawer>
-        )}
+            <DrawerFooter>
+              <Button type="submit" form="import-form" disabled={!form.formState.isValid || isPending}>
+                Preview Data
+                <HugeiconsIcon icon={ViewIcon} strokeWidth={2} className="ml-2 size-4" />
+              </Button>
+              <DrawerClose asChild>
+                <Button variant="outline">Cancel</Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      )}
 
-        <DocumentTypesCsvPreviewDialog
-            open={previewOpen}
-            onOpenChange={setPreviewOpen}
-            data={previewData}
-            onConfirm={handleConfirmImport}
-            isPending={isPending}
-        />
-      </>
+      <DocumentTypesCsvPreviewDialog
+        open={previewOpen}
+        onOpenChange={setPreviewOpen}
+        data={previewData}
+        onConfirm={handleConfirmImport}
+        isPending={isPending}
+      />
+    </>
   )
 }

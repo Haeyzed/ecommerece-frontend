@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { type ColumnDef } from '@tanstack/react-table'
 import { cn } from '@/lib/utils'
@@ -20,8 +20,8 @@ export const warehousesColumns: ColumnDef<Warehouse>[] = [
           (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label='Select all'
-        className='translate-y-[2px]'
+        aria-label="Select all"
+        className="translate-y-[2px]"
       />
     ),
     meta: {
@@ -31,8 +31,8 @@ export const warehousesColumns: ColumnDef<Warehouse>[] = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label='Select row'
-        className='translate-y-[2px]'
+        aria-label="Select row"
+        className="translate-y-[2px]"
       />
     ),
     enableSorting: false,
@@ -41,22 +41,22 @@ export const warehousesColumns: ColumnDef<Warehouse>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Name' />
+      <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => (
-      <div className='flex items-center gap-3 ps-3'>
-        <div className='flex size-10 items-center justify-center rounded-md bg-muted'>
-          <span className='text-xs font-medium'>
+      <div className="flex items-center gap-3 ps-3">
+        <div className="flex size-10 items-center justify-center rounded-md bg-muted">
+          <span className="text-xs font-medium">
             {row.original.name.charAt(0).toUpperCase()}
           </span>
         </div>
-        <LongText className='max-w-36'>{row.getValue('name')}</LongText>
+        <LongText className="max-w-36">{row.getValue('name')}</LongText>
       </div>
     ),
     meta: {
       className: cn(
         'drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]',
-        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none'
+        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none',
       ),
     },
     enableHiding: false,
@@ -64,10 +64,10 @@ export const warehousesColumns: ColumnDef<Warehouse>[] = [
   {
     accessorKey: 'phone',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Phone' />
+      <DataTableColumnHeader column={column} title="Phone" />
     ),
     cell: ({ row }) => (
-      <LongText className='max-w-36'>
+      <LongText className="max-w-36">
         {row.original.phone || '-'}
       </LongText>
     ),
@@ -76,10 +76,10 @@ export const warehousesColumns: ColumnDef<Warehouse>[] = [
   {
     accessorKey: 'email',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Email' />
+      <DataTableColumnHeader column={column} title="Email" />
     ),
     cell: ({ row }) => (
-      <LongText className='max-w-36'>
+      <LongText className="max-w-36">
         {row.original.email || '-'}
       </LongText>
     ),
@@ -88,10 +88,10 @@ export const warehousesColumns: ColumnDef<Warehouse>[] = [
   {
     accessorKey: 'address',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Address' />
+      <DataTableColumnHeader column={column} title="Address" />
     ),
     cell: ({ row }) => (
-      <LongText className='max-w-48'>
+      <LongText className="max-w-48">
         {row.original.address || '-'}
       </LongText>
     ),
@@ -100,10 +100,10 @@ export const warehousesColumns: ColumnDef<Warehouse>[] = [
   {
     accessorKey: 'number_of_products',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Products' />
+      <DataTableColumnHeader column={column} title="Products" />
     ),
     cell: ({ row }) => (
-      <span className='tabular-nums'>
+      <span className="tabular-nums">
         {row.original.number_of_products ?? '-'}
       </span>
     ),
@@ -112,10 +112,10 @@ export const warehousesColumns: ColumnDef<Warehouse>[] = [
   {
     accessorKey: 'stock_quantity',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Stock Qty' />
+      <DataTableColumnHeader column={column} title="Stock Qty" />
     ),
     cell: ({ row }) => (
-      <span className='tabular-nums'>
+      <span className="tabular-nums">
         {row.original.stock_quantity ?? '-'}
       </span>
     ),
@@ -124,13 +124,13 @@ export const warehousesColumns: ColumnDef<Warehouse>[] = [
   {
     accessorKey: 'status',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Status' />
+      <DataTableColumnHeader column={column} title="Status" />
     ),
     cell: ({ row }) => {
       const status = row.original.is_active ? 'active' : 'inactive'
       const statusBadgeColor = statusTypes.get(status)
       return (
-        <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
+        <Badge variant="outline" className={cn('capitalize', statusBadgeColor)}>
           {status}
         </Badge>
       )

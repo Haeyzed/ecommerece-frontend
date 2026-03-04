@@ -3,10 +3,7 @@
 import { useApiClient } from '@/lib/api/api-client-client'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import type {
-  CustomerDueReportRow,
-  CustomerDueReportMeta,
-} from './types'
+import type { CustomerDueReportMeta, CustomerDueReportRow } from './types'
 
 export const customerDueReportKeys = {
   all: ['reports', 'customer-due'] as const,
@@ -38,7 +35,7 @@ export function useCustomerDueReport(params: UseCustomerDueReportParams | null) 
             page: params!.page ?? 1,
             per_page: params!.per_page ?? 15,
           },
-        }
+        },
       )
       return response
     },

@@ -2,13 +2,7 @@
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import {
   Drawer,
   DrawerClose,
@@ -36,10 +30,10 @@ type AuditLogViewDialogProps = {
 }
 
 export function AuditLogViewDialog({
-  currentRow,
-  open,
-  onOpenChange,
-}: AuditLogViewDialogProps) {
+                                     currentRow,
+                                     open,
+                                     onOpenChange,
+                                   }: AuditLogViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
 
   if (!currentRow) return null
@@ -193,7 +187,7 @@ function AuditView({ className, currentRow }: AuditViewProps) {
                         </span>
                         <span className="break-all">{value}</span>
                       </div>
-                    )
+                    ),
                   )}
                 </div>
               </div>
@@ -213,7 +207,7 @@ function AuditView({ className, currentRow }: AuditViewProps) {
                         </span>
                         <span className="break-all">{value}</span>
                       </div>
-                    )
+                    ),
                   )}
                 </div>
               </div>

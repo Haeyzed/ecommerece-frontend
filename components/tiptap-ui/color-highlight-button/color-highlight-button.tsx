@@ -1,30 +1,27 @@
-"use client"
+'use client'
 
-import { forwardRef, useCallback, useMemo } from "react"
+import { forwardRef, useCallback, useMemo } from 'react'
 
 // --- Lib ---
-import { parseShortcutKeys } from "@/lib/tiptap-utils"
+import { parseShortcutKeys } from '@/lib/tiptap-utils'
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditor } from '@/hooks/use-tiptap-editor'
 
 // --- Tiptap UI ---
-import type { UseColorHighlightConfig } from "@/components/tiptap-ui/color-highlight-button"
-import {
-  COLOR_HIGHLIGHT_SHORTCUT_KEY,
-  useColorHighlight,
-} from "@/components/tiptap-ui/color-highlight-button"
+import type { UseColorHighlightConfig } from '@/components/tiptap-ui/color-highlight-button'
+import { COLOR_HIGHLIGHT_SHORTCUT_KEY, useColorHighlight } from '@/components/tiptap-ui/color-highlight-button'
 
 // --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap-ui-primitive/button"
-import { Button } from "@/components/tiptap-ui-primitive/button"
-import { Badge } from "@/components/tiptap-ui-primitive/badge"
+import type { ButtonProps } from '@/components/tiptap-ui-primitive/button'
+import { Button } from '@/components/tiptap-ui-primitive/button'
+import { Badge } from '@/components/tiptap-ui-primitive/badge'
 
 // --- Styles ---
-import "@/components/tiptap-ui/color-highlight-button/color-highlight-button.scss"
+import '@/components/tiptap-ui/color-highlight-button/color-highlight-button.scss'
 
 export interface ColorHighlightButtonProps
-  extends Omit<ButtonProps, "type">, UseColorHighlightConfig {
+  extends Omit<ButtonProps, 'type'>, UseColorHighlightConfig {
   /**
    * Optional text to display alongside the icon.
    */
@@ -37,8 +34,8 @@ export interface ColorHighlightButtonProps
 }
 
 export function ColorHighlightShortcutBadge({
-  shortcutKeys = COLOR_HIGHLIGHT_SHORTCUT_KEY,
-}: {
+                                              shortcutKeys = COLOR_HIGHLIGHT_SHORTCUT_KEY,
+                                            }: {
   shortcutKeys?: string
 }) {
   return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>
@@ -82,7 +79,7 @@ export const ColorHighlightButton = forwardRef<
       highlightColor,
       text,
       hideWhenUnavailable = false,
-      mode = "mark",
+      mode = 'mark',
       onApplied,
       showShortcut = false,
       onClick,
@@ -91,7 +88,7 @@ export const ColorHighlightButton = forwardRef<
       useColorValue = false,
       ...buttonProps
     },
-    ref
+    ref,
   ) => {
     const { editor } = useTiptapEditor(providedEditor)
     const {
@@ -117,16 +114,16 @@ export const ColorHighlightButton = forwardRef<
         if (event.defaultPrevented) return
         handleColorHighlight()
       },
-      [handleColorHighlight, onClick]
+      [handleColorHighlight, onClick],
     )
 
     const buttonStyle = useMemo(
       () =>
         ({
           ...style,
-          "--highlight-color": highlightColor,
+          '--highlight-color': highlightColor,
         }) as React.CSSProperties,
-      [highlightColor, style]
+      [highlightColor, style],
     )
 
     if (!isVisible) {
@@ -137,7 +134,7 @@ export const ColorHighlightButton = forwardRef<
       <Button
         type="button"
         variant="ghost"
-        data-active-state={isActive ? "on" : "off"}
+        data-active-state={isActive ? 'on' : 'off'}
         role="button"
         tabIndex={-1}
         disabled={!canColorHighlight}
@@ -155,7 +152,7 @@ export const ColorHighlightButton = forwardRef<
             <span
               className="tiptap-button-highlight"
               style={
-                { "--highlight-color": highlightColor } as React.CSSProperties
+                { '--highlight-color': highlightColor } as React.CSSProperties
               }
             />
             {text && <span className="tiptap-button-text">{text}</span>}
@@ -166,7 +163,7 @@ export const ColorHighlightButton = forwardRef<
         )}
       </Button>
     )
-  }
+  },
 )
 
-ColorHighlightButton.displayName = "ColorHighlightButton"
+ColorHighlightButton.displayName = 'ColorHighlightButton'

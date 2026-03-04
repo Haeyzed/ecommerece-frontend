@@ -11,7 +11,7 @@
 import { Suspense } from 'react'
 import { AuthLayout } from '@/components/layout/auth-layout'
 import { VerifyEmailContent } from '@/features/auth'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Spinner } from '@/components/ui/spinner'
 
 export default function VerifyEmailPage() {

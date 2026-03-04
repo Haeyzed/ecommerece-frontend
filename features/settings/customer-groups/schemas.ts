@@ -12,19 +12,19 @@ export type CustomerGroupFormData = z.infer<typeof customerGroupSchema>
 export const customerGroupImportSchema = z.object({
   file: z
     .array(z.custom<File>())
-    .min(1, "Please select a file to import")
-    .max(1, "Please select only one file")
+    .min(1, 'Please select a file to import')
+    .max(1, 'Please select only one file')
     .refine((files) => {
-      return files?.[0]?.size <= MAX_FILE_SIZE;
+      return files?.[0]?.size <= MAX_FILE_SIZE
     }, `Max file size is 5MB.`)
     .refine((files) => {
-      const file = files?.[0];
-      if (!file) return false;
-      const isValidMime = CSV_MIME_TYPES.includes(file.type);
-      const isValidExtension = file.name.toLowerCase().endsWith(".csv");
+      const file = files?.[0]
+      if (!file) return false
+      const isValidMime = CSV_MIME_TYPES.includes(file.type)
+      const isValidExtension = file.name.toLowerCase().endsWith('.csv')
 
-      return isValidMime || isValidExtension;
-    }, "Only .csv files are allowed"),
+      return isValidMime || isValidExtension
+    }, 'Only .csv files are allowed'),
 })
 
 export type CustomerGroupImportFormData = z.infer<typeof customerGroupImportSchema>
@@ -41,7 +41,7 @@ export const customerGroupExportSchema = z
       if (data.method === 'email') return data.user_id !== undefined
       return true
     },
-    { message: 'Please select a user to send the email to', path: ['user_id'] }
+    { message: 'Please select a user to send the email to', path: ['user_id'] },
   )
 
 export type CustomerGroupExportFormData = z.infer<typeof customerGroupExportSchema>

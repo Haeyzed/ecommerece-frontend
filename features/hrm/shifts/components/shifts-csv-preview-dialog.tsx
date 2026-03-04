@@ -18,14 +18,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Spinner } from '@/components/ui/spinner'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -50,12 +43,12 @@ export function ShiftsCsvPreviewDialog({
   const headers = data.length > 0 ? Object.keys(data[0]) : []
 
   const previewContent = (
-    <div className='rounded-md border'>
+    <div className="rounded-md border">
       <Table>
         <TableHeader>
           <TableRow>
             {headers.map((h) => (
-              <TableHead key={h} className='capitalize'>{h.replace(/_/g, ' ')}</TableHead>
+              <TableHead key={h} className="capitalize">{h.replace(/_/g, ' ')}</TableHead>
             ))}
           </TableRow>
         </TableHeader>
@@ -63,13 +56,13 @@ export function ShiftsCsvPreviewDialog({
           {data.slice(0, 5).map((row, i) => (
             <TableRow key={i}>
               {headers.map((h) => (
-                <TableCell key={h} className='max-w-[200px] truncate'>{row[h]}</TableCell>
+                <TableCell key={h} className="max-w-[200px] truncate">{row[h]}</TableCell>
               ))}
             </TableRow>
           ))}
           {data.length > 5 && (
             <TableRow>
-              <TableCell colSpan={headers.length} className='text-center text-muted-foreground'>
+              <TableCell colSpan={headers.length} className="text-center text-muted-foreground">
                 ... and {data.length - 5} more rows
               </TableCell>
             </TableRow>
@@ -82,21 +75,21 @@ export function ShiftsCsvPreviewDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className='sm:max-w-4xl'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-4xl">
+          <DialogHeader className="text-start">
             <DialogTitle>Preview Import Shifts Data</DialogTitle>
             <DialogDescription>
               Review the shifts data before importing. Showing first 5 rows of {data.length} entries.
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[60vh] overflow-y-auto py-2'>
+          <div className="max-h-[60vh] overflow-y-auto py-2">
             {/* FIXED: Render variable here instead of component tag */}
             {previewContent}
           </div>
 
           <DialogFooter>
-            <Button variant='outline' onClick={() => onOpenChange(false)} disabled={isPending}>
+            <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
               Cancel
             </Button>
             <Button onClick={onConfirm} disabled={isPending}>
@@ -121,14 +114,14 @@ export function ShiftsCsvPreviewDialog({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>Preview Import Shifts Data</DrawerTitle>
           <DrawerDescription>
             Review the shifts data before importing. Showing first 5 rows of {data.length} entries.
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className='no-scrollbar max-h-[70vh] overflow-y-auto px-4'>
+        <div className="no-scrollbar max-h-[70vh] overflow-y-auto px-4">
           {previewContent}
         </div>
 
@@ -147,7 +140,7 @@ export function ShiftsCsvPreviewDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline' disabled={isPending}>Cancel</Button>
+            <Button variant="outline" disabled={isPending}>Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>

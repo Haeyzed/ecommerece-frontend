@@ -1,16 +1,10 @@
-'use client';
+'use client'
 
-import { useApiClient } from '@/lib/api/api-client-client';
-import { ValidationError } from '@/lib/api/api-errors';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
-import type {
-  Unit,
-  UnitExportParams,
-  UnitFormData,
-  UnitListParams,
-  UnitOption,
-} from './types';
+import { useApiClient } from '@/lib/api/api-client-client'
+import { ValidationError } from '@/lib/api/api-errors'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
+import type { Unit, UnitExportParams, UnitFormData, UnitListParams, UnitOption } from './types'
 
 export const unitKeys = {
   all: ['units'] as const,
@@ -21,69 +15,69 @@ export const unitKeys = {
   options: () => [...unitKeys.all, 'options'] as const,
   baseUnits: () => [...unitKeys.all, 'base-units'] as const,
   template: () => [...unitKeys.all, 'template'] as const,
-};
+}
 
-const BASE_PATH = '/units';
+const BASE_PATH = '/units'
 
 export function useUnits(params?: UnitListParams) {
-  const { api, sessionStatus } = useApiClient();
+  const { api, sessionStatus } = useApiClient()
   const query = useQuery({
     queryKey: unitKeys.list(params),
     queryFn: async () => {
-      const response = await api.get<Unit[]>(BASE_PATH, { params });
-      return response;
+      const response = await api.get<Unit[]>(BASE_PATH, { params })
+      return response
     },
     enabled: sessionStatus !== 'loading',
-  });
+  })
   return {
     ...query,
     isSessionLoading: sessionStatus === 'loading',
-  };
+  }
 }
 
 export function useOptionUnits() {
-  const { api, sessionStatus } = useApiClient();
+  const { api, sessionStatus } = useApiClient()
   return useQuery({
     queryKey: unitKeys.options(),
     queryFn: async () => {
-      const response = await api.get<UnitOption[]>(`${BASE_PATH}/options`);
-      return response.data ?? [];
+      const response = await api.get<UnitOption[]>(`${BASE_PATH}/options`)
+      return response.data ?? []
     },
     enabled: sessionStatus !== 'loading',
-  });
+  })
 }
 
 export function useBaseUnits() {
-  const { api, sessionStatus } = useApiClient();
+  const { api, sessionStatus } = useApiClient()
   return useQuery({
     queryKey: unitKeys.baseUnits(),
     queryFn: async () => {
-      const response = await api.get<UnitOption[]>(`${BASE_PATH}/base-units`);
-      return response.data || [];
+      const response = await api.get<UnitOption[]>(`${BASE_PATH}/base-units`)
+      return response.data || []
     },
     enabled: sessionStatus !== 'loading',
-  });
+  })
 }
 
 export function useUnit(id: number) {
-  const { api, sessionStatus } = useApiClient();
+  const { api, sessionStatus } = useApiClient()
   const query = useQuery({
     queryKey: unitKeys.detail(id),
     queryFn: async () => {
-      const response = await api.get<Unit>(`${BASE_PATH}/${id}`);
-      return response.data ?? null;
+      const response = await api.get<Unit>(`${BASE_PATH}/${id}`)
+      return response.data ?? null
     },
     enabled: !!id && sessionStatus !== 'loading',
-  });
+  })
   return {
     ...query,
     isSessionLoading: sessionStatus === 'loading',
-  };
+  }
 }
 
 export function useCreateUnit() {
-  const { api } = useApiClient();
-  const queryClient = useQueryClient();
+  const { api } = useApiClient()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (data: UnitFormData) => {
@@ -91,207 +85,207 @@ export function useCreateUnit() {
         name: data.name,
         code: data.code,
         is_active: data.is_active ?? true,
-      };
-      if (data.base_unit !== undefined) payload.base_unit = data.base_unit;
-      if (data.operator !== undefined) payload.operator = data.operator;
-      if (data.operation_value !== undefined) payload.operation_value = data.operation_value;
-
-      const response = await api.post<{ data: Unit }>(BASE_PATH, payload);
-      if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors);
-        throw new Error(response.message);
       }
-      return response;
+      if (data.base_unit !== undefined) payload.base_unit = data.base_unit
+      if (data.operator !== undefined) payload.operator = data.operator
+      if (data.operation_value !== undefined) payload.operation_value = data.operation_value
+
+      const response = await api.post<{ data: Unit }>(BASE_PATH, payload)
+      if (!response.success) {
+        if (response.errors) throw new ValidationError(response.message, response.errors)
+        throw new Error(response.message)
+      }
+      return response
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
-      toast.success(response.message);
+      queryClient.invalidateQueries({ queryKey: unitKeys.lists() })
+      toast.success(response.message)
     },
     onError: (error) => {
-      toast.error(error.message);
+      toast.error(error.message)
     },
-  });
+  })
 }
 
 export function useUpdateUnit() {
-  const { api } = useApiClient();
-  const queryClient = useQueryClient();
+  const { api } = useApiClient()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<UnitFormData> }) => {
-      const payload: Record<string, unknown> = {};
-      if (data.name !== undefined) payload.name = data.name;
-      if (data.code !== undefined) payload.code = data.code;
-      if (data.base_unit !== undefined) payload.base_unit = data.base_unit;
-      if (data.operator !== undefined) payload.operator = data.operator;
-      if (data.operation_value !== undefined) payload.operation_value = data.operation_value;
-      if (data.is_active !== undefined) payload.is_active = data.is_active;
+      const payload: Record<string, unknown> = {}
+      if (data.name !== undefined) payload.name = data.name
+      if (data.code !== undefined) payload.code = data.code
+      if (data.base_unit !== undefined) payload.base_unit = data.base_unit
+      if (data.operator !== undefined) payload.operator = data.operator
+      if (data.operation_value !== undefined) payload.operation_value = data.operation_value
+      if (data.is_active !== undefined) payload.is_active = data.is_active
 
-      const response = await api.put<{ data: Unit }>(`${BASE_PATH}/${id}`, payload);
+      const response = await api.put<{ data: Unit }>(`${BASE_PATH}/${id}`, payload)
       if (!response.success) {
-        if (response.errors) throw new ValidationError(response.message, response.errors);
-        throw new Error(response.message);
+        if (response.errors) throw new ValidationError(response.message, response.errors)
+        throw new Error(response.message)
       }
-      return { id, message: response.message };
+      return { id, message: response.message }
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: unitKeys.detail(data.id) });
-      toast.success(data.message);
+      queryClient.invalidateQueries({ queryKey: unitKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: unitKeys.detail(data.id) })
+      toast.success(data.message)
     },
     onError: (error) => {
-      toast.error(error.message);
+      toast.error(error.message)
     },
-  });
+  })
 }
 
 export function useDeleteUnit() {
-  const { api } = useApiClient();
-  const queryClient = useQueryClient();
+  const { api } = useApiClient()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const response = await api.delete(`${BASE_PATH}/${id}`);
-      if (!response.success) throw new Error(response.message);
-      return response;
+      const response = await api.delete(`${BASE_PATH}/${id}`)
+      if (!response.success) throw new Error(response.message)
+      return response
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
-      toast.success(response.message);
+      queryClient.invalidateQueries({ queryKey: unitKeys.lists() })
+      toast.success(response.message)
     },
     onError: (error) => {
-      toast.error(error.message);
+      toast.error(error.message)
     },
-  });
+  })
 }
 
 export function useBulkActivateUnits() {
-  const { api } = useApiClient();
-  const queryClient = useQueryClient();
+  const { api } = useApiClient()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
         `${BASE_PATH}/bulk-activate`,
-        { ids }
-      );
-      if (!response.success) throw new Error(response.message);
-      return response;
+        { ids },
+      )
+      if (!response.success) throw new Error(response.message)
+      return response
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
-      toast.success(response.message);
+      queryClient.invalidateQueries({ queryKey: unitKeys.lists() })
+      toast.success(response.message)
     },
     onError: (error) => toast.error(error.message),
-  });
+  })
 }
 
 export function useBulkDeactivateUnits() {
-  const { api } = useApiClient();
-  const queryClient = useQueryClient();
+  const { api } = useApiClient()
+  const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ deactivated_count: number }>(
         `${BASE_PATH}/bulk-deactivate`,
-        { ids }
-      );
-      if (!response.success) throw new Error(response.message);
-      return response;
+        { ids },
+      )
+      if (!response.success) throw new Error(response.message)
+      return response
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
-      toast.success(response.message);
+      queryClient.invalidateQueries({ queryKey: unitKeys.lists() })
+      toast.success(response.message)
     },
     onError: (error) => toast.error(error.message),
-  });
+  })
 }
 
 export function useBulkDestroyUnits() {
-  const { api } = useApiClient();
-  const queryClient = useQueryClient();
+  const { api } = useApiClient()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.post(`${BASE_PATH}/bulk-destroy`, { ids });
-      if (!response.success) throw new Error(response.message);
-      return response;
+      const response = await api.post(`${BASE_PATH}/bulk-destroy`, { ids })
+      if (!response.success) throw new Error(response.message)
+      return response
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
-      toast.success(response.message);
+      queryClient.invalidateQueries({ queryKey: unitKeys.lists() })
+      toast.success(response.message)
     },
     onError: (error) => toast.error(error.message),
-  });
+  })
 }
 
 export function useUnitsImport() {
-  const { api } = useApiClient();
-  const queryClient = useQueryClient();
+  const { api } = useApiClient()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (file: File) => {
-      const form = new FormData();
-      form.append("file", file);
-      const response = await api.post(`${BASE_PATH}/import`, form);
-      if (!response.success) throw new Error(response.message);
-      return response;
+      const form = new FormData()
+      form.append('file', file)
+      const response = await api.post(`${BASE_PATH}/import`, form)
+      if (!response.success) throw new Error(response.message)
+      return response
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: unitKeys.lists() });
-      toast.success(response.message);
+      queryClient.invalidateQueries({ queryKey: unitKeys.lists() })
+      toast.success(response.message)
     },
     onError: (error) => toast.error(error.message),
-  });
+  })
 }
 
 export function useUnitsExport() {
-  const { api } = useApiClient();
+  const { api } = useApiClient()
 
   return useMutation({
     mutationFn: async (params: UnitExportParams) => {
-      if (params.method === "download") {
-        const blob = await api.postBlob(`${BASE_PATH}/export`, params);
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        const fileName = `units-export-${Date.now()}.${params.format === "pdf" ? "pdf" : "xlsx"}`;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-        return { message: "Export downloaded successfully" };
+      if (params.method === 'download') {
+        const blob = await api.postBlob(`${BASE_PATH}/export`, params)
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        const fileName = `units-export-${Date.now()}.${params.format === 'pdf' ? 'pdf' : 'xlsx'}`
+        link.download = fileName
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+        return { message: 'Export downloaded successfully' }
       }
 
-      const response = await api.post(`${BASE_PATH}/export`, params);
-      if (!response.success) throw new Error(response.message);
-      return response;
+      const response = await api.post(`${BASE_PATH}/export`, params)
+      if (!response.success) throw new Error(response.message)
+      return response
     },
     onSuccess: (response) => {
-      toast.success(response.message);
+      toast.success(response.message)
     },
     onError: (error) => toast.error(error.message),
-  });
+  })
 }
 
 export function useUnitsTemplateDownload() {
-  const { api } = useApiClient();
+  const { api } = useApiClient()
   return useMutation({
     mutationFn: async () => {
-      const blob = await api.getBlob(`${BASE_PATH}/download`);
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `units-sample.csv`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-      return { message: "Sample template downloaded" };
+      const blob = await api.getBlob(`${BASE_PATH}/download`)
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `units-sample.csv`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+      return { message: 'Sample template downloaded' }
     },
     onSuccess: (response) => {
-      toast.success(response.message);
+      toast.success(response.message)
     },
     onError: (error) => toast.error(error.message),
-  });
+  })
 }

@@ -1,9 +1,11 @@
 'use client'
 
-import { HolidaysActionDialog } from '@/features/hrm/holidays'
-import { HolidaysDeleteDialog } from '@/features/hrm/holidays'
-import { HolidaysExportDialog } from '@/features/hrm/holidays'
-import { HolidaysImportDialog } from '@/features/hrm/holidays'
+import {
+  HolidaysActionDialog,
+  HolidaysDeleteDialog,
+  HolidaysExportDialog,
+  HolidaysImportDialog,
+} from '@/features/hrm/holidays'
 import { HolidaysViewDialog } from './holidays-view-dialog'
 import { useHolidays } from './holidays-provider'
 import { useAuthSession } from '@/features/auth/api'
@@ -24,7 +26,7 @@ export function HolidaysDialogs() {
     <>
       {canCreate && (
         <HolidaysActionDialog
-          key='holiday-add'
+          key="holiday-add"
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -34,7 +36,7 @@ export function HolidaysDialogs() {
 
       {canImport && (
         <HolidaysImportDialog
-          key='holiday-import'
+          key="holiday-import"
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -44,7 +46,7 @@ export function HolidaysDialogs() {
 
       {canExport && (
         <HolidaysExportDialog
-          key='holiday-export'
+          key="holiday-export"
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

@@ -23,7 +23,7 @@ export function UnitsDialogs() {
     <>
       {canCreate && (
         <UnitsActionDialog
-          key='unit-add'
+          key="unit-add"
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -33,7 +33,7 @@ export function UnitsDialogs() {
 
       {canImport && (
         <UnitsImportDialog
-          key='unit-import'
+          key="unit-import"
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -43,7 +43,7 @@ export function UnitsDialogs() {
 
       {canExport && (
         <UnitsExportDialog
-          key='unit-export'
+          key="unit-export"
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}
@@ -67,7 +67,7 @@ export function UnitsDialogs() {
               currentRow={currentRow}
             />
           )}
-          
+
           {canView && (
             <UnitsViewDialog
               key={`unit-view-${currentRow.id}`}

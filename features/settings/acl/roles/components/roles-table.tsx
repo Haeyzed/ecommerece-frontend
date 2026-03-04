@@ -1,37 +1,33 @@
-"use client"
+'use client'
 
-import { useState, useMemo, useEffect, Fragment } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { format } from 'date-fns'
 import { type DateRange } from 'react-day-picker'
 import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useTableUrlState } from '@/hooks/use-table-url-state'
 import { cn } from '@/lib/utils'
 import {
-  type SortingState,
-  type VisibilityState,
+  type ExpandedState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
   getSortedRowModel,
-  useReactTable, type ExpandedState,
+  type SortingState,
+  useReactTable,
+  type VisibilityState,
 } from '@tanstack/react-table'
 import { toast } from 'sonner'
 
 import { usePaginatedRoles } from '@/features/settings/acl/roles/api'
 import {
-  RolesEmptyState,
   DataTableBulkActions,
-  rolesColumns as columns, Role, RoleExpandedContent,
+  Role,
+  RoleExpandedContent,
+  rolesColumns as columns,
+  RolesEmptyState,
 } from '@/features/settings/acl/roles'
 
 export function RolesTable() {
@@ -96,7 +92,7 @@ export function RolesTable() {
       rowSelection,
       columnFilters,
       columnVisibility,
-      expanded
+      expanded,
     },
     enableRowSelection: true,
     manualPagination: true,
@@ -134,8 +130,8 @@ export function RolesTable() {
     <div className={cn('max-sm:has-[div[role="toolbar"]]:mb-16', 'flex flex-1 flex-col gap-4')}>
       <DataTableToolbar
         table={table}
-        searchPlaceholder='Filter by name...'
-        searchKey='name'
+        searchPlaceholder="Filter by name..."
+        searchKey="name"
         dateRange={dateRange}
         onDateRangeChange={setDateRange}
         onReset={() => setDateRange(undefined)}
@@ -150,11 +146,11 @@ export function RolesTable() {
           },
         ]}
       />
-      <div className='overflow-hidden rounded-md border'>
+      <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className='group/row'>
+              <TableRow key={headerGroup.id} className="group/row">
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
@@ -163,14 +159,14 @@ export function RolesTable() {
                       className={cn(
                         'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                         (header.column.columnDef.meta as any)?.className,
-                        (header.column.columnDef.meta as any)?.thClassName
+                        (header.column.columnDef.meta as any)?.thClassName,
                       )}
                     >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                     </TableHead>
                   )
@@ -185,27 +181,27 @@ export function RolesTable() {
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <Fragment key={row.id}>
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && 'selected'}
-                    className='group/row'
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className={cn(
-                          'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
-                          (cell.column.columnDef.meta as any)?.className,
-                          (cell.column.columnDef.meta as any)?.tdClassName
-                        )}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && 'selected'}
+                      className="group/row"
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          className={cn(
+                            'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
+                            (cell.column.columnDef.meta as any)?.className,
+                            (cell.column.columnDef.meta as any)?.tdClassName,
+                          )}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
                     {row.getIsExpanded() && (
                       <TableRow className="bg-muted/30 hover:bg-muted/30">
                         <TableCell
@@ -222,7 +218,7 @@ export function RolesTable() {
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className='h-24 text-center'
+                    className="h-24 text-center"
                   >
                     No results.
                   </TableCell>
@@ -232,7 +228,7 @@ export function RolesTable() {
           )}
         </Table>
       </div>
-      <DataTablePagination table={table} className='mt-auto' />
+      <DataTablePagination table={table} className="mt-auto" />
       <DataTableBulkActions table={table} />
     </div>
   )

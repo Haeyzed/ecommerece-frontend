@@ -11,7 +11,8 @@ export function SuppliersEmptyState() {
   const canCreate = session?.user?.user_permissions?.includes('suppliers-create')
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-4 rounded-lg border border-dashed p-12 text-center">
+    <div
+      className="flex flex-1 flex-col items-center justify-center gap-4 rounded-lg border border-dashed p-12 text-center">
       <div className="flex size-16 items-center justify-center rounded-full bg-muted">
         <HugeiconsIcon icon={UserGroupIcon} className="size-8 text-muted-foreground" strokeWidth={2} />
       </div>

@@ -1,21 +1,21 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { THEMES } from "@/lib/themes"
-import { themeColors } from "@/lib/theme-colors"
-import { cn } from "@/lib/utils"
-import { useThemeConfig } from "@/lib/providers/active-theme-provider"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { THEMES } from '@/lib/themes'
+import { themeColors } from '@/lib/theme-colors'
+import { cn } from '@/lib/utils'
+import { useThemeConfig } from '@/lib/providers/active-theme-provider'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
-export function ThemeSelector({ className }: React.ComponentProps<"div">) {
+export function ThemeSelector({ className }: React.ComponentProps<'div'>) {
   const { activeTheme, setActiveTheme } = useThemeConfig()
-  const value = activeTheme || "neutral"
+  const value = activeTheme || 'neutral'
   const activeColor = themeColors[value]?.color
 
   return (
-    <div className={cn("flex flex-col gap-2", className)}>
+    <div className={cn('flex flex-col gap-2', className)}>
       <Label htmlFor="theme-selector" className="text-sm font-medium text-muted-foreground">
         Theme
       </Label>

@@ -1,12 +1,8 @@
 'use client'
 
 import { Controller, type UseFormReturn } from 'react-hook-form'
-import type { SupplierFormData, Supplier } from '../schemas'
-import {
-  Field,
-  FieldError,
-  FieldLabel,
-} from '@/components/ui/field'
+import type { Supplier, SupplierFormData } from '../schemas'
+import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -22,7 +18,7 @@ import {
   FileUploadList,
   FileUploadTrigger,
 } from '@/components/ui/file-upload'
-import { CloudUploadIcon, CancelCircleIcon } from '@hugeicons/core-free-icons'
+import { CancelCircleIcon, CloudUploadIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 
 type SupplierFormProps = {
@@ -35,13 +31,13 @@ type SupplierFormProps = {
 }
 
 export function SupplierForm({
-  form,
-  onSubmit,
-  id,
-  isPending = false,
-  supplier,
-  isEdit = false,
-}: SupplierFormProps) {
+                               form,
+                               onSubmit,
+                               id,
+                               isPending = false,
+                               supplier,
+                               isEdit = false,
+                             }: SupplierFormProps) {
   return (
     <form id={id} onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       <Card>
@@ -183,8 +179,10 @@ export function SupplierForm({
                     maxSize={5 * 1024 * 1024}
                     onFileReject={(_, msg) => form.setError('image', { message: msg })}
                   >
-                    <FileUploadDropzone className="flex-col items-center justify-center gap-2 border-dashed p-6 text-center">
-                      <div className="flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                    <FileUploadDropzone
+                      className="flex-col items-center justify-center gap-2 border-dashed p-6 text-center">
+                      <div
+                        className="flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
                         <HugeiconsIcon icon={CloudUploadIcon} className="size-5" />
                       </div>
                       <div className="text-sm">
@@ -201,7 +199,8 @@ export function SupplierForm({
                     <FileUploadList>
                       {(value ?? []).map((file, i) => (
                         <FileUploadItem key={i} value={file} className="w-full">
-                          <div className="flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary">
+                          <div
+                            className="flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary">
                             <span className="text-xs font-medium">IMG</span>
                           </div>
                           <FileUploadItemPreview className="hidden" />

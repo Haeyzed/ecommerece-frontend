@@ -23,7 +23,7 @@ export function CategoriesDialogs() {
     <>
       {canCreate && (
         <CategoriesActionDialog
-          key='category-add'
+          key="category-add"
           open={open === 'add'}
           onOpenChange={() => setOpen('add')}
         />
@@ -31,7 +31,7 @@ export function CategoriesDialogs() {
 
       {canImport && (
         <CategoriesImportDialog
-          key='category-import'
+          key="category-import"
           open={open === 'import'}
           onOpenChange={() => setOpen('import')}
         />
@@ -39,7 +39,7 @@ export function CategoriesDialogs() {
 
       {canExport && (
         <CategoriesExportDialog
-          key='category-export'
+          key="category-export"
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}
@@ -61,7 +61,7 @@ export function CategoriesDialogs() {
               currentRow={currentRow}
             />
           )}
-          
+
           {canView && (
             <CategoriesViewDialog
               key={`category-view-${currentRow.id}`}

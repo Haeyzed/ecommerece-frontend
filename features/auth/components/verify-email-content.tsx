@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 /**
  * VerifyEmailContent
@@ -10,29 +10,22 @@
  * @component
  */
 
-import Link from "next/link"
-import { useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Spinner } from "@/components/ui/spinner"
-import { useVerifyEmail } from "@/features/auth/api"
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Spinner } from '@/components/ui/spinner'
+import { useVerifyEmail } from '@/features/auth/api'
 
 export function VerifyEmailContent() {
   const searchParams = useSearchParams()
-  const token = searchParams.get("token")
+  const token = searchParams.get('token')
   const [status, setStatus] = useState<
-    "idle" | "verifying" | "success" | "error"
-  >("idle")
-  const [errorMessage, setErrorMessage] = useState<string>("")
+    'idle' | 'verifying' | 'success' | 'error'
+  >('idle')
+  const [errorMessage, setErrorMessage] = useState<string>('')
 
   const verifyEmailMutation = useVerifyEmail()
 
@@ -45,14 +38,14 @@ export function VerifyEmailContent() {
   const handleVerify = async () => {
     if (!token) return
 
-    setStatus("verifying")
+    setStatus('verifying')
     try {
       await verifyEmailMutation.mutateAsync(token)
-      setStatus("success")
+      setStatus('success')
     } catch (error) {
-      setStatus("error")
+      setStatus('error')
       setErrorMessage(
-        error instanceof Error ? error.message : "Verification failed"
+        error instanceof Error ? error.message : 'Verification failed',
       )
     }
   }
@@ -87,7 +80,7 @@ export function VerifyEmailContent() {
     )
   }
 
-  if (status === "success") {
+  if (status === 'success') {
     return (
       <Card className="gap-4">
         <CardHeader>
@@ -117,7 +110,7 @@ export function VerifyEmailContent() {
     )
   }
 
-  if (status === "error") {
+  if (status === 'error') {
     return (
       <Card className="gap-4">
         <CardHeader>

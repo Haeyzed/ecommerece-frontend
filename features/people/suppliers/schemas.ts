@@ -75,7 +75,7 @@ export const supplierExportSchema = z
       if (data.method === 'email') return data.user_id !== undefined
       return true
     },
-    { message: 'Please select a user to send the email to', path: ['user_id'] }
+    { message: 'Please select a user to send the email to', path: ['user_id'] },
   )
 
 export type SupplierExportFormData = z.infer<typeof supplierExportSchema>

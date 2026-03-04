@@ -23,7 +23,7 @@ export function LanguagesDialogs() {
     <>
       {canCreate && (
         <LanguagesActionDialog
-          key='language-add'
+          key="language-add"
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -33,7 +33,7 @@ export function LanguagesDialogs() {
 
       {canImport && (
         <LanguagesImportDialog
-          key='language-import'
+          key="language-import"
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -43,7 +43,7 @@ export function LanguagesDialogs() {
 
       {canExport && (
         <LanguagesExportDialog
-          key='language-export'
+          key="language-export"
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

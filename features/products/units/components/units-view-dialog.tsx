@@ -1,14 +1,8 @@
-"use client"
+'use client'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import {
   Drawer,
   DrawerClose,
@@ -31,10 +25,10 @@ type UnitsViewDialogProps = {
 }
 
 export function UnitsViewDialog({
-  currentRow,
-  open,
-  onOpenChange,
-}: UnitsViewDialogProps) {
+                                  currentRow,
+                                  open,
+                                  onOpenChange,
+                                }: UnitsViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   if (!currentRow) return null
   const handleOpenChange = (value: boolean) => {
@@ -44,15 +38,15 @@ export function UnitsViewDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>Unit Details</DialogTitle>
             <DialogDescription>
               View unit information below.
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-2'>
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-2">
             <UnitView
               currentRow={currentRow}
             />
@@ -65,12 +59,12 @@ export function UnitsViewDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>Unit Details</DrawerTitle>
           <DrawerDescription>View unit information below.</DrawerDescription>
         </DrawerHeader>
 
-        <div className='max-h-[80vh] overflow-y-auto px-4'>
+        <div className="max-h-[80vh] overflow-y-auto px-4">
           <UnitView
             currentRow={currentRow}
           />
@@ -78,7 +72,7 @@ export function UnitsViewDialog({
 
         <DrawerFooter>
           <DrawerClose asChild>
-            <Button variant='outline'>Close</Button>
+            <Button variant="outline">Close</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -97,60 +91,60 @@ function UnitView({ className, currentRow }: UnitViewProps) {
 
   return (
     <div className={cn('space-y-6', className)}>
-      <div className='grid grid-cols-2 gap-4'>
-        <div className='space-y-2'>
-          <div className='text-sm font-medium text-muted-foreground'>Name</div>
-          <div className='text-sm font-medium'>{currentRow.name}</div>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <div className="text-sm font-medium text-muted-foreground">Name</div>
+          <div className="text-sm font-medium">{currentRow.name}</div>
         </div>
 
-        <div className='space-y-2'>
-          <div className='text-sm font-medium text-muted-foreground'>Code</div>
-          <div className='text-sm font-medium'>{currentRow.code}</div>
+        <div className="space-y-2">
+          <div className="text-sm font-medium text-muted-foreground">Code</div>
+          <div className="text-sm font-medium">{currentRow.code}</div>
         </div>
       </div>
 
-      <div className='space-y-2'>
-        <div className='text-sm font-medium text-muted-foreground'>Base Unit</div>
-        <div className='text-sm text-muted-foreground'>
+      <div className="space-y-2">
+        <div className="text-sm font-medium text-muted-foreground">Base Unit</div>
+        <div className="text-sm text-muted-foreground">
           {currentRow.base_unit_relation?.name || currentRow.base_unit || 'None (Base Unit)'}
         </div>
       </div>
 
       {(currentRow.operator || currentRow.operation_value) && (
-        <div className='grid grid-cols-2 gap-4'>
-          <div className='space-y-2'>
-            <div className='text-sm font-medium text-muted-foreground'>Operator</div>
-            <div className='text-sm font-mono'>{currentRow.operator || '-'}</div>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <div className="text-sm font-medium text-muted-foreground">Operator</div>
+            <div className="text-sm font-mono">{currentRow.operator || '-'}</div>
           </div>
-          <div className='space-y-2'>
-            <div className='text-sm font-medium text-muted-foreground'>Value</div>
-            <div className='text-sm font-mono'>{currentRow.operation_value || '-'}</div>
+          <div className="space-y-2">
+            <div className="text-sm font-medium text-muted-foreground">Value</div>
+            <div className="text-sm font-mono">{currentRow.operation_value || '-'}</div>
           </div>
         </div>
       )}
 
-      <div className='space-y-2'>
-        <div className='text-sm font-medium text-muted-foreground'>Status</div>
-        <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
+      <div className="space-y-2">
+        <div className="text-sm font-medium text-muted-foreground">Status</div>
+        <Badge variant="outline" className={cn('capitalize', statusBadgeColor)}>
           {status}
         </Badge>
       </div>
 
       <Separator />
 
-      <div className='grid grid-cols-2 gap-4'>
-        <div className='space-y-2'>
-          <div className='text-sm font-medium text-muted-foreground'>Created At</div>
-          <div className='text-sm text-muted-foreground'>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <div className="text-sm font-medium text-muted-foreground">Created At</div>
+          <div className="text-sm text-muted-foreground">
             {currentRow.created_at
               ? new Date(currentRow.created_at).toLocaleString()
               : 'N/A'}
           </div>
         </div>
 
-        <div className='space-y-2'>
-          <div className='text-sm font-medium text-muted-foreground'>Updated At</div>
-          <div className='text-sm text-muted-foreground'>
+        <div className="space-y-2">
+          <div className="text-sm font-medium text-muted-foreground">Updated At</div>
+          <div className="text-sm text-muted-foreground">
             {currentRow.updated_at
               ? new Date(currentRow.updated_at).toLocaleString()
               : 'N/A'}

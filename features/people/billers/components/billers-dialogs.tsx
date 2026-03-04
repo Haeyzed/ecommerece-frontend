@@ -25,7 +25,7 @@ export function BillersDialogs() {
     <>
       {canCreate && (
         <BillersActionDialog
-          key='biller-add'
+          key="biller-add"
           open={open === 'add'}
           onOpenChange={() => setOpen('add')}
         />
@@ -33,7 +33,7 @@ export function BillersDialogs() {
 
       {canImport && (
         <BillersImportDialog
-          key='biller-import'
+          key="biller-import"
           open={open === 'import'}
           onOpenChange={() => setOpen('import')}
         />
@@ -41,7 +41,7 @@ export function BillersDialogs() {
 
       {canExport && (
         <BillersExportDialog
-          key='biller-export'
+          key="biller-export"
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

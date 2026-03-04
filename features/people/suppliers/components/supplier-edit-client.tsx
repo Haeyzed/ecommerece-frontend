@@ -16,7 +16,7 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { Spinner } from '@/components/ui/spinner'
 import { Button } from '@/components/ui/button'
 import { useSupplier, useUpdateSupplier } from '../api'
-import { supplierSchema, type SupplierFormData } from '../schemas'
+import { type SupplierFormData, supplierSchema } from '../schemas'
 import { SupplierForm } from './supplier-form'
 
 type SupplierEditClientProps = {
@@ -82,7 +82,7 @@ export function SupplierEditClient({ id }: SupplierEditClientProps) {
         onSuccess: () => {
           router.push('/people/suppliers')
         },
-      }
+      },
     )
   }
 

@@ -1,11 +1,13 @@
 'use client'
 
-import { LeavesActionDialog } from '@/features/hrm/leaves'
-import { LeavesDeleteDialog } from '@/features/hrm/leaves'
-import { LeavesExportDialog } from '@/features/hrm/leaves'
-import { LeavesImportDialog } from '@/features/hrm/leaves'
-import { LeavesViewDialog } from '@/features/hrm/leaves'
-import { useLeaves } from '@/features/hrm/leaves'
+import {
+  LeavesActionDialog,
+  LeavesDeleteDialog,
+  LeavesExportDialog,
+  LeavesImportDialog,
+  LeavesViewDialog,
+  useLeaves,
+} from '@/features/hrm/leaves'
 import { useAuthSession } from '@/features/auth/api'
 
 export function LeavesDialogs() {
@@ -24,7 +26,7 @@ export function LeavesDialogs() {
     <>
       {canCreate && (
         <LeavesActionDialog
-          key='leave-add'
+          key="leave-add"
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -34,7 +36,7 @@ export function LeavesDialogs() {
 
       {canImport && (
         <LeavesImportDialog
-          key='leave-import'
+          key="leave-import"
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -44,7 +46,7 @@ export function LeavesDialogs() {
 
       {canExport && (
         <LeavesExportDialog
-          key='leave-export'
+          key="leave-export"
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

@@ -2,27 +2,14 @@
 
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  CheckmarkCircle02Icon,
-  Delete02Icon,
-  UnavailableIcon,
-  Upload01Icon,
-} from '@hugeicons/core-free-icons'
+import { CheckmarkCircle02Icon, Delete02Icon, UnavailableIcon, Upload01Icon } from '@hugeicons/core-free-icons'
 import { type Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
-import {
-  useBulkApproveHolidays,
-  useBulkUnapproveHolidays
-} from '@/features/hrm/holidays/api'
+import { useBulkApproveHolidays, useBulkUnapproveHolidays } from '@/features/hrm/holidays/api'
 import { type Holiday } from '@/features/hrm/holidays/types'
-import { HolidaysExportDialog } from '@/features/hrm/holidays'
-import { HolidaysMultiDeleteDialog } from '@/features/hrm/holidays'
+import { HolidaysExportDialog, HolidaysMultiDeleteDialog } from '@/features/hrm/holidays'
 import { useAuthSession } from '@/features/auth/api'
 import { Spinner } from '@/components/ui/spinner'
 
@@ -66,26 +53,26 @@ export function DataTableBulkActions<TData>({
 
   return (
     <>
-      <BulkActionsToolbar table={table} entityName='holiday'>
+      <BulkActionsToolbar table={table} entityName="holiday">
         {canUpdate && (
           <>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant='outline'
-                  size='icon'
+                  variant="outline"
+                  size="icon"
                   onClick={() => handleBulkStatusChange('approved')}
                   disabled={isBusy}
-                  className='size-8'
-                  aria-label='Approve selected holidays'
-                  title='Approve selected holidays'
+                  className="size-8"
+                  aria-label="Approve selected holidays"
+                  title="Approve selected holidays"
                 >
                   {isApproving ? (
-                    <Spinner className='size-4' />
+                    <Spinner className="size-4" />
                   ) : (
                     <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
                   )}
-                  <span className='sr-only'>Approve selected holidays</span>
+                  <span className="sr-only">Approve selected holidays</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -96,20 +83,20 @@ export function DataTableBulkActions<TData>({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant='outline'
-                  size='icon'
+                  variant="outline"
+                  size="icon"
                   onClick={() => handleBulkStatusChange('unapproved')}
                   disabled={isBusy}
-                  className='size-8'
-                  aria-label='Unapprove selected holidays'
-                  title='Unapprove selected holidays'
+                  className="size-8"
+                  aria-label="Unapprove selected holidays"
+                  title="Unapprove selected holidays"
                 >
                   {isUnapproving ? (
-                    <Spinner className='size-4' />
+                    <Spinner className="size-4" />
                   ) : (
                     <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
                   )}
-                  <span className='sr-only'>Unapprove selected holidays</span>
+                  <span className="sr-only">Unapprove selected holidays</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -123,16 +110,16 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant='outline'
-                size='icon'
+                variant="outline"
+                size="icon"
                 onClick={() => setShowExportDialog(true)}
                 disabled={isBusy}
-                className='size-8'
-                aria-label='Export selected holidays'
-                title='Export selected holidays'
+                className="size-8"
+                aria-label="Export selected holidays"
+                title="Export selected holidays"
               >
                 <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} />
-                <span className='sr-only'>Export selected holidays</span>
+                <span className="sr-only">Export selected holidays</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
@@ -145,16 +132,16 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant='destructive'
-                size='icon'
+                variant="destructive"
+                size="icon"
                 onClick={() => setShowDeleteConfirm(true)}
                 disabled={isBusy}
-                className='size-8'
-                aria-label='Delete selected holidays'
-                title='Delete selected holidays'
+                className="size-8"
+                aria-label="Delete selected holidays"
+                title="Delete selected holidays"
               >
                 <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} />
-                <span className='sr-only'>Delete selected holidays</span>
+                <span className="sr-only">Delete selected holidays</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>

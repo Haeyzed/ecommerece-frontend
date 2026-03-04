@@ -1,7 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { type Employee } from '../types'
@@ -24,55 +31,55 @@ export function EmployeesIdCardDialog({ open, onOpenChange, employees }: Props) 
 
   useEffect(() => {
     // Because of the API generic fix, activeTemplate maps cleanly
-    const designConfig = activeTemplate?.design_config;
+    const designConfig = activeTemplate?.design_config
 
     if (open && employees.length > 0 && designConfig) {
-      let isMounted = true;
+      let isMounted = true
 
       const generatePdf = async () => {
         // Await microtask to prevent ESLint set state in effect warning
-        await Promise.resolve();
+        await Promise.resolve()
 
-        if (!isMounted) return;
-        setIsGenerating(true);
+        if (!isMounted) return
+        setIsGenerating(true)
 
         try {
-          const generated = await generateIdCardsPdf(employees, designConfig);
+          const generated = await generateIdCardsPdf(employees, designConfig)
           // Strictly force to string so TypeScript knows it's not a URL object
-          const finalUrlString: string = String(generated);
+          const finalUrlString: string = String(generated)
 
           if (isMounted) {
             setPdfUrl((prevUrl) => {
-              if (prevUrl) window.URL.revokeObjectURL(prevUrl);
-              return finalUrlString;
-            });
+              if (prevUrl) window.URL.revokeObjectURL(prevUrl)
+              return finalUrlString
+            })
           } else {
-            window.URL.revokeObjectURL(finalUrlString);
+            window.URL.revokeObjectURL(finalUrlString)
           }
         } catch (error) {
-          console.error("Failed to generate PDF:", error);
+          console.error('Failed to generate PDF:', error)
         } finally {
           if (isMounted) {
-            setIsGenerating(false);
+            setIsGenerating(false)
           }
         }
-      };
+      }
 
-      generatePdf();
+      generatePdf()
 
       return () => {
-        isMounted = false;
-      };
+        isMounted = false
+      }
     }
-  }, [open, employees, activeTemplate]);
+  }, [open, employees, activeTemplate])
 
   useEffect(() => {
     return () => {
       if (pdfUrl) {
-        window.URL.revokeObjectURL(pdfUrl);
+        window.URL.revokeObjectURL(pdfUrl)
       }
-    };
-  }, [pdfUrl]);
+    }
+  }, [pdfUrl])
 
   const handleDownload = () => {
     if (!pdfUrl) return

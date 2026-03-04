@@ -23,7 +23,7 @@ export function WarehousesDialogs() {
     <>
       {canCreate && (
         <WarehousesActionDialog
-          key='warehouse-add'
+          key="warehouse-add"
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -33,7 +33,7 @@ export function WarehousesDialogs() {
 
       {canImport && (
         <WarehousesImportDialog
-          key='warehouse-import'
+          key="warehouse-import"
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -43,7 +43,7 @@ export function WarehousesDialogs() {
 
       {canExport && (
         <WarehousesExportDialog
-          key='warehouse-export'
+          key="warehouse-export"
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

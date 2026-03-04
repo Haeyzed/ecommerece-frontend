@@ -1,11 +1,13 @@
 'use client'
 
-import { ShiftsActionDialog } from '@/features/hrm/shifts'
-import { ShiftsDeleteDialog } from '@/features/hrm/shifts'
-import { ShiftsExportDialog } from '@/features/hrm/shifts'
-import { ShiftsImportDialog } from '@/features/hrm/shifts'
-import { ShiftsViewDialog } from '@/features/hrm/shifts'
-import { useShifts } from '@/features/hrm/shifts'
+import {
+  ShiftsActionDialog,
+  ShiftsDeleteDialog,
+  ShiftsExportDialog,
+  ShiftsImportDialog,
+  ShiftsViewDialog,
+  useShifts,
+} from '@/features/hrm/shifts'
 import { useAuthSession } from '@/features/auth/api'
 
 export function ShiftsDialogs() {
@@ -24,7 +26,7 @@ export function ShiftsDialogs() {
     <>
       {canCreate && (
         <ShiftsActionDialog
-          key='shift-add'
+          key="shift-add"
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -34,7 +36,7 @@ export function ShiftsDialogs() {
 
       {canImport && (
         <ShiftsImportDialog
-          key='shift-import'
+          key="shift-import"
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -44,7 +46,7 @@ export function ShiftsDialogs() {
 
       {canExport && (
         <ShiftsExportDialog
-          key='shift-export'
+          key="shift-export"
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

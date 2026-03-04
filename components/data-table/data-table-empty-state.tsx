@@ -1,15 +1,9 @@
-"use client"
+'use client'
 
 import { Button } from '@/components/ui/button'
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyTitle,
-} from '@/components/ui/empty'
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons"
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowUpRight01Icon } from '@hugeicons/core-free-icons'
 import { ReactNode } from 'react'
 
 type DataTableEmptyStateProps = {

@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 /**
  * RegisterForm
@@ -10,32 +10,26 @@
  * @component
  */
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Controller, useForm } from "react-hook-form"
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Controller, useForm } from 'react-hook-form'
 
-import { PasswordInput } from "@/components/password-input"
-import { Button } from "@/components/ui/button"
-import {
-  Field,
-  FieldContent,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { Spinner } from "@/components/ui/spinner"
-import { useRegister } from "@/features/auth/api"
-import { type RegisterFormData, registerSchema } from "@/features/auth/schemas"
-import { ValidationError } from "@/lib/api/api-errors"
+import { PasswordInput } from '@/components/password-input'
+import { Button } from '@/components/ui/button'
+import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
+import { Spinner } from '@/components/ui/spinner'
+import { useRegister } from '@/features/auth/api'
+import { type RegisterFormData, registerSchema } from '@/features/auth/schemas'
+import { ValidationError } from '@/lib/api/api-errors'
 
 export function RegisterForm() {
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      password_confirmation: "",
+      name: '',
+      email: '',
+      password: '',
+      password_confirmation: '',
     },
   })
 
@@ -48,14 +42,14 @@ export function RegisterForm() {
       if (error instanceof ValidationError && error.errors) {
         Object.entries(error.errors).forEach(([field, messages]) => {
           form.setError(field as keyof RegisterFormData, {
-            type: "server",
+            type: 'server',
             message: messages[0],
           })
         })
       } else {
-        form.setError("root", {
-          type: "server",
-          message: error instanceof Error ? error.message : "An error occurred",
+        form.setError('root', {
+          type: 'server',
+          message: error instanceof Error ? error.message : 'An error occurred',
         })
       }
     }
@@ -182,7 +176,7 @@ export function RegisterForm() {
             Creating account...
           </>
         ) : (
-          "Create account"
+          'Create account'
         )}
       </Button>
     </form>

@@ -1,11 +1,11 @@
-import * as React from "react"
-import { Slot } from "radix-ui"
+import * as React from 'react'
+import { Slot } from 'radix-ui'
 
-import { cn } from "@/lib/utils"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowRight01Icon, MoreHorizontalCircle01Icon } from "@hugeicons/core-free-icons"
+import { cn } from '@/lib/utils'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowRight01Icon, MoreHorizontalCircle01Icon } from '@hugeicons/core-free-icons'
 
-function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
+function Breadcrumb({ className, ...props }: React.ComponentProps<'nav'>) {
   return (
     <nav
       aria-label="breadcrumb"
@@ -16,71 +16,71 @@ function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
   )
 }
 
-function BreadcrumbList({ className, ...props }: React.ComponentProps<"ol">) {
+function BreadcrumbList({ className, ...props }: React.ComponentProps<'ol'>) {
   return (
     <ol
       data-slot="breadcrumb-list"
       className={cn(
-        "text-muted-foreground gap-1.5 text-sm sm:gap-2.5 flex flex-wrap items-center break-words",
-        className
+        'text-muted-foreground gap-1.5 text-sm sm:gap-2.5 flex flex-wrap items-center break-words',
+        className,
       )}
       {...props}
     />
   )
 }
 
-function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
+function BreadcrumbItem({ className, ...props }: React.ComponentProps<'li'>) {
   return (
     <li
       data-slot="breadcrumb-item"
-      className={cn("gap-1.5 inline-flex items-center", className)}
+      className={cn('gap-1.5 inline-flex items-center', className)}
       {...props}
     />
   )
 }
 
 function BreadcrumbLink({
-  asChild,
-  className,
-  ...props
-}: React.ComponentProps<"a"> & {
+                          asChild,
+                          className,
+                          ...props
+                        }: React.ComponentProps<'a'> & {
   asChild?: boolean
 }) {
-  const Comp = asChild ? Slot.Root : "a"
+  const Comp = asChild ? Slot.Root : 'a'
 
   return (
     <Comp
       data-slot="breadcrumb-link"
-      className={cn("hover:text-foreground transition-colors", className)}
+      className={cn('hover:text-foreground transition-colors', className)}
       {...props}
     />
   )
 }
 
-function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
+function BreadcrumbPage({ className, ...props }: React.ComponentProps<'span'>) {
   return (
     <span
       data-slot="breadcrumb-page"
       role="link"
       aria-disabled="true"
       aria-current="page"
-      className={cn("text-foreground font-normal", className)}
+      className={cn('text-foreground font-normal', className)}
       {...props}
     />
   )
 }
 
 function BreadcrumbSeparator({
-  children,
-  className,
-  ...props
-}: React.ComponentProps<"li">) {
+                               children,
+                               className,
+                               ...props
+                             }: React.ComponentProps<'li'>) {
   return (
     <li
       data-slot="breadcrumb-separator"
       role="presentation"
       aria-hidden="true"
-      className={cn("[&>svg]:size-3.5", className)}
+      className={cn('[&>svg]:size-3.5', className)}
       {...props}
     >
       {children ?? (
@@ -91,17 +91,17 @@ function BreadcrumbSeparator({
 }
 
 function BreadcrumbEllipsis({
-  className,
-  ...props
-}: React.ComponentProps<"span">) {
+                              className,
+                              ...props
+                            }: React.ComponentProps<'span'>) {
   return (
     <span
       data-slot="breadcrumb-ellipsis"
       role="presentation"
       aria-hidden="true"
       className={cn(
-        "size-5 [&>svg]:size-4 flex items-center justify-center",
-        className
+        'size-5 [&>svg]:size-4 flex items-center justify-center',
+        className,
       )}
       {...props}
     >

@@ -1,30 +1,30 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { fonts } from "@/config/fonts"
-import { cn } from "@/lib/utils"
-import { useFont } from "@/lib/providers/font-provider"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { fonts } from '@/config/fonts'
+import { cn } from '@/lib/utils'
+import { useFont } from '@/lib/providers/font-provider'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 const fontLabels: Record<string, string> = {
-  inter: "Inter",
-  outfit: "Outfit",
-  "noto-sans": "Noto Sans",
-  figtree: "Figtree",
-  roboto: "Roboto",
-  raleway: "Raleway",
-  "dm-sans": "DM Sans",
-  "public-sans": "Public Sans",
-  "jetbrains-mono": "JetBrains Mono",
+  inter: 'Inter',
+  outfit: 'Outfit',
+  'noto-sans': 'Noto Sans',
+  figtree: 'Figtree',
+  roboto: 'Roboto',
+  raleway: 'Raleway',
+  'dm-sans': 'DM Sans',
+  'public-sans': 'Public Sans',
+  'jetbrains-mono': 'JetBrains Mono',
 }
 
-export function FontSelector({ className }: React.ComponentProps<"div">) {
+export function FontSelector({ className }: React.ComponentProps<'div'>) {
   const { font, setFont } = useFont()
 
   return (
-    <div className={cn("flex flex-col gap-2", className)}>
+    <div className={cn('flex flex-col gap-2', className)}>
       <Label htmlFor="font-selector" className="text-sm font-medium text-muted-foreground">
         Font
       </Label>

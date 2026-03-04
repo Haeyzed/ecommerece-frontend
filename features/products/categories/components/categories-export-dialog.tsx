@@ -6,7 +6,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { Upload01Icon } from '@hugeicons/core-free-icons'
 import { format } from 'date-fns'
 import { useCategoriesExport } from '@/features/products/categories/api'
-import { categoryExportSchema, type CategoryExportFormData } from '@/features/products/categories/schemas'
+import { type CategoryExportFormData, categoryExportSchema } from '@/features/products/categories/schemas'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -26,22 +26,10 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { useQuery } from '@tanstack/react-query'
 import { useApiClient } from '@/lib/api/api-client-client'
@@ -118,7 +106,7 @@ export function CategoriesExportDialog({
       },
       {
         onSuccess: () => handleOpenChange(false),
-      }
+      },
     )
   }
 
@@ -137,7 +125,7 @@ export function CategoriesExportDialog({
           control={form.control}
           name="start_date"
           render={({ field, fieldState }) => (
-            <Field className={"grid gap-1.5 w-full"}>
+            <Field className={'grid gap-1.5 w-full'}>
               <FieldLabel>Date Range</FieldLabel>
               <DateRangePicker
                 value={{
@@ -147,11 +135,11 @@ export function CategoriesExportDialog({
                 onChange={(range) => {
                   form.setValue(
                     'start_date',
-                    range?.from ? format(range.from, 'yyyy-MM-dd') : undefined
+                    range?.from ? format(range.from, 'yyyy-MM-dd') : undefined,
                   )
                   form.setValue(
                     'end_date',
-                    range?.to ? format(range.to, 'yyyy-MM-dd') : undefined
+                    range?.to ? format(range.to, 'yyyy-MM-dd') : undefined,
                   )
                 }}
               />

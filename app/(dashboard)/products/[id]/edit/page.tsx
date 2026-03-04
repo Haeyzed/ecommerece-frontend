@@ -1,32 +1,31 @@
-"use client";
+'use client'
 
 /**
  * Edit Product Page
  */
 
-import { ProductForm } from "@/features/products/components/product-form";
-import { useProduct, useUpdateProduct } from "@/features/products/api";
-import { useRouter } from "next/navigation";
-import { useParams } from "next/navigation";
+import { ProductForm } from '@/features/products/components/product-form'
+import { useProduct, useUpdateProduct } from '@/features/products/api'
+import { useParams, useRouter } from 'next/navigation'
 
 export default function EditProductPage() {
-  const params = useParams();
-  const router = useRouter();
-  const id = Number(params.id);
-  const { data: product, isLoading, isSessionLoading } = useProduct(id);
-  const updateMutation = useUpdateProduct();
+  const params = useParams()
+  const router = useRouter()
+  const id = Number(params.id)
+  const { data: product, isLoading, isSessionLoading } = useProduct(id)
+  const updateMutation = useUpdateProduct()
 
-  const handleSubmit = async (data: Parameters<typeof updateMutation.mutateAsync>[0]["data"]) => {
-    await updateMutation.mutateAsync({ id, data });
-    router.push("/products");
-  };
+  const handleSubmit = async (data: Parameters<typeof updateMutation.mutateAsync>[0]['data']) => {
+    await updateMutation.mutateAsync({ id, data })
+    router.push('/products')
+  }
 
   if (isSessionLoading || isLoading) {
-    return <div className="container mx-auto py-8">Loading...</div>;
+    return <div className="container mx-auto py-8">Loading...</div>
   }
 
   if (!product) {
-    return <div className="container mx-auto py-8">Product not found</div>;
+    return <div className="container mx-auto py-8">Product not found</div>
   }
 
   return (
@@ -39,5 +38,5 @@ export default function EditProductPage() {
         isLoading={updateMutation.isPending}
       />
     </div>
-  );
+  )
 }

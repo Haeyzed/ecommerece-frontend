@@ -1,29 +1,29 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { AuthenticatedLayout } from '@/components/layout/authenticated-layout';
-import { Header } from '@/components/layout/header';
-import { Main } from '@/components/layout/main';
-import { ProfileDropdown } from '@/components/profile-dropdown';
-import { Search } from '@/components/search';
-import { ThemeSwitch } from '@/components/theme-switch';
-import { ConfigDrawer } from '@/components/config-drawer';
-import { Spinner } from '@/components/ui/spinner';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { usePayrollRun, usePayrollRunEntries, useGeneratePayrollEntries } from '../api';
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { AuthenticatedLayout } from '@/components/layout/authenticated-layout'
+import { Header } from '@/components/layout/header'
+import { Main } from '@/components/layout/main'
+import { ProfileDropdown } from '@/components/profile-dropdown'
+import { Search } from '@/components/search'
+import { ThemeSwitch } from '@/components/theme-switch'
+import { ConfigDrawer } from '@/components/config-drawer'
+import { Spinner } from '@/components/ui/spinner'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useGeneratePayrollEntries, usePayrollRun, usePayrollRunEntries } from '../api'
 
 interface PayrollRunEntriesClientProps {
   runId: number;
 }
 
 export function PayrollRunEntriesClient({ runId }: PayrollRunEntriesClientProps) {
-  const { data: run, isLoading: runLoading } = usePayrollRun(runId);
-  const { data: entriesData, isLoading: entriesLoading } = usePayrollRunEntries(runId, { per_page: 50 });
-  const generateEntries = useGeneratePayrollEntries();
+  const { data: run, isLoading: runLoading } = usePayrollRun(runId)
+  const { data: entriesData, isLoading: entriesLoading } = usePayrollRunEntries(runId, { per_page: 50 })
+  const generateEntries = useGeneratePayrollEntries()
 
-  const entries = entriesData?.data ?? [];
-  const isLoading = runLoading || entriesLoading;
+  const entries = entriesData?.data ?? []
+  const isLoading = runLoading || entriesLoading
 
   return (
     <AuthenticatedLayout>
@@ -103,5 +103,5 @@ export function PayrollRunEntriesClient({ runId }: PayrollRunEntriesClientProps)
         )}
       </Main>
     </AuthenticatedLayout>
-  );
+  )
 }

@@ -23,8 +23,8 @@ type AuditLogContextType = {
 const AuditLogContext = React.createContext<AuditLogContextType | null>(null)
 
 export function AuditLogProvider({
-  children,
-}: {
+                                   children,
+                                 }: {
   children: React.ReactNode
 }) {
   const [open, setOpen] = useDialogState<AuditLogDialogType>(null)

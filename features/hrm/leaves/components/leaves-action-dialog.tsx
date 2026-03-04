@@ -5,11 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 import { format } from 'date-fns'
 
-import {
-  useCreateLeave,
-  useUpdateLeave
-} from '@/features/hrm/leaves/api'
-import { leaveSchema, type LeaveFormData } from '@/features/hrm/leaves/schemas'
+import { useCreateLeave, useUpdateLeave } from '@/features/hrm/leaves/api'
+import { type LeaveFormData, leaveSchema } from '@/features/hrm/leaves/schemas'
 import { type Leave } from '../types'
 import { useOptionEmployees } from '@/features/hrm/employees/api'
 import { useOptionLeaveTypes } from '@/features/hrm/leave-types/api'
@@ -35,12 +32,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Spinner } from '@/components/ui/spinner'
 import { DateRangePicker } from '@/components/date-range-picker'
 import {
@@ -50,14 +42,8 @@ import {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-} from "@/components/ui/combobox"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+} from '@/components/ui/combobox'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 type LeavesActionDialogProps = {
   currentRow?: Leave
@@ -118,8 +104,8 @@ export function LeavesActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange} modal={false}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>{isEdit ? 'Edit Leave' : 'Add New Leave'}</DialogTitle>
             <DialogDescription>
               {isEdit ? 'Update the leave details here. ' : 'Create a new leave request here. '}
@@ -127,15 +113,15 @@ export function LeavesActionDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
-            <LeaveForm form={form} onSubmit={onSubmit} id='leave-form' />
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
+            <LeaveForm form={form} onSubmit={onSubmit} id="leave-form" />
           </div>
 
           <DialogFooter>
-            <Button type='submit' form='leave-form' disabled={isLoading}>
+            <Button type="submit" form="leave-form" disabled={isLoading}>
               {isLoading ? (
                 <>
-                  <Spinner className='mr-2 size-4' />
+                  <Spinner className="mr-2 size-4" />
                   Saving...
                 </>
               ) : (
@@ -151,7 +137,7 @@ export function LeavesActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange} modal={false}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>{isEdit ? 'Edit Leave' : 'Add New Leave'}</DrawerTitle>
           <DrawerDescription>
             {isEdit ? 'Update the leave details here. ' : 'Create a new leave request here. '}
@@ -159,15 +145,15 @@ export function LeavesActionDialog({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className='no-scrollbar overflow-y-auto px-4'>
-          <LeaveForm form={form} onSubmit={onSubmit} id='leave-form' />
+        <div className="no-scrollbar overflow-y-auto px-4">
+          <LeaveForm form={form} onSubmit={onSubmit} id="leave-form" />
         </div>
 
         <DrawerFooter>
-          <Button type='submit' form='leave-form' disabled={isLoading}>
+          <Button type="submit" form="leave-form" disabled={isLoading}>
             {isLoading ? (
               <>
-                <Spinner className='mr-2 size-4' />
+                <Spinner className="mr-2 size-4" />
                 Saving...
               </>
             ) : (
@@ -175,7 +161,7 @@ export function LeavesActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -208,10 +194,10 @@ function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
         {/* Employee Selection */}
         <Controller
           control={form.control}
-          name='employee_id'
+          name="employee_id"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error} className="flex flex-col">
-              <FieldLabel htmlFor='leave-employee-id'>Employee <span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel htmlFor="leave-employee-id">Employee <span className="text-destructive">*</span></FieldLabel>
               <Combobox
                 items={optionEmployees || []}
                 itemToStringLabel={(item) => item.label}
@@ -245,10 +231,10 @@ function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
         {/* Leave Type Selection */}
         <Controller
           control={form.control}
-          name='leave_type_id'
+          name="leave_type_id"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error} className="flex flex-col">
-              <FieldLabel htmlFor='leave-type-id'>Leave Type <span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel htmlFor="leave-type-id">Leave Type <span className="text-destructive">*</span></FieldLabel>
               <Combobox
                 items={optionLeaveTypes || []}
                 itemToStringLabel={(item) => item.label}
@@ -279,7 +265,8 @@ function LeaveForm({ form, onSubmit, id, className }: LeaveFormProps) {
           )}
         />
 
-        <Field data-invalid={!!form.formState.errors.start_date || !!form.formState.errors.end_date} className="flex flex-col">
+        <Field data-invalid={!!form.formState.errors.start_date || !!form.formState.errors.end_date}
+               className="flex flex-col">
           <FieldLabel>Date Range <span className="text-destructive">*</span></FieldLabel>
           <DateRangePicker
             value={{

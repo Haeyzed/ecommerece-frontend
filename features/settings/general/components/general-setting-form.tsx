@@ -1,25 +1,13 @@
 'use client'
 
-import {
-  CancelCircleIcon,
-  CloudUploadIcon,
-  CodeIcon,
-  CopyIcon,
-  RefreshIcon,
-} from '@hugeicons/core-free-icons'
+import { CancelCircleIcon, CloudUploadIcon, CodeIcon, CopyIcon, RefreshIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { toast } from 'sonner'
 import Image from 'next/image'
 import { Controller, type UseFormReturn } from 'react-hook-form'
 import { useTheme } from '@/lib/providers/theme-provider'
 import { cn } from '@/lib/utils'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -42,13 +30,7 @@ import {
 } from '@/components/ui/input-group'
 import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Spinner } from '@/components/ui/spinner'
 import { Switch } from '@/components/ui/switch'
 import type { GeneralSettingFormData } from '../schemas'
@@ -81,12 +63,12 @@ type GeneralSettingFormProps = {
 }
 
 export function GeneralSettingForm({
-  form,
-  onSubmit,
-  id,
-  isPending = false,
-  setting,
-}: GeneralSettingFormProps) {
+                                     form,
+                                     onSubmit,
+                                     id,
+                                     isPending = false,
+                                     setting,
+                                   }: GeneralSettingFormProps) {
   const { resolvedTheme } = useTheme()
 
   return (
@@ -127,7 +109,7 @@ export function GeneralSettingForm({
                             backdropClassName={cn(
                               resolvedTheme === 'dark'
                                 ? '[&_[data-rmiz-modal-overlay="visible"]]:bg-white/80'
-                                : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80'
+                                : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80',
                             )}
                           >
                             <Image
@@ -208,7 +190,7 @@ export function GeneralSettingForm({
                             backdropClassName={cn(
                               resolvedTheme === 'dark'
                                 ? '[&_[data-rmiz-modal-overlay="visible"]]:bg-white/80'
-                                : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80'
+                                : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80',
                             )}
                           >
                             <Image

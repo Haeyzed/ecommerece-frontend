@@ -2,12 +2,7 @@
 
 import Link from 'next/link'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  Delete02Icon,
-  MoreHorizontalIcon,
-  PencilEdit02Icon,
-  ViewIcon,
-} from '@hugeicons/core-free-icons'
+import { Delete02Icon, MoreHorizontalIcon, PencilEdit02Icon, ViewIcon } from '@hugeicons/core-free-icons'
 import type { Row } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
 import {

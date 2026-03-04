@@ -23,7 +23,7 @@ export function CountriesDialogs() {
     <>
       {canCreate && (
         <CountriesActionDialog
-          key='country-add'
+          key="country-add"
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -33,7 +33,7 @@ export function CountriesDialogs() {
 
       {canImport && (
         <CountriesImportDialog
-          key='country-import'
+          key="country-import"
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -43,7 +43,7 @@ export function CountriesDialogs() {
 
       {canExport && (
         <CountriesExportDialog
-          key='country-export'
+          key="country-export"
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

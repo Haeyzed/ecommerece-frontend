@@ -1,12 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -35,7 +30,10 @@ export function PayrollActionDialog({ open, onOpenChange }: PayrollActionDialogP
   }
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { setOpen(v ? 'add' : null); onOpenChange(!!v) }}>
+    <Dialog open={open} onOpenChange={(v) => {
+      setOpen(v ? 'add' : null)
+      onOpenChange(!!v)
+    }}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>New payroll run</DialogTitle>
@@ -52,7 +50,10 @@ export function PayrollActionDialog({ open, onOpenChange }: PayrollActionDialogP
             />
           </div>
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={() => { setOpen(null); onOpenChange(false) }}>
+            <Button type="button" variant="outline" onClick={() => {
+              setOpen(null)
+              onOpenChange(false)
+            }}>
               Cancel
             </Button>
             <Button type="submit" disabled={createRun.isPending}>

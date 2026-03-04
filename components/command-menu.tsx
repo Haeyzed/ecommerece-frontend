@@ -3,13 +3,7 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  ArrowRight01Icon,
-  ArrowRight02Icon,
-  LaptopIcon,
-  Moon02Icon,
-  Sun03Icon
-} from '@hugeicons/core-free-icons'
+import { ArrowRight01Icon, ArrowRight02Icon, LaptopIcon, Moon02Icon, Sun03Icon } from '@hugeicons/core-free-icons'
 import { useSearch } from '@/lib/providers/search-provider'
 import { useTheme } from '@/lib/providers/theme-provider'
 import {
@@ -35,15 +29,15 @@ export function CommandMenu() {
       setOpen(false)
       command()
     },
-    [setOpen]
+    [setOpen],
   )
 
   return (
     <CommandDialog modal open={open} onOpenChange={setOpen}>
       <Command>
-        <CommandInput placeholder='Type a command or search...' />
+        <CommandInput placeholder="Type a command or search..." />
         <CommandList>
-          <ScrollArea type='hover' className='h-72 pe-1'>
+          <ScrollArea type="hover" className="h-72 pe-1">
             <CommandEmpty>No results found.</CommandEmpty>
             {sidebarData.navGroups.map((group) => (
               <CommandGroup key={group.title} heading={group.title}>
@@ -58,10 +52,10 @@ export function CommandMenu() {
                           runCommand(() => router.push(navItem.url as string))
                         }}
                       >
-                        <div className='flex size-4 items-center justify-center'>
+                        <div className="flex size-4 items-center justify-center">
                           <HugeiconsIcon
                             icon={ArrowRight01Icon}
-                            className='size-2 text-muted-foreground/80'
+                            className="size-2 text-muted-foreground/80"
                             strokeWidth={2}
                           />
                         </div>
@@ -78,17 +72,17 @@ export function CommandMenu() {
                         runCommand(() => router.push(subItem.url))
                       }}
                     >
-                      <div className='flex size-4 items-center justify-center'>
+                      <div className="flex size-4 items-center justify-center">
                         <HugeiconsIcon
                           icon={ArrowRight01Icon}
-                          className='size-2 text-muted-foreground/80'
+                          className="size-2 text-muted-foreground/80"
                           strokeWidth={2}
                         />
                       </div>
                       {navItem.title}
                       <HugeiconsIcon
                         icon={ArrowRight02Icon}
-                        className='size-4 text-muted-foreground'
+                        className="size-4 text-muted-foreground"
                         strokeWidth={2}
                       />
                       {subItem.title}
@@ -98,7 +92,7 @@ export function CommandMenu() {
               </CommandGroup>
             ))}
             <CommandSeparator />
-            <CommandGroup heading='Theme'>
+            <CommandGroup heading="Theme">
               <CommandItem onSelect={() => runCommand(() => setTheme('light'))}>
                 <HugeiconsIcon icon={Sun03Icon} strokeWidth={2} className="mr-2 size-4" />
                 <span>Light</span>

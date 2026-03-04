@@ -13,7 +13,7 @@ import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { Spinner } from '@/components/ui/spinner'
 import { useGeneralSetting, useUpdateGeneralSetting } from '@/features/settings/general/api'
-import { generalSettingSchema, type GeneralSettingFormData } from '@/features/settings/general/schemas'
+import { type GeneralSettingFormData, generalSettingSchema } from '@/features/settings/general/schemas'
 import { GeneralSettingForm } from './general-setting-form'
 
 export function GeneralSettingClient() {

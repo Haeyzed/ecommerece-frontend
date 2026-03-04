@@ -2,13 +2,7 @@
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import {
   Drawer,
   DrawerClose,
@@ -33,10 +27,10 @@ type SuppliersViewDialogProps = {
 }
 
 export function SuppliersViewDialog({
-  currentRow,
-  open,
-  onOpenChange,
-}: SuppliersViewDialogProps) {
+                                      currentRow,
+                                      open,
+                                      onOpenChange,
+                                    }: SuppliersViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   if (!currentRow) return null
 
@@ -100,7 +94,7 @@ function SupplierView({ className, currentRow }: SupplierViewProps) {
               backdropClassName={cn(
                 resolvedTheme === 'dark'
                   ? '[&_[data-rmiz-modal-overlay="visible"]]:bg-white/80'
-                  : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80'
+                  : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80',
               )}
             >
               <Image
@@ -182,7 +176,7 @@ function SupplierView({ className, currentRow }: SupplierViewProps) {
             'capitalize',
             currentRow.is_active
               ? 'border-green-500/50 text-green-700 dark:text-green-400'
-              : 'border-muted-foreground/50'
+              : 'border-muted-foreground/50',
           )}
         >
           {currentRow.is_active ? 'Active' : 'Inactive'}

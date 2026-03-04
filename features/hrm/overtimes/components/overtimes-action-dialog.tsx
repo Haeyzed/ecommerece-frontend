@@ -5,11 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 import { format } from 'date-fns'
 
-import {
-  useCreateOvertime,
-  useUpdateOvertime
-} from '@/features/hrm/overtimes/api'
-import { overtimeSchema, type OvertimeFormData } from '@/features/hrm/overtimes/schemas'
+import { useCreateOvertime, useUpdateOvertime } from '@/features/hrm/overtimes/api'
+import { type OvertimeFormData, overtimeSchema } from '@/features/hrm/overtimes/schemas'
 import { type Overtime } from '../types'
 import { useOptionEmployees } from '@/features/hrm/employees/api'
 
@@ -35,12 +32,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Spinner } from '@/components/ui/spinner'
 import { DatePicker } from '@/components/date-picker'
 import {
@@ -50,14 +42,8 @@ import {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-} from "@/components/ui/combobox"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+} from '@/components/ui/combobox'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 type OvertimesActionDialogProps = {
   currentRow?: Overtime
@@ -118,8 +104,8 @@ export function OvertimesActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange} modal={false}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>{isEdit ? 'Edit Overtime' : 'Add New Overtime'}</DialogTitle>
             <DialogDescription>
               {isEdit ? 'Update the overtime details here. ' : 'Create a new overtime record here. '}
@@ -127,15 +113,15 @@ export function OvertimesActionDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
-            <OvertimeForm form={form} onSubmit={onSubmit} id='overtime-form' />
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
+            <OvertimeForm form={form} onSubmit={onSubmit} id="overtime-form" />
           </div>
 
           <DialogFooter>
-            <Button type='submit' form='overtime-form' disabled={isLoading}>
+            <Button type="submit" form="overtime-form" disabled={isLoading}>
               {isLoading ? (
                 <>
-                  <Spinner className='mr-2 size-4' />
+                  <Spinner className="mr-2 size-4" />
                   Saving...
                 </>
               ) : (
@@ -151,7 +137,7 @@ export function OvertimesActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange} modal={false}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>{isEdit ? 'Edit Overtime' : 'Add New Overtime'}</DrawerTitle>
           <DrawerDescription>
             {isEdit ? 'Update the overtime details here. ' : 'Create a new overtime record here. '}
@@ -159,15 +145,15 @@ export function OvertimesActionDialog({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className='no-scrollbar overflow-y-auto px-4'>
-          <OvertimeForm form={form} onSubmit={onSubmit} id='overtime-form' />
+        <div className="no-scrollbar overflow-y-auto px-4">
+          <OvertimeForm form={form} onSubmit={onSubmit} id="overtime-form" />
         </div>
 
         <DrawerFooter>
-          <Button type='submit' form='overtime-form' disabled={isLoading}>
+          <Button type="submit" form="overtime-form" disabled={isLoading}>
             {isLoading ? (
               <>
-                <Spinner className='mr-2 size-4' />
+                <Spinner className="mr-2 size-4" />
                 Saving...
               </>
             ) : (
@@ -175,7 +161,7 @@ export function OvertimesActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -204,10 +190,11 @@ function OvertimeForm({ form, onSubmit, id, className }: OvertimeFormProps) {
         {/* Employee Selection */}
         <Controller
           control={form.control}
-          name='employee_id'
+          name="employee_id"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error} className="flex flex-col">
-              <FieldLabel htmlFor='overtime-employee-id'>Employee <span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel htmlFor="overtime-employee-id">Employee <span
+                className="text-destructive">*</span></FieldLabel>
               <Combobox
                 items={optionEmployees || []}
                 itemToStringLabel={(item) => item.label}
@@ -241,7 +228,7 @@ function OvertimeForm({ form, onSubmit, id, className }: OvertimeFormProps) {
         {/* Date */}
         <Controller
           control={form.control}
-          name='date'
+          name="date"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error} className="flex flex-col">
               <FieldLabel>Date <span className="text-destructive">*</span></FieldLabel>
@@ -260,12 +247,12 @@ function OvertimeForm({ form, onSubmit, id, className }: OvertimeFormProps) {
           {/* Hours */}
           <Controller
             control={form.control}
-            name='hours'
+            name="hours"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='overtime-hours'>Hours <span className="text-destructive">*</span></FieldLabel>
+                <FieldLabel htmlFor="overtime-hours">Hours <span className="text-destructive">*</span></FieldLabel>
                 <Input
-                  id='overtime-hours'
+                  id="overtime-hours"
                   type="number"
                   step="0.5"
                   min="0"
@@ -281,12 +268,12 @@ function OvertimeForm({ form, onSubmit, id, className }: OvertimeFormProps) {
           {/* Rate */}
           <Controller
             control={form.control}
-            name='rate'
+            name="rate"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='overtime-rate'>Rate <span className="text-destructive">*</span></FieldLabel>
+                <FieldLabel htmlFor="overtime-rate">Rate <span className="text-destructive">*</span></FieldLabel>
                 <Input
-                  id='overtime-rate'
+                  id="overtime-rate"
                   type="number"
                   step="0.01"
                   min="0"

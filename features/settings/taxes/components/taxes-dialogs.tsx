@@ -23,7 +23,7 @@ export function TaxesDialogs() {
     <>
       {canCreate && (
         <TaxesActionDialog
-          key='tax-add'
+          key="tax-add"
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -33,7 +33,7 @@ export function TaxesDialogs() {
 
       {canImport && (
         <TaxesImportDialog
-          key='tax-import'
+          key="tax-import"
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -43,7 +43,7 @@ export function TaxesDialogs() {
 
       {canExport && (
         <TaxesExportDialog
-          key='tax-export'
+          key="tax-export"
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}
@@ -67,7 +67,7 @@ export function TaxesDialogs() {
               currentRow={currentRow}
             />
           )}
-          
+
           {canView && (
             <TaxesViewDialog
               key={`tax-view-${currentRow.id}`}

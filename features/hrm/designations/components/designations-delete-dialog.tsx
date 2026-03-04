@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { useDeleteDesignation } from '@/features/hrm/designations'
 import { type Designation } from '../types'
-import { useAuthSession } from '@/features/auth/api' 
+import { useAuthSession } from '@/features/auth/api'
 
 type DesignationsDeleteDialogProps = {
   open: boolean
@@ -18,10 +18,10 @@ type DesignationsDeleteDialogProps = {
 }
 
 export function DesignationsDeleteDialog({
-  open,
-  onOpenChange,
-  currentRow,
-}: DesignationsDeleteDialogProps) {
+                                           open,
+                                           onOpenChange,
+                                           currentRow,
+                                         }: DesignationsDeleteDialogProps) {
   const [value, setValue] = useState('')
   const { mutate: deleteDesignation, isPending } = useDeleteDesignation()
   const { data: session } = useAuthSession()
@@ -36,7 +36,7 @@ export function DesignationsDeleteDialog({
       onSuccess: () => {
         onOpenChange(false)
         setValue('')
-      }
+      },
     })
   }
 
@@ -47,10 +47,10 @@ export function DesignationsDeleteDialog({
       handleConfirm={handleDelete}
       disabled={value.trim() !== currentRow.name || isPending}
       title={
-        <span className='text-destructive'>
+        <span className="text-destructive">
           <HugeiconsIcon
             icon={Alert02Icon}
-            className='me-1 inline-block stroke-destructive'
+            className="me-1 inline-block stroke-destructive"
             size={18}
             strokeWidth={2}
           />{' '}
@@ -58,25 +58,25 @@ export function DesignationsDeleteDialog({
         </span>
       }
       desc={
-        <div className='space-y-4'>
-          <p className='mb-2'>
+        <div className="space-y-4">
+          <p className="mb-2">
             Are you sure you want to delete{' '}
-            <span className='font-bold'>{currentRow.name}</span>?
+            <span className="font-bold">{currentRow.name}</span>?
             <br />
-            This action will permanently remove the designation from the system. 
+            This action will permanently remove the designation from the system.
             This cannot be undone.
           </p>
 
-          <Label className='my-2'>
+          <Label className="my-2">
             Designation Name:
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder='Enter designation name to confirm deletion.'
+              placeholder="Enter designation name to confirm deletion."
             />
           </Label>
 
-          <Alert variant='destructive'>
+          <Alert variant="destructive">
             <AlertTitle>Warning!</AlertTitle>
             <AlertDescription>
               Please be careful, this operation can not be rolled back.
@@ -84,7 +84,7 @@ export function DesignationsDeleteDialog({
           </Alert>
         </div>
       }
-      confirmText='Delete'
+      confirmText="Delete"
       destructive
     />
   )

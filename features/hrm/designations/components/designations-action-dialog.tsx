@@ -3,16 +3,15 @@
 import React, { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
-import {
-  PlusSignIcon,
-} from '@hugeicons/core-free-icons'
+import { PlusSignIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import {
+  type Designation,
+  type DesignationFormData,
+  designationSchema,
   useCreateDesignation,
-  useUpdateDesignation
+  useUpdateDesignation,
 } from '@/features/hrm/designations'
-import { designationSchema, type DesignationFormData } from '@/features/hrm/designations'
-import { type Designation } from '@/features/hrm/designations'
 
 import { useOptionDepartments } from '@/features/hrm/departments/api'
 import { useMediaQuery } from '@/hooks/use-media-query'
@@ -31,17 +30,12 @@ import {
 
 import {
   Combobox,
-  ComboboxChip,
-  ComboboxChips,
-  ComboboxChipsInput,
   ComboboxContent,
   ComboboxEmpty,
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-  ComboboxValue,
-  useComboboxAnchor,
-} from "@/components/ui/combobox"
+} from '@/components/ui/combobox'
 import {
   Drawer,
   DrawerClose,
@@ -51,13 +45,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Spinner } from '@/components/ui/spinner'
@@ -69,10 +57,10 @@ type DesignationsActionDialogProps = {
 }
 
 export function DesignationsActionDialog({
-  currentRow,
-  open,
-  onOpenChange,
-}: DesignationsActionDialogProps) {
+                                           currentRow,
+                                           open,
+                                           onOpenChange,
+                                         }: DesignationsActionDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const isEdit = !!currentRow
   const { mutate: createDesignation, isPending: isCreating } = useCreateDesignation()
@@ -117,8 +105,8 @@ export function DesignationsActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange} modal={false}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>{isEdit ? 'Edit Designation' : 'Add New Designation'}</DialogTitle>
             <DialogDescription>
               {isEdit ? 'Update the designation details here. ' : 'Create a new designation here. '}
@@ -126,16 +114,16 @@ export function DesignationsActionDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
             <DesignationForm
               form={form}
               onSubmit={onSubmit}
-              id='designation-form'
+              id="designation-form"
             />
           </div>
 
           <DialogFooter>
-            <Button type='submit' form='designation-form' disabled={isLoading}>
+            <Button type="submit" form="designation-form" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Spinner className="mr-2 size-4" />
@@ -154,7 +142,7 @@ export function DesignationsActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange} modal={false}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>{isEdit ? 'Edit Designation' : 'Add New Designation'}</DrawerTitle>
           <DrawerDescription>
             {isEdit ? 'Update the designation details here. ' : 'Create a new designation here. '}
@@ -162,16 +150,16 @@ export function DesignationsActionDialog({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className='no-scrollbar overflow-y-auto px-4'>
+        <div className="no-scrollbar overflow-y-auto px-4">
           <DesignationForm
             form={form}
             onSubmit={onSubmit}
-            id='designation-form'
+            id="designation-form"
           />
         </div>
 
         <DrawerFooter>
-          <Button type='submit' form='designation-form' disabled={isLoading}>
+          <Button type="submit" form="designation-form" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Spinner className="mr-2 size-4" />
@@ -182,7 +170,7 @@ export function DesignationsActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -202,71 +190,75 @@ function DesignationForm({ form, onSubmit, id, className }: DesignationFormProps
   const [isDepartmentOpen, setIsDepartmentOpen] = useState(false)
   return (
     <>
-    <form
-      id={id}
-      onSubmit={form.handleSubmit(onSubmit)}
-      className={cn('space-y-4', className)}
-    >
-      <FieldGroup>
-      <Controller control={form.control} name='department_id' render={({ field, fieldState }) => (
-        <Field data-invalid={!!fieldState.error} className="flex flex-col">
-            <FieldLabel>Department <span className="text-destructive">*</span></FieldLabel>
-            <div className="flex items-center gap-2">
-                <Combobox items={optionDepartments || []} itemToStringLabel={(i) => i.label} value={(optionDepartments || []).find((d) => d.value === field.value) ?? null} onValueChange={(i) => field.onChange(i?.value ?? 0)}>
-                    <ComboboxInput placeholder="Select Dept" />
-                    <ComboboxContent>
-                        <ComboboxEmpty>No match.</ComboboxEmpty>
-                        <ComboboxList>{(i) => <ComboboxItem key={i.value} value={i}>{i.label}</ComboboxItem>}</ComboboxList>
-                    </ComboboxContent>
+      <form
+        id={id}
+        onSubmit={form.handleSubmit(onSubmit)}
+        className={cn('space-y-4', className)}
+      >
+        <FieldGroup>
+          <Controller control={form.control} name="department_id" render={({ field, fieldState }) => (
+            <Field data-invalid={!!fieldState.error} className="flex flex-col">
+              <FieldLabel>Department <span className="text-destructive">*</span></FieldLabel>
+              <div className="flex items-center gap-2">
+                <Combobox items={optionDepartments || []} itemToStringLabel={(i) => i.label}
+                          value={(optionDepartments || []).find((d) => d.value === field.value) ?? null}
+                          onValueChange={(i) => field.onChange(i?.value ?? 0)}>
+                  <ComboboxInput placeholder="Select Dept" />
+                  <ComboboxContent>
+                    <ComboboxEmpty>No match.</ComboboxEmpty>
+                    <ComboboxList>{(i) => <ComboboxItem key={i.value} value={i}>{i.label}</ComboboxItem>}</ComboboxList>
+                  </ComboboxContent>
                 </Combobox>
-                <Button type="button" size="icon" variant="outline" onClick={() => setIsDepartmentOpen(true)}><HugeiconsIcon icon={PlusSignIcon} className="size-4" /></Button>
-            </div>
-            {fieldState.error && <FieldError errors={[fieldState.error]} />}
-        </Field>
-    )} />
-        <Controller
-          control={form.control}
-          name='name'
-          render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='designation-name'>Name <span className="text-destructive">*</span></FieldLabel>
-              <Input
-                id='designation-name'
-                placeholder='e.g. Software Engineer'
-                autoComplete='off'
-                {...field}
-              />
-              {fieldState.error && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
-        <Controller
-          control={form.control}
-          name='is_active'
-          render={({ field, fieldState }) => (
-            <Field
-              data-invalid={!!fieldState.error}
-              className='flex flex-row items-center justify-between rounded-md border p-4'
-            >
-              <div className='space-y-0.5'>
-                <FieldLabel htmlFor='designation-active'>Active Status</FieldLabel>
-                <FieldDescription>
-                  Disabling this will hide the designation from the system.
-                </FieldDescription>
+                <Button type="button" size="icon" variant="outline"
+                        onClick={() => setIsDepartmentOpen(true)}><HugeiconsIcon icon={PlusSignIcon}
+                                                                                 className="size-4" /></Button>
               </div>
-              <Switch
-                id='designation-active'
-                checked={!!field.value}
-                onCheckedChange={field.onChange}
-              />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
-          )}
-        />
-      </FieldGroup>
-    </form>
+          )} />
+          <Controller
+            control={form.control}
+            name="name"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={!!fieldState.error}>
+                <FieldLabel htmlFor="designation-name">Name <span className="text-destructive">*</span></FieldLabel>
+                <Input
+                  id="designation-name"
+                  placeholder="e.g. Software Engineer"
+                  autoComplete="off"
+                  {...field}
+                />
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+
+          <Controller
+            control={form.control}
+            name="is_active"
+            render={({ field, fieldState }) => (
+              <Field
+                data-invalid={!!fieldState.error}
+                className="flex flex-row items-center justify-between rounded-md border p-4"
+              >
+                <div className="space-y-0.5">
+                  <FieldLabel htmlFor="designation-active">Active Status</FieldLabel>
+                  <FieldDescription>
+                    Disabling this will hide the designation from the system.
+                  </FieldDescription>
+                </div>
+                <Switch
+                  id="designation-active"
+                  checked={!!field.value}
+                  onCheckedChange={field.onChange}
+                />
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+        </FieldGroup>
+      </form>
       <DepartmentsActionDialog open={isDepartmentOpen} onOpenChange={setIsDepartmentOpen} />
-      </>
+    </>
   )
 }

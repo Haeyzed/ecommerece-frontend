@@ -125,9 +125,9 @@ export function useUpdateSupplier() {
 
   return useMutation({
     mutationFn: async ({
-      id,
-      data,
-    }: {
+                         id,
+                         data,
+                       }: {
       id: number
       data: Partial<SupplierFormData>
     }) => {
@@ -199,7 +199,7 @@ export function useBulkActivateSuppliers() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ activated_count: number }>(
         `${BASE_PATH}/bulk-activate`,
-        { ids }
+        { ids },
       )
       if (!response.success) throw new Error(response.message)
       return response.data
@@ -219,7 +219,7 @@ export function useBulkDeactivateSuppliers() {
     mutationFn: async (ids: number[]) => {
       const response = await api.patch<{ deactivated_count: number }>(
         `${BASE_PATH}/bulk-deactivate`,
-        { ids }
+        { ids },
       )
       if (!response.success) throw new Error(response.message)
       return response.data

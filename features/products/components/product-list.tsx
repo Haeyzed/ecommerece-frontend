@@ -1,41 +1,41 @@
-"use client";
+'use client'
 
 /**
  * Product List Component
  * Example CRUD list with pagination
  */
 
-import { useProducts, useDeleteProduct } from "../api";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { useState } from "react";
-import Link from "next/link";
+import { useDeleteProduct, useProducts } from '../api'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { useState } from 'react'
+import Link from 'next/link'
 
 export function ProductList() {
-  const [page, setPage] = useState(1);
-  const { data, isLoading, error, isSessionLoading } = useProducts({ page, per_page: 10 });
-  const deleteMutation = useDeleteProduct();
+  const [page, setPage] = useState(1)
+  const { data, isLoading, error, isSessionLoading } = useProducts({ page, per_page: 10 })
+  const deleteMutation = useDeleteProduct()
 
   const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this product?")) {
+    if (confirm('Are you sure you want to delete this product?')) {
       try {
-        await deleteMutation.mutateAsync(id);
+        await deleteMutation.mutateAsync(id)
       } catch (error) {
-        alert(error instanceof Error ? error.message : "Failed to delete");
+        alert(error instanceof Error ? error.message : 'Failed to delete')
       }
     }
-  };
+  }
 
   if (isSessionLoading || isLoading) {
-    return <div>Loading products...</div>;
+    return <div>Loading products...</div>
   }
 
   if (error) {
-    return <div>Error loading products: {error.message}</div>;
+    return <div>Error loading products: {error.message}</div>
   }
 
-  const products = data?.data || [];
-  const meta = data?.meta;
+  const products = data?.data || []
+  const meta = data?.meta
 
   return (
     <div className="space-y-4">
@@ -108,5 +108,5 @@ export function ProductList() {
         </div>
       )}
     </div>
-  );
+  )
 }

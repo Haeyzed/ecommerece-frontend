@@ -1,27 +1,27 @@
-'use client';
+'use client'
 
-import { useRouter } from 'next/navigation';
-import { type Row } from '@tanstack/react-table';
-import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation'
+import { type Row } from '@tanstack/react-table'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { MoreHorizontalIcon, Receipt, SparklesIcon } from '@hugeicons/core-free-icons';
-import { useGeneratePayrollEntries } from '../api';
-import type { PayrollRun } from '../types';
+} from '@/components/ui/dropdown-menu'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { MoreHorizontalIcon, Receipt, SparklesIcon } from '@hugeicons/core-free-icons'
+import { useGeneratePayrollEntries } from '../api'
+import type { PayrollRun } from '../types'
 
 interface PayrollRunRowActionsProps {
   row: Row<PayrollRun>;
 }
 
 export function PayrollRunRowActions({ row }: PayrollRunRowActionsProps) {
-  const router = useRouter();
-  const run = row.original;
-  const generateEntries = useGeneratePayrollEntries();
+  const router = useRouter()
+  const run = row.original
+  const generateEntries = useGeneratePayrollEntries()
 
   return (
     <DropdownMenu>
@@ -44,5 +44,5 @@ export function PayrollRunRowActions({ row }: PayrollRunRowActionsProps) {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

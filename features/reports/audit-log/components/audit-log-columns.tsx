@@ -6,11 +6,7 @@ import { DataTableColumnHeader, DataTableExpandButton } from '@/components/data-
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableRowActions } from './data-table-row-actions'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { LongText } from '@/components/long-text'
 import type { Audit } from '../types'
 import { ChevronRight } from 'lucide-react'

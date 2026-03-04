@@ -18,14 +18,14 @@ export function CitiesPrimaryButtons() {
   if (!canImport && !canExport && !canCreate) return null
 
   return (
-    <div className='flex gap-2'>
+    <div className="flex gap-2">
       {canExport && (
         <Button
-          variant='outline'
+          variant="outline"
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('export')}
-          aria-label='Export Cities'
+          aria-label="Export Cities"
         >
           <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} size={18} />
           {!isMobile && <span>Export Cities</span>}
@@ -33,11 +33,11 @@ export function CitiesPrimaryButtons() {
       )}
       {canImport && (
         <Button
-          variant='outline'
+          variant="outline"
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('import')}
-          aria-label='Import Cities'
+          aria-label="Import Cities"
         >
           <HugeiconsIcon icon={FileImportIcon} strokeWidth={2} size={18} />
           {!isMobile && <span>Import Cities</span>}
@@ -48,7 +48,7 @@ export function CitiesPrimaryButtons() {
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('add')}
-          aria-label='Add City'
+          aria-label="Add City"
         >
           <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} size={18} />
           {!isMobile && <span>Add City</span>}

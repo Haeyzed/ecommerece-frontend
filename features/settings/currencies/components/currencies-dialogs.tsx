@@ -23,7 +23,7 @@ export function CurrenciesDialogs() {
     <>
       {canCreate && (
         <CurrenciesActionDialog
-          key='currency-add'
+          key="currency-add"
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -33,7 +33,7 @@ export function CurrenciesDialogs() {
 
       {canImport && (
         <CurrenciesImportDialog
-          key='currency-import'
+          key="currency-import"
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -43,7 +43,7 @@ export function CurrenciesDialogs() {
 
       {canExport && (
         <CurrenciesExportDialog
-          key='currency-export'
+          key="currency-export"
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

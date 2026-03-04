@@ -18,8 +18,7 @@ import {
   ComboboxList,
 } from '@/components/ui/combobox'
 import { DateRangePicker } from '@/components/ui/date-picker'
-import { DataTableFacetedFilter } from '@/components/data-table'
-import { DataTableTableViewOptions } from '@/components/data-table'
+import { DataTableFacetedFilter, DataTableTableViewOptions } from '@/components/data-table'
 import { useAuditableModels } from '@/features/reports/audit-log/api'
 import { useApiClient } from '@/lib/api/api-client-client'
 
@@ -49,7 +48,7 @@ export function AuditLogToolbar<TData>({ table }: AuditLogToolbarProps<TData>) {
 
   const isFiltered =
     table.getState().columnFilters.some(
-      (f) => f.value !== undefined && f.value !== ''
+      (f) => f.value !== undefined && f.value !== '',
     ) || table.getState().globalFilter
 
   const modelFilter = (table.getColumn('auditable_type')?.getFilterValue() as string) ?? ''
@@ -66,10 +65,10 @@ export function AuditLogToolbar<TData>({ table }: AuditLogToolbarProps<TData>) {
 
   const handleDateRangeChange = (range: DateRange | undefined) => {
     table.getColumn('date_from')?.setFilterValue(
-      range?.from ? format(range.from, 'yyyy-MM-dd') : ''
+      range?.from ? format(range.from, 'yyyy-MM-dd') : '',
     )
     table.getColumn('date_to')?.setFilterValue(
-      range?.to ? format(range.to, 'yyyy-MM-dd') : ''
+      range?.to ? format(range.to, 'yyyy-MM-dd') : '',
     )
   }
 

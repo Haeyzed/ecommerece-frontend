@@ -4,12 +4,7 @@ import Link from 'next/link'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Cancel01Icon, Menu01Icon } from '@hugeicons/core-free-icons'
 import { cn } from '@/lib/utils'
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from '@/components/ui/sidebar'
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar'
 import { Button } from '../ui/button'
 
 export function AppTitle() {
@@ -18,18 +13,18 @@ export function AppTitle() {
     <SidebarMenu>
       <SidebarMenuItem>
         <SidebarMenuButton
-          size='lg'
-          className='gap-0 py-0 hover:bg-transparent active:bg-transparent'
+          size="lg"
+          className="gap-0 py-0 hover:bg-transparent active:bg-transparent"
           asChild
         >
           <div>
             <Link
-              href='/'
+              href="/"
               onClick={() => setOpenMobile(false)}
-              className='grid flex-1 text-start text-sm leading-tight'
+              className="grid flex-1 text-start text-sm leading-tight"
             >
-              <span className='truncate font-bold'>Shadcn-Admin</span>
-              <span className='truncate text-xs'>Next.js + ShadcnUI</span>
+              <span className="truncate font-bold">Shadcn-Admin</span>
+              <span className="truncate text-xs">Next.js + ShadcnUI</span>
             </Link>
             <ToggleSidebar />
           </div>
@@ -40,18 +35,18 @@ export function AppTitle() {
 }
 
 function ToggleSidebar({
-  className,
-  onClick,
-  ...props
-}: React.ComponentProps<typeof Button>) {
+                         className,
+                         onClick,
+                         ...props
+                       }: React.ComponentProps<typeof Button>) {
   const { toggleSidebar } = useSidebar()
 
   return (
     <Button
-      data-sidebar='trigger'
-      data-slot='sidebar-trigger'
-      variant='ghost'
-      size='icon'
+      data-sidebar="trigger"
+      data-slot="sidebar-trigger"
+      variant="ghost"
+      size="icon"
       className={cn('aspect-square size-8 max-md:scale-125', className)}
       onClick={(event) => {
         onClick?.(event)
@@ -59,17 +54,17 @@ function ToggleSidebar({
       }}
       {...props}
     >
-      <HugeiconsIcon 
-        icon={Cancel01Icon} 
-        strokeWidth={2} 
-        className='md:hidden' 
+      <HugeiconsIcon
+        icon={Cancel01Icon}
+        strokeWidth={2}
+        className="md:hidden"
       />
-      <HugeiconsIcon 
-        icon={Menu01Icon} 
-        strokeWidth={2} 
-        className='max-md:hidden' 
+      <HugeiconsIcon
+        icon={Menu01Icon}
+        strokeWidth={2}
+        className="max-md:hidden"
       />
-      <span className='sr-only'>Toggle Sidebar</span>
+      <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )
 }

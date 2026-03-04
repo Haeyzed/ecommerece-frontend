@@ -19,14 +19,14 @@ export function RolesPrimaryButtons() {
   if (!canImport && !canExport && !canCreate) return null
 
   return (
-    <div className='flex gap-2'>
+    <div className="flex gap-2">
       {canExport && (
         <Button
-          variant='outline'
+          variant="outline"
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('export')}
-          aria-label='Export Roles'
+          aria-label="Export Roles"
         >
           <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} size={18} />
           {!isMobile && <span>Export Roles</span>}
@@ -34,11 +34,11 @@ export function RolesPrimaryButtons() {
       )}
       {canImport && (
         <Button
-          variant='outline'
+          variant="outline"
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('import')}
-          aria-label='Import Roles'
+          aria-label="Import Roles"
         >
           <HugeiconsIcon icon={FileImportIcon} strokeWidth={2} size={18} />
           {!isMobile && <span>Import Roles</span>}
@@ -49,7 +49,7 @@ export function RolesPrimaryButtons() {
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('add')}
-          aria-label='Add Role'
+          aria-label="Add Role"
         >
           <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} size={18} />
           {!isMobile && <span>Add Role</span>}

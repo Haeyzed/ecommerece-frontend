@@ -1,26 +1,15 @@
 'use client'
 
 import { Controller, useForm } from 'react-hook-form'
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Spinner } from '@/components/ui/spinner'
 import { Switch } from '@/components/ui/switch'
-import { SMS_GATEWAY_FIELDS } from '../types'
 import type { SmsProvider } from '../types'
+import { SMS_GATEWAY_FIELDS } from '../types'
 import type { SmsSettingUpdateData } from '../schemas'
 
 type SmsSettingFormProps = {
@@ -32,12 +21,12 @@ type SmsSettingFormProps = {
 }
 
 export function SmsSettingForm({
-  providers,
-  selectedProvider,
-  onSelectProvider,
-  onSubmit,
-  isPending = false,
-}: SmsSettingFormProps) {
+                                 providers,
+                                 selectedProvider,
+                                 onSelectProvider,
+                                 onSubmit,
+                                 isPending = false,
+                               }: SmsSettingFormProps) {
   const form = useForm<SmsSettingUpdateData & { details: Record<string, string> }>({
     defaultValues: {
       details: {},

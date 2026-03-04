@@ -4,11 +4,7 @@ import * as React from 'react'
 import { format } from 'date-fns'
 import { type DateRange } from 'react-day-picker'
 import { Calendar } from '@/components/ui/calendar'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { CalendarIcon } from '@hugeicons/core-free-icons'
@@ -29,14 +25,14 @@ type DatePickerSingleProps = {
  * Single date picker: opens a calendar in a popover.
  */
 export function DatePickerSingle({
-  value,
-  onChange,
-  placeholder = 'Pick a date',
-  disabled,
-  id,
-  className,
-  label,
-}: DatePickerSingleProps) {
+                                   value,
+                                   onChange,
+                                   placeholder = 'Pick a date',
+                                   disabled,
+                                   id,
+                                   className,
+                                   label,
+                                 }: DatePickerSingleProps) {
   const [open, setOpen] = React.useState(false)
 
   const trigger = (
@@ -93,14 +89,14 @@ type DateRangePickerProps = {
  * Date range picker: opens a calendar in a popover with range selection.
  */
 export function DateRangePicker({
-  value,
-  onChange,
-  placeholder = 'Pick a date range',
-  disabled,
-  id,
-  className,
-  label,
-}: DateRangePickerProps) {
+                                  value,
+                                  onChange,
+                                  placeholder = 'Pick a date range',
+                                  disabled,
+                                  id,
+                                  className,
+                                  label,
+                                }: DateRangePickerProps) {
   const [open, setOpen] = React.useState(false)
 
   const trigger = (

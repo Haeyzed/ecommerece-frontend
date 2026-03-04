@@ -17,10 +17,10 @@ type SuppliersDeleteDialogProps = {
 }
 
 export function SuppliersDeleteDialog({
-  open,
-  onOpenChange,
-  currentRow,
-}: SuppliersDeleteDialogProps) {
+                                        open,
+                                        onOpenChange,
+                                        currentRow,
+                                      }: SuppliersDeleteDialogProps) {
   const [value, setValue] = useState('')
   const { mutate: deleteSupplier, isPending } = useDeleteSupplier()
 

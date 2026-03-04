@@ -2,27 +2,14 @@
 
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  CheckmarkCircle02Icon,
-  Delete02Icon,
-  CancelCircleIcon,
-  Upload01Icon,
-} from '@hugeicons/core-free-icons'
+import { CancelCircleIcon, CheckmarkCircle02Icon, Delete02Icon, Upload01Icon } from '@hugeicons/core-free-icons'
 import { type Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
-import {
-  useBulkApproveOvertimes,
-  useBulkRejectOvertimes
-} from '@/features/hrm/overtimes/api'
+import { useBulkApproveOvertimes, useBulkRejectOvertimes } from '@/features/hrm/overtimes/api'
 import { type Overtime } from '@/features/hrm/overtimes/types'
-import { OvertimesExportDialog } from '@/features/hrm/overtimes'
-import { OvertimesMultiDeleteDialog } from '@/features/hrm/overtimes'
+import { OvertimesExportDialog, OvertimesMultiDeleteDialog } from '@/features/hrm/overtimes'
 import { useAuthSession } from '@/features/auth/api'
 import { Spinner } from '@/components/ui/spinner'
 
@@ -62,21 +49,21 @@ export function DataTableBulkActions<TData>({
 
   return (
     <>
-      <BulkActionsToolbar table={table} entityName='overtime'>
+      <BulkActionsToolbar table={table} entityName="overtime">
         {canApproveReject && (
           <>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant='outline'
-                  size='icon'
+                  variant="outline"
+                  size="icon"
                   onClick={() => handleBulkStatusChange('Approved')}
                   disabled={isBusy}
-                  className='size-8 text-teal-600 hover:text-teal-700 hover:bg-teal-50'
-                  aria-label='Approve selected overtimes'
+                  className="size-8 text-teal-600 hover:text-teal-700 hover:bg-teal-50"
+                  aria-label="Approve selected overtimes"
                 >
                   {isApproving ? (
-                    <Spinner className='size-4' />
+                    <Spinner className="size-4" />
                   ) : (
                     <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
                   )}
@@ -88,15 +75,15 @@ export function DataTableBulkActions<TData>({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant='outline'
-                  size='icon'
+                  variant="outline"
+                  size="icon"
                   onClick={() => handleBulkStatusChange('Rejected')}
                   disabled={isBusy}
-                  className='size-8 text-destructive hover:text-destructive/90 hover:bg-destructive/10'
-                  aria-label='Reject selected overtimes'
+                  className="size-8 text-destructive hover:text-destructive/90 hover:bg-destructive/10"
+                  aria-label="Reject selected overtimes"
                 >
                   {isRejecting ? (
-                    <Spinner className='size-4' />
+                    <Spinner className="size-4" />
                   ) : (
                     <HugeiconsIcon icon={CancelCircleIcon} strokeWidth={2} />
                   )}
@@ -111,12 +98,12 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant='outline'
-                size='icon'
+                variant="outline"
+                size="icon"
                 onClick={() => setShowExportDialog(true)}
                 disabled={isBusy}
-                className='size-8'
-                aria-label='Export selected overtimes'
+                className="size-8"
+                aria-label="Export selected overtimes"
               >
                 <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} />
               </Button>
@@ -129,12 +116,12 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant='destructive'
-                size='icon'
+                variant="destructive"
+                size="icon"
                 onClick={() => setShowDeleteConfirm(true)}
                 disabled={isBusy}
-                className='size-8'
-                aria-label='Delete selected overtimes'
+                className="size-8"
+                aria-label="Delete selected overtimes"
               >
                 <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} />
               </Button>

@@ -3,13 +3,7 @@
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Loading03Icon } from '@hugeicons/core-free-icons'
 import { cn } from '@/lib/utils'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 type SelectDropdownProps = {
   onValueChange?: (value: string) => void
@@ -23,15 +17,15 @@ type SelectDropdownProps = {
 }
 
 export function SelectDropdown({
-  defaultValue,
-  onValueChange,
-  isPending,
-  items,
-  placeholder,
-  disabled,
-  className = '',
-  isControlled = false,
-}: SelectDropdownProps) {
+                                 defaultValue,
+                                 onValueChange,
+                                 isPending,
+                                 items,
+                                 placeholder,
+                                 disabled,
+                                 className = '',
+                                 isControlled = false,
+                               }: SelectDropdownProps) {
   const defaultState = isControlled
     ? { value: defaultValue, onValueChange }
     : { defaultValue, onValueChange }
@@ -44,11 +38,11 @@ export function SelectDropdown({
       </SelectTrigger>
       <SelectContent>
         {isPending ? (
-          <SelectItem disabled value='loading' className='h-14'>
-            <div className='flex items-center justify-center gap-2'>
-              <HugeiconsIcon 
-                icon={Loading03Icon} 
-                className='h-5 w-5 animate-spin' 
+          <SelectItem disabled value="loading" className="h-14">
+            <div className="flex items-center justify-center gap-2">
+              <HugeiconsIcon
+                icon={Loading03Icon}
+                className="h-5 w-5 animate-spin"
                 strokeWidth={2}
               />
               {'  '}

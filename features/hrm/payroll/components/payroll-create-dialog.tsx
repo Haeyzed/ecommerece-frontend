@@ -1,34 +1,29 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { usePayroll } from './payroll-provider';
-import { useCreatePayrollRun } from '../api';
+import { useState } from 'react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { usePayroll } from './payroll-provider'
+import { useCreatePayrollRun } from '../api'
 
-const currentYear = new Date().getFullYear();
-const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
+const currentYear = new Date().getFullYear()
+const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0')
 
 export function PayrollCreateDialog() {
-  const { open, setOpen } = usePayroll();
-  const createRun = useCreatePayrollRun();
-  const [month, setMonth] = useState(`${currentYear}-${currentMonth}`);
+  const { open, setOpen } = usePayroll()
+  const createRun = useCreatePayrollRun()
+  const [month, setMonth] = useState(`${currentYear}-${currentMonth}`)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const [y, m] = month.split('-').map(Number);
-    await createRun.mutateAsync({ month: `${y}-${String(m).padStart(2, '0')}`, year: y });
-    setOpen(null);
-  };
+    e.preventDefault()
+    const [y, m] = month.split('-').map(Number)
+    await createRun.mutateAsync({ month: `${y}-${String(m).padStart(2, '0')}`, year: y })
+    setOpen(null)
+  }
 
-  const isOpen = open === 'add';
+  const isOpen = open === 'add'
 
   return (
     <Dialog open={isOpen} onOpenChange={(v) => setOpen(v ? 'add' : null)}>
@@ -58,5 +53,5 @@ export function PayrollCreateDialog() {
         </form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

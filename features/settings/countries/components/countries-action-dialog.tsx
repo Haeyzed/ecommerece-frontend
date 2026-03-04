@@ -4,11 +4,8 @@ import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 
-import {
-  useCreateCountry,
-  useUpdateCountry,
-} from '@/features/settings/countries/api'
-import { countrySchema, type CountryFormData } from '@/features/settings/countries/schemas'
+import { useCreateCountry, useUpdateCountry } from '@/features/settings/countries/api'
+import { type CountryFormData, countrySchema } from '@/features/settings/countries/schemas'
 import { type Country } from '../types'
 
 import { useMediaQuery } from '@/hooks/use-media-query'
@@ -32,28 +29,14 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field, FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Spinner } from '@/components/ui/spinner'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 // Import local Emoji Picker components
-import {
-  EmojiPicker,
-  EmojiPickerSearch,
-  EmojiPickerContent,
-  EmojiPickerFooter,
-} from "@/components/ui/emoji-picker"
+import { EmojiPicker, EmojiPickerContent, EmojiPickerFooter, EmojiPickerSearch } from '@/components/ui/emoji-picker'
 
 type CountriesActionDialogProps = {
   currentRow?: Country
@@ -128,8 +111,8 @@ export function CountriesActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange} modal={false}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>{isEdit ? 'Edit Country' : 'Add New Country'}</DialogTitle>
             <DialogDescription>
               {isEdit ? 'Update the country details here. ' : 'Create a new country here. '}
@@ -137,15 +120,15 @@ export function CountriesActionDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
-            <CountryForm form={form} onSubmit={onSubmit} id='country-form' />
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
+            <CountryForm form={form} onSubmit={onSubmit} id="country-form" />
           </div>
 
           <DialogFooter>
-            <Button type='submit' form='country-form' disabled={isLoading}>
+            <Button type="submit" form="country-form" disabled={isLoading}>
               {isLoading ? (
                 <>
-                  <Spinner className='mr-2 size-4' />
+                  <Spinner className="mr-2 size-4" />
                   Saving...
                 </>
               ) : (
@@ -161,7 +144,7 @@ export function CountriesActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange} modal={false}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>{isEdit ? 'Edit Country' : 'Add New Country'}</DrawerTitle>
           <DrawerDescription>
             {isEdit ? 'Update the country details here. ' : 'Create a new country here. '}
@@ -169,15 +152,15 @@ export function CountriesActionDialog({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className='no-scrollbar overflow-y-auto px-4'>
-          <CountryForm form={form} onSubmit={onSubmit} id='country-form' />
+        <div className="no-scrollbar overflow-y-auto px-4">
+          <CountryForm form={form} onSubmit={onSubmit} id="country-form" />
         </div>
 
         <DrawerFooter>
-          <Button type='submit' form='country-form' disabled={isLoading}>
+          <Button type="submit" form="country-form" disabled={isLoading}>
             {isLoading ? (
               <>
-                <Spinner className='mr-2 size-4' />
+                <Spinner className="mr-2 size-4" />
                 Saving...
               </>
             ) : (
@@ -185,7 +168,7 @@ export function CountriesActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -219,11 +202,11 @@ function CountryForm({ form, onSubmit, id, className }: CountryFormProps) {
         <div className="grid grid-cols-2 gap-4">
           <Controller
             control={form.control}
-            name='name'
+            name="name"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='country-name'>Name <span className='text-destructive'>*</span></FieldLabel>
-                <Input id='country-name' placeholder='Country name' autoComplete='off' {...field} />
+                <FieldLabel htmlFor="country-name">Name <span className="text-destructive">*</span></FieldLabel>
+                <Input id="country-name" placeholder="Country name" autoComplete="off" {...field} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -231,37 +214,12 @@ function CountryForm({ form, onSubmit, id, className }: CountryFormProps) {
 
           <Controller
             control={form.control}
-            name='iso2'
+            name="iso2"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='country-iso2'>ISO2 <span className='text-destructive'>*</span></FieldLabel>
-                <Input id='country-iso2' placeholder='US' maxLength={2} className="uppercase" autoComplete='off' {...field} />
-                {fieldState.error && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <Controller
-            control={form.control}
-            name='iso3'
-            render={({ field, fieldState }) => (
-              <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='country-iso3'>ISO3</FieldLabel>
-                <Input id='country-iso3' placeholder='USA' maxLength={3} className="uppercase" autoComplete='off' {...field} value={field.value ?? ''} />
-                {fieldState.error && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
-
-          <Controller
-            control={form.control}
-            name='phone_code'
-            render={({ field, fieldState }) => (
-              <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='country-phone-code'>Phone Code</FieldLabel>
-                <Input id='country-phone-code' placeholder='1' autoComplete='off' {...field} value={field.value ?? ''} />
+                <FieldLabel htmlFor="country-iso2">ISO2 <span className="text-destructive">*</span></FieldLabel>
+                <Input id="country-iso2" placeholder="US" maxLength={2} className="uppercase"
+                       autoComplete="off" {...field} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -271,11 +229,12 @@ function CountryForm({ form, onSubmit, id, className }: CountryFormProps) {
         <div className="grid grid-cols-2 gap-4">
           <Controller
             control={form.control}
-            name='region'
+            name="iso3"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='country-region'>Region</FieldLabel>
-                <Input id='country-region' placeholder='Americas' autoComplete='off' {...field} value={field.value ?? ''} />
+                <FieldLabel htmlFor="country-iso3">ISO3</FieldLabel>
+                <Input id="country-iso3" placeholder="USA" maxLength={3} className="uppercase"
+                       autoComplete="off" {...field} value={field.value ?? ''} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -283,11 +242,40 @@ function CountryForm({ form, onSubmit, id, className }: CountryFormProps) {
 
           <Controller
             control={form.control}
-            name='subregion'
+            name="phone_code"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='country-subregion'>Subregion</FieldLabel>
-                <Input id='country-subregion' placeholder='Northern America' autoComplete='off' {...field} value={field.value ?? ''} />
+                <FieldLabel htmlFor="country-phone-code">Phone Code</FieldLabel>
+                <Input id="country-phone-code" placeholder="1" autoComplete="off" {...field}
+                       value={field.value ?? ''} />
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Controller
+            control={form.control}
+            name="region"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={!!fieldState.error}>
+                <FieldLabel htmlFor="country-region">Region</FieldLabel>
+                <Input id="country-region" placeholder="Americas" autoComplete="off" {...field}
+                       value={field.value ?? ''} />
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+
+          <Controller
+            control={form.control}
+            name="subregion"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={!!fieldState.error}>
+                <FieldLabel htmlFor="country-subregion">Subregion</FieldLabel>
+                <Input id="country-subregion" placeholder="Northern America" autoComplete="off" {...field}
+                       value={field.value ?? ''} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -296,11 +284,12 @@ function CountryForm({ form, onSubmit, id, className }: CountryFormProps) {
 
         <Controller
           control={form.control}
-          name='native'
+          name="native"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='country-native'>Native Name</FieldLabel>
-              <Input id='country-native' placeholder='United States' autoComplete='off' {...field} value={field.value ?? ''} />
+              <FieldLabel htmlFor="country-native">Native Name</FieldLabel>
+              <Input id="country-native" placeholder="United States" autoComplete="off" {...field}
+                     value={field.value ?? ''} />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -309,11 +298,12 @@ function CountryForm({ form, onSubmit, id, className }: CountryFormProps) {
         <div className="grid grid-cols-2 gap-4">
           <Controller
             control={form.control}
-            name='latitude'
+            name="latitude"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='country-latitude'>Latitude</FieldLabel>
-                <Input id='country-latitude' placeholder='38.00000000' autoComplete='off' {...field} value={field.value ?? ''} />
+                <FieldLabel htmlFor="country-latitude">Latitude</FieldLabel>
+                <Input id="country-latitude" placeholder="38.00000000" autoComplete="off" {...field}
+                       value={field.value ?? ''} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -321,11 +311,12 @@ function CountryForm({ form, onSubmit, id, className }: CountryFormProps) {
 
           <Controller
             control={form.control}
-            name='longitude'
+            name="longitude"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='country-longitude'>Longitude</FieldLabel>
-                <Input id='country-longitude' placeholder='-97.00000000' autoComplete='off' {...field} value={field.value ?? ''} />
+                <FieldLabel htmlFor="country-longitude">Longitude</FieldLabel>
+                <Input id="country-longitude" placeholder="-97.00000000" autoComplete="off" {...field}
+                       value={field.value ?? ''} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -335,10 +326,10 @@ function CountryForm({ form, onSubmit, id, className }: CountryFormProps) {
         <div className="grid grid-cols-2 gap-4">
           <Controller
             control={form.control}
-            name='emoji'
+            name="emoji"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='country-emoji'>Emoji</FieldLabel>
+                <FieldLabel htmlFor="country-emoji">Emoji</FieldLabel>
                 <Popover open={isEmojiPickerOpen} onOpenChange={setIsEmojiPickerOpen}>
                   <PopoverTrigger asChild>
                     <Input
@@ -351,12 +342,12 @@ function CountryForm({ form, onSubmit, id, className }: CountryFormProps) {
                     <EmojiPicker
                       className="h-[342px] border rounded-lg shadow-xl"
                       onEmojiSelect={({ emoji }) => {
-                        field.onChange(emoji);
-                        setIsEmojiPickerOpen(false);
+                        field.onChange(emoji)
+                        setIsEmojiPickerOpen(false)
 
                         if (emoji) {
-                          const unicode = getUnicodeFromEmoji(emoji);
-                          form.setValue('emojiU', unicode, { shouldValidate: true });
+                          const unicode = getUnicodeFromEmoji(emoji)
+                          form.setValue('emojiU', unicode, { shouldValidate: true })
                         }
                       }}
                     >
@@ -373,11 +364,12 @@ function CountryForm({ form, onSubmit, id, className }: CountryFormProps) {
 
           <Controller
             control={form.control}
-            name='emojiU'
+            name="emojiU"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='country-emojiU'>Emoji Unicode</FieldLabel>
-                <Input id='country-emojiU' placeholder='U+1F1FA U+1F1F8' autoComplete='off' {...field} value={field.value ?? ''} />
+                <FieldLabel htmlFor="country-emojiU">Emoji Unicode</FieldLabel>
+                <Input id="country-emojiU" placeholder="U+1F1FA U+1F1F8" autoComplete="off" {...field}
+                       value={field.value ?? ''} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -386,16 +378,17 @@ function CountryForm({ form, onSubmit, id, className }: CountryFormProps) {
 
         <Controller
           control={form.control}
-          name='status'
+          name="status"
           render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error} className='flex flex-row items-center justify-between rounded-md border p-4'>
-              <div className='space-y-0.5'>
-                <FieldLabel htmlFor='country-active'>Active Status</FieldLabel>
+            <Field data-invalid={!!fieldState.error}
+                   className="flex flex-row items-center justify-between rounded-md border p-4">
+              <div className="space-y-0.5">
+                <FieldLabel htmlFor="country-active">Active Status</FieldLabel>
                 <FieldDescription>
                   Disabling this will hide the country from the system.
                 </FieldDescription>
               </div>
-              <Switch id='country-active' checked={!!field.value} onCheckedChange={field.onChange} />
+              <Switch id="country-active" checked={!!field.value} onCheckedChange={field.onChange} />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

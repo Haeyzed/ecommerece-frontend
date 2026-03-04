@@ -2,22 +2,14 @@
 
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  CheckmarkCircle02Icon,
-  Delete02Icon,
-  UnavailableIcon,
-  Upload01Icon,
-} from '@hugeicons/core-free-icons'
+import { CheckmarkCircle02Icon, Delete02Icon, UnavailableIcon, Upload01Icon } from '@hugeicons/core-free-icons'
 import type { Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
 import { Spinner } from '@/components/ui/spinner'
 import type { CustomerGroup } from '../types'
-import {
-  useBulkActivateCustomerGroups,
-  useBulkDeactivateCustomerGroups,
-} from '../api'
+import { useBulkActivateCustomerGroups, useBulkDeactivateCustomerGroups } from '../api'
 import { CustomerGroupsMultiDeleteDialog } from './customer-groups-multi-delete-dialog'
 import { CustomerGroupsExportDialog } from './customer-groups-export-dialog'
 import { useAuthSession } from '@/features/auth/api'
@@ -62,7 +54,8 @@ export function DataTableBulkActions<TData>({ table }: DataTableBulkActionsProps
                   className="size-8"
                   aria-label="Activate selected customer groups"
                 >
-                  {isActivating ? <Spinner className="size-4" /> : <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />}
+                  {isActivating ? <Spinner className="size-4" /> :
+                    <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />}
                 </Button>
               </TooltipTrigger>
               <TooltipContent><p>Activate selected customer groups</p></TooltipContent>
@@ -77,7 +70,8 @@ export function DataTableBulkActions<TData>({ table }: DataTableBulkActionsProps
                   className="size-8"
                   aria-label="Deactivate selected customer groups"
                 >
-                  {isDeactivating ? <Spinner className="size-4" /> : <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />}
+                  {isDeactivating ? <Spinner className="size-4" /> :
+                    <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />}
                 </Button>
               </TooltipTrigger>
               <TooltipContent><p>Deactivate selected customer groups</p></TooltipContent>

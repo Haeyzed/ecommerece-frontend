@@ -1,11 +1,13 @@
 'use client'
 
-import { DesignationsActionDialog } from '@/features/hrm/designations'
-import { DesignationsDeleteDialog } from '@/features/hrm/designations'
-import { DesignationsExportDialog } from '@/features/hrm/designations'
-import { DesignationsImportDialog } from '@/features/hrm/designations'
-import { DesignationsViewDialog } from '@/features/hrm/designations'
-import { useDesignations } from '@/features/hrm/designations'
+import {
+  DesignationsActionDialog,
+  DesignationsDeleteDialog,
+  DesignationsExportDialog,
+  DesignationsImportDialog,
+  DesignationsViewDialog,
+  useDesignations,
+} from '@/features/hrm/designations'
 import { useAuthSession } from '@/features/auth/api'
 
 export function DesignationsDialogs() {
@@ -23,7 +25,7 @@ export function DesignationsDialogs() {
     <>
       {canCreate && (
         <DesignationsActionDialog
-          key='designation-add'
+          key="designation-add"
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -33,7 +35,7 @@ export function DesignationsDialogs() {
 
       {canImport && (
         <DesignationsImportDialog
-          key='designation-import'
+          key="designation-import"
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -43,7 +45,7 @@ export function DesignationsDialogs() {
 
       {canExport && (
         <DesignationsExportDialog
-          key='designation-export'
+          key="designation-export"
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}
@@ -67,7 +69,7 @@ export function DesignationsDialogs() {
               currentRow={currentRow}
             />
           )}
-          
+
           {canView && (
             <DesignationsViewDialog
               key={`designation-view-${currentRow.id}`}

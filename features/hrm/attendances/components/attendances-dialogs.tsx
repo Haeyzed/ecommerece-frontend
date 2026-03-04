@@ -1,11 +1,13 @@
 'use client'
 
-import { AttendancesActionDialog } from '@/features/hrm/attendances'
-import { AttendancesDeleteDialog } from '@/features/hrm/attendances'
-import { AttendancesExportDialog } from '@/features/hrm/attendances'
-import { AttendancesImportDialog } from '@/features/hrm/attendances'
-import { AttendancesViewDialog } from '@/features/hrm/attendances'
-import { useAttendances } from '@/features/hrm/attendances'
+import {
+  AttendancesActionDialog,
+  AttendancesDeleteDialog,
+  AttendancesExportDialog,
+  AttendancesImportDialog,
+  AttendancesViewDialog,
+  useAttendances,
+} from '@/features/hrm/attendances'
 import { useAuthSession } from '@/features/auth/api'
 
 export function AttendancesDialogs() {
@@ -24,7 +26,7 @@ export function AttendancesDialogs() {
     <>
       {canCreate && (
         <AttendancesActionDialog
-          key='attendance-add'
+          key="attendance-add"
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -34,7 +36,7 @@ export function AttendancesDialogs() {
 
       {canImport && (
         <AttendancesImportDialog
-          key='attendance-import'
+          key="attendance-import"
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -44,7 +46,7 @@ export function AttendancesDialogs() {
 
       {canExport && (
         <AttendancesExportDialog
-          key='attendance-export'
+          key="attendance-export"
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

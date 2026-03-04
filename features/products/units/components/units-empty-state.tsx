@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
 import { DataTableEmptyState } from '@/components/data-table'
-import { HugeiconsIcon } from "@hugeicons/react"
-import { PlusSignIcon, Download01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Download01Icon, PlusSignIcon } from '@hugeicons/core-free-icons'
 import { useUnits } from './units-provider'
 
 export function UnitsEmptyState() {
@@ -13,18 +13,18 @@ export function UnitsEmptyState() {
       title="No units yet"
       description="You haven't created any units yet. Get started by creating your first unit."
       primaryAction={{
-        label: "Add Unit",
+        label: 'Add Unit',
         onClick: () => setOpen('add'),
         icon: <HugeiconsIcon icon={PlusSignIcon} className="size-4 mr-2" />,
       }}
       secondaryAction={{
-        label: "Import Units",
+        label: 'Import Units',
         onClick: () => setOpen('import'),
         icon: <HugeiconsIcon icon={Download01Icon} className="size-4 mr-2" />,
       }}
       learnMoreLink={{
-        href: "#",
-        label: "Learn more",
+        href: '#',
+        label: 'Learn more',
       }}
     />
   )

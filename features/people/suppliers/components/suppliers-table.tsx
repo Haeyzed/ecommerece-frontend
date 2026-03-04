@@ -1,26 +1,19 @@
 'use client'
 
 import { DataTablePagination, DataTableSkeleton, DataTableToolbar } from '@/components/data-table'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useTableUrlState } from '@/hooks/use-table-url-state'
 import { cn } from '@/lib/utils'
 import {
-  type SortingState,
-  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
   getSortedRowModel,
+  type SortingState,
   useReactTable,
+  type VisibilityState,
 } from '@tanstack/react-table'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
@@ -129,7 +122,7 @@ export function SuppliersTable() {
     <div
       className={cn(
         'max-sm:has-[div[role="toolbar"]]:mb-16',
-        'flex flex-1 flex-col gap-4'
+        'flex flex-1 flex-col gap-4',
       )}
     >
       <DataTableToolbar
@@ -159,7 +152,7 @@ export function SuppliersTable() {
                     className={cn(
                       'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                       (header.column.columnDef.meta as { className?: string })?.className,
-                      (header.column.columnDef.meta as { thClassName?: string })?.thClassName
+                      (header.column.columnDef.meta as { thClassName?: string })?.thClassName,
                     )}
                   >
                     {header.isPlaceholder
@@ -187,7 +180,7 @@ export function SuppliersTable() {
                         className={cn(
                           'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                           (cell.column.columnDef.meta as { className?: string })?.className,
-                          (cell.column.columnDef.meta as { tdClassName?: string })?.tdClassName
+                          (cell.column.columnDef.meta as { tdClassName?: string })?.tdClassName,
                         )}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}

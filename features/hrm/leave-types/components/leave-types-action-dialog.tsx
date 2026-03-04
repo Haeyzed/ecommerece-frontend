@@ -3,11 +3,8 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 
-import {
-  useCreateLeaveType,
-  useUpdateLeaveType
-} from '@/features/hrm/leave-types/api'
-import { leaveTypeSchema, type LeaveTypeFormData } from '@/features/hrm/leave-types/schemas'
+import { useCreateLeaveType, useUpdateLeaveType } from '@/features/hrm/leave-types/api'
+import { type LeaveTypeFormData, leaveTypeSchema } from '@/features/hrm/leave-types/schemas'
 import { type LeaveType } from '../types'
 
 import { useMediaQuery } from '@/hooks/use-media-query'
@@ -31,13 +28,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Spinner } from '@/components/ui/spinner'
@@ -101,8 +92,8 @@ export function LeaveTypesActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>{isEdit ? 'Edit Leave Type' : 'Add New Leave Type'}</DialogTitle>
             <DialogDescription>
               {isEdit ? 'Update the leave type details here. ' : 'Create a new leave type here. '}
@@ -110,12 +101,12 @@ export function LeaveTypesActionDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
-            <LeaveTypeForm form={form} onSubmit={onSubmit} id='leave-type-form' />
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
+            <LeaveTypeForm form={form} onSubmit={onSubmit} id="leave-type-form" />
           </div>
 
           <DialogFooter>
-            <Button type='submit' form='leave-type-form' disabled={isLoading}>
+            <Button type="submit" form="leave-type-form" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Spinner className="mr-2 size-4" />
@@ -134,7 +125,7 @@ export function LeaveTypesActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>{isEdit ? 'Edit Leave Type' : 'Add New Leave Type'}</DrawerTitle>
           <DrawerDescription>
             {isEdit ? 'Update the leave type details here. ' : 'Create a new leave type here. '}
@@ -142,12 +133,12 @@ export function LeaveTypesActionDialog({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className='no-scrollbar overflow-y-auto px-4'>
-          <LeaveTypeForm form={form} onSubmit={onSubmit} id='leave-type-form' />
+        <div className="no-scrollbar overflow-y-auto px-4">
+          <LeaveTypeForm form={form} onSubmit={onSubmit} id="leave-type-form" />
         </div>
 
         <DrawerFooter>
-          <Button type='submit' form='leave-type-form' disabled={isLoading}>
+          <Button type="submit" form="leave-type-form" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Spinner className="mr-2 size-4" />
@@ -158,7 +149,7 @@ export function LeaveTypesActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -183,14 +174,14 @@ function LeaveTypeForm({ form, onSubmit, id, className }: LeaveTypeFormProps) {
       <FieldGroup>
         <Controller
           control={form.control}
-          name='name'
+          name="name"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='leave-type-name'>Name <span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel htmlFor="leave-type-name">Name <span className="text-destructive">*</span></FieldLabel>
               <Input
-                id='leave-type-name'
-                placeholder='e.g. Annual Leave, Sick Leave'
-                autoComplete='off'
+                id="leave-type-name"
+                placeholder="e.g. Annual Leave, Sick Leave"
+                autoComplete="off"
                 {...field}
               />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
@@ -201,12 +192,13 @@ function LeaveTypeForm({ form, onSubmit, id, className }: LeaveTypeFormProps) {
         <div className="grid grid-cols-2 gap-4">
           <Controller
             control={form.control}
-            name='annual_quota'
+            name="annual_quota"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='annual-quota'>Annual Quota (Days) <span className="text-destructive">*</span></FieldLabel>
+                <FieldLabel htmlFor="annual-quota">Annual Quota (Days) <span
+                  className="text-destructive">*</span></FieldLabel>
                 <Input
-                  id='annual-quota'
+                  id="annual-quota"
                   type="number"
                   min={0}
                   step="0.5"
@@ -220,12 +212,13 @@ function LeaveTypeForm({ form, onSubmit, id, className }: LeaveTypeFormProps) {
 
           <Controller
             control={form.control}
-            name='carry_forward_limit'
+            name="carry_forward_limit"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='carry-forward'>Carry Forward Limit <span className="text-destructive">*</span></FieldLabel>
+                <FieldLabel htmlFor="carry-forward">Carry Forward Limit <span
+                  className="text-destructive">*</span></FieldLabel>
                 <Input
-                  id='carry-forward'
+                  id="carry-forward"
                   type="number"
                   min={0}
                   step="0.5"
@@ -240,20 +233,20 @@ function LeaveTypeForm({ form, onSubmit, id, className }: LeaveTypeFormProps) {
 
         <Controller
           control={form.control}
-          name='encashable'
+          name="encashable"
           render={({ field, fieldState }) => (
             <Field
               data-invalid={!!fieldState.error}
-              className='flex flex-row items-center justify-between rounded-md border p-4'
+              className="flex flex-row items-center justify-between rounded-md border p-4"
             >
-              <div className='space-y-0.5'>
-                <FieldLabel htmlFor='leave-type-encashable'>Encashable</FieldLabel>
+              <div className="space-y-0.5">
+                <FieldLabel htmlFor="leave-type-encashable">Encashable</FieldLabel>
                 <FieldDescription>
                   Can employees convert unused leave days into cash?
                 </FieldDescription>
               </div>
               <Switch
-                id='leave-type-encashable'
+                id="leave-type-encashable"
                 checked={!!field.value}
                 onCheckedChange={field.onChange}
               />
@@ -264,20 +257,20 @@ function LeaveTypeForm({ form, onSubmit, id, className }: LeaveTypeFormProps) {
 
         <Controller
           control={form.control}
-          name='is_active'
+          name="is_active"
           render={({ field, fieldState }) => (
             <Field
               data-invalid={!!fieldState.error}
-              className='flex flex-row items-center justify-between rounded-md border p-4'
+              className="flex flex-row items-center justify-between rounded-md border p-4"
             >
-              <div className='space-y-0.5'>
-                <FieldLabel htmlFor='leave-type-active'>Active Status</FieldLabel>
+              <div className="space-y-0.5">
+                <FieldLabel htmlFor="leave-type-active">Active Status</FieldLabel>
                 <FieldDescription>
                   Disabling this will hide the leave type from the system.
                 </FieldDescription>
               </div>
               <Switch
-                id='leave-type-active'
+                id="leave-type-active"
                 checked={!!field.value}
                 onCheckedChange={field.onChange}
               />

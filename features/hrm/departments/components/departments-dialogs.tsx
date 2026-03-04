@@ -1,11 +1,13 @@
 'use client'
 
-import { DepartmentsActionDialog } from '@/features/hrm/departments'
-import { DepartmentsDeleteDialog } from '@/features/hrm/departments'
-import { DepartmentsExportDialog } from '@/features/hrm/departments'
-import { DepartmentsImportDialog } from '@/features/hrm/departments'
-import { DepartmentsViewDialog } from '@/features/hrm/departments'
-import { useDepartments } from '@/features/hrm/departments'
+import {
+  DepartmentsActionDialog,
+  DepartmentsDeleteDialog,
+  DepartmentsExportDialog,
+  DepartmentsImportDialog,
+  DepartmentsViewDialog,
+  useDepartments,
+} from '@/features/hrm/departments'
 import { useAuthSession } from '@/features/auth/api'
 
 export function DepartmentsDialogs() {
@@ -23,7 +25,7 @@ export function DepartmentsDialogs() {
     <>
       {canCreate && (
         <DepartmentsActionDialog
-          key='department-add'
+          key="department-add"
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -33,7 +35,7 @@ export function DepartmentsDialogs() {
 
       {canImport && (
         <DepartmentsImportDialog
-          key='department-import'
+          key="department-import"
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -43,7 +45,7 @@ export function DepartmentsDialogs() {
 
       {canExport && (
         <DepartmentsExportDialog
-          key='department-export'
+          key="department-export"
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}
@@ -67,7 +69,7 @@ export function DepartmentsDialogs() {
               currentRow={currentRow}
             />
           )}
-          
+
           {canView && (
             <DepartmentsViewDialog
               key={`department-view-${currentRow.id}`}

@@ -7,7 +7,7 @@ import { Upload01Icon } from '@hugeicons/core-free-icons'
 import { format } from 'date-fns'
 
 import { usePermissionsExport } from '@/features/settings/acl/permissions/api'
-import { permissionExportSchema, type PermissionExportFormData } from '@/features/settings/acl/permissions/schemas'
+import { type PermissionExportFormData, permissionExportSchema } from '@/features/settings/acl/permissions/schemas'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -27,22 +27,10 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { useQuery } from '@tanstack/react-query'
 import { useApiClient } from '@/lib/api/api-client-client'
@@ -119,7 +107,7 @@ export function PermissionsExportDialog({
       },
       {
         onSuccess: () => handleOpenChange(false),
-      }
+      },
     )
   }
 
@@ -149,12 +137,12 @@ export function PermissionsExportDialog({
                   form.setValue(
                     'start_date',
                     range?.from ? format(range.from, 'yyyy-MM-dd') : undefined,
-                    { shouldValidate: true, shouldDirty: true }
+                    { shouldValidate: true, shouldDirty: true },
                   )
                   form.setValue(
                     'end_date',
                     range?.to ? format(range.to, 'yyyy-MM-dd') : undefined,
-                    { shouldValidate: true, shouldDirty: true }
+                    { shouldValidate: true, shouldDirty: true },
                   )
                 }}
               />

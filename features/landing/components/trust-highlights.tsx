@@ -1,7 +1,7 @@
 'use client'
 
 import { Card, CardContent } from '@/components/ui/card'
-import { Truck, Shield, HeartHandshake, Clock } from 'lucide-react'
+import { Clock, HeartHandshake, Shield, Truck } from 'lucide-react'
 
 const highlights = [
   {
@@ -32,25 +32,25 @@ const highlights = [
 
 export function TrustHighlights() {
   return (
-    <section className='w-full bg-background py-12 sm:py-16 lg:py-20'>
-      <div className='container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
-        <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4'>
+    <section className="w-full bg-background py-12 sm:py-16 lg:py-20">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {highlights.map((highlight) => {
             const Icon = highlight.icon
             return (
               <Card
                 key={highlight.id}
-                className='border-border/50 bg-card shadow-none transition-all duration-300 hover:border-border'
+                className="border-border/50 bg-card shadow-none transition-all duration-300 hover:border-border"
               >
-                <CardContent className='flex flex-col items-start gap-4 p-6'>
-                  <div className='rounded-lg bg-primary/10 p-3'>
-                    <Icon className='size-6 text-primary' />
+                <CardContent className="flex flex-col items-start gap-4 p-6">
+                  <div className="rounded-lg bg-primary/10 p-3">
+                    <Icon className="size-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className='mb-2 font-semibold text-foreground'>
+                    <h3 className="mb-2 font-semibold text-foreground">
                       {highlight.title}
                     </h3>
-                    <p className='text-sm text-muted-foreground'>
+                    <p className="text-sm text-muted-foreground">
                       {highlight.description}
                     </p>
                   </div>

@@ -50,7 +50,7 @@ export function CustomerGroupsPrimaryButtons() {
           size={isMobile ? 'icon' : 'default'}
           className={!isMobile ? 'space-x-1' : ''}
           onClick={() => setOpen('add')}
-          aria-label='Add Customer Group'
+          aria-label="Add Customer Group"
         >
           <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} size={18} />
           {!isMobile && <span>Add Customer Group</span>}

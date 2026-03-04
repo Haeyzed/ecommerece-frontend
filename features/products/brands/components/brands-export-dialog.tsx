@@ -7,7 +7,7 @@ import { Upload01Icon } from '@hugeicons/core-free-icons'
 import { format } from 'date-fns'
 
 import { useBrandsExport } from '@/features/products/brands/api'
-import { brandExportSchema, type BrandExportFormData } from '@/features/products/brands/schemas'
+import { type BrandExportFormData, brandExportSchema } from '@/features/products/brands/schemas'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -27,22 +27,10 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { useQuery } from '@tanstack/react-query'
 import { useApiClient } from '@/lib/api/api-client-client'
@@ -118,7 +106,7 @@ export function BrandsExportDialog({
       },
       {
         onSuccess: () => handleOpenChange(false),
-      }
+      },
     )
   }
 
@@ -137,24 +125,24 @@ export function BrandsExportDialog({
           control={form.control}
           name="start_date"
           render={({ field, fieldState }) => (
-            <Field className={"grid gap-1.5 w-full"}>
+            <Field className={'grid gap-1.5 w-full'}>
               <FieldLabel>Date Range</FieldLabel>
-            <DateRangePicker
-              value={{
-                from: form.watch('start_date') ? new Date(form.watch('start_date')!) : undefined,
-                to: form.watch('end_date') ? new Date(form.watch('end_date')!) : undefined,
-              }}
-              onChange={(range) => {
-                form.setValue(
-                  'start_date',
-                  range?.from ? format(range.from, 'yyyy-MM-dd') : undefined
-                )
-                form.setValue(
-                  'end_date',
-                  range?.to ? format(range.to, 'yyyy-MM-dd') : undefined
-                )
-              }}
-            />
+              <DateRangePicker
+                value={{
+                  from: form.watch('start_date') ? new Date(form.watch('start_date')!) : undefined,
+                  to: form.watch('end_date') ? new Date(form.watch('end_date')!) : undefined,
+                }}
+                onChange={(range) => {
+                  form.setValue(
+                    'start_date',
+                    range?.from ? format(range.from, 'yyyy-MM-dd') : undefined,
+                  )
+                  form.setValue(
+                    'end_date',
+                    range?.to ? format(range.to, 'yyyy-MM-dd') : undefined,
+                  )
+                }}
+              />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

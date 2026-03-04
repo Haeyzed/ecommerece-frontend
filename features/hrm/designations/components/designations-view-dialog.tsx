@@ -1,14 +1,8 @@
-"use client"
+'use client'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import {
   Drawer,
   DrawerClose,
@@ -21,8 +15,7 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { cn } from '@/lib/utils'
-import { statusTypes } from '@/features/hrm/designations'
-import { type Designation } from '@/features/hrm/designations'
+import { type Designation, statusTypes } from '@/features/hrm/designations'
 
 type DesignationsViewDialogProps = {
   currentRow?: Designation
@@ -31,10 +24,10 @@ type DesignationsViewDialogProps = {
 }
 
 export function DesignationsViewDialog({
-  currentRow,
-  open,
-  onOpenChange,
-}: DesignationsViewDialogProps) {
+                                         currentRow,
+                                         open,
+                                         onOpenChange,
+                                       }: DesignationsViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   if (!currentRow) return null
   const handleOpenChange = (value: boolean) => {
@@ -44,15 +37,15 @@ export function DesignationsViewDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>Designation Details</DialogTitle>
             <DialogDescription>
               View designation information below.
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-2'>
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-2">
             <DesignationsView
               currentRow={currentRow}
             />
@@ -65,12 +58,12 @@ export function DesignationsViewDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>Designation Details</DrawerTitle>
           <DrawerDescription>View designation information below.</DrawerDescription>
         </DrawerHeader>
 
-        <div className='max-h-[80vh] overflow-y-auto px-4'>
+        <div className="max-h-[80vh] overflow-y-auto px-4">
           <DesignationsView
             currentRow={currentRow}
           />
@@ -78,7 +71,7 @@ export function DesignationsViewDialog({
 
         <DrawerFooter>
           <DrawerClose asChild>
-            <Button variant='outline'>Close</Button>
+            <Button variant="outline">Close</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -97,39 +90,39 @@ function DesignationsView({ className, currentRow }: DesignationsViewProps) {
 
   return (
     <div className={cn('space-y-6', className)}>
-      <div className='grid grid-cols-2 gap-4'>
-        <div className='space-y-2'>
-          <div className='text-sm font-medium text-muted-foreground'>Name</div>
-          <div className='text-sm font-medium'>{currentRow.name}</div>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <div className="text-sm font-medium text-muted-foreground">Name</div>
+          <div className="text-sm font-medium">{currentRow.name}</div>
         </div>
-        <div className='space-y-2'>
-          <div className='text-sm font-medium text-muted-foreground'>Department</div>
-          <div className='text-sm font-medium'>{currentRow.department?.name}</div>
+        <div className="space-y-2">
+          <div className="text-sm font-medium text-muted-foreground">Department</div>
+          <div className="text-sm font-medium">{currentRow.department?.name}</div>
         </div>
       </div>
 
-      <div className='space-y-2'>
-        <div className='text-sm font-medium text-muted-foreground'>Status</div>
-        <Badge variant='outline' className={cn('capitalize', statusBadgeColor)}>
+      <div className="space-y-2">
+        <div className="text-sm font-medium text-muted-foreground">Status</div>
+        <Badge variant="outline" className={cn('capitalize', statusBadgeColor)}>
           {status}
         </Badge>
       </div>
 
       <Separator />
 
-      <div className='grid grid-cols-2 gap-4'>
-        <div className='space-y-2'>
-          <div className='text-sm font-medium text-muted-foreground'>Created At</div>
-          <div className='text-sm text-muted-foreground'>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <div className="text-sm font-medium text-muted-foreground">Created At</div>
+          <div className="text-sm text-muted-foreground">
             {currentRow.created_at
               ? new Date(currentRow.created_at).toLocaleString()
               : 'N/A'}
           </div>
         </div>
 
-        <div className='space-y-2'>
-          <div className='text-sm font-medium text-muted-foreground'>Updated At</div>
-          <div className='text-sm text-muted-foreground'>
+        <div className="space-y-2">
+          <div className="text-sm font-medium text-muted-foreground">Updated At</div>
+          <div className="text-sm text-muted-foreground">
             {currentRow.updated_at
               ? new Date(currentRow.updated_at).toLocaleString()
               : 'N/A'}

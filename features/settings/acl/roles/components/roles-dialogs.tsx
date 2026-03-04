@@ -1,9 +1,11 @@
 'use client'
 
-import { RolesActionDialog } from '@/features/settings/acl/roles'
-import { RolesDeleteDialog } from '@/features/settings/acl/roles'
-import { RolesExportDialog } from '@/features/settings/acl/roles'
-import { RolesImportDialog } from '@/features/settings/acl/roles'
+import {
+  RolesActionDialog,
+  RolesDeleteDialog,
+  RolesExportDialog,
+  RolesImportDialog,
+} from '@/features/settings/acl/roles'
 import { RolesViewDialog } from './roles-view-dialog'
 import { useRoles } from './roles-provider'
 import { useAuthSession } from '@/features/auth/api'
@@ -24,7 +26,7 @@ export function RolesDialogs() {
     <>
       {canCreate && (
         <RolesActionDialog
-          key='role-add'
+          key="role-add"
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -34,7 +36,7 @@ export function RolesDialogs() {
 
       {canImport && (
         <RolesImportDialog
-          key='role-import'
+          key="role-import"
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -44,7 +46,7 @@ export function RolesDialogs() {
 
       {canExport && (
         <RolesExportDialog
-          key='role-export'
+          key="role-export"
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

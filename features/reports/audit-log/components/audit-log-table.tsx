@@ -1,24 +1,12 @@
 'use client'
 
-import { Fragment } from 'react'
-import {
-  DataTablePagination,
-  DataTableSkeleton,
-} from '@/components/data-table'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { Fragment, useEffect, useMemo, useState } from 'react'
+import { DataTablePagination, DataTableSkeleton } from '@/components/data-table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useTableUrlState } from '@/hooks/use-table-url-state'
 import { cn } from '@/lib/utils'
 import {
   type ExpandedState,
-  type SortingState,
-  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getExpandedRowModel,
@@ -26,9 +14,10 @@ import {
   getFacetedUniqueValues,
   getFilteredRowModel,
   getSortedRowModel,
+  type SortingState,
   useReactTable,
+  type VisibilityState,
 } from '@tanstack/react-table'
-import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { useAudits } from '@/features/reports/audit-log/api'
 import type { Audit } from '@/features/reports/audit-log/types'
@@ -134,7 +123,7 @@ export function AuditLogTable() {
     <div
       className={cn(
         'max-sm:has-[div[role="toolbar"]]:mb-16',
-        'flex flex-1 flex-col gap-4'
+        'flex flex-1 flex-col gap-4',
       )}
     >
       <AuditLogToolbar table={table} />
@@ -150,15 +139,15 @@ export function AuditLogTable() {
                     className={cn(
                       'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                       (header.column.columnDef.meta as { className?: string })?.className,
-                      (header.column.columnDef.meta as { thClassName?: string })?.thClassName
+                      (header.column.columnDef.meta as { thClassName?: string })?.thClassName,
                     )}
                   >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -181,7 +170,7 @@ export function AuditLogTable() {
                           className={cn(
                             'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
                             (cell.column.columnDef.meta as { className?: string })?.className,
-                            (cell.column.columnDef.meta as { tdClassName?: string })?.tdClassName
+                            (cell.column.columnDef.meta as { tdClassName?: string })?.tdClassName,
                           )}
                         >
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}

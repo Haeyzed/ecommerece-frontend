@@ -5,10 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Upload01Icon } from '@hugeicons/core-free-icons'
 import { useAuditsExport } from '@/features/reports/audit-log/api'
-import {
-  auditExportSchema,
-  type AuditExportFormData,
-} from '@/features/reports/audit-log/schemas'
+import { type AuditExportFormData, auditExportSchema } from '@/features/reports/audit-log/schemas'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -27,22 +24,10 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { useQuery } from '@tanstack/react-query'
 import { useApiClient } from '@/lib/api/api-client-client'
@@ -65,10 +50,10 @@ type AuditLogExportDialogProps = {
 }
 
 export function AuditLogExportDialog({
-  open,
-  onOpenChange,
-  ids = [],
-}: AuditLogExportDialogProps) {
+                                       open,
+                                       onOpenChange,
+                                       ids = [],
+                                     }: AuditLogExportDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const { mutate: exportAudits, isPending } = useAuditsExport()
   const { api } = useApiClient()
@@ -109,14 +94,14 @@ export function AuditLogExportDialog({
         columns: data.columns,
         user_id: data.method === 'email' ? data.user_id : undefined,
       },
-      { onSuccess: () => handleOpenChange(false) }
+      { onSuccess: () => handleOpenChange(false) },
     )
   }
 
   const handleSelectAllColumns = () => {
     form.setValue(
       'columns',
-      AVAILABLE_COLUMNS.map((c) => c.value)
+      AVAILABLE_COLUMNS.map((c) => c.value),
     )
   }
 
@@ -286,7 +271,7 @@ export function AuditLogExportDialog({
                           field.onChange([...current, column.value])
                         } else {
                           field.onChange(
-                            current.filter((c) => c !== column.value)
+                            current.filter((c) => c !== column.value),
                           )
                         }
                       }}

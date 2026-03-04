@@ -1,22 +1,14 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  CancelCircleIcon,
-  CloudUploadIcon,
-  Edit01Icon,
-} from '@hugeicons/core-free-icons'
+import { CancelCircleIcon, CloudUploadIcon, Edit01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 import { useState } from 'react'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 
-import {
-  useCreateCategory,
-  useUpdateCategory,
-  useOptionCategories
-} from '@/features/products/categories/api'
-import { categorySchema, type CategoryFormData } from '@/features/products/categories/schemas'
+import { useCreateCategory, useOptionCategories, useUpdateCategory } from '@/features/products/categories/api'
+import { type CategoryFormData, categorySchema } from '@/features/products/categories/schemas'
 import { type Category } from '../types'
 
 import { useMediaQuery } from '@/hooks/use-media-query'
@@ -42,13 +34,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import {
   FileUpload,
   FileUploadDropzone,
@@ -66,7 +52,7 @@ import {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-} from "@/components/ui/combobox"
+} from '@/components/ui/combobox'
 
 import { ImageZoom } from '@/components/ui/image-zoom'
 import { Input } from '@/components/ui/input'
@@ -81,10 +67,10 @@ type CategoriesActionDialogProps = {
 }
 
 export function CategoriesActionDialog({
-  currentRow,
-  open,
-  onOpenChange,
-}: CategoriesActionDialogProps) {
+                                         currentRow,
+                                         open,
+                                         onOpenChange,
+                                       }: CategoriesActionDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const isEdit = !!currentRow
   const { mutate: createCategory, isPending: isCreating } = useCreateCategory()
@@ -145,8 +131,8 @@ export function CategoriesActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange} modal={false}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>{isEdit ? 'Edit Category' : 'Add New Category'}</DialogTitle>
             <DialogDescription>
               {isEdit ? 'Update the category details here. ' : 'Create a new category here. '}
@@ -158,14 +144,14 @@ export function CategoriesActionDialog({
             <CategoryForm
               form={form}
               onSubmit={onSubmit}
-              id='category-form'
+              id="category-form"
               isEdit={isEdit}
               currentRow={currentRow}
             />
           </div>
 
           <DialogFooter>
-            <Button type='submit' form='category-form' disabled={isLoading}>
+            <Button type="submit" form="category-form" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Spinner className="mr-2 size-4" />
@@ -184,7 +170,7 @@ export function CategoriesActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange} modal={false}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>{isEdit ? 'Edit Category' : 'Add New Category'}</DrawerTitle>
           <DrawerDescription>
             {isEdit ? 'Update the category details here. ' : 'Create a new category here. '}
@@ -196,14 +182,14 @@ export function CategoriesActionDialog({
           <CategoryForm
             form={form}
             onSubmit={onSubmit}
-            id='category-form'
+            id="category-form"
             isEdit={isEdit}
             currentRow={currentRow}
           />
         </div>
 
         <DrawerFooter>
-          <Button type='submit' form='category-form' disabled={isLoading}>
+          <Button type="submit" form="category-form" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Spinner className="mr-2 size-4" />
@@ -214,7 +200,7 @@ export function CategoriesActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -246,14 +232,14 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
       <FieldGroup>
         <Controller
           control={form.control}
-          name='name'
+          name="name"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='category-name'>Name <span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel htmlFor="category-name">Name <span className="text-destructive">*</span></FieldLabel>
               <Input
-                id='category-name'
-                placeholder='Category name'
-                autoComplete='off'
+                id="category-name"
+                placeholder="Category name"
+                autoComplete="off"
                 {...field}
                 onChange={(e) => {
                   field.onChange(e.target.value)
@@ -269,28 +255,28 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
 
         <Controller
           control={form.control}
-          name='slug'
+          name="slug"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='category-slug'>Slug</FieldLabel>
-              <div className='flex gap-2'>
+              <FieldLabel htmlFor="category-slug">Slug</FieldLabel>
+              <div className="flex gap-2">
                 <Input
-                  id='category-slug'
-                  placeholder='category-slug'
-                  autoComplete='off'
+                  id="category-slug"
+                  placeholder="category-slug"
+                  autoComplete="off"
                   {...field}
                   value={field.value || ''}
                   disabled={isSlugDisabled}
                 />
                 <Button
-                  type='button'
-                  variant='outline'
-                  size='icon'
-                  className='shrink-0'
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="shrink-0"
                   onClick={() => setIsSlugDisabled((prev) => !prev)}
-                  title={isSlugDisabled ? "Enable editing" : "Disable editing"}
+                  title={isSlugDisabled ? 'Enable editing' : 'Disable editing'}
                 >
-                  <HugeiconsIcon icon={Edit01Icon} className='size-4' />
+                  <HugeiconsIcon icon={Edit01Icon} className="size-4" />
                 </Button>
               </div>
               <FieldDescription>
@@ -303,10 +289,10 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
 
         <Controller
           control={form.control}
-          name='parent_id'
+          name="parent_id"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error} className="flex flex-col">
-              <FieldLabel htmlFor='category-parent-id'>Parent Category</FieldLabel>
+              <FieldLabel htmlFor="category-parent-id">Parent Category</FieldLabel>
               <Combobox
                 items={availableParents}
                 itemToStringLabel={(item) => item.label}
@@ -345,15 +331,15 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
         {/* Short Description */}
         <Controller
           control={form.control}
-          name='short_description'
+          name="short_description"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='category-description'>Description</FieldLabel>
+              <FieldLabel htmlFor="category-description">Description</FieldLabel>
               <Textarea
-                id='category-description'
-                placeholder='Category description'
+                id="category-description"
+                placeholder="Category description"
                 rows={3}
-                className='resize-none'
+                className="resize-none"
                 {...field}
                 value={field.value || ''}
               />
@@ -364,14 +350,14 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
 
         <Controller
           control={form.control}
-          name='page_title'
+          name="page_title"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='category-page-title'>Page Title</FieldLabel>
+              <FieldLabel htmlFor="category-page-title">Page Title</FieldLabel>
               <Input
-                id='category-page-title'
-                placeholder='SEO Page Title'
-                autoComplete='off'
+                id="category-page-title"
+                placeholder="SEO Page Title"
+                autoComplete="off"
                 {...field}
                 value={field.value || ''}
               />
@@ -382,23 +368,23 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
 
         <Controller
           control={form.control}
-          name='image'
+          name="image"
           render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
             const existingImageUrl = isEdit && currentRow?.image_url ? currentRow.image_url : null
             const hasNewImage = value instanceof File || (Array.isArray(value) && value.length > 0)
 
             return (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='category-image'>Image</FieldLabel>
+                <FieldLabel htmlFor="category-image">Image</FieldLabel>
 
                 {existingImageUrl && !hasNewImage && (
-                  <div className='mb-3 flex items-center gap-3 rounded-md border p-3'>
-                    <div className='relative size-16 overflow-hidden rounded-md bg-muted'>
+                  <div className="mb-3 flex items-center gap-3 rounded-md border p-3">
+                    <div className="relative size-16 overflow-hidden rounded-md bg-muted">
                       <ImageZoom
                         backdropClassName={cn(
                           resolvedTheme === 'dark'
                             ? '[&_[data-rmiz-modal-overlay="visible"]]:bg-white/80'
-                            : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80'
+                            : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80',
                         )}
                       >
                         <Image
@@ -406,14 +392,14 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
                           alt={currentRow?.name || 'Category image'}
                           width={64}
                           height={64}
-                          className='h-full w-full object-cover'
+                          className="h-full w-full object-cover"
                           unoptimized
                         />
                       </ImageZoom>
                     </div>
-                    <div className='flex-1'>
-                      <p className='text-sm font-medium'>Current Image</p>
-                      <p className='text-xs text-muted-foreground'>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">Current Image</p>
+                      <p className="text-xs text-muted-foreground">
                         Upload a new image to replace this one
                       </p>
                     </div>
@@ -423,18 +409,18 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
                 <FileUpload
                   value={value as File[] | undefined}
                   onValueChange={onChange}
-                  accept='image/*'
+                  accept="image/*"
                   maxFiles={1}
                   maxSize={5 * 1024 * 1024}
                   onFileReject={(_, message) => {
                     form.setError('image', { message })
                   }}
                 >
-                  <FileUploadDropzone className='flex-row flex-wrap border-dotted text-center'>
-                    <HugeiconsIcon icon={CloudUploadIcon} className='size-4' />
+                  <FileUploadDropzone className="flex-row flex-wrap border-dotted text-center">
+                    <HugeiconsIcon icon={CloudUploadIcon} className="size-4" />
                     Drag and drop or
                     <FileUploadTrigger asChild>
-                      <Button variant='link' size='sm' className='p-0'>
+                      <Button variant="link" size="sm" className="p-0">
                         choose file
                       </Button>
                     </FileUploadTrigger>
@@ -446,9 +432,9 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
                         <FileUploadItemPreview />
                         <FileUploadItemMetadata />
                         <FileUploadItemDelete asChild>
-                          <Button variant='ghost' size='icon' className='size-7'>
-                            <HugeiconsIcon icon={CancelCircleIcon} className='size-4' />
-                            <span className='sr-only'>Delete</span>
+                          <Button variant="ghost" size="icon" className="size-7">
+                            <HugeiconsIcon icon={CancelCircleIcon} className="size-4" />
+                            <span className="sr-only">Delete</span>
                           </Button>
                         </FileUploadItemDelete>
                       </FileUploadItem>
@@ -464,23 +450,23 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
 
         <Controller
           control={form.control}
-          name='icon'
+          name="icon"
           render={({ field: { value, onChange, ...fieldProps }, fieldState }) => {
             const existingIconUrl = isEdit && currentRow?.icon_url ? currentRow.icon_url : null
             const hasNewIcon = value instanceof File || (Array.isArray(value) && value.length > 0)
 
             return (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel htmlFor='category-icon'>Icon</FieldLabel>
+                <FieldLabel htmlFor="category-icon">Icon</FieldLabel>
 
                 {existingIconUrl && !hasNewIcon && (
-                  <div className='mb-3 flex items-center gap-3 rounded-md border p-3'>
-                    <div className='relative size-16 overflow-hidden rounded-md bg-muted'>
+                  <div className="mb-3 flex items-center gap-3 rounded-md border p-3">
+                    <div className="relative size-16 overflow-hidden rounded-md bg-muted">
                       <ImageZoom
                         backdropClassName={cn(
                           resolvedTheme === 'dark'
                             ? '[&_[data-rmiz-modal-overlay="visible"]]:bg-white/80'
-                            : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80'
+                            : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80',
                         )}
                       >
                         <Image
@@ -488,14 +474,14 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
                           alt={currentRow?.name || 'Category icon'}
                           width={64}
                           height={64}
-                          className='h-full w-full object-cover'
+                          className="h-full w-full object-cover"
                           unoptimized
                         />
                       </ImageZoom>
                     </div>
-                    <div className='flex-1'>
-                      <p className='text-sm font-medium'>Current Icon</p>
-                      <p className='text-xs text-muted-foreground'>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">Current Icon</p>
+                      <p className="text-xs text-muted-foreground">
                         Upload a new icon to replace this one
                       </p>
                     </div>
@@ -505,17 +491,17 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
                 <FileUpload
                   value={value as File[] | undefined}
                   onValueChange={onChange}
-                  accept='image/svg+xml'
+                  accept="image/svg+xml"
                   maxFiles={1}
                   onFileReject={(_, message) => {
                     form.setError('icon', { message })
                   }}
                 >
-                  <FileUploadDropzone className='flex-row flex-wrap border-dotted text-center'>
-                    <HugeiconsIcon icon={CloudUploadIcon} className='size-4' />
+                  <FileUploadDropzone className="flex-row flex-wrap border-dotted text-center">
+                    <HugeiconsIcon icon={CloudUploadIcon} className="size-4" />
                     Drag and drop or
                     <FileUploadTrigger asChild>
-                      <Button variant='link' size='sm' className='p-0'>
+                      <Button variant="link" size="sm" className="p-0">
                         choose file
                       </Button>
                     </FileUploadTrigger>
@@ -527,9 +513,9 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
                         <FileUploadItemPreview />
                         <FileUploadItemMetadata />
                         <FileUploadItemDelete asChild>
-                          <Button variant='ghost' size='icon' className='size-7'>
-                            <HugeiconsIcon icon={CancelCircleIcon} className='size-4' />
-                            <span className='sr-only'>Delete</span>
+                          <Button variant="ghost" size="icon" className="size-7">
+                            <HugeiconsIcon icon={CancelCircleIcon} className="size-4" />
+                            <span className="sr-only">Delete</span>
                           </Button>
                         </FileUploadItemDelete>
                       </FileUploadItem>
@@ -545,12 +531,12 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
 
         <Controller
           control={form.control}
-          name='woocommerce_category_id'
+          name="woocommerce_category_id"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='category-woocommerce-category-id'>WooCommerce Category ID</FieldLabel>
+              <FieldLabel htmlFor="category-woocommerce-category-id">WooCommerce Category ID</FieldLabel>
               <Input
-                id='category-woocommerce-category-id'
+                id="category-woocommerce-category-id"
                 type="number"
                 placeholder="WooCommerce ID"
                 {...field}
@@ -565,20 +551,20 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
         {/* Switches */}
         <Controller
           control={form.control}
-          name='is_active'
+          name="is_active"
           render={({ field, fieldState }) => (
             <Field
               data-invalid={!!fieldState.error}
-              className='flex flex-row items-center justify-between rounded-md border p-4'
+              className="flex flex-row items-center justify-between rounded-md border p-4"
             >
-              <div className='space-y-0.5'>
-                <FieldLabel htmlFor='category-active'>Active Status</FieldLabel>
+              <div className="space-y-0.5">
+                <FieldLabel htmlFor="category-active">Active Status</FieldLabel>
                 <FieldDescription>
                   Disabling this will hide the category from public view.
                 </FieldDescription>
               </div>
               <Switch
-                id='category-active'
+                id="category-active"
                 checked={!!field.value}
                 onCheckedChange={field.onChange}
               />
@@ -589,20 +575,20 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
 
         <Controller
           control={form.control}
-          name='featured'
+          name="featured"
           render={({ field, fieldState }) => (
             <Field
               data-invalid={!!fieldState.error}
-              className='flex flex-row items-center justify-between rounded-md border p-4'
+              className="flex flex-row items-center justify-between rounded-md border p-4"
             >
-              <div className='space-y-0.5'>
-                <FieldLabel htmlFor='category-featured'>Featured Status</FieldLabel>
+              <div className="space-y-0.5">
+                <FieldLabel htmlFor="category-featured">Featured Status</FieldLabel>
                 <FieldDescription>
                   Enabling this will make the category appear in the featured section.
                 </FieldDescription>
               </div>
               <Switch
-                id='category-featured'
+                id="category-featured"
                 checked={!!field.value}
                 onCheckedChange={field.onChange}
               />
@@ -613,20 +599,20 @@ function CategoryForm({ form, onSubmit, id, className, isEdit, currentRow }: Cat
 
         <Controller
           control={form.control}
-          name='is_sync_disable'
+          name="is_sync_disable"
           render={({ field, fieldState }) => (
             <Field
               data-invalid={!!fieldState.error}
-              className='flex flex-row items-center justify-between rounded-md border p-4'
+              className="flex flex-row items-center justify-between rounded-md border p-4"
             >
-              <div className='space-y-0.5'>
-                <FieldLabel htmlFor='category-is-sync-disable'>Sync Disable Status</FieldLabel>
+              <div className="space-y-0.5">
+                <FieldLabel htmlFor="category-is-sync-disable">Sync Disable Status</FieldLabel>
                 <FieldDescription>
                   Enabling this will disable the category sync with WooCommerce.
                 </FieldDescription>
               </div>
               <Switch
-                id='category-is-sync-disable'
+                id="category-is-sync-disable"
                 checked={!!field.value}
                 onCheckedChange={field.onChange}
               />

@@ -2,22 +2,11 @@
 
 import * as React from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import {
   Combobox,
   ComboboxChip,
@@ -58,10 +47,10 @@ type PaymentGatewaySettingFormProps = {
 }
 
 export function PaymentGatewaySettingForm({
-  gateway,
-  onSubmit,
-  isPending = false,
-}: PaymentGatewaySettingFormProps) {
+                                            gateway,
+                                            onSubmit,
+                                            isPending = false,
+                                          }: PaymentGatewaySettingFormProps) {
   const anchor = useComboboxAnchor()
   const detailKeys = Object.keys(gateway.details ?? {})
 

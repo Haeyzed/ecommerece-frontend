@@ -25,7 +25,7 @@ export interface FormattedAuditEntry {
 
 /** Convert audit values object to array of { label, value } for display */
 export function formatAuditValues(
-  values: Record<string, unknown> | null
+  values: Record<string, unknown> | null,
 ): FormattedAuditEntry[] {
   if (!values || typeof values !== 'object') return []
   return Object.entries(values).map(([key, val]) => ({

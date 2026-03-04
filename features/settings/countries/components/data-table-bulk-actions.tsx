@@ -2,24 +2,12 @@
 
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  CheckmarkCircle02Icon,
-  Delete02Icon,
-  UnavailableIcon,
-  Upload01Icon,
-} from '@hugeicons/core-free-icons'
+import { CheckmarkCircle02Icon, Delete02Icon, UnavailableIcon, Upload01Icon } from '@hugeicons/core-free-icons'
 import { type Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
-import {
-  useBulkActivateCountries,
-  useBulkDeactivateCountries
-} from '../api'
+import { useBulkActivateCountries, useBulkDeactivateCountries } from '../api'
 import { type Country } from '../types'
 import { CountriesExportDialog } from './countries-export-dialog'
 import { CountriesMultiDeleteDialog } from './countries-multi-delete-dialog'
@@ -66,26 +54,26 @@ export function DataTableBulkActions<TData>({
 
   return (
     <>
-      <BulkActionsToolbar table={table} entityName='country'>
+      <BulkActionsToolbar table={table} entityName="country">
         {canUpdate && (
           <>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant='outline'
-                  size='icon'
+                  variant="outline"
+                  size="icon"
                   onClick={() => handleBulkStatusChange('active')}
                   disabled={isBusy}
-                  className='size-8'
-                  aria-label='Activate selected countries'
-                  title='Activate selected countries'
+                  className="size-8"
+                  aria-label="Activate selected countries"
+                  title="Activate selected countries"
                 >
                   {isActivating ? (
-                    <Spinner className='size-4' />
+                    <Spinner className="size-4" />
                   ) : (
                     <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} />
                   )}
-                  <span className='sr-only'>Activate selected countries</span>
+                  <span className="sr-only">Activate selected countries</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -96,20 +84,20 @@ export function DataTableBulkActions<TData>({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant='outline'
-                  size='icon'
+                  variant="outline"
+                  size="icon"
                   onClick={() => handleBulkStatusChange('inactive')}
                   disabled={isBusy}
-                  className='size-8'
-                  aria-label='Deactivate selected countries'
-                  title='Deactivate selected countries'
+                  className="size-8"
+                  aria-label="Deactivate selected countries"
+                  title="Deactivate selected countries"
                 >
                   {isDeactivating ? (
-                    <Spinner className='size-4' />
+                    <Spinner className="size-4" />
                   ) : (
                     <HugeiconsIcon icon={UnavailableIcon} strokeWidth={2} />
                   )}
-                  <span className='sr-only'>Deactivate selected countries</span>
+                  <span className="sr-only">Deactivate selected countries</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -123,16 +111,16 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant='outline'
-                size='icon'
+                variant="outline"
+                size="icon"
                 onClick={() => setShowExportDialog(true)}
                 disabled={isBusy}
-                className='size-8'
-                aria-label='Export selected countries'
-                title='Export selected countries'
+                className="size-8"
+                aria-label="Export selected countries"
+                title="Export selected countries"
               >
                 <HugeiconsIcon icon={Upload01Icon} strokeWidth={2} />
-                <span className='sr-only'>Export selected countries</span>
+                <span className="sr-only">Export selected countries</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
@@ -145,16 +133,16 @@ export function DataTableBulkActions<TData>({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant='destructive'
-                size='icon'
+                variant="destructive"
+                size="icon"
                 onClick={() => setShowDeleteConfirm(true)}
                 disabled={isBusy}
-                className='size-8'
-                aria-label='Delete selected countries'
-                title='Delete selected countries'
+                className="size-8"
+                aria-label="Delete selected countries"
+                title="Delete selected countries"
               >
                 <HugeiconsIcon icon={Delete02Icon} strokeWidth={2} />
-                <span className='sr-only'>Delete selected countries</span>
+                <span className="sr-only">Delete selected countries</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>

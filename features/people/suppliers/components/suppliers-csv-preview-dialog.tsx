@@ -18,14 +18,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Spinner } from '@/components/ui/spinner'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -40,12 +33,12 @@ type SuppliersCsvPreviewDialogProps = {
 }
 
 export function SuppliersCsvPreviewDialog({
-  open,
-  onOpenChange,
-  data,
-  onConfirm,
-  isPending,
-}: SuppliersCsvPreviewDialogProps) {
+                                            open,
+                                            onOpenChange,
+                                            data,
+                                            onConfirm,
+                                            isPending,
+                                          }: SuppliersCsvPreviewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const headers = data.length > 0 ? Object.keys(data[0]) : []
 

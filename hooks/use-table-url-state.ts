@@ -1,12 +1,8 @@
-"use client"
+'use client'
 
-import { useMemo, useState, useCallback } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import type {
-  ColumnFiltersState,
-  OnChangeFn,
-  PaginationState,
-} from '@tanstack/react-table'
+import type { ColumnFiltersState, OnChangeFn, PaginationState } from '@tanstack/react-table'
 
 // Define Updater type locally to ensure compatibility without relying on specific library exports
 type Updater<T> = T | ((old: T) => T)
@@ -25,19 +21,19 @@ type UseTableUrlStateParams = {
   }
   columnFilters?: Array<
     | {
-        columnId: string
-        searchKey: string
-        type?: 'string'
-        serialize?: (value: unknown) => unknown
-        deserialize?: (value: unknown) => unknown
-      }
+    columnId: string
+    searchKey: string
+    type?: 'string'
+    serialize?: (value: unknown) => unknown
+    deserialize?: (value: unknown) => unknown
+  }
     | {
-        columnId: string
-        searchKey: string
-        type: 'array'
-        serialize?: (value: unknown) => unknown
-        deserialize?: (value: unknown) => unknown
-      }
+    columnId: string
+    searchKey: string
+    type: 'array'
+    serialize?: (value: unknown) => unknown
+    deserialize?: (value: unknown) => unknown
+  }
   >
 }
 
@@ -54,12 +50,12 @@ type UseTableUrlStateReturn = {
   // Helpers
   ensurePageInRange: (
     pageCount: number,
-    opts?: { resetTo?: 'first' | 'last' }
+    opts?: { resetTo?: 'first' | 'last' },
   ) => void
 }
 
 export function useTableUrlState(
-  params: UseTableUrlStateParams
+  params: UseTableUrlStateParams,
 ): UseTableUrlStateReturn {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -86,7 +82,7 @@ export function useTableUrlState(
       const newUrl = `${window.location.pathname}?${updated.toString()}`
       router.push(newUrl, { scroll: false })
     },
-    [router, searchParams]
+    [router, searchParams],
   )
 
   // Build initial column filters from the current search params
@@ -144,7 +140,7 @@ export function useTableUrlState(
         return params
       })
     },
-    [pagination, updateSearchParams, pageKey, pageSizeKey, defaultPage, defaultPageSize]
+    [pagination, updateSearchParams, pageKey, pageSizeKey, defaultPage, defaultPageSize],
   )
 
   const [globalFilter, setGlobalFilter] = useState<string | undefined>(() => {
@@ -156,26 +152,26 @@ export function useTableUrlState(
   const onGlobalFilterChange: OnChangeFn<string> | undefined =
     globalFilterEnabled
       ? useCallback(
-          (updater: Updater<string>) => {
-            const next =
-              typeof updater === 'function'
-                ? (updater as (old: string) => string)(globalFilter ?? '')
-                : updater
-            const value = trimGlobal ? next.trim() : next
-            setGlobalFilter(value)
+        (updater: Updater<string>) => {
+          const next =
+            typeof updater === 'function'
+              ? (updater as (old: string) => string)(globalFilter ?? '')
+              : updater
+          const value = trimGlobal ? next.trim() : next
+          setGlobalFilter(value)
 
-            updateSearchParams((params) => {
-              params.delete(pageKey) // Reset to first page
-              if (value) {
-                params.set(globalFilterKey, value)
-              } else {
-                params.delete(globalFilterKey)
-              }
-              return params
-            })
-          },
-          [globalFilter, trimGlobal, updateSearchParams, pageKey, globalFilterKey]
-        )
+          updateSearchParams((params) => {
+            params.delete(pageKey) // Reset to first page
+            if (value) {
+              params.set(globalFilterKey, value)
+            } else {
+              params.delete(globalFilterKey)
+            }
+            return params
+          })
+        },
+        [globalFilter, trimGlobal, updateSearchParams, pageKey, globalFilterKey],
+      )
       : undefined
 
   const onColumnFiltersChange: OnChangeFn<ColumnFiltersState> = useCallback(
@@ -212,13 +208,13 @@ export function useTableUrlState(
         return params
       })
     },
-    [columnFilters, columnFiltersCfg, updateSearchParams, pageKey]
+    [columnFilters, columnFiltersCfg, updateSearchParams, pageKey],
   )
 
   const ensurePageInRange = useCallback(
     (
       pageCount: number,
-      opts: { resetTo?: 'first' | 'last' } = { resetTo: 'first' }
+      opts: { resetTo?: 'first' | 'last' } = { resetTo: 'first' },
     ) => {
       const currentPage = searchParams.get(pageKey)
       const pageNum = currentPage ? Number(currentPage) : defaultPage
@@ -233,7 +229,7 @@ export function useTableUrlState(
         })
       }
     },
-    [searchParams, pageKey, defaultPage, updateSearchParams]
+    [searchParams, pageKey, defaultPage, updateSearchParams],
   )
 
   return {

@@ -2,25 +2,13 @@
 
 import { useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  CheckmarkCircle02Icon,
-  Delete02Icon,
-  UnavailableIcon,
-  Upload01Icon,
-} from '@hugeicons/core-free-icons'
+import { CheckmarkCircle02Icon, Delete02Icon, UnavailableIcon, Upload01Icon } from '@hugeicons/core-free-icons'
 import type { Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { DataTableBulkActions as BulkActionsToolbar } from '@/components/data-table'
 import { Spinner } from '@/components/ui/spinner'
-import {
-  useBulkActivateCustomers,
-  useBulkDeactivateCustomers,
-} from '../api'
+import { useBulkActivateCustomers, useBulkDeactivateCustomers } from '../api'
 import type { Customer } from '../types'
 import { CustomersExportDialog } from './customers-export-dialog'
 import { CustomersMultiDeleteDialog } from './customers-multi-delete-dialog'
@@ -31,8 +19,8 @@ type DataTableBulkActionsProps<TData> = {
 }
 
 export function DataTableBulkActions<TData>({
-  table,
-}: DataTableBulkActionsProps<TData>) {
+                                              table,
+                                            }: DataTableBulkActionsProps<TData>) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showExportDialog, setShowExportDialog] = useState(false)
   const selectedRows = table.getFilteredSelectedRowModel().rows

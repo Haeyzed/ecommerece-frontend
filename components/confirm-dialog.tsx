@@ -56,14 +56,14 @@ export function ConfirmDialog(props: ConfirmDialogProps) {
     return (
       <AlertDialog {...actions}>
         <AlertDialogContent className={cn('w-full sm:max-w-lg', className)}>
-          <AlertDialogHeader className='text-start'>
+          <AlertDialogHeader className="text-start">
             <AlertDialogTitle>{title}</AlertDialogTitle>
             <AlertDialogDescription asChild>
-              <div className='w-full'>{desc}</div>
+              <div className="w-full">{desc}</div>
             </AlertDialogDescription>
           </AlertDialogHeader>
 
-          {children && <div className='w-full'>{children}</div>}
+          {children && <div className="w-full">{children}</div>}
 
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isLoading}>
@@ -92,18 +92,18 @@ export function ConfirmDialog(props: ConfirmDialogProps) {
   return (
     <Drawer {...actions}>
       <DrawerContent className={cn('w-full', className)}>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>{title}</DrawerTitle>
           <DrawerDescription asChild>
-            <div className='w-full'>{desc}</div>
+            <div className="w-full">{desc}</div>
           </DrawerDescription>
         </DrawerHeader>
 
         {children && <div className="px-4 w-full">{children}</div>}
 
-        <DrawerFooter className='pt-2'>
+        <DrawerFooter className="pt-2">
           <Button
-            className='w-full'
+            className="w-full"
             variant={destructive ? 'destructive' : 'default'}
             onClick={handleConfirm}
             disabled={disabled || isLoading}
@@ -118,7 +118,7 @@ export function ConfirmDialog(props: ConfirmDialogProps) {
             )}
           </Button>
           <DrawerClose asChild>
-            <Button className='w-full' variant='outline' disabled={isLoading}>
+            <Button className="w-full" variant="outline" disabled={isLoading}>
               {cancelBtnText ?? 'Cancel'}
             </Button>
           </DrawerClose>

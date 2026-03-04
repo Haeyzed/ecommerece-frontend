@@ -23,7 +23,7 @@ export function CitiesDialogs() {
     <>
       {canCreate && (
         <CitiesActionDialog
-          key='city-add'
+          key="city-add"
           open={open === 'add'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -33,7 +33,7 @@ export function CitiesDialogs() {
 
       {canImport && (
         <CitiesImportDialog
-          key='city-import'
+          key="city-import"
           open={open === 'import'}
           onOpenChange={(isOpen) => {
             if (!isOpen) setOpen(null)
@@ -43,7 +43,7 @@ export function CitiesDialogs() {
 
       {canExport && (
         <CitiesExportDialog
-          key='city-export'
+          key="city-export"
           open={open === 'export'}
           onOpenChange={(state) => setOpen(state ? 'export' : null)}
           ids={[]}

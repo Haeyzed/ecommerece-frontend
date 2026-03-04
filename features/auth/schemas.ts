@@ -8,7 +8,7 @@
  * @module features/auth/schemas
  */
 
-import { z } from "zod";
+import { z } from 'zod'
 
 /**
  * loginSchema
@@ -17,9 +17,9 @@ import { z } from "zod";
  * Requires a non-empty identifier (username or email) and password.
  */
 export const loginSchema = z.object({
-  identifier: z.string().min(1, "Email or username is required"),
-  password: z.string().min(1, "Password is required"),
-});
+  identifier: z.string().min(1, 'Email or username is required'),
+  password: z.string().min(1, 'Password is required'),
+})
 
 /**
  * registerSchema
@@ -33,15 +33,15 @@ export const loginSchema = z.object({
  */
 export const registerSchema = z
   .object({
-    name: z.string().min(2, "Name must be at least 2 characters"),
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
+    name: z.string().min(2, 'Name must be at least 2 characters'),
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
     password_confirmation: z.string(),
   })
   .refine((data) => data.password === data.password_confirmation, {
-    message: "Passwords do not match",
-    path: ["password_confirmation"],
-  });
+    message: 'Passwords do not match',
+    path: ['password_confirmation'],
+  })
 
 /**
  * forgotPasswordSchema
@@ -50,8 +50,8 @@ export const registerSchema = z
  * Validates that a proper email format is provided.
  */
 export const forgotPasswordSchema = z.object({
-  email: z.string().email("Invalid email address"),
-});
+  email: z.string().email('Invalid email address'),
+})
 
 /**
  * resetPasswordSchema
@@ -62,15 +62,15 @@ export const forgotPasswordSchema = z.object({
  */
 export const resetPasswordSchema = z
   .object({
-    email: z.string().email("Invalid email address"),
-    token: z.string().min(1, "Token is required"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
+    email: z.string().email('Invalid email address'),
+    token: z.string().min(1, 'Token is required'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
     password_confirmation: z.string(),
   })
   .refine((data) => data.password === data.password_confirmation, {
-    message: "Passwords do not match",
-    path: ["password_confirmation"],
-  });
+    message: 'Passwords do not match',
+    path: ['password_confirmation'],
+  })
 
 /**
  * lockScreenSchema
@@ -79,8 +79,8 @@ export const resetPasswordSchema = z
  * Validates that a password is provided.
  */
 export const lockScreenSchema = z.object({
-  password: z.string().min(1, "Password is required"),
-});
+  password: z.string().min(1, 'Password is required'),
+})
 
 
 /**

@@ -1,4 +1,4 @@
-import { type TaxActiveStatus } from "./types";
+import { type TaxActiveStatus } from './types'
 
 export const statusTypes = new Map<TaxActiveStatus, string>([
   ['active', 'bg-teal-100/30 text-teal-900 dark:text-teal-200 border-teal-200'],

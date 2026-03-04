@@ -9,11 +9,10 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { Spinner } from '@/components/ui/spinner'
-import { CustomerDueReportProvider } from './customer-due-report-provider'
+import { CustomerDueReportProvider, useCustomerDueReportDialog } from './customer-due-report-provider'
 import { CustomerDueReportPrimaryButtons } from './customer-due-report-primary-buttons'
 import { CustomerDueReportTable } from './customer-due-report-table'
 import { CustomerDueReportExportDialog } from './customer-due-report-export-dialog'
-import { useCustomerDueReportDialog } from './customer-due-report-provider'
 
 function CustomerDueReportDialogs() {
   const { open, setOpen } = useCustomerDueReportDialog()

@@ -66,7 +66,7 @@ export function useAuditableModels() {
     queryKey: auditKeys.auditableModels(),
     queryFn: async () => {
       const response = await api.get<AuditableModelOption[]>(
-        '/reports/audit-logs/auditable-models'
+        '/reports/audit-logs/auditable-models',
       )
       return response.data ?? []
     },

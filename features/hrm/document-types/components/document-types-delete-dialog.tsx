@@ -18,10 +18,10 @@ type DocumentTypesDeleteDialogProps = {
 }
 
 export function DocumentTypesDeleteDialog({
-                                         open,
-                                         onOpenChange,
-                                         currentRow,
-                                       }: DocumentTypesDeleteDialogProps) {
+                                            open,
+                                            onOpenChange,
+                                            currentRow,
+                                          }: DocumentTypesDeleteDialogProps) {
   const [value, setValue] = useState('')
   const { mutate: deleteDocumentType, isPending } = useDeleteDocumentType()
   const { data: session } = useAuthSession()
@@ -37,56 +37,56 @@ export function DocumentTypesDeleteDialog({
       onSuccess: () => {
         onOpenChange(false)
         setValue('')
-      }
+      },
     })
   }
 
   return (
-      <ConfirmDialog
-          open={open}
-          onOpenChange={onOpenChange}
-          handleConfirm={handleDelete}
-          disabled={value.trim() !== currentRow.name || isPending}
-          title={
-            <span className='text-destructive'>
+    <ConfirmDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      handleConfirm={handleDelete}
+      disabled={value.trim() !== currentRow.name || isPending}
+      title={
+        <span className="text-destructive">
           <HugeiconsIcon
-              icon={Alert02Icon}
-              className='me-1 inline-block stroke-destructive'
-              size={18}
-              strokeWidth={2}
+            icon={Alert02Icon}
+            className="me-1 inline-block stroke-destructive"
+            size={18}
+            strokeWidth={2}
           />{' '}
-              Delete Document Type
+          Delete Document Type
         </span>
-          }
-          desc={
-            <div className='space-y-4'>
-              <p className='mb-2'>
-                Are you sure you want to delete{' '}
-                <span className='font-bold'>{currentRow.name}</span>?
-                <br />
-                This action will permanently remove the document type from the system.
-                This cannot be undone.
-              </p>
+      }
+      desc={
+        <div className="space-y-4">
+          <p className="mb-2">
+            Are you sure you want to delete{' '}
+            <span className="font-bold">{currentRow.name}</span>?
+            <br />
+            This action will permanently remove the document type from the system.
+            This cannot be undone.
+          </p>
 
-              <Label className='my-2'>
-                Document Type Name:
-                <Input
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
-                    placeholder='Enter document type name to confirm deletion.'
-                />
-              </Label>
+          <Label className="my-2">
+            Document Type Name:
+            <Input
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              placeholder="Enter document type name to confirm deletion."
+            />
+          </Label>
 
-              <Alert variant='destructive'>
-                <AlertTitle>Warning!</AlertTitle>
-                <AlertDescription>
-                  Please be careful, this operation can not be rolled back.
-                </AlertDescription>
-              </Alert>
-            </div>
-          }
-          confirmText='Delete'
-          destructive
-      />
+          <Alert variant="destructive">
+            <AlertTitle>Warning!</AlertTitle>
+            <AlertDescription>
+              Please be careful, this operation can not be rolled back.
+            </AlertDescription>
+          </Alert>
+        </div>
+      }
+      confirmText="Delete"
+      destructive
+    />
   )
 }

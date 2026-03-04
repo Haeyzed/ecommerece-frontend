@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import { createContext, useContext, useEffect, useState, useMemo } from 'react'
-import { getCookie, setCookie, removeCookie } from '@/lib/cookies'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { getCookie, removeCookie, setCookie } from '@/lib/cookies'
 
 type Theme = 'dark' | 'light' | 'system'
 type ResolvedTheme = Exclude<Theme, 'system'>
@@ -35,11 +35,11 @@ const initialState: ThemeProviderState = {
 const ThemeContext = createContext<ThemeProviderState>(initialState)
 
 export function ThemeProvider({
-  children,
-  defaultTheme = DEFAULT_THEME,
-  storageKey = THEME_COOKIE_NAME,
-  ...props
-}: ThemeProviderProps) {
+                                children,
+                                defaultTheme = DEFAULT_THEME,
+                                storageKey = THEME_COOKIE_NAME,
+                                ...props
+                              }: ThemeProviderProps) {
   const [theme, _setTheme] = useState<Theme>(() => {
     if (typeof window === 'undefined') return defaultTheme
     return (getCookie(storageKey) as Theme) || defaultTheme

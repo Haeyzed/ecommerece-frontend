@@ -13,10 +13,7 @@ import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { Spinner } from '@/components/ui/spinner'
 import { useRewardPointSetting, useUpdateRewardPointSetting } from '@/features/settings/reward-point/api'
-import {
-  rewardPointSettingSchema,
-  type RewardPointSettingFormData,
-} from '@/features/settings/reward-point/schemas'
+import { type RewardPointSettingFormData, rewardPointSettingSchema } from '@/features/settings/reward-point/schemas'
 import { RewardPointSettingForm } from './reward-point-setting-form'
 
 export function RewardPointSettingClient() {

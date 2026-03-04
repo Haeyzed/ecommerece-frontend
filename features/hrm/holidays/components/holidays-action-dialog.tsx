@@ -4,11 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, type UseFormReturn } from 'react-hook-form'
 import { format } from 'date-fns'
 
-import {
-  useCreateHoliday,
-  useUpdateHoliday
-} from '@/features/hrm/holidays/api'
-import { holidaySchema, type HolidayFormData } from '@/features/hrm/holidays/schemas'
+import { useCreateHoliday, useUpdateHoliday } from '@/features/hrm/holidays/api'
+import { type HolidayFormData, holidaySchema } from '@/features/hrm/holidays/schemas'
 import { type Holiday } from '../types'
 
 import { useMediaQuery } from '@/hooks/use-media-query'
@@ -32,13 +29,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
@@ -106,8 +97,8 @@ export function HolidaysActionDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className='sm:max-w-lg'>
-          <DialogHeader className='text-start'>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="text-start">
             <DialogTitle>{isEdit ? 'Edit Holiday' : 'Add New Holiday'}</DialogTitle>
             <DialogDescription>
               {isEdit ? 'Update the holiday details here. ' : 'Create a new holiday here. '}
@@ -115,12 +106,12 @@ export function HolidaysActionDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className='max-h-[70vh] overflow-y-auto py-1 pe-3'>
-            <HolidayForm form={form} onSubmit={onSubmit} id='holiday-form' />
+          <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
+            <HolidayForm form={form} onSubmit={onSubmit} id="holiday-form" />
           </div>
 
           <DialogFooter>
-            <Button type='submit' form='holiday-form' disabled={isLoading}>
+            <Button type="submit" form="holiday-form" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Spinner className="mr-2 size-4" />
@@ -139,7 +130,7 @@ export function HolidaysActionDialog({
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
-        <DrawerHeader className='text-left'>
+        <DrawerHeader className="text-left">
           <DrawerTitle>{isEdit ? 'Edit Holiday' : 'Add New Holiday'}</DrawerTitle>
           <DrawerDescription>
             {isEdit ? 'Update the holiday details here. ' : 'Create a new holiday here. '}
@@ -147,12 +138,12 @@ export function HolidaysActionDialog({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className='no-scrollbar overflow-y-auto px-4'>
-          <HolidayForm form={form} onSubmit={onSubmit} id='holiday-form' />
+        <div className="no-scrollbar overflow-y-auto px-4">
+          <HolidayForm form={form} onSubmit={onSubmit} id="holiday-form" />
         </div>
 
         <DrawerFooter>
-          <Button type='submit' form='holiday-form' disabled={isLoading}>
+          <Button type="submit" form="holiday-form" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Spinner className="mr-2 size-4" />
@@ -163,7 +154,7 @@ export function HolidaysActionDialog({
             )}
           </Button>
           <DrawerClose asChild>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -208,14 +199,14 @@ function HolidayForm({ form, onSubmit, id, className }: HolidayFormProps) {
 
         <Controller
           control={form.control}
-          name='note'
+          name="note"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='holiday-note'>Note / Reason</FieldLabel>
+              <FieldLabel htmlFor="holiday-note">Note / Reason</FieldLabel>
               <Textarea
-                id='holiday-note'
-                placeholder='e.g. Christmas Holiday'
-                className='resize-none'
+                id="holiday-note"
+                placeholder="e.g. Christmas Holiday"
+                className="resize-none"
                 {...field}
                 value={field.value || ''}
               />
@@ -226,14 +217,14 @@ function HolidayForm({ form, onSubmit, id, className }: HolidayFormProps) {
 
         <Controller
           control={form.control}
-          name='region'
+          name="region"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor='holiday-region'>Region</FieldLabel>
+              <FieldLabel htmlFor="holiday-region">Region</FieldLabel>
               <Input
-                id='holiday-region'
-                placeholder='e.g. Global, US, UK'
-                autoComplete='off'
+                id="holiday-region"
+                placeholder="e.g. Global, US, UK"
+                autoComplete="off"
                 {...field}
                 value={field.value || ''}
               />
@@ -242,53 +233,53 @@ function HolidayForm({ form, onSubmit, id, className }: HolidayFormProps) {
           )}
         />
 
-          <Controller
-            control={form.control}
-            name='recurring'
-            render={({ field, fieldState }) => (
-              <Field
-                data-invalid={!!fieldState.error}
-                className='flex flex-row items-center justify-between rounded-md border p-4'
-              >
-                <div className='space-y-0.5'>
-                  <FieldLabel htmlFor='holiday-recurring'>Recurring Annually</FieldLabel>
-                  <FieldDescription>
-                    Does this holiday repeat every year?
-                  </FieldDescription>
-                </div>
-                <Switch
-                  id='holiday-recurring'
-                  checked={!!field.value}
-                  onCheckedChange={field.onChange}
-                />
-                {fieldState.error && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
+        <Controller
+          control={form.control}
+          name="recurring"
+          render={({ field, fieldState }) => (
+            <Field
+              data-invalid={!!fieldState.error}
+              className="flex flex-row items-center justify-between rounded-md border p-4"
+            >
+              <div className="space-y-0.5">
+                <FieldLabel htmlFor="holiday-recurring">Recurring Annually</FieldLabel>
+                <FieldDescription>
+                  Does this holiday repeat every year?
+                </FieldDescription>
+              </div>
+              <Switch
+                id="holiday-recurring"
+                checked={!!field.value}
+                onCheckedChange={field.onChange}
+              />
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
 
-          <Controller
-            control={form.control}
-            name='is_approved'
-            render={({ field, fieldState }) => (
-              <Field
-                data-invalid={!!fieldState.error}
-                className='flex flex-row items-center justify-between rounded-md border p-4'
-              >
-                <div className='space-y-0.5'>
-                  <FieldLabel htmlFor='holiday-approved'>Approved Status</FieldLabel>
-                  <FieldDescription>
-                    Mark this holiday as officially approved.
-                  </FieldDescription>
-                </div>
-                <Switch
-                  id='holiday-approved'
-                  checked={!!field.value}
-                  onCheckedChange={field.onChange}
-                />
-                {fieldState.error && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
+        <Controller
+          control={form.control}
+          name="is_approved"
+          render={({ field, fieldState }) => (
+            <Field
+              data-invalid={!!fieldState.error}
+              className="flex flex-row items-center justify-between rounded-md border p-4"
+            >
+              <div className="space-y-0.5">
+                <FieldLabel htmlFor="holiday-approved">Approved Status</FieldLabel>
+                <FieldDescription>
+                  Mark this holiday as officially approved.
+                </FieldDescription>
+              </div>
+              <Switch
+                id="holiday-approved"
+                checked={!!field.value}
+                onCheckedChange={field.onChange}
+              />
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
       </FieldGroup>
     </form>
   )

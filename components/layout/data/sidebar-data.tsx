@@ -361,6 +361,11 @@ export const sidebarData: Omit<SidebarData, 'user'> = {
               permissions: ['view document types'],
             },
             {
+              title: 'Employment Types',
+              url: '/hrm/employment-types',
+              permissions: ['view employment types'],
+            },
+            {
               title: 'Employees',
               url: '/hrm/employees',
               permissions: ['view employees'],

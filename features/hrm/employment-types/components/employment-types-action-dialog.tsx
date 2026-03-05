@@ -219,7 +219,7 @@ function EmploymentTypeForm({
               </FieldLabel>
               <Input
                 id='employment-type-name'
-                placeholder='e.g. Fulltime'
+                placeholder='e.g. Full-time'
                 autoComplete='off'
                 {...field}
               />

@@ -96,6 +96,7 @@ export const employeesColumns: ColumnDef<Employee>[] = [
     ),
   },
   {
+    id: 'department_designation',
     accessorKey: 'department_id',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Role' />
@@ -116,8 +117,12 @@ export const employeesColumns: ColumnDef<Employee>[] = [
   },
   {
     accessorKey: 'designation_id',
-    header: ({ column }) => null,
-    cell: ({ row }) => null,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Designation' />
+    ),
+    cell: ({ row }) => (
+      <span className='text-sm'>{row.original.designation?.name || '-'}</span>
+    ),
     enableHiding: true,
     filterFn: (row, id, value) => {
       return value.includes(String(row.original.designation?.id))
@@ -139,8 +144,14 @@ export const employeesColumns: ColumnDef<Employee>[] = [
   },
   {
     accessorKey: 'reporting_manager_id',
-    header: ({ column }) => null,
-    cell: ({ row }) => null,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Manager' />
+    ),
+    cell: ({ row }) => (
+      <span className='text-sm'>
+        {row.original.reporting_manager?.name || '-'}
+      </span>
+    ),
     enableHiding: true,
     filterFn: (row, id, value) => {
       return value.includes(String(row.original.reporting_manager_id))
@@ -148,8 +159,12 @@ export const employeesColumns: ColumnDef<Employee>[] = [
   },
   {
     accessorKey: 'shift_id',
-    header: ({ column }) => null,
-    cell: ({ row }) => null,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Shift' />
+    ),
+    cell: ({ row }) => (
+      <span className='text-sm'>{row.original.shift?.name || '-'}</span>
+    ),
     enableHiding: true,
     filterFn: (row, id, value) => {
       return value.includes(String(row.original.shift?.id))
@@ -157,8 +172,12 @@ export const employeesColumns: ColumnDef<Employee>[] = [
   },
   {
     accessorKey: 'country_id',
-    header: ({ column }) => null,
-    cell: ({ row }) => null,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Country' />
+    ),
+    cell: ({ row }) => (
+      <span className='text-sm'>{row.original.country?.name || '-'}</span>
+    ),
     enableHiding: true,
     filterFn: (row, id, value) => {
       return value.includes(String(row.original.country?.id))
@@ -166,8 +185,12 @@ export const employeesColumns: ColumnDef<Employee>[] = [
   },
   {
     accessorKey: 'state_id',
-    header: ({ column }) => null,
-    cell: ({ row }) => null,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='State' />
+    ),
+    cell: ({ row }) => (
+      <span className='text-sm'>{row.original.state?.name || '-'}</span>
+    ),
     enableHiding: true,
     filterFn: (row, id, value) => {
       return value.includes(String(row.original.state?.id))
@@ -175,44 +198,48 @@ export const employeesColumns: ColumnDef<Employee>[] = [
   },
   {
     accessorKey: 'city_id',
-    header: ({ column }) => null,
-    cell: ({ row }) => null,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='City' />
+    ),
+    cell: ({ row }) => (
+      <span className='text-sm'>{row.original.city?.name || '-'}</span>
+    ),
     enableHiding: true,
     filterFn: (row, id, value) => {
       return value.includes(String(row.original.city?.id))
     },
   },
   {
-    accessorKey: 'sales_agent',
+    accessorKey: 'is_sale_agent',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Sales Agent' />
     ),
     cell: ({ row }) => {
-      const { sales_agent } = row.original
-      const badgeColor = salesAgentTypes.get(sales_agent)
+      const isSaleAgent = row.original.is_sale_agent
+      const badgeColor = salesAgentTypes.get(isSaleAgent ? 'yes' : 'no')
       return (
         <Badge variant='outline' className={cn('capitalize', badgeColor)}>
-          {row.getValue('sales_agent')}
+          {isSaleAgent ? 'Yes' : 'No'}
         </Badge>
       )
     },
     filterFn: (row, id, value) => value.includes(row.getValue(id)),
   },
   {
-    accessorKey: 'active_status',
+    accessorKey: 'is_active',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Status' />
     ),
     cell: ({ row }) => {
-      const { active_status } = row.original
-      const statusBadgeColor = statusTypes.get(active_status)
+      const isActive = row.original.is_active
+      const statusBadgeColor = statusTypes.get(isActive ? 'active' : 'inactive')
       return (
         <div className='flex justify-start'>
           <Badge
             variant='outline'
             className={cn('capitalize', statusBadgeColor)}
           >
-            {row.getValue('active_status')}
+            {isActive ? 'Active' : 'Inactive'}
           </Badge>
         </div>
       )

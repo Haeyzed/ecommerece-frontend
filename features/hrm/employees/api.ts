@@ -1,19 +1,34 @@
 'use client'
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { toast } from 'sonner'
 
-import { useApiClient } from '@/lib/api/api-client-client'
-import { ValidationError } from '@/lib/api/api-errors'
 
-import type { EmployeeFormData } from './schemas'
-import type {
-  Employee,
-  EmployeeExportParams,
-  EmployeeListParams,
-  EmployeeOption,
-} from './types'
+import { toast } from 'sonner';
+
+
+
+import { useApiClient } from '@/lib/api/api-client-client';
+import { ValidationError } from '@/lib/api/api-errors';
+
+
+
+import type { EmployeeFormData } from './schemas';
+import type { Employee, EmployeeExportParams, EmployeeListParams, EmployeeOption } from './types';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const employeeKeys = {
   all: ['employees'] as const,
@@ -86,9 +101,18 @@ function buildEmployeeFormData(
 
   // Sales Targets (nested under 'employee')
   data.sales_target?.forEach((st, i) => {
-    formData.append(`employee[sales_target][${i}][sales_from]`, st.sales_from.toString())
-    formData.append(`employee[sales_target][${i}][sales_to]`, st.sales_to.toString())
-    formData.append(`employee[sales_target][${i}][percent]`, st.percent.toString())
+    formData.append(
+      `employee[sales_target][${i}][sales_from]`,
+      st.sales_from.toString()
+    )
+    formData.append(
+      `employee[sales_target][${i}][sales_to]`,
+      st.sales_to.toString()
+    )
+    formData.append(
+      `employee[sales_target][${i}][percent]`,
+      st.percent.toString()
+    )
   })
 
   // User object
@@ -149,7 +173,7 @@ export function usePaginatedEmployees(params?: EmployeeListParams) {
   const query = useQuery({
     queryKey: employeeKeys.list(params),
     queryFn: async () => {
-      return await api.get<Employee[]>(BASE_PATH, { params })
+      return await api.get<Employee[]>(BASE_PATH, { params: params as any })
     },
     enabled: sessionStatus !== 'loading',
   })

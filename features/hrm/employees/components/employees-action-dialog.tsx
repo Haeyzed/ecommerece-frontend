@@ -79,13 +79,6 @@ import {
 } from '@/components/ui/file-upload'
 import { ImageZoom } from '@/components/ui/image-zoom'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Spinner } from '@/components/ui/spinner'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
@@ -102,10 +95,9 @@ import { DesignationsActionDialog } from '@/features/hrm/designations'
 import { useOptionDocumentTypes } from '@/features/hrm/document-types/api'
 import {
   useCreateEmployee,
+  useOptionEmployees,
   useUpdateEmployee,
 } from '@/features/hrm/employees/api'
-// Assuming an onboarding template hook exists. If not, fallback to simple input or omit.
-// import { useOptionOnboardingTemplates } from '@/features/hrm/onboarding/api'
 import {
   type EmployeeFormData,
   employeeSchema,
@@ -123,6 +115,10 @@ import { useCitiesByState } from '@/features/settings/states/api'
 import { type Employee } from '../types'
 import { RoleOption } from '@/features/settings/acl/roles'
 import { PermissionOption } from '@/features/settings/acl/permissions'
+import { useOptionEmploymentTypes } from '@/features/hrm/employment-types'
+import { PhoneInput } from '@/components/ui/phone-input'
+import { useOptionWarehouses } from '@/features/settings/warehouses/api'
+import { genderOptions, maritalStatusOptions } from '../constants'
 
 type EmployeesActionDialogProps = {
   currentRow?: Employee
@@ -153,6 +149,7 @@ export function EmployeesActionDialog({
             address: currentRow.address || '',
             department_id: currentRow.department?.id || 0,
             designation_id: currentRow.designation?.id || 0,
+            employment_type_id: currentRow.employment_type?.id || 0,
             shift_id: currentRow.shift?.id || 0,
             basic_salary: currentRow.basic_salary,
             country_id: currentRow.country?.id || null,
@@ -162,6 +159,15 @@ export function EmployeesActionDialog({
             is_sale_agent: currentRow.is_sale_agent,
             sale_commission_percent: currentRow.sale_commission_percent,
             image: [],
+
+            joining_date: currentRow.joining_date || '',
+            confirmation_date: currentRow.confirmation_date || '',
+            probation_end_date: currentRow.probation_end_date || '',
+            reporting_manager_id: currentRow.reporting_manager_id || null,
+            warehouse_id: currentRow.warehouse_id || null,
+            work_location_id: currentRow.work_location_id || null,
+            salary_structure_id: currentRow.salary_structure_id || null,
+            employment_status: currentRow.employment_status || '',
 
             user: currentRow.user
               ? {
@@ -206,6 +212,7 @@ export function EmployeesActionDialog({
             address: '',
             department_id: 0,
             designation_id: 0,
+            employment_type_id: 0,
             shift_id: 0,
             basic_salary: 0,
             country_id: null,
@@ -215,6 +222,14 @@ export function EmployeesActionDialog({
             is_sale_agent: false,
             sale_commission_percent: 0,
             image: [],
+            joining_date: '',
+            confirmation_date: '',
+            probation_end_date: '',
+            reporting_manager_id: null,
+            warehouse_id: null,
+            work_location_id: null,
+            salary_structure_id: null,
+            employment_status: '',
             user: { username: '', password: '', roles: [], permissions: [] },
             profile: {
               date_of_birth: '',
@@ -363,22 +378,35 @@ function EmployeeForm({
   const canCreateShift = userPermissions.includes('create shifts')
   const isSaleAgent = form.watch('is_sale_agent')
 
-  const { data: optionDepartments } = useOptionDepartments()
-  const { data: optionShifts } = useOptionShifts()
-  const { data: optionCountries } = useOptionCountries()
-  const { data: optionRoles } = useOptionRoles()
-  const { data: optionPermissions } = useOptionPermissions()
-  const { data: optionDocumentTypes } = useOptionDocumentTypes()
+  const { data: optionDepartments, isLoading: isLoadingDepartments } =
+    useOptionDepartments()
+  const { data: optionShifts, isLoading: isLoadingShifts } = useOptionShifts()
+  const { data: optionCountries, isLoading: isLoadingCountries } =
+    useOptionCountries()
+  const { data: optionEmploymentTypes, isLoading: isLoadingEmploymentTypes } =
+    useOptionEmploymentTypes()
+  const { data: optionRoles, isLoading: isLoadingRoles } = useOptionRoles()
+  const { data: optionPermissions, isLoading: isLoadingPermissions } =
+    useOptionPermissions()
+  const { data: optionDocumentTypes, isLoading: isLoadingDocumentTypes } =
+    useOptionDocumentTypes()
+  const { data: optionWarehouses, isLoading: isLoadingWarehouses } =
+    useOptionWarehouses()
+  const { data: optionEmployees, isLoading: isLoadingEmployees } =
+    useOptionEmployees()
 
   const departmentId = form.watch('department_id')
   const countryId = form.watch('country_id')
   const stateId = form.watch('state_id')
 
-  const { data: optionDesignations } = useDesignationsByDepartment(
-    departmentId ?? null
+  const { data: optionDesignations, isLoading: isLoadingDesignations } =
+    useDesignationsByDepartment(departmentId ?? null)
+  const { data: optionStates, isLoading: isLoadingStates } = useStatesByCountry(
+    countryId ?? null
   )
-  const { data: optionStates } = useStatesByCountry(countryId ?? null)
-  const { data: optionCities } = useCitiesByState(stateId ?? null)
+  const { data: optionCities, isLoading: isLoadingCities } = useCitiesByState(
+    stateId ?? null
+  )
 
   const {
     fields: salesTargets,
@@ -474,7 +502,7 @@ function EmployeeForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
                   <FieldLabel>Phone Number</FieldLabel>
-                  <Input placeholder='+1234567890' {...field} />
+                  <PhoneInput placeholder='+1234567890' {...field} />
                   {fieldState.error && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -507,7 +535,12 @@ function EmployeeForm({
                       }}
                       isItemEqualToValue={(a, b) => a?.value === b?.value}
                     >
-                      <ComboboxInput placeholder='Select Country' showClear />
+                      <ComboboxInput
+                        placeholder={
+                          isLoadingCountries ? 'Loading...' : 'Select Country'
+                        }
+                        showClear
+                      />
                       <ComboboxContent>
                         <ComboboxEmpty>No country found.</ComboboxEmpty>
                         <ComboboxList>
@@ -549,7 +582,12 @@ function EmployeeForm({
                       isItemEqualToValue={(a, b) => a?.value === b?.value}
                       disabled={!countryId}
                     >
-                      <ComboboxInput placeholder='Select State' showClear />
+                      <ComboboxInput
+                        placeholder={
+                          isLoadingStates ? 'Loading...' : 'Select State'
+                        }
+                        showClear
+                      />
                       <ComboboxContent>
                         <ComboboxEmpty>No state found.</ComboboxEmpty>
                         <ComboboxList>
@@ -590,7 +628,12 @@ function EmployeeForm({
                       isItemEqualToValue={(a, b) => a?.value === b?.value}
                       disabled={!stateId}
                     >
-                      <ComboboxInput placeholder='Select City' showClear />
+                      <ComboboxInput
+                        placeholder={
+                          isLoadingCities ? 'Loading...' : 'Select City'
+                        }
+                        showClear
+                      />
                       <ComboboxContent>
                         <ComboboxEmpty>No city found.</ComboboxEmpty>
                         <ComboboxList>
@@ -760,21 +803,34 @@ function EmployeeForm({
               control={form.control}
               name='profile.gender'
               render={({ field, fieldState }) => (
-                <Field data-invalid={!!fieldState.error}>
+                <Field
+                  data-invalid={!!fieldState.error}
+                  className='flex flex-col'
+                >
                   <FieldLabel>Gender</FieldLabel>
-                  <Select
-                    value={field.value || ''}
-                    onValueChange={field.onChange}
+                  <Combobox
+                    items={genderOptions}
+                    itemToStringLabel={(item) => item.label}
+                    value={
+                      genderOptions.find((g) => g.value === field.value) ?? null
+                    }
+                    onValueChange={(item) =>
+                      field.onChange(item?.value ?? null)
+                    }
+                    isItemEqualToValue={(a, b) => a?.value === b?.value}
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder='Select Gender' />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value='male'>Male</SelectItem>
-                      <SelectItem value='female'>Female</SelectItem>
-                      <SelectItem value='other'>Other</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    <ComboboxInput placeholder='Select Gender' showClear />
+                    <ComboboxContent>
+                      <ComboboxEmpty>No gender found.</ComboboxEmpty>
+                      <ComboboxList>
+                        {(item) => (
+                          <ComboboxItem key={item.value} value={item}>
+                            {item.label}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
                   {fieldState.error && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -785,22 +841,36 @@ function EmployeeForm({
               control={form.control}
               name='profile.marital_status'
               render={({ field, fieldState }) => (
-                <Field data-invalid={!!fieldState.error}>
+                <Field
+                  data-invalid={!!fieldState.error}
+                  className='flex flex-col'
+                >
                   <FieldLabel>Marital Status</FieldLabel>
-                  <Select
-                    value={field.value || ''}
-                    onValueChange={field.onChange}
+                  <Combobox
+                    items={maritalStatusOptions}
+                    itemToStringLabel={(item) => item.label}
+                    value={
+                      maritalStatusOptions.find(
+                        (m) => m.value === field.value
+                      ) ?? null
+                    }
+                    onValueChange={(item) =>
+                      field.onChange(item?.value ?? null)
+                    }
+                    isItemEqualToValue={(a, b) => a?.value === b?.value}
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder='Select Status' />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value='single'>Single</SelectItem>
-                      <SelectItem value='married'>Married</SelectItem>
-                      <SelectItem value='divorced'>Divorced</SelectItem>
-                      <SelectItem value='widowed'>Widowed</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    <ComboboxInput placeholder='Select Status' showClear />
+                    <ComboboxContent>
+                      <ComboboxEmpty>No status found.</ComboboxEmpty>
+                      <ComboboxList>
+                        {(item) => (
+                          <ComboboxItem key={item.value} value={item}>
+                            {item.label}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
                   {fieldState.error && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -914,7 +984,11 @@ function EmployeeForm({
                       isItemEqualToValue={(a, b) => a?.value === b?.value}
                     >
                       <ComboboxInput
-                        placeholder='Select Department'
+                        placeholder={
+                          isLoadingDepartments
+                            ? 'Loading...'
+                            : 'Select Department'
+                        }
                         showClear
                       />
                       <ComboboxContent>
@@ -972,7 +1046,11 @@ function EmployeeForm({
                       disabled={!departmentId}
                     >
                       <ComboboxInput
-                        placeholder='Select Designation'
+                        placeholder={
+                          isLoadingDesignations
+                            ? 'Loading...'
+                            : 'Select Designation'
+                        }
                         showClear
                       />
                       <ComboboxContent>
@@ -1028,7 +1106,12 @@ function EmployeeForm({
                       }}
                       isItemEqualToValue={(a, b) => a?.value === b?.value}
                     >
-                      <ComboboxInput placeholder='Select Shift' showClear />
+                      <ComboboxInput
+                        placeholder={
+                          isLoadingShifts ? 'Loading...' : 'Select Shift'
+                        }
+                        showClear
+                      />
                       <ComboboxContent>
                         <ComboboxEmpty>No shift found.</ComboboxEmpty>
                         <ComboboxList>
@@ -1059,6 +1142,55 @@ function EmployeeForm({
             />
             <Controller
               control={form.control}
+              name='employment_type_id'
+              render={({ field, fieldState }) => (
+                <Field
+                  data-invalid={!!fieldState.error}
+                  className='flex flex-col'
+                >
+                  <FieldLabel>
+                    Employment Type <span className='text-destructive'>*</span>
+                  </FieldLabel>
+                  <Combobox
+                    items={optionEmploymentTypes || []}
+                    itemToStringLabel={(i) => i.label}
+                    value={
+                      (optionEmploymentTypes || []).find(
+                        (e) => e.value === field.value
+                      ) ?? null
+                    }
+                    onValueChange={(item) => {
+                      field.onChange(item?.value ?? null)
+                    }}
+                    isItemEqualToValue={(a, b) => a?.value === b?.value}
+                  >
+                    <ComboboxInput
+                      placeholder={
+                        isLoadingEmploymentTypes
+                          ? 'Loading...'
+                          : 'Select Employment Type'
+                      }
+                      showClear
+                    />
+                    <ComboboxContent>
+                      <ComboboxEmpty>No employment type found.</ComboboxEmpty>
+                      <ComboboxList>
+                        {(item) => (
+                          <ComboboxItem key={item.value} value={item}>
+                            {item.label}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
+              control={form.control}
               name='basic_salary'
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
@@ -1072,6 +1204,164 @@ function EmployeeForm({
                     {...field}
                     onChange={(e) => field.onChange(Number(e.target.value))}
                   />
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              control={form.control}
+              name='joining_date'
+              render={({ field, fieldState }) => (
+                <Field
+                  data-invalid={!!fieldState.error}
+                  className='flex flex-col'
+                >
+                  <FieldLabel>Joining Date</FieldLabel>
+                  <DatePicker
+                    value={field.value ? new Date(field.value) : undefined}
+                    onChange={(d) =>
+                      field.onChange(d ? format(d, 'yyyy-MM-dd') : '')
+                    }
+                  />
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              control={form.control}
+              name='confirmation_date'
+              render={({ field, fieldState }) => (
+                <Field
+                  data-invalid={!!fieldState.error}
+                  className='flex flex-col'
+                >
+                  <FieldLabel>Confirmation Date</FieldLabel>
+                  <DatePicker
+                    value={field.value ? new Date(field.value) : undefined}
+                    onChange={(d) =>
+                      field.onChange(d ? format(d, 'yyyy-MM-dd') : '')
+                    }
+                  />
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              control={form.control}
+              name='probation_end_date'
+              render={({ field, fieldState }) => (
+                <Field
+                  data-invalid={!!fieldState.error}
+                  className='flex flex-col'
+                >
+                  <FieldLabel>Probation End Date</FieldLabel>
+                  <DatePicker
+                    value={field.value ? new Date(field.value) : undefined}
+                    onChange={(d) =>
+                      field.onChange(d ? format(d, 'yyyy-MM-dd') : '')
+                    }
+                  />
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              control={form.control}
+              name='reporting_manager_id'
+              render={({ field, fieldState }) => (
+                <Field
+                  data-invalid={!!fieldState.error}
+                  className='flex flex-col'
+                >
+                  <FieldLabel>Reporting Manager</FieldLabel>
+                  <Combobox
+                    items={optionEmployees || []}
+                    itemToStringLabel={(i) => i.label}
+                    value={
+                      (optionEmployees || []).find(
+                        (e) => e.value === field.value
+                      ) ?? null
+                    }
+                    onValueChange={(item) => {
+                      field.onChange(item?.value ?? null)
+                    }}
+                    isItemEqualToValue={(a, b) => a?.value === b?.value}
+                  >
+                    <ComboboxInput
+                      placeholder={
+                        isLoadingEmployees ? 'Loading...' : 'Select Manager'
+                      }
+                      showClear
+                    />
+                    <ComboboxContent>
+                      <ComboboxEmpty>No employee found.</ComboboxEmpty>
+                      <ComboboxList>
+                        {(item) => (
+                          <ComboboxItem key={item.value} value={item}>
+                            {item.label}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              control={form.control}
+              name='warehouse_id'
+              render={({ field, fieldState }) => (
+                <Field
+                  data-invalid={!!fieldState.error}
+                  className='flex flex-col'
+                >
+                  <FieldLabel>Warehouse</FieldLabel>
+                  <Combobox
+                    items={optionWarehouses || []}
+                    itemToStringLabel={(i) => i.label}
+                    value={
+                      (optionWarehouses || []).find(
+                        (w) => w.value === field.value
+                      ) ?? null
+                    }
+                    onValueChange={(item) => {
+                      field.onChange(item?.value ?? null)
+                    }}
+                    isItemEqualToValue={(a, b) => a?.value === b?.value}
+                  >
+                    <ComboboxInput
+                      placeholder={
+                        isLoadingWarehouses ? 'Loading...' : 'Select Warehouse'
+                      }
+                      showClear
+                    />
+                    <ComboboxContent>
+                      <ComboboxEmpty>No warehouse found.</ComboboxEmpty>
+                      <ComboboxList>
+                        {(item) => (
+                          <ComboboxItem key={item.value} value={item}>
+                            {item.label}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
                   {fieldState.error && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -1196,7 +1486,13 @@ function EmployeeForm({
                                   {item.label}
                                 </ComboboxChip>
                               ))}
-                              <ComboboxChipsInput placeholder='Assign roles...' />
+                              <ComboboxChipsInput
+                                placeholder={
+                                  isLoadingRoles
+                                    ? 'Loading...'
+                                    : 'Assign roles...'
+                                }
+                              />
                             </React.Fragment>
                           )}
                         </ComboboxValue>
@@ -1263,7 +1559,13 @@ function EmployeeForm({
                                   {item.label}
                                 </ComboboxChip>
                               ))}
-                              <ComboboxChipsInput placeholder='Assign permissions...' />
+                              <ComboboxChipsInput
+                                placeholder={
+                                  isLoadingPermissions
+                                    ? 'Loading...'
+                                    : 'Assign permissions...'
+                                }
+                              />
                             </React.Fragment>
                           )}
                         </ComboboxValue>
@@ -1549,7 +1851,13 @@ function EmployeeForm({
                             }
                             onValueChange={(i) => field.onChange(i?.value ?? 0)}
                           >
-                            <ComboboxInput placeholder='Select Type' />
+                            <ComboboxInput
+                              placeholder={
+                                isLoadingDocumentTypes
+                                  ? 'Loading...'
+                                  : 'Select Type'
+                              }
+                            />
                             <ComboboxContent>
                               <ComboboxEmpty>No match.</ComboboxEmpty>
                               <ComboboxList>

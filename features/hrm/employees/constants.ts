@@ -18,3 +18,16 @@ export const salesAgentTypes = new Map<SalesAgentStatus, string>([
     'bg-neutral-100/30 text-neutral-900 dark:text-neutral-200 border-neutral-200',
   ],
 ])
+
+export const genderOptions = [
+  { value: 'male', label: 'Male' },
+  { value: 'female', label: 'Female' },
+  { value: 'other', label: 'Other' },
+]
+
+export const maritalStatusOptions = [
+  { value: 'single', label: 'Single' },
+  { value: 'married', label: 'Married' },
+  { value: 'divorced', label: 'Divorced' },
+  { value: 'widowed', label: 'Widowed' },
+]

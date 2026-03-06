@@ -1,0 +1,252 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Resources;
+
+use App\Models\Employee;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+/**
+ * Class EmployeeResource
+ *
+ * @mixin Employee
+ */
+class EmployeeResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @param Request $request
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            /**
+             * The unique identifier for the employee.
+             *
+             * @example 1
+             */
+            'id' => $this->id,
+
+            'employee_code' => $this->employee_code,
+
+            /**
+             * The staff identifier or code.
+             *
+             * @example EMP-001
+             */
+            'staff_id' => $this->staff_id,
+
+            /**
+             * The full name of the employee.
+             *
+             * @example Jane Doe
+             */
+            'name' => $this->name,
+
+            /**
+             * The email address of the employee.
+             *
+             * @example janedoe@example.com
+             */
+            'email' => $this->email,
+
+            /**
+             * The phone number of the employee.
+             *
+             * @example +1234567890
+             */
+            'phone_number' => $this->phone_number,
+
+            /**
+             * The basic salary of the employee.
+             *
+             * @example 5000.00
+             */
+            'basic_salary' => (float)$this->basic_salary,
+
+            /**
+             * The physical address of the employee.
+             *
+             * @example 123 Main Street
+             */
+            'address' => $this->address,
+
+            /**
+             * The storage path of the employee's image.
+             */
+            'image_path' => $this->image_path,
+
+            /**
+             * The URL of the employee's image.
+             *
+             * @example "https://yourdomain.com/storage/images/employees/avatar.png"
+             */
+            'image_url' => $this->image_url,
+
+            /**
+             * Details regarding the user account associated with the employee.
+             */
+            'user' => $this->whenLoaded('user', fn() => [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
+                'email' => $this->user->email,
+                'username' => $this->user->username,
+                'phone_number' => $this->user->phone_number,
+                'is_active' => $this->user->is_active,
+                'roles' => $this->user->roles->map(fn($role) => [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                ]),
+                'permissions' => $this->user->permissions->map(fn($permission) => [
+                    'id' => $permission->id,
+                    'name' => $permission->name,
+                ]),
+            ]),
+
+            /**
+             * The department associated with the employee.
+             */
+            'department' => $this->whenLoaded('department', fn() => [
+                'id' => $this->department->id,
+                'name' => $this->department->name,
+            ]),
+
+            /**
+             * The designation associated with the employee.
+             */
+            'designation' => $this->whenLoaded('designation', fn() => [
+                'id' => $this->designation->id,
+                'name' => $this->designation->name,
+            ]),
+
+            /**
+             * The shift associated with the employee.
+             */
+            'shift' => $this->whenLoaded('shift', fn() => [
+                'id' => $this->shift->id,
+                'name' => $this->shift->name,
+                'start_time' => $this->shift->start_time,
+                'end_time' => $this->shift->end_time,
+            ]),
+
+            /**
+             * Indicates if the employee is active.
+             *
+             * @example true
+             */
+            'is_active' => (bool)$this->is_active,
+
+            /**
+             * Indicates if the employee is a sales agent.
+             *
+             * @example false
+             */
+            'is_sale_agent' => (bool)$this->is_sale_agent,
+
+            /**
+             * The commission percentage for the sale agent.
+             *
+             * @example 5.5
+             */
+            'sale_commission_percent' => $this->sale_commission_percent ? (float)$this->sale_commission_percent : null,
+
+            /**
+             * The structured array defining sales targets and tier percentages.
+             * Ensures proper float casting for frontend mathematical calculations.
+             *
+             * @example [{"sales_from": 0, "sales_to": 1000, "percent": 5}]
+             */
+            'sales_target' => is_array($this->sales_target) ? collect($this->sales_target)->map(fn($target) => [
+                'sales_from' => isset($target['sales_from']) ? (float)$target['sales_from'] : 0.0,
+                'sales_to' => isset($target['sales_to']) ? (float)$target['sales_to'] : 0.0,
+                'percent' => isset($target['percent']) ? (float)$target['percent'] : 0.0,
+            ])->toArray() : [],
+
+            /**
+             * The human-readable active status.
+             *
+             * @example active
+             */
+            'active_status' => $this->is_active ? 'active' : 'inactive',
+
+            /**
+             * The human-readable sales agent status.
+             *
+             * @example yes
+             */
+            'sales_agent' => $this->is_sale_agent ? 'yes' : 'no',
+            'joining_date' => $this->joining_date?->format('Y-m-d'),
+            'confirmation_date' => $this->confirmation_date?->format('Y-m-d'),
+            'probation_end_date' => $this->probation_end_date?->format('Y-m-d'),
+            'employment_status' => $this->employment_status ?? 'active',
+
+            'employment_type' => $this->whenLoaded('employmentType', fn() => [
+                'id' => $this->employmentType->id,
+                'name' => $this->employmentType->name,
+            ]),
+            'warehouse' => $this->whenLoaded('warehouse', fn() => [
+                'id' => $this->warehouse->id,
+                'name' => $this->warehouse->name,
+            ]),
+            'work_location' => $this->whenLoaded('workLocation', fn() => [
+                'id' => $this->workLocation->id,
+                'name' => $this->workLocation->name,
+            ]),
+            'salary_structure' => $this->whenLoaded('salaryStructure', fn() => [
+                'id' => $this->salaryStructure->id,
+                'name' => $this->salaryStructure->name,
+            ]),
+            'reporting_manager' => $this->whenLoaded('reportingManager', fn() => [
+                'id' => $this->reportingManager->id,
+                'name' => $this->reportingManager->name,
+                'email' => $this->reportingManager->email,
+                'username' => $this->reportingManager->username,
+                'phone_number' => $this->reportingManager->phone_number,
+                'employee_code' => $this->reportingManager->employee_code,
+            ]),
+            'profile' => $this->whenLoaded('profile', fn() => [
+                'date_of_birth' => $this->profile->date_of_birth?->format('Y-m-d'),
+                'gender' => $this->profile->gender,
+                'marital_status' => $this->profile->marital_status,
+                'national_id' => $this->profile->national_id,
+                'tax_number' => $this->profile->tax_number,
+                'bank_name' => $this->profile->bank_name,
+                'account_number' => $this->profile->account_number,
+            ]),
+
+            /**
+             * The documents associated with the employee.
+             */
+            'documents' => $this->whenLoaded('documents', fn() => $this->documents->map(fn($doc) => [
+                'id' => $doc->id,
+                'document_type_id' => $doc->document_type_id,
+                'document_type' => $doc->documentType,
+                'name' => $doc->name,
+                'file_path' => $doc->file_path,
+                'file_url' => $doc->file_url,
+                'issue_date' => $doc->issue_date?->format('Y-m-d'),
+                'expiry_date' => $doc->expiry_date?->format('Y-m-d'),
+                'notes' => $doc->notes,
+                'is_expired' => $doc->isExpired(),
+            ])),
+
+            /**
+             * The date and time when the record was created.
+             *
+             * @example 2024-01-01T12:00:00Z
+             */
+            'created_at' => $this->created_at?->toIso8601String(),
+
+            /**
+             * The date and time when the record was last updated.
+             *
+             * @example 2024-01-02T12:00:00Z
+             */
+            'updated_at' => $this->updated_at?->toIso8601String(),
+        ];
+    }
+}

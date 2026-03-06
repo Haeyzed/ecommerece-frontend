@@ -23,6 +23,7 @@ export const employeeProfileSchema = z.object({
   tax_number: z.string().max(255).nullable().optional(),
   bank_name: z.string().max(255).nullable().optional(),
   account_number: z.string().max(255).nullable().optional(),
+  emergency_contact: z.any().optional(),
 })
 
 export const employeeDocumentSchema = z.object({
@@ -51,10 +52,20 @@ export const employeeSchema = z
     city_id: z.number().nullable().optional(),
     image: z.any().optional(),
     is_active: z.boolean().optional(),
+    onboarding_checklist_template_id: z.number().nullable().optional(),
+
+    // Employee specific fields
+    employment_type_id: z.number().min(1, 'Employment Type is required'),
+    joining_date: z.string().nullable().optional(),
+    confirmation_date: z.string().nullable().optional(),
+    probation_end_date: z.string().nullable().optional(),
+    reporting_manager_id: z.number().nullable().optional(),
+    warehouse_id: z.number().nullable().optional(),
+    work_location_id: z.number().nullable().optional(),
+    salary_structure_id: z.number().nullable().optional(),
+    employment_status: z.string().max(50).nullable().optional(),
     is_sale_agent: z.boolean().optional(),
     sale_commission_percent: z.number().nullable().optional(),
-
-    onboarding_checklist_template_id: z.number().nullable().optional(),
 
     user: employeeUserSchema.optional(),
     profile: employeeProfileSchema.optional(),

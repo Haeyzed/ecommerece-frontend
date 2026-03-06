@@ -50,8 +50,6 @@ function buildEmployeeFormData(
     'state_id',
     'city_id',
     'is_active',
-    'is_sale_agent',
-    'sale_commission_percent',
     'onboarding_checklist_template_id',
   ] as const
 
@@ -64,6 +62,34 @@ function buildEmployeeFormData(
   if (data.image && data.image[0] instanceof File) {
     formData.append('image', data.image[0])
   }
+
+  // Employee specific details (nested under 'employee')
+  const employeeFields = [
+    'employment_type_id',
+    'joining_date',
+    'confirmation_date',
+    'probation_end_date',
+    'reporting_manager_id',
+    'warehouse_id',
+    'work_location_id',
+    'salary_structure_id',
+    'employment_status',
+    'is_sale_agent',
+    'sale_commission_percent',
+  ] as const
+
+  employeeFields.forEach((key) => {
+    if (data[key] !== undefined && data[key] !== null) {
+      formData.append(`employee[${key}]`, String(data[key]))
+    }
+  })
+
+  // Sales Targets (nested under 'employee')
+  data.sales_target?.forEach((st, i) => {
+    formData.append(`employee[sales_target][${i}][sales_from]`, st.sales_from.toString())
+    formData.append(`employee[sales_target][${i}][sales_to]`, st.sales_to.toString())
+    formData.append(`employee[sales_target][${i}][percent]`, st.percent.toString())
+  })
 
   // User object
   if (data.user) {
@@ -95,13 +121,6 @@ function buildEmployeeFormData(
         formData.append(`profile[${key}]`, data.profile![key] as string)
     })
   }
-
-  // Sales Targets
-  data.sales_target?.forEach((st, i) => {
-    formData.append(`sales_target[${i}][sales_from]`, st.sales_from.toString())
-    formData.append(`sales_target[${i}][sales_to]`, st.sales_to.toString())
-    formData.append(`sales_target[${i}][percent]`, st.percent.toString())
-  })
 
   // Documents
   data.documents?.forEach((doc, i) => {

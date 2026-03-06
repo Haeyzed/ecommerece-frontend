@@ -68,6 +68,10 @@ const AVAILABLE_COLUMNS = [
   { value: 'basic_salary', label: 'Basic Salary' },
   { value: 'is_active', label: 'Status' },
   { value: 'is_sale_agent', label: 'Is Sales Agent' },
+  { value: 'joining_date', label: 'Joining Date' },
+  { value: 'confirmation_date', label: 'Confirmation Date' },
+  { value: 'probation_end_date', label: 'Probation End Date' },
+  { value: 'employment_status', label: 'Employment Status' },
   { value: 'created_at', label: 'Date Created' },
   { value: 'updated_at', label: 'Last Updated' },
 ] as const

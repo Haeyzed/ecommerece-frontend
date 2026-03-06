@@ -39,10 +39,10 @@ type EmployeesViewDialogProps = {
 }
 
 export function EmployeesViewDialog({
-                                      currentRow,
-                                      open,
-                                      onOpenChange,
-                                    }: EmployeesViewDialogProps) {
+  currentRow,
+  open,
+  onOpenChange,
+}: EmployeesViewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   if (!currentRow) return null
 
@@ -215,11 +215,15 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
             <div className='text-sm'>{employee.probation_end_date || '-'}</div>
           </div>
           <div className='space-y-1'>
-            <div className='text-xs text-muted-foreground'>Confirmation Date</div>
+            <div className='text-xs text-muted-foreground'>
+              Confirmation Date
+            </div>
             <div className='text-sm'>{employee.confirmation_date || '-'}</div>
           </div>
           <div className='space-y-1'>
-            <div className='text-xs text-muted-foreground'>Reporting Manager</div>
+            <div className='text-xs text-muted-foreground'>
+              Reporting Manager
+            </div>
             <div className='text-sm'>
               {employee.reporting_manager?.name || '-'}
             </div>
@@ -232,9 +236,7 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
           </div>
           <div className='space-y-1'>
             <div className='text-xs text-muted-foreground'>Warehouse</div>
-            <div className='text-sm'>
-              {employee.warehouse?.name || '-'}
-            </div>
+            <div className='text-sm'>{employee.warehouse?.name || '-'}</div>
           </div>
         </div>
       </div>
@@ -280,12 +282,16 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
               </div>
             </div>
             <div className='space-y-1'>
-              <div className='text-xs text-muted-foreground'>Salary & Structure</div>
+              <div className='text-xs text-muted-foreground'>
+                Salary & Structure
+              </div>
               <div className='text-sm'>
                 <span className='font-mono'>
                   ${Number(currentRow.basic_salary).toFixed(2)}
                 </span>
-                {employee.salary_structure?.name ? ` (${employee.salary_structure.name})` : ''}
+                {employee.salary_structure?.name
+                  ? ` (${employee.salary_structure.name})`
+                  : ''}
               </div>
             </div>
           </div>
@@ -349,9 +355,13 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
                       {doc.name || `Document #${doc.id}`}
                     </p>
                     {/* Render Document Type Badge if available */}
-                    {employee.documents?.find((d: any) => d.id === doc.id)?.document_type?.name && (
-                      <Badge variant='secondary' className='text-[10px] h-5'>
-                        {employee.documents.find((d: any) => d.id === doc.id)?.document_type?.name}
+                    {employee.documents?.find((d: any) => d.id === doc.id)
+                      ?.document_type?.name && (
+                      <Badge variant='secondary' className='h-5 text-[10px]'>
+                        {
+                          employee.documents.find((d: any) => d.id === doc.id)
+                            ?.document_type?.name
+                        }
                       </Badge>
                     )}
                   </div>
@@ -408,7 +418,9 @@ function EmployeesView({ className, currentRow }: EmployeesViewProps) {
           </div>
         </div>
         <div className='space-y-2'>
-          <div className='text-sm font-medium text-muted-foreground'>Permissions</div>
+          <div className='text-sm font-medium text-muted-foreground'>
+            Permissions
+          </div>
           <div className='text-sm'>
             {currentRow.user?.permissions?.length
               ? `${currentRow.user.permissions.length} direct permissions`

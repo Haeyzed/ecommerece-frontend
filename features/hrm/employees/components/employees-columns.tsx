@@ -112,6 +112,17 @@ export const employeesColumns: ColumnDef<Employee>[] = [
     ),
   },
   {
+    accessorKey: 'employment_type',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Type' />
+    ),
+    cell: ({ row }) => (
+      <span className='text-sm'>
+        {row.original.employment_type?.name || '-'}
+      </span>
+    ),
+  },
+  {
     accessorKey: 'sales_agent',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Sales Agent' />

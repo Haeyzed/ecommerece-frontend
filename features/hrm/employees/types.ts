@@ -37,6 +37,7 @@ export interface Profile {
   tax_number?: string | null
   bank_name?: string | null
   account_number?: string | null
+  emergency_contact?: any
 }
 
 export interface DocumentType {
@@ -95,8 +96,6 @@ export interface City {
   name: string
 }
 
-// --- NEW INTERFACES ADDED BELOW ---
-
 export interface EmploymentType {
   id: number
   name: string
@@ -120,6 +119,9 @@ export interface SalaryStructure {
 export interface ReportingManager {
   id: number
   name: string
+  email: string
+  username: string
+  phone_number: string | null
   employee_code?: string | null
 }
 
@@ -132,15 +134,6 @@ export interface Employee {
   phone_number: string | null
   basic_salary: number
   address: string | null
-  country_id: number | null
-  state_id: number | null
-  city_id: number | null
-  department_id: number | null
-  designation_id: number | null
-  shift_id: number | null
-
-  // New foreign keys
-  employment_type_id: number | null
   joining_date: string | null
   confirmation_date: string | null
   probation_end_date: string | null
@@ -149,8 +142,6 @@ export interface Employee {
   work_location_id: number | null
   salary_structure_id: number | null
   employment_status: string
-
-  // Relationships
   department?: Department | null
   designation?: Designation | null
   shift?: Shift | null
@@ -162,14 +153,12 @@ export interface Employee {
   work_location?: WorkLocation | null
   salary_structure?: SalaryStructure | null
   reporting_manager?: ReportingManager | null
-
   image_url: string | null
   image_path?: string | null
   is_active: boolean
   is_sale_agent: boolean
   sale_commission_percent: number | null
   sales_target: SalesTarget[]
-  user_id: number | null
   user?: User | null
   profile?: Profile | null
   documents?: Document[]

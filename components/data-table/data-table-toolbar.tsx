@@ -80,7 +80,7 @@ export function DataTableToolbar<TData>({
         )}
 
         <ScrollArea className='w-full max-w-[calc(100vw-200px)] sm:w-auto'>
-          <div className='flex gap-x-2 pb-2.5'>
+          <div className='flex gap-x-2'>
             {filters.map((filter) => {
               const column = table.getColumn(filter.columnId)
               if (!column) return null

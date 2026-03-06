@@ -1498,6 +1498,29 @@ function EmployeeForm({
                         </ComboboxValue>
                       </ComboboxChips>
                       <ComboboxContent anchor={rolesAnchor}>
+                        <div className='flex items-center justify-between gap-2 p-2 border-b'>
+                          <Button
+                            type='button'
+                            variant='ghost'
+                            size='sm'
+                            className='h-7 w-full justify-center text-xs'
+                            onClick={() => {
+                              const allIds = optionRoles?.map((r) => r.value) || []
+                              field.onChange(allIds)
+                            }}
+                          >
+                            Select All
+                          </Button>
+                          <Button
+                            type='button'
+                            variant='ghost'
+                            size='sm'
+                            className='h-7 w-full justify-center text-xs'
+                            onClick={() => field.onChange([])}
+                          >
+                            Clear
+                          </Button>
+                        </div>
                         <ComboboxEmpty>No roles found.</ComboboxEmpty>
                         <ComboboxList>
                           {(item) => (
@@ -1571,6 +1594,29 @@ function EmployeeForm({
                         </ComboboxValue>
                       </ComboboxChips>
                       <ComboboxContent anchor={permissionsAnchor}>
+                        <div className='flex items-center justify-between gap-2 p-2 border-b'>
+                          <Button
+                            type='button'
+                            variant='ghost'
+                            size='sm'
+                            className='h-7 w-full justify-center text-xs'
+                            onClick={() => {
+                              const allIds = optionPermissions?.map((p) => p.value) || []
+                              field.onChange(allIds)
+                            }}
+                          >
+                            Select All
+                          </Button>
+                          <Button
+                            type='button'
+                            variant='ghost'
+                            size='sm'
+                            className='h-7 w-full justify-center text-xs'
+                            onClick={() => field.onChange([])}
+                          >
+                            Clear
+                          </Button>
+                        </div>
                         <ComboboxEmpty>No permissions found.</ComboboxEmpty>
                         <ComboboxList>
                           {(item) => (

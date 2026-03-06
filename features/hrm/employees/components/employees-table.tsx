@@ -112,9 +112,9 @@ export function EmployeesTable() {
       }
     }
 
-    const getFilterValue = (filter: any) => {
+    const getFilterValues = (filter: any) => {
         if (filter?.value && Array.isArray(filter.value) && filter.value.length > 0) {
-            return Number(filter.value[0])
+            return filter.value.map(Number)
         }
         return undefined
     }
@@ -129,14 +129,14 @@ export function EmployeesTable() {
           : statusValue === 'inactive'
             ? false
             : undefined,
-      department_id: getFilterValue(departmentFilter),
-      designation_id: getFilterValue(designationFilter),
-      employment_type_id: getFilterValue(typeFilter),
-      reporting_manager_id: getFilterValue(managerFilter),
-      shift_id: getFilterValue(shiftFilter),
-      country_id: getFilterValue(countryFilter),
-      state_id: getFilterValue(stateFilter),
-      city_id: getFilterValue(cityFilter),
+      department_id: getFilterValues(departmentFilter),
+      designation_id: getFilterValues(designationFilter),
+      employment_type_id: getFilterValues(typeFilter),
+      reporting_manager_id: getFilterValues(managerFilter),
+      shift_id: getFilterValues(shiftFilter),
+      country_id: getFilterValues(countryFilter),
+      state_id: getFilterValues(stateFilter),
+      city_id: getFilterValues(cityFilter),
       start_date: dateRange?.from
         ? format(dateRange.from, 'yyyy-MM-dd')
         : undefined,
@@ -220,7 +220,7 @@ export function EmployeesTable() {
         onReset={() => setDateRange(undefined)}
         filters={[
           {
-            columnId: 'is_active',
+            columnId: 'active_status',
             title: 'Status',
             options: [
               { label: 'Active', value: 'active' },

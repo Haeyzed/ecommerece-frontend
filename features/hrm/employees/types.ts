@@ -179,14 +179,14 @@ export type EmployeeListParams = {
   search?: string
   is_active?: boolean
   is_sale_agent?: boolean
-  department_id?: number
-  designation_id?: number
-  employment_type_id?: number
-  reporting_manager_id?: number
-  shift_id?: number
-  country_id?: number
-  state_id?: number
-  city_id?: number
+  department_id?: number | number[]
+  designation_id?: number | number[]
+  employment_type_id?: number | number[]
+  reporting_manager_id?: number | number[]
+  shift_id?: number | number[]
+  country_id?: number | number[]
+  state_id?: number | number[]
+  city_id?: number | number[]
   start_date?: string
   end_date?: string
 }

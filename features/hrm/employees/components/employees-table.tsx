@@ -220,7 +220,7 @@ export function EmployeesTable() {
         onReset={() => setDateRange(undefined)}
         filters={[
           {
-            columnId: 'active_status',
+            columnId: 'is_active',
             title: 'Status',
             options: [
               { label: 'Active', value: 'active' },

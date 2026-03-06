@@ -43,7 +43,14 @@ import {
   EmployeesEmptyState,
   employeesColumns as columns,
 } from '@/features/hrm/employees'
-import { usePaginatedEmployees } from '@/features/hrm/employees/api'
+import { useOptionEmployees, usePaginatedEmployees } from '@/features/hrm/employees/api'
+import { useOptionDepartments } from '@/features/hrm/departments/api'
+import { useOptionShifts } from '@/features/hrm/shifts/api'
+import { useOptionCountries } from '@/features/settings/countries/api'
+import { useOptionStates } from '@/features/settings/states/api'
+import { useOptionCities } from '@/features/settings/cities/api'
+import { useOptionEmploymentTypes } from '@/features/hrm/employment-types'
+import { useOptionDesignations } from '@/features/hrm/designations/api'
 
 export function EmployeesTable() {
   const [rowSelection, setRowSelection] = useState({})
@@ -51,6 +58,15 @@ export function EmployeesTable() {
   const [sorting, setSorting] = useState<SortingState>([])
 
   const [dateRange, setDateRange] = useState<DateRange | undefined>()
+
+  const { data: departments } = useOptionDepartments()
+  const { data: shifts } = useOptionShifts()
+  const { data: countries } = useOptionCountries()
+  const { data: states } = useOptionStates()
+  const { data: cities } = useOptionCities()
+  const { data: employmentTypes } = useOptionEmploymentTypes()
+  const { data: designations } = useOptionDesignations()
+  const { data: employees } = useOptionEmployees()
 
   const {
     columnFilters,
@@ -64,6 +80,14 @@ export function EmployeesTable() {
     columnFilters: [
       { columnId: 'name', searchKey: 'search', type: 'string' },
       { columnId: 'active_status', searchKey: 'status', type: 'array' },
+      { columnId: 'department_id', searchKey: 'department', type: 'array' },
+      { columnId: 'designation_id', searchKey: 'designation', type: 'array' },
+      { columnId: 'employment_type_id', searchKey: 'type', type: 'array' },
+      { columnId: 'reporting_manager_id', searchKey: 'manager', type: 'array' },
+      { columnId: 'shift_id', searchKey: 'shift', type: 'array' },
+      { columnId: 'country_id', searchKey: 'country', type: 'array' },
+      { columnId: 'state_id', searchKey: 'state', type: 'array' },
+      { columnId: 'city_id', searchKey: 'city', type: 'array' },
     ],
   })
 
@@ -72,12 +96,27 @@ export function EmployeesTable() {
     const perPage = pagination.pageSize
     const nameFilter = columnFilters.find((f) => f.id === 'name')
     const statusFilter = columnFilters.find((f) => f.id === 'active_status')
+    const departmentFilter = columnFilters.find((f) => f.id === 'department_id')
+    const designationFilter = columnFilters.find((f) => f.id === 'designation_id')
+    const typeFilter = columnFilters.find((f) => f.id === 'employment_type_id')
+    const managerFilter = columnFilters.find((f) => f.id === 'reporting_manager_id')
+    const shiftFilter = columnFilters.find((f) => f.id === 'shift_id')
+    const countryFilter = columnFilters.find((f) => f.id === 'country_id')
+    const stateFilter = columnFilters.find((f) => f.id === 'state_id')
+    const cityFilter = columnFilters.find((f) => f.id === 'city_id')
 
     let statusValue: string | undefined = undefined
     if (statusFilter?.value && Array.isArray(statusFilter.value)) {
       if (statusFilter.value.length === 1) {
         statusValue = statusFilter.value[0]
       }
+    }
+
+    const getFilterValue = (filter: any) => {
+        if (filter?.value && Array.isArray(filter.value) && filter.value.length > 0) {
+            return Number(filter.value[0])
+        }
+        return undefined
     }
 
     return {
@@ -90,6 +129,14 @@ export function EmployeesTable() {
           : statusValue === 'inactive'
             ? false
             : undefined,
+      department_id: getFilterValue(departmentFilter),
+      designation_id: getFilterValue(designationFilter),
+      employment_type_id: getFilterValue(typeFilter),
+      reporting_manager_id: getFilterValue(managerFilter),
+      shift_id: getFilterValue(shiftFilter),
+      country_id: getFilterValue(countryFilter),
+      state_id: getFilterValue(stateFilter),
+      city_id: getFilterValue(cityFilter),
       start_date: dateRange?.from
         ? format(dateRange.from, 'yyyy-MM-dd')
         : undefined,
@@ -141,7 +188,18 @@ export function EmployeesTable() {
 
   const hasData = data?.meta?.total && data.meta.total > 0
   const isFiltered =
-    !!apiParams.search || !!apiParams.is_active || !!apiParams.start_date
+    !!apiParams.search ||
+    !!apiParams.is_active ||
+    !!apiParams.start_date ||
+    !!apiParams.department_id ||
+    !!apiParams.designation_id ||
+    !!apiParams.employment_type_id ||
+    !!apiParams.reporting_manager_id ||
+    !!apiParams.shift_id ||
+    !!apiParams.country_id ||
+    !!apiParams.state_id ||
+    !!apiParams.city_id
+
   if (!isLoading && !hasData && !isFiltered) {
     return <EmployeesEmptyState />
   }
@@ -168,6 +226,46 @@ export function EmployeesTable() {
               { label: 'Active', value: 'active' },
               { label: 'Inactive', value: 'inactive' },
             ],
+          },
+          {
+            columnId: 'department_id',
+            title: 'Department',
+            options: departments?.map((d) => ({ label: d.label, value: String(d.value) })) || [],
+          },
+          {
+            columnId: 'designation_id',
+            title: 'Designation',
+            options: designations?.map((d) => ({ label: d.label, value: String(d.value) })) || [],
+          },
+          {
+            columnId: 'employment_type_id',
+            title: 'Type',
+            options: employmentTypes?.map((t) => ({ label: t.label, value: String(t.value) })) || [],
+          },
+          {
+            columnId: 'reporting_manager_id',
+            title: 'Manager',
+            options: employees?.map((e) => ({ label: e.label, value: String(e.value) })) || [],
+          },
+          {
+            columnId: 'shift_id',
+            title: 'Shift',
+            options: shifts?.map((s) => ({ label: s.label, value: String(s.value) })) || [],
+          },
+          {
+            columnId: 'country_id',
+            title: 'Country',
+            options: countries?.map((c) => ({ label: c.label, value: String(c.value) })) || [],
+          },
+          {
+            columnId: 'state_id',
+            title: 'State',
+            options: states?.map((s) => ({ label: s.label, value: String(s.value) })) || [],
+          },
+          {
+            columnId: 'city_id',
+            title: 'City',
+            options: cities?.map((c) => ({ label: c.label, value: String(c.value) })) || [],
           },
         ]}
       />

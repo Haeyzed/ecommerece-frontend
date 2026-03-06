@@ -96,7 +96,7 @@ export const employeesColumns: ColumnDef<Employee>[] = [
     ),
   },
   {
-    id: 'department_designation',
+    accessorKey: 'department_id',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Role' />
     ),
@@ -110,9 +110,21 @@ export const employeesColumns: ColumnDef<Employee>[] = [
         </span>
       </div>
     ),
+    filterFn: (row, id, value) => {
+      return value.includes(String(row.original.department?.id))
+    },
   },
   {
-    accessorKey: 'employment_type',
+    accessorKey: 'designation_id',
+    header: ({ column }) => null,
+    cell: ({ row }) => null,
+    enableHiding: true,
+    filterFn: (row, id, value) => {
+      return value.includes(String(row.original.designation?.id))
+    },
+  },
+  {
+    accessorKey: 'employment_type_id',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Type' />
     ),
@@ -121,6 +133,54 @@ export const employeesColumns: ColumnDef<Employee>[] = [
         {row.original.employment_type?.name || '-'}
       </span>
     ),
+    filterFn: (row, id, value) => {
+      return value.includes(String(row.original.employment_type?.id))
+    },
+  },
+  {
+    accessorKey: 'reporting_manager_id',
+    header: ({ column }) => null,
+    cell: ({ row }) => null,
+    enableHiding: true,
+    filterFn: (row, id, value) => {
+      return value.includes(String(row.original.reporting_manager_id))
+    },
+  },
+  {
+    accessorKey: 'shift_id',
+    header: ({ column }) => null,
+    cell: ({ row }) => null,
+    enableHiding: true,
+    filterFn: (row, id, value) => {
+      return value.includes(String(row.original.shift?.id))
+    },
+  },
+  {
+    accessorKey: 'country_id',
+    header: ({ column }) => null,
+    cell: ({ row }) => null,
+    enableHiding: true,
+    filterFn: (row, id, value) => {
+      return value.includes(String(row.original.country?.id))
+    },
+  },
+  {
+    accessorKey: 'state_id',
+    header: ({ column }) => null,
+    cell: ({ row }) => null,
+    enableHiding: true,
+    filterFn: (row, id, value) => {
+      return value.includes(String(row.original.state?.id))
+    },
+  },
+  {
+    accessorKey: 'city_id',
+    header: ({ column }) => null,
+    cell: ({ row }) => null,
+    enableHiding: true,
+    filterFn: (row, id, value) => {
+      return value.includes(String(row.original.city?.id))
+    },
   },
   {
     accessorKey: 'sales_agent',

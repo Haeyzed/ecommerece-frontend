@@ -181,6 +181,8 @@ export type EmployeeListParams = {
   is_sale_agent?: boolean
   department_id?: number
   designation_id?: number
+  employment_type_id?: number
+  reporting_manager_id?: number
   shift_id?: number
   country_id?: number
   state_id?: number

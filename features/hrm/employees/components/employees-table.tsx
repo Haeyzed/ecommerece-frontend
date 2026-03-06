@@ -95,7 +95,7 @@ export function EmployeesTable() {
     const page = pagination.pageIndex + 1
     const perPage = pagination.pageSize
     const nameFilter = columnFilters.find((f) => f.id === 'name')
-    const statusFilter = columnFilters.find((f) => f.id === 'active_status')
+    const statusFilter = columnFilters.find((f) => f.id === 'is_active')
     const departmentFilter = columnFilters.find((f) => f.id === 'department_id')
     const designationFilter = columnFilters.find((f) => f.id === 'designation_id')
     const typeFilter = columnFilters.find((f) => f.id === 'employment_type_id')

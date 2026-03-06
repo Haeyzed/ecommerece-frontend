@@ -19,6 +19,8 @@ import {
   Delete02Icon,
   File02Icon,
   PlusSignIcon,
+  Tick02Icon,
+  Cancel01Icon,
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 
@@ -202,6 +204,7 @@ export function EmployeesActionDialog({
                 issue_date: doc.issue_date || '',
                 expiry_date: doc.expiry_date || '',
                 file: [],
+                file_url: doc.file_url, // Keep track of existing URL
               })) || [],
           }
         : {
@@ -433,6 +436,15 @@ function EmployeeForm({
   const rolesAnchor = useComboboxAnchor()
   const permissionsAnchor = useComboboxAnchor()
 
+  // Get all currently selected document type IDs
+  const selectedDocumentTypeIds = documents.map(
+    (doc) => doc.document_type_id
+  )
+
+  const createDummyFile = (name: string) => {
+    return new File([], name, { type: 'application/octet-stream' })
+  }
+
   return (
     <>
       <form
@@ -449,6 +461,7 @@ function EmployeeForm({
             </p>
           </div>
           <FieldGroup className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+            {/* ... (Previous fields remain unchanged) ... */}
             <Controller
               control={form.control}
               name='name'
@@ -690,34 +703,6 @@ function EmployeeForm({
                     className='col-span-1 mt-2 md:col-span-2'
                   >
                     <FieldLabel>Profile Picture</FieldLabel>
-                    {existingImageUrl && !hasNewImage && (
-                      <div className='mb-3 flex items-center gap-3 rounded-md border p-3'>
-                        <div className='relative size-16 overflow-hidden rounded-md bg-muted'>
-                          <ImageZoom
-                            backdropClassName={cn(
-                              resolvedTheme === 'dark'
-                                ? '[&_[data-rmiz-modal-overlay="visible"]]:bg-white/80'
-                                : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80'
-                            )}
-                          >
-                            <Image
-                              src={existingImageUrl}
-                              alt='Profile'
-                              width={64}
-                              height={64}
-                              className='h-full w-full object-cover'
-                              unoptimized
-                            />
-                          </ImageZoom>
-                        </div>
-                        <div className='flex-1'>
-                          <p className='text-sm font-medium'>Current Picture</p>
-                          <p className='text-xs text-muted-foreground'>
-                            Upload a new image to replace
-                          </p>
-                        </div>
-                      </div>
-                    )}
                     <FileUpload
                       value={value}
                       onValueChange={onChange}
@@ -741,6 +726,24 @@ function EmployeeForm({
                         </FileUploadTrigger>
                       </FileUploadDropzone>
                       <FileUploadList>
+                        {existingImageUrl && !hasNewImage && (
+                          <FileUploadItem
+                            value={createDummyFile('Current Profile Image')}
+                            className='w-full'
+                          >
+                            <div className='flex size-8 items-center justify-center rounded-md bg-muted overflow-hidden relative border'>
+                              <Image
+                                src={existingImageUrl}
+                                alt='Current Profile'
+                                fill
+                                className='object-cover'
+                                unoptimized
+                              />
+                            </div>
+                            <FileUploadItemMetadata className='ml-2 flex-1' />
+                            {/* We don't provide a delete button for existing image as it's managed by upload replacement */}
+                          </FileUploadItem>
+                        )}
                         {value?.map((file: File, i: number) => (
                           <FileUploadItem key={i} value={file}>
                             <FileUploadItemPreview />
@@ -769,6 +772,7 @@ function EmployeeForm({
 
         {/* --- SECTION 2: PROFILE & FINANCIAL --- */}
         <div className='space-y-4 rounded-xl border bg-card p-4'>
+          {/* ... (Profile fields remain unchanged) ... */}
           <div className='mb-4 border-b pb-2'>
             <h3 className='text-lg font-semibold'>
               Profile & Financial Details
@@ -950,6 +954,7 @@ function EmployeeForm({
 
         {/* --- SECTION 3: JOB DETAILS --- */}
         <div className='space-y-4 rounded-xl border bg-card p-4'>
+          {/* ... (Job fields remain unchanged) ... */}
           <div className='mb-4 border-b pb-2'>
             <h3 className='text-lg font-semibold'>Job Details</h3>
             <p className='text-sm text-muted-foreground'>
@@ -1498,29 +1503,31 @@ function EmployeeForm({
                         </ComboboxValue>
                       </ComboboxChips>
                       <ComboboxContent anchor={rolesAnchor}>
-                        <div className='flex items-center justify-between gap-2 p-2 border-b'>
+                        <ComboboxInput
+                          placeholder='Search roles...'
+                        >
                           <Button
                             type='button'
                             variant='ghost'
-                            size='sm'
-                            className='h-7 w-full justify-center text-xs'
+                            size='icon-xs'
+                            title='Select All'
                             onClick={() => {
                               const allIds = optionRoles?.map((r) => r.value) || []
                               field.onChange(allIds)
                             }}
                           >
-                            Select All
+                            <HugeiconsIcon icon={Tick02Icon} className='size-4' />
                           </Button>
                           <Button
                             type='button'
                             variant='ghost'
-                            size='sm'
-                            className='h-7 w-full justify-center text-xs'
+                            size='icon-xs'
+                            title='Clear All'
                             onClick={() => field.onChange([])}
                           >
-                            Clear
+                            <HugeiconsIcon icon={Cancel01Icon} className='size-4' />
                           </Button>
-                        </div>
+                        </ComboboxInput>
                         <ComboboxEmpty>No roles found.</ComboboxEmpty>
                         <ComboboxList>
                           {(item) => (
@@ -1594,29 +1601,31 @@ function EmployeeForm({
                         </ComboboxValue>
                       </ComboboxChips>
                       <ComboboxContent anchor={permissionsAnchor}>
-                        <div className='flex items-center justify-between gap-2 p-2 border-b'>
+                        <ComboboxInput
+                          placeholder='Search permissions...'
+                        >
                           <Button
                             type='button'
                             variant='ghost'
-                            size='sm'
-                            className='h-7 w-full justify-center text-xs'
+                            size='icon-xs'
+                            title='Select All'
                             onClick={() => {
                               const allIds = optionPermissions?.map((p) => p.value) || []
                               field.onChange(allIds)
                             }}
                           >
-                            Select All
+                            <HugeiconsIcon icon={Tick02Icon} className='size-4' />
                           </Button>
                           <Button
                             type='button'
                             variant='ghost'
-                            size='sm'
-                            className='h-7 w-full justify-center text-xs'
+                            size='icon-xs'
+                            title='Clear All'
                             onClick={() => field.onChange([])}
                           >
-                            Clear
+                            <HugeiconsIcon icon={Cancel01Icon} className='size-4' />
                           </Button>
-                        </div>
+                        </ComboboxInput>
                         <ComboboxEmpty>No permissions found.</ComboboxEmpty>
                         <ComboboxList>
                           {(item) => (
@@ -1639,6 +1648,7 @@ function EmployeeForm({
 
         {/* --- SECTION 5: SALES & COMMISSION --- */}
         <div className='space-y-4 rounded-xl border bg-card p-4'>
+          {/* ... (Sales fields remain unchanged) ... */}
           <div className='mb-4 border-b pb-2'>
             <div className='flex items-center justify-between'>
               <div>
@@ -1857,6 +1867,10 @@ function EmployeeForm({
                 (t) => t.value === selectedTypeId
               )
               const isEditDocMode = isEdit && !!docField.id
+              const existingDocUrl = (docField as any).file_url
+              const hasNewFile =
+                Array.isArray(form.watch(`documents.${index}.file`)) &&
+                form.watch(`documents.${index}.file`).length > 0
 
               return (
                 <div
@@ -1888,7 +1902,14 @@ function EmployeeForm({
                             <span className='text-destructive'>*</span>
                           </FieldLabel>
                           <Combobox
-                            items={optionDocumentTypes || []}
+                            items={
+                              optionDocumentTypes?.filter(
+                                (type) =>
+                                  !selectedDocumentTypeIds.includes(
+                                    type.value
+                                  ) || type.value === field.value
+                              ) || []
+                            }
                             itemToStringLabel={(i) => i.label}
                             value={
                               (optionDocumentTypes || []).find(
@@ -2016,9 +2037,6 @@ function EmployeeForm({
                       control={form.control}
                       name={`documents.${index}.file`}
                       render={({ field: { value, onChange }, fieldState }) => {
-                        const hasNewFile =
-                          Array.isArray(value) && value.length > 0
-                        // Display message if it's an edit and a file already exists on the server
                         return (
                           <Field
                             data-invalid={!!fieldState.error}
@@ -2055,6 +2073,22 @@ function EmployeeForm({
                                 </FileUploadTrigger>
                               </FileUploadDropzone>
                               <FileUploadList>
+                                {existingDocUrl && !hasNewFile && (
+                                  <FileUploadItem
+                                    value={createDummyFile(
+                                      'Current Document File'
+                                    )}
+                                    className='w-full'
+                                  >
+                                    <div className='flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary'>
+                                      <HugeiconsIcon
+                                        icon={File02Icon}
+                                        className='size-4'
+                                      />
+                                    </div>
+                                    <FileUploadItemMetadata className='ml-2 flex-1' />
+                                  </FileUploadItem>
+                                )}
                                 {value?.map((file: File, i: number) => (
                                   <FileUploadItem
                                     key={i}

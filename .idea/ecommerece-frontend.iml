@@ -9,5 +9,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="rubix-documents" />
+    <orderEntry type="module" module-name="ecommerece-app" />
   </component>
 </module>

@@ -18,7 +18,7 @@ export const brandSchema = z.object({
     .max(255, 'Page title is too long')
     .nullable()
     .optional(),
-  image: z
+  image_path: z
     .array(z.custom<File>())
     .max(1, 'Please select only one image')
     .optional(),

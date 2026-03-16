@@ -96,7 +96,7 @@ export function BrandsActionDialog({
           short_description: currentRow.short_description,
           page_title: currentRow.page_title,
           is_active: currentRow.is_active,
-          image: [],
+          image_path: [],
         }
       : {
           name: '',
@@ -104,7 +104,7 @@ export function BrandsActionDialog({
           short_description: '',
           page_title: '',
           is_active: true,
-          image: [],
+          image_path: [],
         },
   })
 
@@ -339,7 +339,7 @@ function BrandForm({
 
         <Controller
           control={form.control}
-          name='image'
+          name='image_path'
           render={({
             field: { value, onChange, ...fieldProps },
             fieldState,
@@ -390,7 +390,7 @@ function BrandForm({
                   maxFiles={1}
                   maxSize={5 * 1024 * 1024}
                   onFileReject={(_, message) => {
-                    form.setError('image', {
+                    form.setError('image_path', {
                       message,
                     })
                   }}

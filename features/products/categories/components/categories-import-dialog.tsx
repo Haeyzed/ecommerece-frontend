@@ -63,7 +63,7 @@ import {
   categoryImportSchema,
 } from '@/features/products/categories/schemas'
 
-import { CategoriesCsvPreviewDialog } from './categories-csv-preview-dialog'
+import { CategoriesImportPreviewDialog } from './categories-import-preview-dialog'
 
 type CategoriesImportDialogProps = {
   open: boolean
@@ -352,7 +352,7 @@ export function CategoriesImportDialog({
         </Drawer>
       )}
 
-      <CategoriesCsvPreviewDialog
+      <CategoriesImportPreviewDialog
         open={previewOpen}
         onOpenChange={setPreviewOpen}
         data={previewData}

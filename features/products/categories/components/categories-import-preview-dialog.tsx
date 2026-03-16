@@ -33,7 +33,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-type CategoriesCsvPreviewDialogProps = {
+type CategoriesImportPreviewDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   data: any[]
@@ -41,13 +41,13 @@ type CategoriesCsvPreviewDialogProps = {
   isPending: boolean
 }
 
-export function CategoriesCsvPreviewDialog({
+export function CategoriesImportPreviewDialog({
   open,
   onOpenChange,
   data,
   onConfirm,
   isPending,
-}: CategoriesCsvPreviewDialogProps) {
+}: CategoriesImportPreviewDialogProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const headers = data.length > 0 ? Object.keys(data[0]) : []
 

@@ -4,7 +4,7 @@ export interface Category {
   slug: string | null
   short_description: string | null
   page_title: string | null
-  image: string | null
+  image_path: string | null
   image_url: string | null
   icon: string | null
   icon_url: string | null
@@ -35,7 +35,7 @@ export interface CategoryFormData {
   slug?: string | null
   short_description?: string | null
   page_title?: string | null
-  image?: File[] | null
+  image_path?: File[] | null
   icon?: File[] | null
   parent_id?: number | null
   is_active?: boolean | null

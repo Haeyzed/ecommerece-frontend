@@ -138,29 +138,31 @@ export function DateRangePicker({
 
       <PopoverContent className='w-auto p-0 shadow-lg' align='start'>
         <div className='flex flex-col divide-y sm:flex-row sm:divide-x sm:divide-y-0'>
-          {/* Quick Select Sidebar */}
-          <div className='flex flex-col gap-1 bg-muted/20 p-3 sm:w-40'>
-            <span className='mb-1 px-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase'>
-              Quick Select
-            </span>
-            {presets.map((preset) => {
-              const isActive = checkIsActive(preset.range)
-              return (
-                <Button
-                  key={preset.label}
-                  variant={isActive ? 'default' : 'ghost'}
-                  size='sm'
-                  onClick={() => handlePresetClick(preset.range)}
-                  className={cn(
-                    'justify-start font-normal transition-all',
-                    isActive && 'font-medium'
-                  )}
-                >
-                  {preset.label}
-                </Button>
-              )
-            })}
-          </div>
+          {/* Quick Select Sidebar - desktop only */}
+          {isDesktop && (
+            <div className='flex flex-col gap-1 bg-muted/20 p-3 sm:w-40'>
+              <span className='mb-1 px-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase'>
+                Quick Select
+              </span>
+              {presets.map((preset) => {
+                const isActive = checkIsActive(preset.range)
+                return (
+                  <Button
+                    key={preset.label}
+                    variant={isActive ? 'default' : 'ghost'}
+                    size='sm'
+                    onClick={() => handlePresetClick(preset.range)}
+                    className={cn(
+                      'justify-start font-normal transition-all',
+                      isActive && 'font-medium'
+                    )}
+                  >
+                    {preset.label}
+                  </Button>
+                )
+              })}
+            </div>
+          )}
 
           {/* Calendar Area */}
           <div className='p-1'>

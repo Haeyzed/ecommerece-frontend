@@ -10,5 +10,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="rubix-documents" />
     <orderEntry type="module" module-name="ecommerece-app" />
+    <orderEntry type="module" module-name="ecommerce-application" />
   </component>
 </module>

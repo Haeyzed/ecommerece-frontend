@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../ecommerce-application/.idea/ecommerce-application.iml" filepath="$PROJECT_DIR$/../ecommerce-application/.idea/ecommerce-application.iml" />
       <module fileurl="file://$PROJECT_DIR$/../ecommerece-app/.idea/ecommerece-app.iml" filepath="$PROJECT_DIR$/../ecommerece-app/.idea/ecommerece-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/ecommerece-frontend.iml" filepath="$PROJECT_DIR$/.idea/ecommerece-frontend.iml" />
       <module fileurl="file://$PROJECT_DIR$/../rubix-documents/.idea/rubix-documents.iml" filepath="$PROJECT_DIR$/../rubix-documents/.idea/rubix-documents.iml" />
